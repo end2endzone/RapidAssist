@@ -6,4 +6,4 @@ echo =======================================================================
 cd /d %~dp0
 cd ..\..
 cd build\bin\Release
-rapidassist_tests.exe
+rapidassist_unittest.exe
