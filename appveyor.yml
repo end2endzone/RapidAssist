@@ -65,7 +65,7 @@ before_build:
 #- cmd: call c:\projects\rapidassist\ci\appveyor\build_script.bat
 
 build:
-  project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
+  project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
 
 #---------------------------------#
 #       tests configuration       #
