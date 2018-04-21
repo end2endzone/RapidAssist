@@ -11,7 +11,7 @@
 # version format
 # version must contains build number to make sure that all commits are processed by appveyor.
 # If build number is not part of the version than appveyor build fails with the following message: "Build version x.y.z already exists."
-version: 0.1.0.{build}
+version: {build}
 
 # branches to build
 branches:
@@ -30,7 +30,8 @@ image: Visual Studio 2015
 
 # scripts that are called at very beginning, before repo cloning
 init:
-  - git config --global core.autocrlf true
+  - cmd: git config --global core.autocrlf true
+  - cmd: git submodule update --init --recursive
   - ps: $env:GIT_HASH=$env:APPVEYOR_REPO_COMMIT.Substring(0, 10)
 
 # clone directory
@@ -57,8 +58,14 @@ configuration: Release
 #  - Debug
 #  - Release
 
-build_script:
-- cmd: call c:\projects\rapidassist\ci\appveyor\build_script.bat
+before_build:
+- cmd: call c:\projects\rapidassist\ci\appveyor\before_build.bat
+
+#build_script:
+#- cmd: call c:\projects\rapidassist\ci\appveyor\build_script.bat
+
+build:
+  project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
 
 #---------------------------------#
 #       tests configuration       #
