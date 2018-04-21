@@ -1,4 +1,5 @@
 #include "environmentfunc.h"
+#include <cstdlib> //for getenv()
 
 namespace environment
 {
