@@ -2,17 +2,18 @@
 #include "environmentfunc.h"
 #include "filesystemfunc.h"
 
-#include <direct.h> //for _getcwd()
 #include <algorithm> //for std::transform()
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef WIN32
-#include <unistd.h>
-#endif
-#ifdef WIN32
+
+#ifdef _WIN32
 #define stat _stat
+#define getcwd _getcwd
+#define chdir _chdir
 #include <Windows.h> //for GetShortPathName()
+#elif __linux__
+#include <unistd.h> //for getcwd()
 #endif
 
 namespace filesystem
@@ -47,16 +48,9 @@ namespace filesystem
     if (iPath == NULL || iPath[0] == '\0')
       return std::string();
 
-    char drive[_MAX_DRIVE];
-    char dir[_MAX_DIR];
-    char fname[_MAX_FNAME];
-    char ext[_MAX_EXT];
-
-    _splitpath(iPath, drive, dir, fname, ext);
-
+    std::string folder;
     std::string filename;
-    filename.append(fname);
-    filename.append(ext);
+    splitPath(iPath, folder, filename);
 
     return filename;
   }
@@ -79,9 +73,9 @@ namespace filesystem
       return false;
 
     std::string localFolder = getCurrentFolder();
-    bool success = (_chdir(iPath) == 0);
+    bool success = (chdir(iPath) == 0);
     if (success)
-      _chdir(localFolder.c_str());
+      chdir(localFolder.c_str());
     return success;
   }
 
@@ -103,9 +97,9 @@ namespace filesystem
 
   std::string getTemporaryFilePath()
   {
-#ifdef WIN32
+#ifdef _WIN32
     std::string temp = environment::getEnvironmentVariable("TEMP");
-#elif UNIX
+#elif __linux__
     std::string temp = "/tmp";
 #endif
     std::string rndpath = temp + getPathSeparator() + getTemporaryFileName();
@@ -267,14 +261,14 @@ namespace filesystem
   {
 #ifdef _WIN32
     return '\\';
-#elif UNIX
+#elif __linux__
     return '/';
 #endif
   }
 
   std::string getCurrentFolder()
   {
-    return std::string(_getcwd(NULL, 0));
+    return std::string(getcwd(NULL, 0));
   }
 
   std::string getFileExtention(const std::string & iPath)

@@ -58,7 +58,7 @@ namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
-#elif UNIX
+#elif __linux__
       static const uint32_t EXPECTED = 11;
 #endif
 
