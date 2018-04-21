@@ -47,10 +47,10 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in"       
 
 # Add source directories
 add_subdirectory(src/rapidassist)
-add_subdirectory(src/rapidassist_tests)
+add_subdirectory(src/rapidassist_unittest)
 
 # Define project dependencies
-add_dependencies(rapidassist_tests rapidassist)
+add_dependencies(rapidassist_unittest rapidassist)
 
 
 

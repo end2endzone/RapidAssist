@@ -4,7 +4,7 @@ link_directories(${LIBRARY_OUTPUT_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
 #link_directories(${LIBRARY_OUTPUT_PATH})
 
-add_executable(rapidassist_tests
+add_executable(rapidassist_unittest
   main.cpp
   TestEnvironmentFunc.cpp
   TestEnvironmentFunc.h
@@ -22,5 +22,5 @@ if (WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-target_link_libraries(rapidassist_tests debug     rapidassist gtest)
-target_link_libraries(rapidassist_tests optimized rapidassist gtest)
+target_link_libraries(rapidassist_unittest debug     rapidassist gtest)
+target_link_libraries(rapidassist_unittest optimized rapidassist gtest)
