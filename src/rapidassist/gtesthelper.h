@@ -130,7 +130,7 @@ public:
   // Arguments:
   //   iFilePath:   The path of the file.
   // 
-  void createFile(const char * iFilePath, size_t iSize);
+  bool createFile(const char * iFilePath, size_t iSize);
 
   //
   // Description:

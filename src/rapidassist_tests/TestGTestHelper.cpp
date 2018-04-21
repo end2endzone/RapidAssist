@@ -11,11 +11,6 @@ void TestGTestHelper::TearDown()
 {
 }
 
-TEST_F(TestGTestHelper, testAll)
-{
-  ASSERT_TRUE(true);
-}
-
 TEST_F(TestGTestHelper, testFile1NotFound)
 {
   std::string msg;
@@ -39,9 +34,13 @@ TEST_F(TestGTestHelper, testFile2NotFound)
 TEST_F(TestGTestHelper, testFile1Smaller)
 {
   std::string msg;
-  const char * file1 = "main.cpp";
-  const char * file2 = __FILE__;
-  bool equals = hlp.isFileEquals(file1, file2, msg);
+  const std::string file1 = hlp.getTestQualifiedName() + ".1.tmp";
+  const std::string file2 = hlp.getTestQualifiedName() + ".2.tmp";
+
+  ASSERT_TRUE( hlp.createFile(file1.c_str(), 1000) );
+  ASSERT_TRUE( hlp.createFile(file2.c_str(), 1200) );
+
+  bool equals = hlp.isFileEquals(file1.c_str(), file2.c_str(), msg);
   ASSERT_FALSE(equals) << msg.c_str();
   ASSERT_NE(msg.find("First file is smaller than Second file"), std::string::npos) << msg.c_str();
 }
@@ -49,9 +48,13 @@ TEST_F(TestGTestHelper, testFile1Smaller)
 TEST_F(TestGTestHelper, testFile1Bigger)
 {
   std::string msg;
-  const char * file1 = __FILE__;
-  const char * file2 = "main.cpp";
-  bool equals = hlp.isFileEquals(file1, file2, msg);
+  const std::string file1 = hlp.getTestQualifiedName() + ".1.tmp";
+  const std::string file2 = hlp.getTestQualifiedName() + ".2.tmp";
+
+  ASSERT_TRUE( hlp.createFile(file1.c_str(), 1200) );
+  ASSERT_TRUE( hlp.createFile(file2.c_str(), 1000) );
+
+  bool equals = hlp.isFileEquals(file1.c_str(), file2.c_str(), msg);
   ASSERT_FALSE(equals) << msg.c_str();
   ASSERT_NE(msg.find("First file is bigger than Second file"), std::string::npos) << msg.c_str();
 }

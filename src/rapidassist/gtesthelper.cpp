@@ -583,17 +583,18 @@ bool gTestHelper::getTextFileContent(const char* iFilename, gTestHelper::StringV
   return false;
 }
 
-void gTestHelper::createFile(const char * iFilePath, size_t iSize)
+bool gTestHelper::createFile(const char * iFilePath, size_t iSize)
 {
   FILE * f = fopen(iFilePath, "wb");
   if (!f)
-    return;
+    return false;
   for(size_t i=0; i<iSize; i++)
   {
     unsigned int value = (i%256);
     fwrite(&value, 1, 1, f);
   }
   fclose(f);
+  return true;
 }
 
 void gTestHelper::changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue)
