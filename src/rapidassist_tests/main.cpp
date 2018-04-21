@@ -13,16 +13,16 @@ int main(int argc, char **argv)
   if (hlp.isProcessorX86())
   {
     if (hlp.isDebugCode())
-      ::testing::GTEST_FLAG(output) = "xml:win32Arduino_unittest.x86.debug.xml";
+      ::testing::GTEST_FLAG(output) = "xml:rapidassist_unittest.x86.debug.xml";
     else
-      ::testing::GTEST_FLAG(output) = "xml:win32Arduino_unittest.x86.release.xml";
+      ::testing::GTEST_FLAG(output) = "xml:rapidassist_unittest.x86.release.xml";
   }
   else if (hlp.isProcessorX64())
   {
     if (hlp.isDebugCode())
-      ::testing::GTEST_FLAG(output) = "xml:win32Arduino_unittest.x64.debug.xml";
+      ::testing::GTEST_FLAG(output) = "xml:rapidassist_unittest.x64.debug.xml";
     else
-      ::testing::GTEST_FLAG(output) = "xml:win32Arduino_unittest.x64.release.xml";
+      ::testing::GTEST_FLAG(output) = "xml:rapidassist_unittest.x64.release.xml";
   }
 
   ::testing::GTEST_FLAG(filter) = "*";

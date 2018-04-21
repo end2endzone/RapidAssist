@@ -10,6 +10,8 @@ add_executable(rapidassist_tests
   TestEnvironmentFunc.h
   TestFilesystemFunc.cpp
   TestFilesystemFunc.h
+  TestGTestHelper.cpp
+  TestGTestHelper.h
   TestNativeFunc.cpp
   TestNativeFunc.h
   TestStringFunc.cpp
