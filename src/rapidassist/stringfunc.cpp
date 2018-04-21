@@ -3,138 +3,141 @@
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
 
-namespace stringfunc
+namespace rapidassist
 {
-  template <class T>
-  inline bool parseValueT (const std::string& str, T & t)
+
+  namespace stringfunc
   {
-    static const T ZERO = (T)0;
-    static const T MULTIPLIER = (T)10;
-    static const T SIGN_MULTIPLIER = (T)-1;
-    bool parseOK = false;
-    t = ZERO;
-    for(size_t i=0; i<str.size(); i++)
+    template <class T>
+    inline bool parseValueT (const std::string& str, T & t)
     {
-      char c = str[i];
-      if (c >= '0' && c <= '9')
+      static const T ZERO = (T)0;
+      static const T MULTIPLIER = (T)10;
+      static const T SIGN_MULTIPLIER = (T)-1;
+      bool parseOK = false;
+      t = ZERO;
+      for(size_t i=0; i<str.size(); i++)
       {
-        t *= MULTIPLIER;
-        c -= '0'; //convert character to numeric value
-        t += (T)c;
-        parseOK = true;
-      }
-      else if (c == '-')
-      {
-        t *= SIGN_MULTIPLIER;
-        parseOK = true;
-      }
-    }
-    return parseOK;
-  }
-
-  //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
-  template <class T>
-  inline std::string toStringT (const T & t)
-  {
-    std::stringstream out;
-    out << t;
-    std::string s;
-    s = out.str().c_str();
-    return s;
-  }
-
-  //template <class T>
-  //inline void toT (const char * iValue, T & t)
-  //{
-  //  std::string tmpString = iValue;
-  //  std::istringstream inputStream(tmpString);
-  //  inputStream >> t;
-  //}
-
-  //specializations
-  template<>
-  inline std::string toStringT<unsigned char>(const unsigned char & t)
-  {
-    std::stringstream out;
-    out << (int)t;
-    std::string s;
-    s = out.str();
-    return s;
-  }
-  template<>
-  inline std::string toStringT<char>(const char & t)
-  {
-    std::stringstream out;
-    out << (int)t;
-    std::string s;
-    s = out.str();
-    return s;
-  }
-
-  //template<>
-  //inline void toT<unsigned char>(const char * iValue, unsigned char & t)
-  //{
-  //  std::string tmpString = iValue;
-  //  std::istringstream inputStream(tmpString);
-  //  uint16 tmp = 0;
-  //  inputStream >> tmp;
-  //  t = (unsigned char)tmp;
-  //}
-  //template<>
-  //inline void toT<char>(const char * iValue, char & t)
-  //{
-  //  std::string tmpString = iValue;
-  //  std::istringstream inputStream(tmpString);
-  //  sint16 tmp = 0;
-  //  inputStream >> tmp;
-  //  t = (char)tmp;
-  //}
-
-  bool isNumeric(const char * iValue)
-  {
-    if (iValue == NULL)
-      return false;
-
-    bool foundDot = false;
-    size_t length = strlen(iValue);
-    for(size_t offset = 0; offset < length; offset++)
-    {
-      const char & c = iValue[offset];
-      if (c >= '0' && c <= '9')
-        continue; //valid
-      if (c == '.' && !foundDot)
-      {
-        //only 1 dot character must be found in the string
-        foundDot = true;
-        continue; //valid
-      }
-      if ((c == '+' || c == '-'))
-      {
-        if (offset == 0)
+        char c = str[i];
+        if (c >= '0' && c <= '9')
         {
-          //+ or - sign are accepted but must be the first character of the value
-          continue; //valid
+          t *= MULTIPLIER;
+          c -= '0'; //convert character to numeric value
+          t += (T)c;
+          parseOK = true;
+        }
+        else if (c == '-')
+        {
+          t *= SIGN_MULTIPLIER;
+          parseOK = true;
         }
       }
-
-      return false; //invalid
+      return parseOK;
     }
-    return true;
-  }
 
-  int strReplace(std::string & iString, const char * iOldValue, const char * iNewValue)
-  {
-    std::string tmpOldValue = iOldValue;
-    std::string tmpNewValue = iNewValue;
-
-    int numOccurance = 0;
-
-    if (tmpOldValue.size() > 0)
+    //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
+    template <class T>
+    inline std::string toStringT (const T & t)
     {
-      size_t startPos = 0;    
-      size_t findPos = std::string::npos;
-      do
+      std::stringstream out;
+      out << t;
+      std::string s;
+      s = out.str().c_str();
+      return s;
+    }
+
+    //template <class T>
+    //inline void toT (const char * iValue, T & t)
+    //{
+    //  std::string tmpString = iValue;
+    //  std::istringstream inputStream(tmpString);
+    //  inputStream >> t;
+    //}
+
+    //specializations
+    template<>
+    inline std::string toStringT<unsigned char>(const unsigned char & t)
+    {
+      std::stringstream out;
+      out << (int)t;
+      std::string s;
+      s = out.str();
+      return s;
+    }
+    template<>
+    inline std::string toStringT<char>(const char & t)
+    {
+      std::stringstream out;
+      out << (int)t;
+      std::string s;
+      s = out.str();
+      return s;
+    }
+
+    //template<>
+    //inline void toT<unsigned char>(const char * iValue, unsigned char & t)
+    //{
+    //  std::string tmpString = iValue;
+    //  std::istringstream inputStream(tmpString);
+    //  uint16 tmp = 0;
+    //  inputStream >> tmp;
+    //  t = (unsigned char)tmp;
+    //}
+    //template<>
+    //inline void toT<char>(const char * iValue, char & t)
+    //{
+    //  std::string tmpString = iValue;
+    //  std::istringstream inputStream(tmpString);
+    //  sint16 tmp = 0;
+    //  inputStream >> tmp;
+    //  t = (char)tmp;
+    //}
+
+    bool isNumeric(const char * iValue)
+    {
+      if (iValue == NULL)
+        return false;
+
+      bool foundDot = false;
+      size_t length = strlen(iValue);
+      for(size_t offset = 0; offset < length; offset++)
       {
+        const char & c = iValue[offset];
+        if (c >= '0' && c <= '9')
+          continue; //valid
+        if (c == '.' && !foundDot)
+        {
+          //only 1 dot character must be found in the string
+          foundDot = true;
+          continue; //valid
+        }
+        if ((c == '+' || c == '-'))
+        {
+          if (offset == 0)
+          {
+            //+ or - sign are accepted but must be the first character of the value
+            continue; //valid
+          }
+        }
+
+        return false; //invalid
+      }
+      return true;
+    }
+
+    int strReplace(std::string & iString, const char * iOldValue, const char * iNewValue)
+    {
+      std::string tmpOldValue = iOldValue;
+      std::string tmpNewValue = iNewValue;
+
+      int numOccurance = 0;
+
+      if (tmpOldValue.size() > 0)
+      {
+        size_t startPos = 0;    
+        size_t findPos = std::string::npos;
+        do
+        {
           findPos = iString.find(tmpOldValue, startPos);
           if (findPos != std::string::npos)
           {
@@ -142,53 +145,54 @@ namespace stringfunc
             startPos = findPos + tmpNewValue.length();
             numOccurance++;
           }
+        }
+        while (findPos != -1);
       }
-      while (findPos != -1);
+      return numOccurance;
     }
-    return numOccurance;
-  }
 
-  std::string toString(const uint64_t & value)
-  {
-    return toStringT(value);
-  }
-
-  bool parseValue(const std::string& str, uint64_t & oValue)
-  {
-    return parseValueT(str, oValue);
-  }
-
-  std::string capitalizeFirstCharacter(const std::string & iValue)
-  {
-    std::string copy = iValue;
-    if (!copy.empty())
+    std::string toString(const uint64_t & value)
     {
-      copy[0] = toupper(copy[0]);
+      return toStringT(value);
     }
-    return copy;
-  }
 
-  std::string uppercase(const std::string & value)
-  {
-    std::string copy = value;
-    for(size_t i=0; i<copy.size(); i++)
+    bool parseValue(const std::string& str, uint64_t & oValue)
     {
-      copy[i] = (char)toupper(copy[i]);
+      return parseValueT(str, oValue);
     }
-    return copy;
-  }
 
-  std::string lowercase(const std::string & value)
-  {
-    std::string copy = value;
-    for(size_t i=0; i<copy.size(); i++)
+    std::string capitalizeFirstCharacter(const std::string & iValue)
     {
-      copy[i] = (char)tolower(copy[i]);
+      std::string copy = iValue;
+      if (!copy.empty())
+      {
+        copy[0] = toupper(copy[0]);
+      }
+      return copy;
     }
-    return copy;
-  }
 
-}; //stringfunc
+    std::string uppercase(const std::string & value)
+    {
+      std::string copy = value;
+      for(size_t i=0; i<copy.size(); i++)
+      {
+        copy[i] = (char)toupper(copy[i]);
+      }
+      return copy;
+    }
+
+    std::string lowercase(const std::string & value)
+    {
+      std::string copy = value;
+      for(size_t i=0; i<copy.size(); i++)
+      {
+        copy[i] = (char)tolower(copy[i]);
+      }
+      return copy;
+    }
+
+  }; //stringfunc
+}; //rapidassist
 
 std::string& operator<<(std::string& str, const void * value)
 {

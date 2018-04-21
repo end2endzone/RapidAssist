@@ -3,9 +3,7 @@
 #include "nativefunc.h"
 #include "gtesthelper.h"
 
-using namespace filesystem;
-
-namespace filesystem { namespace test
+namespace rapidassist { namespace filesystem { namespace test
 {
   bool createDummyFile(const char * iPath)
   {
@@ -507,3 +505,4 @@ namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
 } // End namespace test
 } // End namespace filesystem
+} // End namespace rapidassist

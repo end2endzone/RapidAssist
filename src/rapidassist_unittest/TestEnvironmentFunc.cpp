@@ -1,11 +1,9 @@
 #include "TestEnvironmentFunc.h"
 #include "environmentfunc.h"
 
-using namespace environment;
-
-namespace environment { namespace test
+namespace rapidassist { namespace environment { namespace test
 {
-  
+
   //--------------------------------------------------------------------------------------------------
   void TestEnvironmentFunc::SetUp()
   {
@@ -55,3 +53,4 @@ namespace environment { namespace test
   //--------------------------------------------------------------------------------------------------
 } // End namespace test
 } // End namespace environment
+} // End namespace rapidassist

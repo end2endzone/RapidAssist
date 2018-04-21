@@ -6,6 +6,8 @@
 
 #include "gtesthelper.h"
 
+using namespace rapidassist;
+
 int main(int argc, char **argv)
 {
   //define default values for xml output report

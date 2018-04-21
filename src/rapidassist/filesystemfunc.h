@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace rapidassist
+{
 namespace filesystem
 {
 
@@ -130,5 +132,6 @@ namespace filesystem
   uint64_t getFileModifiedDate(const std::string & iPath);
 
 }; //filesystem
+}; //rapidassist
 
 #endif //FILESYSTEMFUNC_H

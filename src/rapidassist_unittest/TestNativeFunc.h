@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace nativefunc { namespace test
+namespace rapidassist { namespace nativefunc { namespace test
 {
   class TestNativeFunc : public ::testing::Test
   {
@@ -14,5 +14,6 @@ namespace nativefunc { namespace test
 
 } // End namespace test
 } // End namespace nativefunc
+} // End namespace rapidassist
 
 #endif //TESTNATIVEFUNC_H
