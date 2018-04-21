@@ -1,0 +1,25 @@
+dist: trusty
+sudo: false
+language: cpp
+os:
+- linux
+branches:
+  only:
+  - master
+
+before_install:
+- cd $TRAVIS_BUILD_DIR/ci/ant;
+  ant configure;
+  source setupenv.sh;
+script:
+- cd $TRAVIS_BUILD_DIR;
+  mkdir build;
+  cd build;
+  cmake -DCMAKE_BUILD_TYPE=Release ..
+  cmake --build .
+
+after_success:
+- echo AFTER SUCCESS!
+
+notifications:
+  email: true
