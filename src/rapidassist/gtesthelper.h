@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace rapidassist
+namespace ra
 {
 
   class gTestHelper
@@ -280,6 +280,6 @@ namespace rapidassist
 
   };
 
-}; //rapidassist
+}; //namespace ra
 
 #endif //GTESTHELPER_H

@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace rapidassist { namespace test {
+namespace ra { namespace test {
 
   class TestGTestHelper : public ::testing::Test
   {
@@ -13,6 +13,6 @@ namespace rapidassist { namespace test {
   };
 
 } // End namespace test
-} // End namespace rapidassist
+} // End namespace ra
 
 #endif //TESTGTESTHELPER_H

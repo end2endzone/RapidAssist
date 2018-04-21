@@ -1,7 +1,7 @@
 #include "TestGTestHelper.h"
 #include "gtesthelper.h"
 
-namespace rapidassist { namespace test {
+namespace ra { namespace test {
 
   gTestHelper & hlp = gTestHelper::getInstance();
 
@@ -169,4 +169,4 @@ namespace rapidassist { namespace test {
   }
 
 } // End namespace test
-} // End namespace rapidassist
+} // End namespace ra

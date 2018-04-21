@@ -1,7 +1,7 @@
 
 #include <string>
 
-namespace rapidassist
+namespace ra
 {
   namespace cppencoder
   {
@@ -111,4 +111,4 @@ namespace rapidassist
     std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
 
   }; //cppencoder
-}; //rapidassist
+}; //namespace ra

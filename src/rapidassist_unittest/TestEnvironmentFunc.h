@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace rapidassist { namespace environment { namespace test
+namespace ra { namespace environment { namespace test
 {
   class TestEnvironmentFunc : public ::testing::Test
   {
@@ -14,6 +14,6 @@ namespace rapidassist { namespace environment { namespace test
 
 } // End namespace test
 } // End namespace environment
-} // End namespace rapidassist
+} // End namespace ra
 
 #endif //TESTENVIRONMENTFUNC_H

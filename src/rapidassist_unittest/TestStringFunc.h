@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace rapidassist { namespace stringfunc { namespace test
+namespace ra { namespace stringfunc { namespace test
 {
   class TestStringFunc : public ::testing::Test
   {
@@ -14,6 +14,6 @@ namespace rapidassist { namespace stringfunc { namespace test
 
 } // End namespace test
 } // End namespace stringfunc
-} // End namespace rapidassist
+} // End namespace ra
 
 #endif //TESTSTRINGFUNC_H

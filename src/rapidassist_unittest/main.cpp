@@ -6,7 +6,7 @@
 
 #include "gtesthelper.h"
 
-using namespace rapidassist;
+using namespace ra;
 
 int main(int argc, char **argv)
 {

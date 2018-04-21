@@ -1,7 +1,7 @@
 #include "TestStringFunc.h"
 #include "stringfunc.h"
 
-namespace rapidassist { namespace stringfunc { namespace test
+namespace ra { namespace stringfunc { namespace test
 {
   
   //--------------------------------------------------------------------------------------------------
@@ -385,4 +385,4 @@ namespace rapidassist { namespace stringfunc { namespace test
   //--------------------------------------------------------------------------------------------------
 } // End namespace test
 } // End namespace stringfunc
-} // End namespace rapidassist
+} // End namespace ra

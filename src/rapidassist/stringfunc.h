@@ -5,7 +5,7 @@
 #include <string>
 #include <stdio.h>
 
-namespace rapidassist
+namespace ra
 {
   namespace stringfunc
   {
@@ -61,7 +61,7 @@ namespace rapidassist
     std::string lowercase(const std::string & value);
 
   }; //stringfunc
-}; //rapidassist
+}; //namespace ra
 
 ///<summary>
 ///Streams a value to an existing string.

@@ -6,7 +6,7 @@
 #include <ctime>    //for random
 #include <gtest/gtest.h>
 
-namespace rapidassist
+namespace ra
 {
 
   bool initRandomProvider();
@@ -773,4 +773,4 @@ namespace rapidassist
     return values;
   }
 
-}; //rapidassist
+}; //namespace ra

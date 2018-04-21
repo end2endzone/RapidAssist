@@ -1,7 +1,7 @@
 #include "TestEnvironmentFunc.h"
 #include "environmentfunc.h"
 
-namespace rapidassist { namespace environment { namespace test
+namespace ra { namespace environment { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
@@ -53,4 +53,4 @@ namespace rapidassist { namespace environment { namespace test
   //--------------------------------------------------------------------------------------------------
 } // End namespace test
 } // End namespace environment
-} // End namespace rapidassist
+} // End namespace ra

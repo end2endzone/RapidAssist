@@ -9,7 +9,7 @@
 //http://stackoverflow.com/questions/10057258/how-does-x-work-in-a-string
 //http://en.cppreference.com/w/cpp/language/escape
 
-namespace rapidassist
+namespace ra
 {
   namespace cppencoder
   {
@@ -262,4 +262,4 @@ namespace rapidassist
     }
 
   }; //cppencoder
-}; //rapidassist
+}; //namespace ra

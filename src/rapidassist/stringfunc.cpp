@@ -3,7 +3,7 @@
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
 
-namespace rapidassist
+namespace ra
 {
 
   namespace stringfunc
@@ -192,7 +192,7 @@ namespace rapidassist
     }
 
   }; //stringfunc
-}; //rapidassist
+}; //namespace ra
 
 std::string& operator<<(std::string& str, const void * value)
 {

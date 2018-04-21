@@ -1,7 +1,7 @@
 #include "environmentfunc.h"
 #include <cstdlib> //for getenv()
 
-namespace rapidassist
+namespace ra
 {
   namespace environment
   {
@@ -18,4 +18,4 @@ namespace rapidassist
     }
 
   }; //environment
-}; //rapidassist
+}; //namespace ra

@@ -19,7 +19,7 @@
 #include <unistd.h> //for getcwd()
 #endif
 
-namespace rapidassist
+namespace ra
 {
 
   namespace filesystem
@@ -418,4 +418,4 @@ namespace rapidassist
     }
 
   }; //filesystem
-}; //rapidassist
+}; //namespace ra

@@ -1,7 +1,7 @@
 #include "TestNativeFunc.h"
 #include "nativefunc.h"
 
-namespace rapidassist { namespace nativefunc { namespace test
+namespace ra { namespace nativefunc { namespace test
 {
   //--------------------------------------------------------------------------------------------------
   void TestNativeFunc::SetUp()
@@ -36,4 +36,4 @@ namespace rapidassist { namespace nativefunc { namespace test
   //--------------------------------------------------------------------------------------------------
 } // End namespace test
 } // End namespace nativefunc
-} // End namespace rapidassist
+} // End namespace ra

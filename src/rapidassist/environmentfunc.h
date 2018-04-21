@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace rapidassist
+namespace ra
 {
   namespace environment
   {
@@ -16,6 +16,6 @@ namespace rapidassist
     std::string getEnvironmentVariable(const char * iName);
 
   }; //environment
-}; //rapidassist
+}; //namespace ra
 
 #endif //ENVIRONMENTFUNC_H

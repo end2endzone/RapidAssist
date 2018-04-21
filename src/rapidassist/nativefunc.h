@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <ctime> //for struct tm
 
-namespace rapidassist
+namespace ra
 {
   namespace nativefunc
   {
@@ -29,6 +29,6 @@ namespace rapidassist
     int millisleep(uint32_t milliseconds);
 
   }; //nativefunc
-}; //rapidassist
+}; //namespace ra
 
 #endif //NATIVEFUNC_H

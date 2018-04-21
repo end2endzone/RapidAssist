@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace rapidassist { namespace filesystem { namespace test
+namespace ra { namespace filesystem { namespace test
 {
   class TestFilesystemFunc : public ::testing::Test
   {
@@ -14,6 +14,6 @@ namespace rapidassist { namespace filesystem { namespace test
 
 } // End namespace test
 } // End namespace filesystem
-} // End namespace rapidassist
+} // End namespace ra
 
 #endif //TESTFILESYSTEMFUNC_H

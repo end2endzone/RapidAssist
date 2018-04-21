@@ -15,7 +15,7 @@
 
 #include <time.h> //for time() and localtime()
 
-namespace rapidassist
+namespace ra
 {
 
   namespace nativefunc
@@ -69,4 +69,4 @@ namespace rapidassist
     }
 
   }; //nativefunc
-}; //rapidassist
+}; //namespace ra
