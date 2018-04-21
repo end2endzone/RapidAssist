@@ -48,7 +48,16 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in"       
 # Add source directories
 add_subdirectory(src/rapidassist)
 add_subdirectory(src/rapidassist_tests)
-add_subdirectory(third_party/googletest)
 
 # Define project dependencies
 add_dependencies(rapidassist_tests rapidassist)
+
+
+
+# Add googletest to project
+if (WIN32)
+  # https://stackoverflow.com/a/12546288
+  # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+endif()
+add_subdirectory(third_party/googletest)
