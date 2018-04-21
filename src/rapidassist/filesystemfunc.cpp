@@ -9,10 +9,13 @@
 
 #ifdef _WIN32
 #define stat _stat
-#define getcwd _getcwd
-#define chdir _chdir
+#define __getcwd _getcwd
+#define __chdir _chdir
+#include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
 #elif __linux__
+#define __chdir chdir
+#define __getcwd getcwd
 #include <unistd.h> //for getcwd()
 #endif
 
@@ -73,9 +76,9 @@ namespace filesystem
       return false;
 
     std::string localFolder = getCurrentFolder();
-    bool success = (chdir(iPath) == 0);
+    bool success = (__chdir(iPath) == 0);
     if (success)
-      chdir(localFolder.c_str());
+      __chdir(localFolder.c_str());
     return success;
   }
 
@@ -268,7 +271,7 @@ namespace filesystem
 
   std::string getCurrentFolder()
   {
-    return std::string(getcwd(NULL, 0));
+    return std::string(__getcwd(NULL, 0));
   }
 
   std::string getFileExtention(const std::string & iPath)
