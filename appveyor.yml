@@ -31,7 +31,6 @@ image: Visual Studio 2015
 # scripts that are called at very beginning, before repo cloning
 init:
   - cmd: git config --global core.autocrlf true
-  - cmd: git submodule update --init --recursive
   - ps: $env:GIT_HASH=$env:APPVEYOR_REPO_COMMIT.Substring(0, 10)
 
 # clone directory
@@ -40,6 +39,7 @@ clone_folder: c:\projects\rapidassist
 # scripts that run after cloning repository
 install:
 - cmd: echo INSTALL!
+- cmd: git submodule update --init --recursive
 - ps: .\ci\appveyor\prepare_github_deploy.ps1
 - cmd: call c:\projects\rapidassist\ci\appveyor\list_env_var.bat
 
