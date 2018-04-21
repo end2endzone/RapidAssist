@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ENVIRONMENTFUNC_H
+#define ENVIRONMENTFUNC_H
 
 #include <string>
 
@@ -13,3 +14,5 @@ namespace environment
   std::string getEnvironmentVariable(const char * iName);
 
 }; //environment
+
+#endif //ENVIRONMENTFUNC_H

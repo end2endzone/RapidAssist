@@ -1,5 +1,3 @@
-#pragma once
-
 #include "cppencoder.h"
 
 #include <stdio.h>

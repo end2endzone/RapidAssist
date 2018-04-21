@@ -1,5 +1,3 @@
-#pragma once
-
 #include "environmentfunc.h"
 
 namespace environment

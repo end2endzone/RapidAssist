@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TESTGTESTHELPER_H
+#define TESTGTESTHELPER_H
 
 #include <gtest/gtest.h>
 
@@ -8,3 +9,5 @@ public:
   virtual void SetUp();
   virtual void TearDown();
 };
+
+#endif //TESTGTESTHELPER_H

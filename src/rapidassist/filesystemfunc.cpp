@@ -1,5 +1,3 @@
-#pragma once
-
 #include "stringfunc.h"
 #include "environmentfunc.h"
 #include "filesystemfunc.h"

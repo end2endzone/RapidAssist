@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FILESYSTEMFUNC_H
+#define FILESYSTEMFUNC_H
 
 #include <stdint.h>
 #include <string>
@@ -129,3 +130,5 @@ namespace filesystem
   uint64_t getFileModifiedDate(const std::string & iPath);
 
 }; //filesystem
+
+#endif //FILESYSTEMFUNC_H
