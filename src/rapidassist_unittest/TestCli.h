@@ -1,5 +1,5 @@
-#ifndef TEST_CLI_H
-#define TEST_CLI_H
+#ifndef TEST_RA_CLI_H
+#define TEST_RA_CLI_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace cli { namespace test
 } //namespace cli
 } //namespace ra
 
-#endif //TEST_CLI_H
+#endif //TEST_RA_CLI_H

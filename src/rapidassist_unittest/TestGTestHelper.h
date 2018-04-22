@@ -1,5 +1,5 @@
-#ifndef TESTGTESTHELPER_H
-#define TESTGTESTHELPER_H
+#ifndef TEST_RA_GTESTHELPER_H
+#define TEST_RA_GTESTHELPER_H
 
 #include <gtest/gtest.h>
 
@@ -15,4 +15,4 @@ namespace ra { namespace test {
 } //namespace test
 } //namespace ra
 
-#endif //TESTGTESTHELPER_H
+#endif //TEST_RA_GTESTHELPER_H

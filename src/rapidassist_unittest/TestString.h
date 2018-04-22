@@ -1,5 +1,5 @@
-#ifndef TESTSTRINGFUNC_H
-#define TESTSTRINGFUNC_H
+#ifndef TEST_RA_STRING_H
+#define TEST_RA_STRING_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace strings { namespace test
 } //namespace strings
 } //namespace ra
 
-#endif //TESTSTRINGFUNC_H
+#endif //TEST_RA_STRING_H

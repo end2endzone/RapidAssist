@@ -1,5 +1,5 @@
-#ifndef TESTFILESYSTEMFUNC_H
-#define TESTFILESYSTEMFUNC_H
+#ifndef TEST_RA_FILESYSTEM_H
+#define TEST_RA_FILESYSTEM_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace filesystem { namespace test
 } //namespace filesystem
 } //namespace ra
 
-#endif //TESTFILESYSTEMFUNC_H
+#endif //TEST_RA_FILESYSTEM_H

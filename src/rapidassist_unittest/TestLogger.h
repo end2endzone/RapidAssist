@@ -1,5 +1,5 @@
-#ifndef TEST_LOGGER_H
-#define TEST_LOGGER_H
+#ifndef TEST_RA_LOGGER_H
+#define TEST_RA_LOGGER_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace logger { namespace test
 } //namespace logger
 } //namespace ra
 
-#endif //TEST_LOGGER_H
+#endif //TEST_RA_LOGGER_H

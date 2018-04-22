@@ -1,5 +1,5 @@
-#ifndef TESTRANDOM_H
-#define TESTRANDOM_H
+#ifndef TEST_RA_RANDOM_H
+#define TEST_RA_RANDOM_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace random { namespace test
 } //namespace random
 } //namespace ra
 
-#endif //TESTRANDOM_H
+#endif //TEST_RA_RANDOM_H

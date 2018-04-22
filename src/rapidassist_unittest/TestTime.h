@@ -1,5 +1,5 @@
-#ifndef TESTNATIVEFUNC_H
-#define TESTNATIVEFUNC_H
+#ifndef TEST_RA_TIME_H
+#define TEST_RA_TIME_H
 
 #include <gtest/gtest.h>
 

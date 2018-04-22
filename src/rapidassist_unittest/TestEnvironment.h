@@ -1,5 +1,5 @@
-#ifndef TESTENVIRONMENTFUNC_H
-#define TESTENVIRONMENTFUNC_H
+#ifndef TEST_RA_ENVIRONMENT_H
+#define TEST_RA_ENVIRONMENT_H
 
 #include <gtest/gtest.h>
 
@@ -16,4 +16,4 @@ namespace ra { namespace environment { namespace test
 } //namespace environment
 } //namespace ra
 
-#endif //TESTENVIRONMENTFUNC_H
+#endif //TEST_RA_ENVIRONMENT_H
