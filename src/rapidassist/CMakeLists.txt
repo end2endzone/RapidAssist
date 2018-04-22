@@ -11,6 +11,8 @@ add_library(rapidassist STATIC
   filesystem.h
   gtesthelper.cpp
   gtesthelper.h
+  random.cpp
+  random.h
   ratime.cpp
   ratime.h
   rastring.cpp

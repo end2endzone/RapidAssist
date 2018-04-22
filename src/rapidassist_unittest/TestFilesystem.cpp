@@ -5,18 +5,7 @@
 
 namespace ra { namespace filesystem { namespace test
 {
-  bool createDummyFile(const char * iPath)
-  {
-    FILE * f = fopen(iPath, "w");
-    if (f == NULL)
-      return false;
-    fputs("FOO!\n", f);
-    fputs("&\n", f);
-    fputs("BAR\n", f);
-    fclose(f);
-
-    return true;
-  }
+  gTestHelper & helper = gTestHelper::getInstance();
 
   int countValues(const std::vector<std::string> & iList, const std::string & iValue)
   {
@@ -51,8 +40,8 @@ namespace ra { namespace filesystem { namespace test
     //test actual value
     {
       //create dummy file
-      std::string filename = gTestHelper::getInstance().getTestQualifiedName();
-      ASSERT_TRUE( createDummyFile(filename.c_str()) );
+      std::string filename = helper.getTestQualifiedName();
+      ASSERT_TRUE( helper.createFile(filename.c_str()) );
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
@@ -123,8 +112,8 @@ namespace ra { namespace filesystem { namespace test
     //test found
     {
       //create dummy file
-      std::string filename = gTestHelper::getInstance().getTestQualifiedName();
-      ASSERT_TRUE( createDummyFile(filename.c_str()) );
+      std::string filename = helper.getTestQualifiedName();
+      ASSERT_TRUE( helper.createFile(filename.c_str()) );
 
       bool exists = filesystem::fileExists(filename.c_str());
       ASSERT_TRUE(exists);
@@ -147,7 +136,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test found
     {
-      //create dummy file
+      //get dummy folder
       std::string currentFolder = filesystem::getCurrentFolder();
       ASSERT_TRUE( !currentFolder.empty() );
 
@@ -489,11 +478,11 @@ namespace ra { namespace filesystem { namespace test
     //assert that unit of return value is seconds
     {
       static const uint64_t EXPECTED = 3;
-      const std::string filename1 = gTestHelper::getInstance().getTestQualifiedName() + ".1.txt";
-      const std::string filename2 = gTestHelper::getInstance().getTestQualifiedName() + ".2.txt";
-      ASSERT_TRUE( createDummyFile(filename1.c_str()) );
+      const std::string filename1 = helper.getTestQualifiedName() + ".1.txt";
+      const std::string filename2 = helper.getTestQualifiedName() + ".2.txt";
+      ASSERT_TRUE( helper.createFile(filename1.c_str()) );
       ra::time::millisleep(1000*EXPECTED + 50); //at least 3 seconds between the files
-      ASSERT_TRUE( createDummyFile(filename2.c_str()) );
+      ASSERT_TRUE( helper.createFile(filename2.c_str()) );
 
       uint64_t time1 = filesystem::getFileModifiedDate(filename1);
       uint64_t time2 = filesystem::getFileModifiedDate(filename2);

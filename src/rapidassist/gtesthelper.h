@@ -25,35 +25,6 @@ namespace ra
 
     typedef std::vector<std::string> StringVector;
 
-    //
-    // Description:
-    //  Wrapper class for FILE* instance.
-    //  Which automatically closes the FILE* on wrapper's destruction
-    // 
-    class FileWrapper
-    {
-    public:
-      FileWrapper(const char * iPath, const char * iMode);
-      ~FileWrapper();
-      bool isEOF();
-      void close();
-
-      FILE * mPointer;
-    };
-
-    class SymbolsFlags
-    {
-    public:
-      enum Flags
-      {
-        Letters=1,            //lowercase letters
-        LETTERS=2,            //uppercase letters
-        Numbers=4,            //numbers from 0 to 9
-        SpecialCharacters=8,  //special characters like @ and !
-        All=15,               //all flags
-      };
-    };
-
     struct FILE_DIFF
     {
       size_t offset;    //offset in files where a difference is located
@@ -65,23 +36,6 @@ namespace ra
     //------------------------
     // Methods
     //------------------------
-
-    //
-    // Description:
-    //  Returns true if a given file exists
-    // Arguments:
-    //   iFilePath: The path of the file to test
-    // 
-    bool fileExists(const char * iFilePath);
-
-    //
-    // Description:
-    //  Returns the size of a file.
-    // Arguments:
-    //   iFilePath: The path of the file
-    // 
-    long getFileSize(const char* iFilePath);
-    long getFileSize(FILE * iFile);
 
     //
     // Description:
@@ -132,8 +86,17 @@ namespace ra
     //  Creates a file of the given size. All bytes are sequential.
     // Arguments:
     //   iFilePath:   The path of the file.
+    //   iSize:       The size in bytes of the file.
     // 
     bool createFile(const char * iFilePath, size_t iSize);
+
+    //
+    // Description:
+    //  Creates text file.
+    // Arguments:
+    //   iFilePath:   The path of the file.
+    // 
+    bool createFile(const char * iFilePath);
 
     //
     // Description:
@@ -203,35 +166,6 @@ namespace ra
 
     //
     // Description
-    //  Returns a random number.
-    //
-    int getRandomInt();
-
-    //
-    // Description
-    //  Returns a random number.
-    // Arguments:
-    //  iMin: The minimum value that can be generated.
-    //  iMax: The maximum value that can be generated.
-    //
-    int getRandomInt(int iMin, int iMax);
-
-    //
-    // Description
-    //  Returns a random string.
-    // Arguments:
-    //  oValue:   The generated output string if arguments are specified.
-    //  iMaxLen:  The maximum length of the generated string.
-    //  iFlags:   The flags that specify what kind of symbols is allowed for the generation of the string.
-    //  iSymbols: The list of symbols that can be used for generating the string.
-    //
-    std::string getRandomString();
-    void getRandomString(std::string & oValue, int iMaxLen);
-    void getRandomString(std::string & oValue, int iMaxLen, SymbolsFlags::Flags iFlags);
-    void getRandomString(std::string & oValue, int iMaxLen, const char* iSymbols);
-
-    //
-    // Description
     //  Returns true if the specified processor flag is enabled
     //
     bool isProcessorX86();
@@ -256,27 +190,6 @@ namespace ra
     //  Returns the fully qualified name of the current test case name. ie "TestFooClass.testConstructor"
     //
     std::string getTestQualifiedName();
-
-    //
-    // Description
-    //  Removes occurance of unix/windows LF, CR or CRLF into the given string.
-    // Arguments:
-    //  iBuffer: The given buffer to modify.
-    //
-    void removeCRLF(char * iBuffer);
-
-    //
-    // Description
-    //  Splits an input string into multiple string based on the given splitting character.
-    // Arguments:
-    //  iText:            The input text to split.
-    //  iSplitCharacter:  The splitting character.
-    //  iSplitPattern:    The splitting pattern.
-    // Returns
-    //  Returns a list of string.
-    //
-    gTestHelper::StringVector splitString(const std::string & iText, char iSplitCharacter);
-    void splitString(gTestHelper::StringVector & oList, const char * iText, const char * iSplitPattern);
 
   };
 

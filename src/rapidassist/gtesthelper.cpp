@@ -2,71 +2,61 @@
 #include <iostream>
 #include <sstream> //for stringstream
 #include <iostream> //for std::hex
-#include <cstdlib>  //for random
-#include <ctime>    //for random
 #include <gtest/gtest.h>
+
+#include "filesystem.h"
+#include "rastring.h"
+
+using namespace ra::filesystem;
+using namespace ra::stringfunc;
 
 namespace ra
 {
 
-  bool initRandomProvider();
-  static bool foo = initRandomProvider();
+  //
+  // Description:
+  //  Wrapper class for FILE* instance.
+  //  Which automatically closes the FILE* on wrapper's destruction
+  // 
+  class FileWrapper
+  {
+  public:
+    FileWrapper(const char * iPath, const char * iMode)
+    {
+      mPointer = fopen(iPath, iMode);
+    }
+
+    ~FileWrapper()
+    {
+      close();
+    }
+
+    bool isEOF()
+    {
+      if (mPointer == NULL)
+        return true;
+      //http://www.cplusplus.com/reference/cstdio/feof/
+      return (feof(mPointer) != 0);
+    }
+
+    void close()
+    {
+      if (mPointer)
+      {
+        fclose(mPointer);
+        mPointer = NULL;
+      }
+    }
+
+    //members
+    FILE * mPointer;
+  };
 
   std::string subString2(const std::string & iString, size_t iStart, size_t iCount)
   {
     std::string tmp = iString;
     tmp.substr(iStart, iCount);
     return tmp;
-  }
-
-  bool substringEquals(const char * iValue, const char * iSearchValue, size_t iIndex, size_t iCount)
-  {
-    for(size_t i=iIndex; i<=iCount; i++)
-    {
-      if (iValue[i] == '\0')
-        return false; //reached end of iValue
-      if (iValue[i] != iSearchValue[i-iIndex])
-        return false; //this character is not equal
-      if (i == iIndex+iCount)
-        return true;//equals
-    }
-    return false; //not found
-  }
-
-  void gTestHelper::splitString(gTestHelper::StringVector & oList, const char * iText, const char * iSplitPattern)
-  {
-    oList.clear();
-    std::string accumulator;
-    std::string text = iText;
-    std::string pattern = iSplitPattern;
-    for(size_t i=0; i<text.size(); i++)
-    {
-      if (substringEquals(iText, iSplitPattern, i, pattern.size()))
-      {
-        //found a split pattern
-
-        //flush current accumulator
-        if (accumulator != "")
-        {
-          oList.push_back(accumulator);
-          accumulator = "";
-        }
-
-        i += pattern.size();
-      }
-      else
-      {
-        char tmp[] = { iText[i], '\0' };
-        accumulator.append(tmp);
-      }
-    }
-
-    //flush current accumulator
-    if (accumulator != "")
-    {
-      oList.push_back(accumulator);
-      accumulator = "";
-    }
   }
 
   gTestHelper::gTestHelper()
@@ -86,15 +76,6 @@ namespace ra
   //------------------------
   // Methods
   //------------------------
-  bool gTestHelper::fileExists(const char * iFilePath)
-  {
-    FILE * f = fopen(iFilePath, "rb");
-    if (!f)
-      return false;
-    fclose(f);
-    return true;
-  }
-
   bool gTestHelper::findArgument(const char * iName, std::string & oValue, int argc, char **argv)
   {
     //Build search pattern
@@ -310,68 +291,6 @@ namespace ra
     return testlist;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  gTestHelper::FileWrapper::FileWrapper(const char * iPath, const char * iMode)
-  {
-    mPointer = fopen(iPath, iMode);
-  }
-  gTestHelper::FileWrapper::~FileWrapper()
-  {
-    close();
-  }
-  bool gTestHelper::FileWrapper::isEOF()
-  {
-    if (mPointer == NULL)
-      return true;
-    //http://www.cplusplus.com/reference/cstdio/feof/
-    return (feof(mPointer) != 0);
-  }
-  void gTestHelper::FileWrapper::close()
-  {
-    if (mPointer)
-    {
-      fclose(mPointer);
-      mPointer = NULL;
-    }
-  }
-
-  long gTestHelper::getFileSize(const char* iPath)
-  {
-    FILE * f = fopen(iPath, "rb");
-    if (!f)
-      return 0;
-    long size = getFileSize(f);
-    fclose(f);
-    return size;
-  }
-
-  long gTestHelper::getFileSize(FILE * f)
-  {
-    if (f == NULL)
-      return 0;
-    long currentPos = ftell(f);
-    fseek(f, 0, SEEK_END);
-    long size = ftell(f);
-    fseek(f, currentPos, SEEK_SET);
-    return size;
-  }
-
   bool gTestHelper::isFileEquals(const char* iFile1, const char* iFile2)
   {
     std::string reason;
@@ -517,23 +436,6 @@ namespace ra
     return true;
   }
 
-  bool initRandomProvider()
-  {
-    srand((unsigned int)time(NULL));
-    return true;
-  }
-
-  int gTestHelper::getRandomInt()
-  {
-    return rand();
-  }
-
-  int gTestHelper::getRandomInt(int iMin, int iMax)
-  {
-    int range = (iMax - iMin)+1; 
-    return iMin+int(range * rand() / (RAND_MAX + 1.0)); 
-  }
-
   bool gTestHelper::findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter)
   {
     if (!fileExists(iFilename))
@@ -575,7 +477,7 @@ namespace ra
       while( fgets(buffer, BUFFER_SIZE, f) != NULL )
       {
         //remove last CRLF at the end of the string
-        removeCRLF(buffer);
+        removeEOL(buffer);
 
         std::string line = buffer;
         oLines.push_back(line);
@@ -597,6 +499,19 @@ namespace ra
       fwrite(&value, 1, 1, f);
     }
     fclose(f);
+    return true;
+  }
+
+  bool gTestHelper::createFile(const char * iFilePath)
+  {
+    FILE * f = fopen(iFilePath, "w");
+    if (f == NULL)
+      return false;
+    fputs("FOO!\n", f);
+    fputs("&\n", f);
+    fputs("BAR\n", f);
+    fclose(f);
+
     return true;
   }
 
@@ -623,59 +538,6 @@ namespace ra
       return;
     fwrite(buffer, 1, size, f);
     fclose(f);
-  }
-
-  std::string gTestHelper::getRandomString()
-  {
-    std::string rnd;
-    getRandomString(rnd, 20);
-    return rnd;
-  }
-
-  void gTestHelper::getRandomString(std::string & oValue, int iMaxLen)
-  {
-    static const char * defaultSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    getRandomString(oValue, iMaxLen, defaultSymbols);
-  }
-
-  void gTestHelper::getRandomString(std::string & oValue, int iMaxLen, SymbolsFlags::Flags iFlags)
-  {
-    std::string symbols;
-
-    if ((iFlags & SymbolsFlags::Letters) == SymbolsFlags::Letters)
-      symbols.append("abcdefghijklmnopqrstuvwxyz");
-    if ((iFlags & SymbolsFlags::LETTERS) == SymbolsFlags::LETTERS)
-      symbols.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    if ((iFlags & SymbolsFlags::Numbers) == SymbolsFlags::Numbers)
-      symbols.append("0123456789");
-    if ((iFlags & SymbolsFlags::SpecialCharacters) == SymbolsFlags::SpecialCharacters)
-      symbols.append("!\"/$%?&*()_+-=\\:<>");
-
-    if (symbols.size() == 0)
-    {
-      oValue = "";
-      return;
-    }
-
-    getRandomString(oValue, iMaxLen, symbols.c_str());
-  }
-
-  void gTestHelper::getRandomString(std::string & oValue, int iMaxLen, const char* iSymbols)
-  {
-    std::string symbols = iSymbols;
-    int numSymbols = (int)symbols.size();
-
-    oValue.reserve(iMaxLen+1);
-
-    while (oValue.size() < (size_t)iMaxLen)
-    {
-      //generate a random character from iSymbols
-      int index = getRandomInt(0, numSymbols-1);
-      char tmpStr[] = { iSymbols[index], 0 };
-
-      //add
-      oValue.append(tmpStr);
-    }
   }
 
   bool gTestHelper::isProcessorX86()
@@ -733,44 +595,6 @@ namespace ra
     name.append(testCaseName);
 
     return name;
-  }
-
-  void gTestHelper::removeCRLF(char * iBuffer)
-  {
-    int index = 0;
-    while(iBuffer[index] != '\0')
-    {
-      if (iBuffer[index] == 10 && iBuffer[index+1] == 13)
-        iBuffer[index] = '\0';
-      if (iBuffer[index] == 10 && iBuffer[index+1] == '\0')
-        iBuffer[index] = '\0';
-
-      index++;
-    }
-  }
-
-  gTestHelper::StringVector gTestHelper::splitString(const std::string & iText, char iSplitCharacter)
-  {
-    gTestHelper::StringVector values;
-    std::string accumulator;
-    for(size_t i=0; i<iText.size(); i++)
-    {
-      char c = iText[i];
-      if (c == iSplitCharacter)
-      {
-        values.push_back(accumulator);
-        accumulator = "";
-      }
-      else
-      {
-        accumulator += c;
-      }
-    }
-    if (!accumulator.empty())
-    {
-      values.push_back(accumulator);
-    }
-    return values;
   }
 
 } //namespace ra

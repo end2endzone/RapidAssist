@@ -162,11 +162,5 @@ namespace ra { namespace test {
     ASSERT_EQ(foundLineNumber, actualLineNumber);
   }
 
-  TEST_F(TestGTestHelper, testFileExists)
-  {
-    ASSERT_TRUE ( hlp.fileExists( __FILE__ ) );
-    ASSERT_FALSE( hlp.fileExists( __FILE__"not exist" ) );
-  }
-
 } //namespace test
 } //namespace ra

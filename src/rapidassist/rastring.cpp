@@ -191,6 +191,104 @@ namespace ra
       return copy;
     }
 
+    void removeEOL(char * iBuffer)
+    {
+      if (iBuffer == NULL)
+        return;
+
+      int index = 0;
+      while(iBuffer[index] != '\0')
+      {
+        if (iBuffer[index] == 13 && iBuffer[index+1] == 10)
+          iBuffer[index] = '\0';
+        else if (iBuffer[index] == 10 && iBuffer[index+1] == 13)
+          iBuffer[index] = '\0';
+        else if (iBuffer[index] == 10 && iBuffer[index+1] == '\0')
+          iBuffer[index] = '\0';
+
+        index++;
+      }
+    }
+
+    StringVector splitString(const std::string & iText, char iSplitCharacter)
+    {
+      char pattern[] = {iSplitCharacter, '\0'};
+      StringVector list;
+      splitString(list, iText, pattern);
+      return list;
+    }
+
+    StringVector splitString(const std::string & iText, const char * iSplitPattern)
+    {
+      StringVector list;
+      splitString(list, iText, iSplitPattern);
+      return list;
+    }
+
+    void splitString(StringVector & oList, const std::string & iText, char iSplitCharacter)
+    {
+      char pattern[] = {iSplitCharacter, '\0'};
+      splitString(oList, iText, pattern);
+    }
+
+    void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern)
+    {
+      oList.clear();
+
+      //validate invalue split pattern
+      if (iSplitPattern == NULL || strlen(iSplitPattern) == 0)
+      {
+        oList.push_back(iText);
+        return;
+      }
+
+      std::string accumulator;
+      std::string pattern = iSplitPattern;
+      for(size_t i=0; i<iText.size(); i++)
+      {
+        const char * substring = &iText[i];
+        if (strncmp(substring, pattern.c_str(), pattern.size()) == 0)
+        {
+          //found a split pattern
+
+          //flush current accumulator
+          if (accumulator != "")
+          {
+            oList.push_back(accumulator);
+            accumulator = "";
+          }
+
+          //does iTest starts with a separator?
+          if (i == 0)
+          {
+            oList.push_back("");
+          }
+
+          i += pattern.size();
+
+          //does iText ends with a separator?
+          if (iText[i] == '\0')
+          {
+            oList.push_back("");
+          }
+
+          i--; //since the next loop will increase i by 1
+        }
+        else
+        {
+          char tmp[] = { iText[i], '\0' };
+          accumulator.append(tmp);
+        }
+      }
+
+      //flush current accumulator
+      if (accumulator != "")
+      {
+        oList.push_back(accumulator);
+        accumulator = "";
+      }
+    }
+
   } //namespace stringfunc
 } //namespace ra
 

@@ -12,10 +12,12 @@ add_executable(rapidassist_unittest
   TestFilesystem.h
   TestGTestHelper.cpp
   TestGTestHelper.h
-  TestTime.cpp
-  TestTime.h
+  TestRandom.cpp
+  TestRandom.h
   TestString.cpp
   TestString.h
+  TestTime.cpp
+  TestTime.h
 )
 
 if (WIN32)

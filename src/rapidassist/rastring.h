@@ -3,12 +3,16 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 #include <stdio.h>
 
 namespace ra
 {
   namespace stringfunc
   {
+    typedef std::vector<std::string> StringVector;
+
+
 
     ///<summary>
     ///Defines if a string value is a numeric value.
@@ -59,6 +63,42 @@ namespace ra
     ///</summary>
     ///<param name="iValue">The string value to lowercase.</param>
     std::string lowercase(const std::string & value);
+
+    ///<summary>
+    ///Removes occurance of unix/windows LF, CR or CRLF into the given string.
+    ///</summary>
+    ///<param name="iBuffer">The given buffer to modify.</param>
+    void removeEOL(char * iBuffer);
+
+    ///<summary>
+    ///Splits an input string into multiple string based on the given splitting character.
+    ///</summary>
+    ///<param name="iText">The input text to split.</param>
+    ///<param name="iSplitCharacter">The splitting character.</param>
+    ///<return>Returns a list of string.<return>
+    StringVector splitString(const std::string & iText, char iSplitCharacter);
+
+    ///<summary>
+    ///Splits an input string into multiple string based on the given splitting character.
+    ///</summary>
+    ///<param name="iText">The input text to split.</param>
+    ///<param name="iSplitPattern">The splitting pattern.</param>
+    ///<return>Returns a list of string.<return>
+    StringVector splitString(const std::string & iText, const char * iSplitPattern);
+
+    ///<summary>
+    ///Splits an input string into multiple string based on the given splitting character and store the result in oList.
+    ///</summary>
+    ///<param name="iText">The input text to split.</param>
+    ///<param name="iSplitCharacter">The splitting character.</param>
+    void splitString(StringVector & oList, const std::string & iText, char iSplitCharacter);
+
+    ///<summary>
+    ///Splits an input string into multiple string based on the given splitting character and store the result in oList.
+    ///</summary>
+    ///<param name="iText">The input text to split.</param>
+    ///<param name="iSplitPattern">The splitting pattern.</param>
+    void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
   } //namespace stringfunc
 } //namespace ra

@@ -383,6 +383,86 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testRemoveEOL)
+  {
+    //test NULL
+    {
+      removeEOL(NULL);
+    }
+
+    //test empty string
+    {
+      removeEOL("");
+    }
+
+    //test windows
+    {
+      const std::string EXPECTED = "fooBAR";
+      char buffer[] = "fooBAR\r\n";
+      removeEOL(buffer);
+      ASSERT_EQ(EXPECTED, buffer);
+    }
+
+    //test unix
+    {
+      const std::string EXPECTED = "fooBAR";
+      char buffer[] = "fooBAR\n";
+      removeEOL(buffer);
+      ASSERT_EQ(EXPECTED, buffer);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testSplitString)
+  {
+    //test NULL
+    {
+      static const std::string INPUT = "Aa.Bb.Cc";
+      StringVector list = splitString(INPUT, (const char *)NULL); //same as not found
+      ASSERT_EQ(1, list.size());
+      ASSERT_EQ(INPUT, list[0]);
+    }
+
+    //test no split found
+    {
+      static const std::string INPUT = "Aa.Bb.Cc";
+      StringVector list = splitString(INPUT, "!");
+      ASSERT_EQ(1, list.size());
+      ASSERT_EQ(INPUT, list[0]);
+    }
+
+    //test found
+    {
+      static const std::string INPUT = "Aa.Bb.Cc";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(3, list.size());
+      ASSERT_EQ("Aa", list[0]);
+      ASSERT_EQ("Bb", list[1]);
+      ASSERT_EQ("Cc", list[2]);
+    }
+
+    //test last character is separator
+    {
+      static const std::string INPUT = "Aa.Bb.Cc.";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(4, list.size());
+      ASSERT_EQ("Aa", list[0]);
+      ASSERT_EQ("Bb", list[1]);
+      ASSERT_EQ("Cc", list[2]);
+      ASSERT_EQ("",   list[3]);
+    }
+
+    //test first character is separator
+    {
+      static const std::string INPUT = ".Aa.Bb.Cc";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(4, list.size());
+      ASSERT_EQ("",   list[0]);
+      ASSERT_EQ("Aa", list[1]);
+      ASSERT_EQ("Bb", list[2]);
+      ASSERT_EQ("Cc", list[3]);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace stringfunc
 } //namespace ra
