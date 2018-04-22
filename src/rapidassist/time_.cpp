@@ -14,31 +14,72 @@
 #endif
 
 #include <time.h> //for time() and localtime()
+#include <string>
 
 namespace ra
 {
 
   namespace time
   {
+    DATETIME toDateTime(const std::tm & timeinfo)
+    {
+      DATETIME dt;
+
+      dt.year  = timeinfo.tm_year + 1900;
+      dt.month = timeinfo.tm_mon + 1;
+      dt.day   = timeinfo.tm_mday;
+      dt.hour  = timeinfo.tm_hour;
+      dt.min   = timeinfo.tm_min;
+      dt.sec   = timeinfo.tm_sec;
+      dt.wday  = timeinfo.tm_wday;
+      dt.yday  = timeinfo.tm_yday;
+      dt.isdst = (timeinfo.tm_isdst != 0);
+
+      return dt;
+    }
+
+    std::tm toTimeInfo(const DATETIME & iDateTime)
+    {
+      std::tm timeinfo;
+
+      timeinfo.tm_year  = iDateTime.year - 1900;
+      timeinfo.tm_mon   = iDateTime.month - 1;
+      timeinfo.tm_mday  = iDateTime.day;
+      timeinfo.tm_hour  = iDateTime.hour;
+      timeinfo.tm_min   = iDateTime.min;
+      timeinfo.tm_sec   = iDateTime.sec;
+      timeinfo.tm_wday  = iDateTime.wday;
+      timeinfo.tm_yday  = iDateTime.yday;
+      timeinfo.tm_isdst = (iDateTime.isdst ? 1 : 0);
+
+      return timeinfo;
+    }
 
     void waitNextSecond()
     {
-      std::tm baseTime = getLocalSystemTime();
-      while(getLocalSystemTime().tm_sec == baseTime.tm_sec)
+      std::tm baseTime = getLocalTime();
+      while(getLocalTime().tm_sec == baseTime.tm_sec)
       {
         //loop
       }
     }
 
-    std::tm getLocalSystemTime()
+    std::tm getLocalTime()
     {
       time_t rawtime;
-      struct tm * timeinfo;
+      std::time(&rawtime);
+      
+      std::tm timeinfo = *localtime(&rawtime);
+      return timeinfo;
+    }
 
-      std::time (&rawtime);
-      timeinfo = localtime (&rawtime);
-
-      return (*timeinfo);
+    std::tm getUtcTime()
+    {
+      time_t rawtime;
+      std::time(&rawtime);
+      
+      std::tm timeinfo = *gmtime(&rawtime);
+      return timeinfo;
     }
 
     int millisleep(uint32_t milliseconds)
@@ -67,6 +108,19 @@ namespace ra
       return -1;
 #endif
     }
+
+    int getCopyrightYear()
+    {
+      static const int DEFAULT_YEAR = 2016;
+      std::string compilationDate = __DATE__;
+      size_t lastSpace = compilationDate.find_last_of(" ");
+      if (lastSpace == std::string::npos)
+        return DEFAULT_YEAR;
+      const char * yearStr = &compilationDate[lastSpace+1];
+      int year = atoi(yearStr);
+      return year;
+    }
+
 
   }; //namespace time
 } //namespace ra
