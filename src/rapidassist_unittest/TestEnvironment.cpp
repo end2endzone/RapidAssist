@@ -1,19 +1,19 @@
-#include "TestEnvironmentFunc.h"
-#include "environmentfunc.h"
+#include "TestEnvironment.h"
+#include "environment.h"
 
 namespace ra { namespace environment { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestEnvironmentFunc::SetUp()
+  void TestEnvironment::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestEnvironmentFunc::TearDown()
+  void TestEnvironment::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironmentFunc, testGetEnvironmentVariable)
+  TEST_F(TestEnvironment, testGetEnvironmentVariable)
   {
     //test NULL
     {
@@ -51,6 +51,6 @@ namespace ra { namespace environment { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
-} // End namespace test
-} // End namespace environment
-} // End namespace ra
+} //namespace test
+} //namespace environment
+} //namespace ra

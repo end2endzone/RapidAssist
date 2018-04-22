@@ -12,7 +12,7 @@ namespace ra { namespace test {
     virtual void TearDown();
   };
 
-} // End namespace test
-} // End namespace ra
+} //namespace test
+} //namespace ra
 
 #endif //TESTGTESTHELPER_H

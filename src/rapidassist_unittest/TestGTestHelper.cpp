@@ -168,5 +168,5 @@ namespace ra { namespace test {
     ASSERT_FALSE( hlp.fileExists( __FILE__"not exist" ) );
   }
 
-} // End namespace test
-} // End namespace ra
+} //namespace test
+} //namespace ra

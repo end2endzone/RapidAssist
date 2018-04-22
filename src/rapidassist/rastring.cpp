@@ -1,4 +1,4 @@
-#include "stringfunc.h"
+#include "rastring.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
@@ -191,8 +191,8 @@ namespace ra
       return copy;
     }
 
-  }; //stringfunc
-}; //namespace ra
+  } //namespace stringfunc
+} //namespace ra
 
 std::string& operator<<(std::string& str, const void * value)
 {

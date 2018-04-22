@@ -131,7 +131,7 @@ namespace filesystem
   ///<return>Returns the modified date of the given file.<return>
   uint64_t getFileModifiedDate(const std::string & iPath);
 
-}; //filesystem
-}; //namespace ra
+} //namespace filesystem
+} //namespace ra
 
 #endif //FILESYSTEMFUNC_H

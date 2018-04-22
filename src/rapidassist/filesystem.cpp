@@ -1,6 +1,6 @@
-#include "stringfunc.h"
-#include "environmentfunc.h"
-#include "filesystemfunc.h"
+#include "rastring.h"
+#include "environment.h"
+#include "filesystem.h"
 
 #include <algorithm> //for std::transform()
 
@@ -417,5 +417,5 @@ namespace ra
       return mod_time;
     }
 
-  }; //filesystem
-}; //namespace ra
+  } //namespace filesystem
+} //namespace ra

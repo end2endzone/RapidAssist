@@ -1,4 +1,4 @@
-#include "environmentfunc.h"
+#include "environment.h"
 #include <cstdlib> //for getenv()
 
 namespace ra
@@ -17,5 +17,5 @@ namespace ra
         return std::string(value);
     }
 
-  }; //environment
-}; //namespace ra
+  } //namespace environment
+} //namespace ra

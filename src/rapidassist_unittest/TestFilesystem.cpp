@@ -1,6 +1,6 @@
-#include "TestFilesystemFunc.h"
-#include "filesystemfunc.h"
-#include "nativefunc.h"
+#include "TestFilesystem.h"
+#include "filesystem.h"
+#include "ratime.h"
 #include "gtesthelper.h"
 
 namespace ra { namespace filesystem { namespace test
@@ -31,15 +31,15 @@ namespace ra { namespace filesystem { namespace test
   }
 
   //--------------------------------------------------------------------------------------------------
-  void TestFilesystemFunc::SetUp()
+  void TestFilesystem::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestFilesystemFunc::TearDown()
+  void TestFilesystem::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetFileSize)
+  TEST_F(TestFilesystem, testGetFileSize)
   {
     //test NULL
     {
@@ -75,7 +75,7 @@ namespace ra { namespace filesystem { namespace test
 
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetFilename)
+  TEST_F(TestFilesystem, testGetFilename)
   {
     //test NULL
     {
@@ -106,7 +106,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testFileExists)
+  TEST_F(TestFilesystem, testFileExists)
   {
     //test NULL
     {
@@ -131,7 +131,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testFolderExists)
+  TEST_F(TestFilesystem, testFolderExists)
   {
     //test NULL
     {
@@ -156,7 +156,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetTemporaryFileName)
+  TEST_F(TestFilesystem, testGetTemporaryFileName)
   {
     //test not empty
     {
@@ -184,7 +184,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetTemporaryFilePath)
+  TEST_F(TestFilesystem, testGetTemporaryFilePath)
   {
     //test not empty
     {
@@ -212,7 +212,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetParentPath)
+  TEST_F(TestFilesystem, testGetParentPath)
   {
     //test no folder
     {
@@ -236,7 +236,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetShortPathForm)
+  TEST_F(TestFilesystem, testGetShortPathForm)
   {
     //test spaces in filename
     {
@@ -274,7 +274,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testSplitPath)
+  TEST_F(TestFilesystem, testSplitPath)
   {
     //test baseline
     {
@@ -327,7 +327,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testSplitPathArray)
+  TEST_F(TestFilesystem, testSplitPathArray)
   {
     //test baseline
     {
@@ -375,7 +375,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetPathSeparator)
+  TEST_F(TestFilesystem, testGetPathSeparator)
   {
 #ifdef WIN32
       ASSERT_EQ('\\', filesystem::getPathSeparator());
@@ -384,7 +384,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetCurrentFolder)
+  TEST_F(TestFilesystem, testGetCurrentFolder)
   {
     std::string curdir = getCurrentFolder();
     ASSERT_NE("", curdir);
@@ -392,7 +392,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE(filesystem::folderExists(curdir.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetFileExtention)
+  TEST_F(TestFilesystem, testGetFileExtention)
   {
     //test baseline
     {
@@ -430,7 +430,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetUserFriendlySize)
+  TEST_F(TestFilesystem, testGetUserFriendlySize)
   {
     static const uint64_t MULTIPLICATOR_KB = 1024;
     static const uint64_t MULTIPLICATOR_MB = 1024*MULTIPLICATOR_KB;
@@ -484,7 +484,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemFunc, testGetFileModifiedDate)
+  TEST_F(TestFilesystem, testGetFileModifiedDate)
   {
     //assert that unit of return value is seconds
     {
@@ -492,7 +492,7 @@ namespace ra { namespace filesystem { namespace test
       const std::string filename1 = gTestHelper::getInstance().getTestQualifiedName() + ".1.txt";
       const std::string filename2 = gTestHelper::getInstance().getTestQualifiedName() + ".2.txt";
       ASSERT_TRUE( createDummyFile(filename1.c_str()) );
-      nativefunc::millisleep(1000*EXPECTED + 50); //at least 3 seconds between the files
+      ra::time::millisleep(1000*EXPECTED + 50); //at least 3 seconds between the files
       ASSERT_TRUE( createDummyFile(filename2.c_str()) );
 
       uint64_t time1 = filesystem::getFileModifiedDate(filename1);
@@ -503,6 +503,6 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-} // End namespace test
-} // End namespace filesystem
-} // End namespace ra
+} //namespace test
+} //namespace filesystem
+} //namespace ra

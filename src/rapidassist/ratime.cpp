@@ -1,4 +1,4 @@
-#include "nativefunc.h"
+#include "ratime.h"
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -18,7 +18,7 @@
 namespace ra
 {
 
-  namespace nativefunc
+  namespace time
   {
 
     void waitNextSecond()
@@ -35,7 +35,7 @@ namespace ra
       time_t rawtime;
       struct tm * timeinfo;
 
-      time (&rawtime);
+      std::time (&rawtime);
       timeinfo = localtime (&rawtime);
 
       return (*timeinfo);
@@ -68,5 +68,5 @@ namespace ra
 #endif
     }
 
-  }; //nativefunc
-}; //namespace ra
+  }; //namespace time
+} //namespace ra

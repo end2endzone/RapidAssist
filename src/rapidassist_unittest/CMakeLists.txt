@@ -6,16 +6,16 @@ include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
 
 add_executable(rapidassist_unittest
   main.cpp
-  TestEnvironmentFunc.cpp
-  TestEnvironmentFunc.h
-  TestFilesystemFunc.cpp
-  TestFilesystemFunc.h
+  TestEnvironment.cpp
+  TestEnvironment.h
+  TestFilesystem.cpp
+  TestFilesystem.h
   TestGTestHelper.cpp
   TestGTestHelper.h
-  TestNativeFunc.cpp
-  TestNativeFunc.h
-  TestStringFunc.cpp
-  TestStringFunc.h
+  TestTime.cpp
+  TestTime.h
+  TestString.cpp
+  TestString.h
 )
 
 if (WIN32)

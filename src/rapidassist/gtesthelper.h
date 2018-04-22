@@ -280,6 +280,6 @@ namespace ra
 
   };
 
-}; //namespace ra
+} //namespace ra
 
 #endif //GTESTHELPER_H

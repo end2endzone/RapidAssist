@@ -262,4 +262,4 @@ namespace ra
     }
 
   }; //cppencoder
-}; //namespace ra
+} //namespace ra

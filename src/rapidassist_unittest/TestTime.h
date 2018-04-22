@@ -3,17 +3,17 @@
 
 #include <gtest/gtest.h>
 
-namespace ra { namespace nativefunc { namespace test
+namespace ra { namespace time { namespace test
 {
-  class TestNativeFunc : public ::testing::Test
+  class TestTime : public ::testing::Test
   {
   public:
     virtual void SetUp();
     virtual void TearDown();
   };
 
-} // End namespace test
-} // End namespace nativefunc
-} // End namespace ra
+} //namespace test
+} //namespace time
+} //namespace ra
 
 #endif //TESTNATIVEFUNC_H

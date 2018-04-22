@@ -1,25 +1,25 @@
-#include "TestNativeFunc.h"
-#include "nativefunc.h"
+#include "TestTime.h"
+#include "ratime.h"
 
-namespace ra { namespace nativefunc { namespace test
+namespace ra { namespace time { namespace test
 {
   //--------------------------------------------------------------------------------------------------
-  void TestNativeFunc::SetUp()
+  void TestTime::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestNativeFunc::TearDown()
+  void TestTime::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestNativeFunc, testMillisleep)
+  TEST_F(TestTime, testMillisleep)
   {
     //synchronize time to a new seconds
     waitNextSecond();
 
     //assert that millisleep() is actually sleeping
     std::tm time1 = getLocalSystemTime();
-    ASSERT_EQ(0, nativefunc::millisleep(5000 + 50)); //at least 5 seconds
+    ASSERT_EQ(0, time::millisleep(5000 + 50)); //at least 5 seconds
     std::tm time2 = getLocalSystemTime();
 
     //convert hour, minute and seconds to absolute seconds
@@ -34,6 +34,6 @@ namespace ra { namespace nativefunc { namespace test
     ASSERT_LT(diff, EXPECTED+1); //allow 1 seconds of difference
   }
   //--------------------------------------------------------------------------------------------------
-} // End namespace test
-} // End namespace nativefunc
-} // End namespace ra
+} //namespace test
+} //namespace time
+} //namespace ra

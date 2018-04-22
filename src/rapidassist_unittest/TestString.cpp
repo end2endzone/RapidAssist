@@ -1,19 +1,19 @@
-#include "TestStringFunc.h"
-#include "stringfunc.h"
+#include "TestString.h"
+#include "rastring.h"
 
 namespace ra { namespace stringfunc { namespace test
 {
   
   //--------------------------------------------------------------------------------------------------
-  void TestStringFunc::SetUp()
+  void TestString::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestStringFunc::TearDown()
+  void TestString::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testIsNumeric)
+  TEST_F(TestString, testIsNumeric)
   {
     //lazy test
     for(int i = -100; i <= 100; i++)
@@ -52,7 +52,7 @@ namespace ra { namespace stringfunc { namespace test
     ASSERT_FALSE(stringfunc::isNumeric("+12.34!"));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testStrReplace)
+  TEST_F(TestString, testStrReplace)
   {
     //at the beginning
     {
@@ -109,7 +109,7 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testToStringParseValue)
+  TEST_F(TestString, testToStringParseValue)
   {
     //uint64_t
     struct uint64_test
@@ -142,7 +142,7 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testCapitalizeFirstCharacter)
+  TEST_F(TestString, testCapitalizeFirstCharacter)
   {
     {
       //normal
@@ -188,7 +188,7 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testUppercase)
+  TEST_F(TestString, testUppercase)
   {
     {
       //normal
@@ -234,7 +234,7 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testLowercase)
+  TEST_F(TestString, testLowercase)
   {
     {
       //normal
@@ -280,7 +280,7 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestStringFunc, testStreamOperator)
+  TEST_F(TestString, testStreamOperator)
   {
     {
       //const void * value
@@ -383,6 +383,6 @@ namespace ra { namespace stringfunc { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-} // End namespace test
-} // End namespace stringfunc
-} // End namespace ra
+} //namespace test
+} //namespace stringfunc
+} //namespace ra

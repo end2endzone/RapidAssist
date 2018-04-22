@@ -5,15 +5,15 @@
 
 namespace ra { namespace stringfunc { namespace test
 {
-  class TestStringFunc : public ::testing::Test
+  class TestString : public ::testing::Test
   {
   public:
     virtual void SetUp();
     virtual void TearDown();
   };
 
-} // End namespace test
-} // End namespace stringfunc
-} // End namespace ra
+} //namespace test
+} //namespace stringfunc
+} //namespace ra
 
 #endif //TESTSTRINGFUNC_H

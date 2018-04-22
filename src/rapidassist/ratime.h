@@ -6,7 +6,7 @@
 
 namespace ra
 {
-  namespace nativefunc
+  namespace time
   {
 
     ///<summary>
@@ -28,7 +28,7 @@ namespace ra
     ///        If the call is interrupted or encounters an error, then it returns -1<return>
     int millisleep(uint32_t milliseconds);
 
-  }; //nativefunc
-}; //namespace ra
+  }; //namespace time
+} //namespace ra
 
 #endif //NATIVEFUNC_H

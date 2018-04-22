@@ -5,16 +5,16 @@ add_library(rapidassist STATIC
   ${PROJECT_BINARY_DIR}/src/rapidassist/version.h
   cppencoder.cpp
   cppencoder.h
-  environmentfunc.cpp
-  environmentfunc.h
-  filesystemfunc.cpp
-  filesystemfunc.h
+  environment.cpp
+  environment.h
+  filesystem.cpp
+  filesystem.h
   gtesthelper.cpp
   gtesthelper.h
-  nativefunc.cpp
-  nativefunc.h
-  stringfunc.cpp
-  stringfunc.h
+  ratime.cpp
+  ratime.h
+  rastring.cpp
+  rastring.h
 )
 
 link_directories(${LIBRARY_OUTPUT_PATH})

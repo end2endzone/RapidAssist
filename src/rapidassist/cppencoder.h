@@ -110,5 +110,5 @@ namespace ra
     ///<return>Returns a string representating an array of bytes which matches the given buffer<return>
     std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
 
-  }; //cppencoder
-}; //namespace ra
+  } //namespace cppencoder
+} //namespace ra

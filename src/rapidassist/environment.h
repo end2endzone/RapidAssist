@@ -15,7 +15,7 @@ namespace ra
     ///<return>Returns the value of the given environment variable.<return>
     std::string getEnvironmentVariable(const char * iName);
 
-  }; //environment
-}; //namespace ra
+  } //namespace environment
+} //namespace ra
 
 #endif //ENVIRONMENTFUNC_H

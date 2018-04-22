@@ -60,8 +60,8 @@ namespace ra
     ///<param name="iValue">The string value to lowercase.</param>
     std::string lowercase(const std::string & value);
 
-  }; //stringfunc
-}; //namespace ra
+  } //namespace stringfunc
+} //namespace ra
 
 ///<summary>
 ///Streams a value to an existing string.

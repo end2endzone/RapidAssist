@@ -5,15 +5,15 @@
 
 namespace ra { namespace environment { namespace test
 {
-  class TestEnvironmentFunc : public ::testing::Test
+  class TestEnvironment : public ::testing::Test
   {
   public:
     virtual void SetUp();
     virtual void TearDown();
   };
 
-} // End namespace test
-} // End namespace environment
-} // End namespace ra
+} //namespace test
+} //namespace environment
+} //namespace ra
 
 #endif //TESTENVIRONMENTFUNC_H
