@@ -1,4 +1,4 @@
-#include "rastring.h"
+#include "string_.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()

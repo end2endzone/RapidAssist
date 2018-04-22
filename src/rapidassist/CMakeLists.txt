@@ -13,10 +13,10 @@ add_library(rapidassist STATIC
   gtesthelper.h
   random.cpp
   random.h
-  ratime.cpp
-  ratime.h
-  rastring.cpp
-  rastring.h
+  time_.cpp
+  time_.h
+  string_.cpp
+  string_.h
 )
 
 link_directories(${LIBRARY_OUTPUT_PATH})

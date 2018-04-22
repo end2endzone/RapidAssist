@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 #include "filesystem.h"
-#include "rastring.h"
+#include "string_.h"
 
 using namespace ra::filesystem;
 using namespace ra::strings;

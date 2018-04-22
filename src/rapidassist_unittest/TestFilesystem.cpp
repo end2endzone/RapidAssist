@@ -1,6 +1,6 @@
 #include "TestFilesystem.h"
 #include "filesystem.h"
-#include "ratime.h"
+#include "time_.h"
 #include "gtesthelper.h"
 
 namespace ra { namespace filesystem { namespace test
@@ -314,6 +314,50 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ(EXPECTED_PARENT, parent);
       ASSERT_EQ(EXPECTED_FILENAME, filename);
     }
+
+    std::string folder;
+    std::string filename;
+  
+    //from full path
+    {
+      splitPath("C:\\foo\\bar\\file.txt", folder, filename);
+      ASSERT_EQ(folder, "C:\\foo\\bar");
+      ASSERT_EQ(filename, "file.txt");
+    }
+    {
+      splitPath("C:\\foo\\bar\\file", folder, filename);
+      ASSERT_EQ(folder, "C:\\foo\\bar");
+      ASSERT_EQ(filename, "file");
+    }
+    {
+      splitPath("C:\\foo\\bar\\file.", folder, filename);
+      ASSERT_EQ(folder, "C:\\foo\\bar");
+      ASSERT_EQ(filename, "file.");
+    }
+
+    //from filename only
+    {
+      splitPath("file.txt", folder, filename);
+      ASSERT_EQ(folder, "");
+      ASSERT_EQ(filename, "file.txt");
+    }
+    {
+      splitPath("file.", folder, filename);
+      ASSERT_EQ(folder, "");
+      ASSERT_EQ(filename, "file.");
+    }
+    {
+      splitPath("file", folder, filename);
+      ASSERT_EQ(folder, "");
+      ASSERT_EQ(filename, "file");
+    }
+
+    //empty strings
+    {
+      splitPath("", folder, filename);
+      ASSERT_EQ(folder, "");
+      ASSERT_EQ(filename, "");
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testSplitPathArray)
@@ -417,6 +461,45 @@ namespace ra { namespace filesystem { namespace test
       std::string ext = filesystem::getFileExtention("/home/my.Folder/myFile");
       ASSERT_EQ(EXPECTED, ext);
     }
+
+    //from valid filename
+    {
+      std::string ext = getFileExtention("file.txt");
+      ASSERT_EQ(ext, "txt");
+    }
+    {
+      std::string ext = getFileExtention("file.");
+      ASSERT_EQ(ext, "");
+    }
+    {
+      std::string ext = getFileExtention("file");
+      ASSERT_EQ(ext, "");
+    }
+
+    //from full path
+    {
+      std::string ext = getFileExtention("C:\\foo\\bar\\file.txt");
+      ASSERT_EQ(ext, "txt");
+    }
+
+    //from filename with multiple dots
+    {
+      std::string ext = getFileExtention("file.subfile.txt");
+      ASSERT_EQ(ext, "txt");
+    }
+
+    //empty strings
+    {
+      std::string ext = getFileExtention("");
+      ASSERT_EQ(ext, "");
+    }
+
+    //from special case path
+    {
+      std::string ext = getFileExtention("C:\\foo.bar\\file");
+      ASSERT_EQ(ext, "");
+    }
+
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetUserFriendlySize)
