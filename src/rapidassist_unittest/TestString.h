@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace ra { namespace stringfunc { namespace test
+namespace ra { namespace strings { namespace test
 {
   class TestString : public ::testing::Test
   {
@@ -13,7 +13,7 @@ namespace ra { namespace stringfunc { namespace test
   };
 
 } //namespace test
-} //namespace stringfunc
+} //namespace strings
 } //namespace ra
 
 #endif //TESTSTRINGFUNC_H

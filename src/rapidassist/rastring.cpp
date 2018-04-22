@@ -6,7 +6,7 @@
 namespace ra
 {
 
-  namespace stringfunc
+  namespace strings
   {
     template <class T>
     inline bool parseValueT (const std::string& str, T & t)
@@ -289,7 +289,7 @@ namespace ra
       }
     }
 
-  } //namespace stringfunc
+  } //namespace strings
 } //namespace ra
 
 std::string& operator<<(std::string& str, const void * value)

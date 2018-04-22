@@ -141,10 +141,10 @@ namespace ra
         {
           std::string element83 = element;
           std::string ext = getFileExtention(element);
-          stringfunc::strReplace(element83, (std::string(".")+ext).c_str(), ""); //remove extension from filename
-          stringfunc::strReplace(ext, " ", ""); //remove spaces in extension
+          strings::strReplace(element83, (std::string(".")+ext).c_str(), ""); //remove extension from filename
+          strings::strReplace(ext, " ", ""); //remove spaces in extension
           ext = ext.substr(0, 3); //truncate file extension
-          stringfunc::strReplace(element83, " ", ""); //remove spaces
+          strings::strReplace(element83, " ", ""); //remove spaces
           element83 = element83.substr(0, 6); //truncate file name
           element83.append("~1");
           if (!ext.empty())
@@ -377,7 +377,7 @@ namespace ra
       {
       case Bytes:
         {
-          friendlySize = stringfunc::toString(iBytesSize);
+          friendlySize = strings::toString(iBytesSize);
           friendlySize += " bytes";
         };
         break;

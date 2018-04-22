@@ -8,7 +8,7 @@
 #include "rastring.h"
 
 using namespace ra::filesystem;
-using namespace ra::stringfunc;
+using namespace ra::strings;
 
 namespace ra
 {

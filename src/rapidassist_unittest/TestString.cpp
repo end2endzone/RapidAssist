@@ -1,7 +1,7 @@
 #include "TestString.h"
 #include "rastring.h"
 
-namespace ra { namespace stringfunc { namespace test
+namespace ra { namespace strings { namespace test
 {
   
   //--------------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace ra { namespace stringfunc { namespace test
   TEST_F(TestString, testIsNumeric)
   {
     //lazy test
-    for(int i = -100; i <= 100; i++)
+    for(int i=-100; i<=100; i++)
     {
       for(int j=0; j<=100; j++)
       {
@@ -26,30 +26,30 @@ namespace ra { namespace stringfunc { namespace test
 
         //integers
         sprintf(buffer, "%d", i);
-        ASSERT_TRUE(stringfunc::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
+        ASSERT_TRUE(strings::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
 
         //floating point
         sprintf(buffer, "%d.%03d", i, j);
-        ASSERT_TRUE(stringfunc::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
+        ASSERT_TRUE(strings::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
       }
     }
 
     //test special case
-    ASSERT_TRUE(stringfunc::isNumeric("+12"));
+    ASSERT_TRUE(strings::isNumeric("+12"));
 
     //plus or minus sign error
-    ASSERT_FALSE(stringfunc::isNumeric("12+123"));
-    ASSERT_FALSE(stringfunc::isNumeric("12-123"));
-    ASSERT_FALSE(stringfunc::isNumeric("+12+123"));
-    ASSERT_FALSE(stringfunc::isNumeric("+12-123"));
+    ASSERT_FALSE(strings::isNumeric("12+123"));
+    ASSERT_FALSE(strings::isNumeric("12-123"));
+    ASSERT_FALSE(strings::isNumeric("+12+123"));
+    ASSERT_FALSE(strings::isNumeric("+12-123"));
 
     //multiple dots
-    ASSERT_FALSE(stringfunc::isNumeric("12.345.67"));
-    ASSERT_FALSE(stringfunc::isNumeric("+12.345.67"));
+    ASSERT_FALSE(strings::isNumeric("12.345.67"));
+    ASSERT_FALSE(strings::isNumeric("+12.345.67"));
 
     //alpha characters
-    ASSERT_FALSE(stringfunc::isNumeric("+12.34a"));
-    ASSERT_FALSE(stringfunc::isNumeric("+12.34!"));
+    ASSERT_FALSE(strings::isNumeric("+12.34a"));
+    ASSERT_FALSE(strings::isNumeric("+12.34!"));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testStrReplace)
@@ -464,5 +464,5 @@ namespace ra { namespace stringfunc { namespace test
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
-} //namespace stringfunc
+} //namespace strings
 } //namespace ra

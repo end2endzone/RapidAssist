@@ -8,7 +8,7 @@
 
 namespace ra
 {
-  namespace stringfunc
+  namespace strings
   {
     typedef std::vector<std::string> StringVector;
 
@@ -100,7 +100,7 @@ namespace ra
     ///<param name="iSplitPattern">The splitting pattern.</param>
     void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
-  } //namespace stringfunc
+  } //namespace strings
 } //namespace ra
 
 ///<summary>
