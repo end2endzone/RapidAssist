@@ -115,7 +115,7 @@ namespace ra { namespace strings { namespace test
     struct uint64_test
     {
       const char * EXPECTED_STR;
-      const uint64_t EXPECTED_VALUE;
+      uint64_t EXPECTED_VALUE;
     };
     static const uint64_test tests[] = {
       {"0", 0ull},

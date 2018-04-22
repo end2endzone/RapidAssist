@@ -1,5 +1,5 @@
-#ifndef STRINGFUNC_H
-#define STRINGFUNC_H
+#ifndef RA_STRING_H
+#define RA_STRING_H
 
 #include <stdint.h>
 #include <string>
@@ -180,4 +180,4 @@ std::string& operator<<(std::string& str, const int64_t & value);
 ///<return>Returns the given string.<return>
 std::string& operator<<(std::string& str, const uint64_t & value);
 
-#endif //STRINGFUNC_H
+#endif //RA_STRING_H

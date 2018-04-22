@@ -116,8 +116,6 @@ namespace ra
     {
       std::string parent;
 
-      char separator = filesystem::getPathSeparator();
-
       std::size_t offset = iPath.find_last_of("/\\");
       if (offset != std::string::npos)
       {
@@ -221,8 +219,6 @@ namespace ra
     {
       oFolder = "";
       oFilename = "";
-
-      char separator = getPathSeparator();
 
       std::size_t offset = iPath.find_last_of("/\\");
       if (offset != std::string::npos)

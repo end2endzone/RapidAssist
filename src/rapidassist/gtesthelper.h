@@ -1,5 +1,5 @@
-#ifndef GTESTHELPER_H
-#define GTESTHELPER_H
+#ifndef RA_GTESTHELPER_H
+#define RA_GTESTHELPER_H
 
 #include <string>
 #include <vector>
@@ -195,4 +195,4 @@ namespace ra
 
 } //namespace ra
 
-#endif //GTESTHELPER_H
+#endif //RA_GTESTHELPER_H

@@ -1,3 +1,5 @@
+#ifndef RA_CPPENCODER_H
+#define RA_CPPENCODER_H
 
 #include <string>
 
@@ -112,3 +114,5 @@ namespace ra
 
   } //namespace cppencoder
 } //namespace ra
+
+#endif //RA_CPPENCODER_H

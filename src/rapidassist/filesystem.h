@@ -1,5 +1,5 @@
-#ifndef FILESYSTEMFUNC_H
-#define FILESYSTEMFUNC_H
+#ifndef RA_FILESYSTEM_H
+#define RA_FILESYSTEM_H
 
 #include <stdint.h>
 #include <string>
@@ -134,4 +134,4 @@ namespace ra
   } //namespace filesystem
 } //namespace ra
 
-#endif //FILESYSTEMFUNC_H
+#endif //RA_FILESYSTEM_H

@@ -1,5 +1,5 @@
-#ifndef NATIVEFUNC_H
-#define NATIVEFUNC_H
+#ifndef RA_TIME_H
+#define RA_TIME_H
 
 #include <stdint.h>
 #include <ctime> //for struct tm
@@ -31,4 +31,4 @@ namespace ra
   }; //namespace time
 } //namespace ra
 
-#endif //NATIVEFUNC_H
+#endif //RA_TIME_H

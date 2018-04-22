@@ -1,5 +1,5 @@
-#ifndef ENVIRONMENTFUNC_H
-#define ENVIRONMENTFUNC_H
+#ifndef RA_ENVIRONMENT_H
+#define RA_ENVIRONMENT_H
 
 #include <string>
 
@@ -18,4 +18,4 @@ namespace ra
   } //namespace environment
 } //namespace ra
 
-#endif //ENVIRONMENTFUNC_H
+#endif //RA_ENVIRONMENT_H

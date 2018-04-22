@@ -1,3 +1,11 @@
+Changes for 0.2.0:
+
+* Moved all source code under `ra` namespace (for Rapid Assist)
+* Removed all `func` from namepaces and `#ifdef` statements.
+* Source code in nativefunc is now under time namespace.
+* Removed duplicated code from gtesthelper class. Code moved to random and strings namespaces.
+* Added new classes to the library: random
+
 Changes for 0.1.0:
 
 * First public release.

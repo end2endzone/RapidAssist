@@ -166,7 +166,7 @@ namespace ra
       std::string copy = iValue;
       if (!copy.empty())
       {
-        copy[0] = toupper(copy[0]);
+        copy[0] = (char)toupper(copy[0]);
       }
       return copy;
     }
