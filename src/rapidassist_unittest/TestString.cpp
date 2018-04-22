@@ -392,7 +392,8 @@ namespace ra { namespace strings { namespace test
 
     //test empty string
     {
-      removeEOL("");
+      char empty[] = "";
+      removeEOL(empty);
     }
 
     //test windows

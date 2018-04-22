@@ -1,5 +1,6 @@
 #include "TestCli.h"
 #include "cli.h"
+#include "string_.h"
 
 namespace ra { namespace cli { namespace test
 {
@@ -15,8 +16,11 @@ namespace ra { namespace cli { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestCli, testParseArgumentString)
   {
-    char * argv[] = {"myapp", "--arg1=value1", "--test2=value2", "--quick", "--number=12345", "--big=4123456789", "--foo=bar", "--last=final", ""};
-    int argc = sizeof(argv)/sizeof(argv[0]) - 1; //the last element must be NULL and not part of the argc value.
+    const char * arguments[] = {"myapp", "--arg1=value1", "--test2=value2", "--quick", "--number=12345", "--big=4123456789", "--foo=bar", "--last=final", ""};
+    int argc = sizeof(arguments)/sizeof(arguments[0]) - 1; //the last element must be NULL and not part of the argc value.
+
+    //must const cast because argv is supplied as a `char**` instead of `const char **`
+    char ** argv = (char**)arguments;
 
     //test flag/switch
     {
