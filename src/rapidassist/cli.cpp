@@ -1,4 +1,6 @@
 #include "cli.h"
+#include <cstdlib> //for atoi()
+#include <cstdio> //for sscanf()
 
 namespace ra
 {
