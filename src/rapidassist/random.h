@@ -49,8 +49,8 @@ namespace ra
     ///</summary>
     ///<param name="iMaxLen">The maximum length of the generated string.</param>
     ///<param name="oValue">The result of the generated string.</param>
-    void getRandomString(std::string & oValue, int iMaxLen);
-    std::string getRandomString(int iMaxLen);
+    void getRandomString(std::string & oValue, size_t iMaxLen);
+    std::string getRandomString(size_t iMaxLen);
 
     ///<summary>
     ///Returns a random string.
@@ -58,8 +58,8 @@ namespace ra
     ///<param name="iMaxLen">The maximum length of the generated string.</param>
     ///<param name="iSymbols">The list of allowed character of the generated string.</param>
     ///<param name="oValue">The result of the generated string.</param>
-    void getRandomString(std::string & oValue, int iMaxLen, const char* iSymbols);
-    std::string getRandomString(int iMaxLen, const char* iSymbols);
+    void getRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols);
+    std::string getRandomString(size_t iMaxLen, const char* iSymbols);
 
     class SymbolsFlags
     {
@@ -80,7 +80,7 @@ namespace ra
     ///<param name="iMaxLen">The maximum length of the generated string.</param>
     ///<param name="iFlags">The flags that defines the allowed content of the generated string.</param>
     ///<param name="oValue">The result of the generated string.</param>
-    void getRandomString(std::string & oValue, int iMaxLen, SymbolsFlags::Flags iFlags);
+    void getRandomString(std::string & oValue, size_t iMaxLen, SymbolsFlags::Flags iFlags);
 
   } //namespace random
 } //namespace ra

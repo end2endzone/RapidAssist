@@ -26,7 +26,6 @@ namespace ra { namespace random { namespace test
   //--------------------------------------------------------------------------------------------------
   bool isAllTrue(bool * iArray, size_t iSize)
   {
-    bool all = true;
     for(size_t i=0; i<iSize; i++)
     {
       if (iArray[i] == false)
@@ -36,11 +35,11 @@ namespace ra { namespace random { namespace test
   }
   TEST_F(TestRandom, testGetRandomIntRange)
   {
-    //assert that 10000 random number between -50 and +49 should go through all possible values
+    //assert that 10000 random number between -50 and +49 should returns all possible values
     {
       static const int RANGE_MIN = -50;
       static const int RANGE_MAX = +49;
-      bool found[100] = {0};
+      bool found[100] = {0};  //from [-50, +49] is like [0, +99], which is 100 different values
       for(size_t i=0; i<10000; i++)
       {
         int value = getRandomInt(RANGE_MIN, RANGE_MAX);
@@ -69,18 +68,19 @@ namespace ra { namespace random { namespace test
     ASSERT_TRUE( getRandomString(0).empty() );
 
     //assert maxlen
-    for(int i=0; i<10; i++)
+    for(size_t i=0; i<10; i++)
     {
       std::string s = getRandomString(i);
-      ASSERT_EQ(i, (int)s.size());
+      ASSERT_EQ(i, s.size());
     }
 
     //assert symbols
     static const std::string SYMBOLS = "0123abc";
-    for(int i=0; i<1000; i++)
+    for(size_t i=0; i<1000; i++)
     {
-      std::string s = getRandomString(20, SYMBOLS.c_str());
-      ASSERT_EQ(20, (int)s.size());
+      static const size_t LENGTH = 20;
+      std::string s = getRandomString(LENGTH, SYMBOLS.c_str());
+      ASSERT_EQ(LENGTH, s.size());
 
       for(size_t j=0; j<s.size(); j++)
       {

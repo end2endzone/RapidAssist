@@ -23,8 +23,32 @@ namespace ra
 
     int getRandomInt(int iMin, int iMax)
     {
-      int range = (iMax - iMin)+1;
-      return iMin+int(range * rand() / (RAND_MAX + 1.0)); 
+      //limit the accepted value returned by rand() to allow uniform distribution of values
+      //i.e:  if iMin=0 and iMax=7 and RAND_MAX=8 then 
+      //      returned value 0 has probability twice as high as other numbers
+      //      ( rand()==0 and rand()==8 both returns 0 )
+
+      //compute maximum value of rand() to allow uniform distribution of values
+      int max = RAND_MAX;
+      int modulo = (iMax - iMin) + 1;
+      if (max % modulo != (modulo-1))
+      {
+        //adjust max to get uniform distribution across iMin to iMax
+        int diff = (max % modulo);
+        max -= (diff+1);
+      }
+
+      //get a random value within [0, max]
+      int randValue = rand();
+      while(randValue > max)
+      {
+        randValue = rand();
+      }
+
+      int value = randValue % modulo; //within [0, iMax-iMin]
+      value += iMin;                  //within [iMin, iMax]
+
+      return value;
     }
 
     double getRandomDouble(double iMin, double iMax)
@@ -48,20 +72,20 @@ namespace ra
       return rnd;
     }
 
-    void getRandomString(std::string & oValue, int iMaxLen)
+    void getRandomString(std::string & oValue, size_t iMaxLen)
     {
       static const char * defaultSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       getRandomString(oValue, iMaxLen, defaultSymbols);
     }
 
-    std::string getRandomString(int iMaxLen)
+    std::string getRandomString(size_t iMaxLen)
     {
       std::string tmp;
       getRandomString(tmp, iMaxLen);
       return tmp;
     }
 
-    void getRandomString(std::string & oValue, int iMaxLen, SymbolsFlags::Flags iFlags)
+    void getRandomString(std::string & oValue, size_t iMaxLen, SymbolsFlags::Flags iFlags)
     {
       std::string symbols;
 
@@ -83,14 +107,14 @@ namespace ra
       getRandomString(oValue, iMaxLen, symbols.c_str());
     }
 
-    std::string getRandomString(int iMaxLen, SymbolsFlags::Flags iFlags)
+    std::string getRandomString(size_t iMaxLen, SymbolsFlags::Flags iFlags)
     {
       std::string tmp;
       getRandomString(tmp, iMaxLen, iFlags);
       return tmp;
     }
 
-    void getRandomString(std::string & oValue, int iMaxLen, const char* iSymbols)
+    void getRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols)
     {
       std::string symbols = iSymbols;
       int numSymbols = (int)symbols.size();
@@ -108,7 +132,7 @@ namespace ra
       }
     }
 
-    std::string getRandomString(int iMaxLen, const char* iSymbols)
+    std::string getRandomString(size_t iMaxLen, const char* iSymbols)
     {
       std::string tmp;
       getRandomString(tmp, iMaxLen, iSymbols);
