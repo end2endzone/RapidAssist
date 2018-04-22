@@ -6,12 +6,16 @@ include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
 
 add_executable(rapidassist_unittest
   main.cpp
+  TestCli.cpp
+  TestCli.h
   TestEnvironment.cpp
   TestEnvironment.h
   TestFilesystem.cpp
   TestFilesystem.h
   TestGTestHelper.cpp
   TestGTestHelper.h
+  TestLogger.cpp
+  TestLogger.h
   TestRandom.cpp
   TestRandom.h
   TestString.cpp

@@ -59,6 +59,14 @@ namespace ra { namespace time { namespace test
     ASSERT_EQ(now.tm_isdst, actual.tm_isdst);
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTime, testGetUtcTime)
+  {
+    std::tm local = getLocalTime();
+    std::tm utc = getUtcTime();
+
+    ASSERT_NE(local.tm_hour, utc.tm_hour);
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace time
 } //namespace ra

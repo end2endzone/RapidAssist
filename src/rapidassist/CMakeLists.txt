@@ -3,6 +3,8 @@ include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
 
 add_library(rapidassist STATIC 
   ${PROJECT_BINARY_DIR}/src/rapidassist/version.h
+  cli.cpp
+  cli.h
   cppencoder.cpp
   cppencoder.h
   environment.cpp
@@ -11,6 +13,8 @@ add_library(rapidassist STATIC
   filesystem.h
   gtesthelper.cpp
   gtesthelper.h
+  logger.cpp
+  logger.h
   random.cpp
   random.h
   time_.cpp
