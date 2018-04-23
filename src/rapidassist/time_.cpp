@@ -1,4 +1,5 @@
 #include "time_.h"
+#include <cstdlib> //for atoi()
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
