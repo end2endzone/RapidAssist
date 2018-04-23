@@ -1,7 +1,7 @@
 #include "gtesthelper.h"
-#include <iostream>
 #include <sstream> //for stringstream
 #include <iostream> //for std::hex
+#include <cstdio> //for remove()
 #include <gtest/gtest.h>
 
 #include "filesystem.h"
@@ -228,7 +228,9 @@ namespace ra
     commandLine.append("\"");
 
     //exec
-    system(commandLine.c_str());
+    int returnCode = system(commandLine.c_str());
+    if (returnCode != 0)
+      return StringVector();
 
     if (!fileExists(logFilename.c_str()))
       return StringVector();
@@ -279,14 +281,10 @@ namespace ra
     fclose(f);
 
     //delete log file
-    commandLine = "";
-    commandLine.append("del ");
-    commandLine.append("\"");
-    commandLine.append(logFilename);
-    commandLine.append("\" 1>NUL 2>NUL");
+    int removeResult = remove(logFilename.c_str());
 
     //exec
-    system(commandLine.c_str());
+    returnCode = system(commandLine.c_str());
 
     return testlist;
   }
@@ -364,7 +362,7 @@ namespace ra
         ss << ", ";
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
-      sprintf(buffer, "{address %d(0x%X) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
+      sprintf(buffer, "{address %u(0x%X) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
       ss << buffer;
       //ss << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
     }
@@ -525,7 +523,7 @@ namespace ra
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;
-    fread(buffer, 1, size, f);
+    size_t byteRead = fread(buffer, 1, size, f);
     fclose(f);
 
     //modify
@@ -536,7 +534,7 @@ namespace ra
     f = fopen(iFilePath, "wb");
     if (!f)
       return;
-    fwrite(buffer, 1, size, f);
+    size_t byteWrite = fwrite(buffer, 1, size, f);
     fclose(f);
   }
 

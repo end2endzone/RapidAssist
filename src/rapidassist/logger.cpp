@@ -2,6 +2,8 @@
 
 #include <sstream>
 #include <stdarg.h> //for functions with "..." arguments
+#include <cstdlib> //for printf()
+#include <cstdio> //for vsnprintf()
 
 namespace ra
 {

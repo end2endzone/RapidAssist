@@ -81,7 +81,7 @@ namespace ra
       std::string localFolder = getCurrentFolder();
       bool success = (__chdir(iPath) == 0);
       if (success)
-        __chdir(localFolder.c_str());
+        success = (__chdir(localFolder.c_str()) == 0);
       return success;
     }
 
