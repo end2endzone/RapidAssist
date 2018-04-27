@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   ::testing::InitGoogleTest(&argc, argv);
 
   //Disable TestTime.testGetUtcTime() on AppVeyor or Travis CI
-  if (hlp.isAppVeyor() || hlp.isTravis() || true)
+  if (hlp.isAppVeyor() || hlp.isTravis())
   {
     //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
     std::string newFilter = hlp.mergeFilter("", "TestTime.testGetUtcTime", ::testing::GTEST_FLAG(filter).c_str());
