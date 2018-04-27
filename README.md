@@ -4,7 +4,7 @@
 | Service | Build | Tests |
 |----|-------|-------|
 | AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/tmi3dnkuwpguqngv?svg=true)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
-| Travic CI | [![Build Status](https://travis-ci.org/end2endzone/RapidAssist.svg?branch=master)](https://travis-ci.org/end2endzone/RapidAssist) | |
+| Travic CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) | |
 
 
 AppVeyor build statistics:
