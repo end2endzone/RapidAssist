@@ -559,6 +559,21 @@ namespace ra
     return environment::isConfigurationRelease();
   }
 
+  bool gTestHelper::isAppVeyor()
+  {
+    return !environment::getEnvironmentVariable("APPVEYOR").empty();
+  }
+
+  bool gTestHelper::isTravis()
+  {
+    return !environment::getEnvironmentVariable("TRAVIS").empty();
+  }
+
+  bool gTestHelper::isJenkins()
+  {
+    return !environment::getEnvironmentVariable("JENKINS_URL").empty();
+  }
+
   std::string gTestHelper::getTestSuiteName()
   {
     std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();

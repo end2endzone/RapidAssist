@@ -175,6 +175,14 @@ namespace ra
 
     //
     // Description
+    //  Returns true if the specified continuous integration server is running.
+    //
+    bool isAppVeyor();
+    bool isTravis();
+    bool isJenkins();
+
+    //
+    // Description
     //  Returns the name of the current Test Suite name. ie "TestFooClass"
     //
     std::string getTestSuiteName();
