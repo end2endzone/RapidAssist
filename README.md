@@ -1,20 +1,22 @@
+# RapidAssist
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Github Releases](https://img.shields.io/github/release/end2endzone/rapidassist.svg)](https://github.com/end2endzone/rapidassist/releases)
 
+RapidAssist is a lite cross-platform library that assist you with the most c++ repretitive task
+
+## Status
+
+Build:
 | Service | Build | Tests |
 |----|-------|-------|
-| AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/tmi3dnkuwpguqngv?svg=true)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
-| Travic CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) | |
+| AppVeyor | [![Build status](https://img.shields.io/appveyor/ci/end2endzone/RapidAssist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
+| Travic CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) |  |
 
+Statistics:
+| AppVeyor | Travic CI |
+|----------|-----------|
+| [![Statistics](https://buildstats.info/appveyor/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master) | [![Statistics](https://buildstats.info/travisci/chart/end2endzone/RapidAssist)](https://travis-ci.org/end2endzone/RapidAssist) |
 
-AppVeyor build statistics:
-
-[![Build statistics](https://buildstats.info/appveyor/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master)
-
-
-# RapidAssist
-
-RapidAssist is a lite cross-platform library that assist you with the most c++ repretitive task
 
 # Usage
 
