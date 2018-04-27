@@ -363,7 +363,11 @@ namespace ra
         ss << ", ";
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
-      sprintf(buffer, "{address %u(0x%X) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
+#ifdef _WIN32
+      sprintf(buffer, "{address %Iu(0x%IX) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
+#else
+      sprintf(buffer, "{address %zu(0x%zX) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
+#endif
       ss << buffer;
       //ss << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
     }

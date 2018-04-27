@@ -2,6 +2,7 @@
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
+#include "environment.h"
 
 namespace ra
 {
@@ -295,10 +296,17 @@ namespace ra
 std::string& operator<<(std::string& str, const void * value)
 {
   char buffer[1024];
-  if (sizeof(void*) == 4)
-    sprintf(buffer, "0x%08X", value);
-  else if (sizeof(void*) == 8)
-    sprintf(buffer, "0x%016X", value);
+#ifdef _WIN32
+  if (ra::environment::isProcess32Bit())
+    sprintf(buffer, "0x%08IX", value);
+  else if (ra::environment::isProcess64Bit())
+    sprintf(buffer, "0x%016IX", value);
+#else
+  if (ra::environment::isProcess32Bit())
+    sprintf(buffer, "0x%08zX", value);
+  else if (ra::environment::isProcess64Bit())
+    sprintf(buffer, "0x%016zX", value);
+#endif
   str.append(buffer);
   return str;
 }
