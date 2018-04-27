@@ -42,7 +42,7 @@ namespace ra { namespace environment { namespace test
       std::string actual = environment::getEnvironmentVariable("TEMP");
       ASSERT_NE("", actual);
     }
-#elif UNIX
+#elif __linux__
     //test SHELL
     {
       std::string actual = environment::getEnvironmentVariable("SHELL");

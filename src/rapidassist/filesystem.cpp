@@ -209,7 +209,7 @@ namespace ra
       {
         return getShortPathFormEstimation(iPath);
       }
-#elif UNIX
+#elif __linux__
       //no such thing as short path form in unix
       return getShortPathFormEstimation(iPath);
 #endif

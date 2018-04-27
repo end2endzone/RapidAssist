@@ -412,7 +412,7 @@ namespace ra { namespace filesystem { namespace test
   {
 #ifdef WIN32
       ASSERT_EQ('\\', filesystem::getPathSeparator());
-#elif UNIX
+#elif __linux__
       ASSERT_EQ('/', filesystem::getPathSeparator());
 #endif
   }
