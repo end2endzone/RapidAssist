@@ -6,6 +6,7 @@
 
 #include "filesystem.h"
 #include "string_.h"
+#include "environment.h"
 
 using namespace ra::filesystem;
 using namespace ra::strings;
@@ -540,34 +541,22 @@ namespace ra
 
   bool gTestHelper::isProcessorX86()
   {
-    return !isProcessorX64();
+    return environment::isProcess32Bit();
   }
 
   bool gTestHelper::isProcessorX64()
   {
-#ifdef _WIN64
-    return true;
-#else
-    return false;
-#endif
+    return environment::isProcess64Bit();
   }
 
   bool gTestHelper::isDebugCode()
   {
-#ifdef _DEBUG
-    return true;
-#else
-    return false;
-#endif
+    return environment::isConfigurationDebug();
   }
 
   bool gTestHelper::isReleaseCode()
   {
-#ifdef NDEBUG
-    return true;
-#else
-    return false;
-#endif
+    return environment::isConfigurationRelease();
   }
 
   std::string gTestHelper::getTestSuiteName()

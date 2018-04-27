@@ -51,6 +51,20 @@ namespace ra { namespace environment { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testProcessXXBit)
+  {
+    if (environment::isProcess32Bit())
+    {
+      ASSERT_FALSE(environment::isProcess64Bit());
+      ASSERT_EQ(4, sizeof(void*));
+    }
+    else if (environment::isProcess64Bit())
+    {
+      ASSERT_FALSE(environment::isProcess32Bit());
+      ASSERT_EQ(8, sizeof(void*));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace environment
 } //namespace ra
