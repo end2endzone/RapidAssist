@@ -207,10 +207,29 @@ namespace ra
       //See the following for details:
       //  https://stackoverflow.com/questions/25583498/clock-monotonic-vs-clock-monotonic-raw-truncated-values
       //  https://stackoverflow.com/questions/14270300/what-is-the-difference-between-clock-monotonic-clock-monotonic-raw
+      //  https://stackoverflow.com/questions/31073923/clockid-t-clock-gettime-first-argument-portability
       struct timespec now;
-      clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+      clockid_t clock_id = 0;
+
+      //use the best clock available on the system.
+      if (clock_gettime(CLOCK_MONOTONIC_RAW, &now) == 0) { clock_id = CLOCK_MONOTONIC_RAW; }
+      else if (clock_gettime(CLOCK_MONOTONIC, &now) == 0) { clock_id = CLOCK_MONOTONIC; }
+      else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
+      else
+      {
+        //all calls to clock_gettime() have failed.
+        //fallback to gettimeofday()
+        struct timeval tm;
+        gettimeofday( &tm, NULL );
+        double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
+        return seconds;
+      }
+      
+      //clock_gettime() is successful
       double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
       return seconds;
+#else
+      return -1.0;
 #endif
     }
 
@@ -220,10 +239,27 @@ namespace ra
       InitMillisecondsInterruptTimer();
       return GetMillisecondsTimerWin32();
 #elif __linux__
-      struct timeval tm;
-      gettimeofday( &tm, NULL );
-      double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
+      struct timespec now;
+      clockid_t clock_id = 0;
+      
+      if (clock_gettime(CLOCK_MONOTONIC_COARSE, &now) == 0) { clock_id = CLOCK_MONOTONIC_COARSE; }
+      else if (clock_gettime(CLOCK_REALTIME_COARSE, &now) == 0) { clock_id = CLOCK_REALTIME_COARSE; }
+      else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
+      else
+      {
+        //all calls to clock_gettime() have failed.
+        //fallback to gettimeofday()
+        struct timeval tm;
+        gettimeofday( &tm, NULL );
+        double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
+        return seconds;
+      }
+      
+      //clock_gettime() is successful
+      double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
       return seconds;
+#else
+      return -1.0;
 #endif
     }
 

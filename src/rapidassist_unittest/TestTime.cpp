@@ -112,10 +112,11 @@ namespace ra { namespace time { namespace test
  
       double milliseconds = (time2 - time1)*1000.0;
       double microseconds = milliseconds*1000.0;
-      printf("%f microseconds, %f milliseconds\n", microseconds, milliseconds);
+      printf("%f milliseconds, %f microseconds\n", milliseconds, microseconds);
  
-      //we expect a maximum of 2 milliseconds resolution
-      ASSERT_LT(milliseconds, 2); //lower than 2ms
+      //Windows have ~15.6ms accuracy by default. The interrupt timer can be modified to get ~1ms accuracy.
+      //Linux usually have 10ms accuracy.
+      ASSERT_LE(milliseconds, 16);
     }
   }
   //--------------------------------------------------------------------------------------------------

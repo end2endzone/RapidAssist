@@ -75,14 +75,14 @@ namespace ra
     ///Portable function to calculate the elapsed time with microseconds resolution.
     ///</summary>
     ///<remarks>The function query the internal high resolution clock/timer to calculate the elapsed time.</remarks>
-    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution.</returns>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution. Returns -1.0 on error.</returns>
     double getMicrosecondsTimer();
 
     ///<summary>
     ///Portable function to calculate the elapsed time with milliseconds resolution.
     ///</summary>
     ///<remarks>The function uses the internal clock to calculate the elapsed time.</remarks>
-    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution.</returns>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
     double getMillisecondsTimer();
 
   }; //namespace time
