@@ -69,13 +69,13 @@ namespace ra { namespace time { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTime, testGetMicrosecondsTimerPerformance)
   {
-    //find the resolution of the getHighResolutionTime() function
+    //find the resolution of the getMicrosecondsTimer() function
     for (size_t i=0; i<10; i++)
     {
       double time1 = getMicrosecondsTimer();
       double time2 = time1;
  
-      //loop until the returned value of getHighResolutionTime() has changed
+      //loop until the returned value of getMicrosecondsTimer() has changed
       while (time2 == time1)
         time2 = getMicrosecondsTimer();
  
@@ -93,6 +93,37 @@ namespace ra { namespace time { namespace test
     double time1 = getMicrosecondsTimer();
     time::millisleep(800);
     double time2 = getMicrosecondsTimer();
+ 
+    double milliseconds = (time2 - time1)*1000.0;
+    ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTime, testGetMillisecondsTimerPerformance)
+  {
+    //find the resolution of the getMillisecondsTimer() function
+    for (size_t i=0; i<10; i++)
+    {
+      double time1 = getMillisecondsTimer();
+      double time2 = time1;
+ 
+      //loop until the returned value of getMillisecondsTimer() has changed
+      while (time2 == time1)
+        time2 = getMillisecondsTimer();
+ 
+      double milliseconds = (time2 - time1)*1000.0;
+      double microseconds = milliseconds*1000.0;
+      printf("%f microseconds, %f milliseconds\n", microseconds, milliseconds);
+ 
+      //we expect a maximum of 2 milliseconds resolution
+      ASSERT_LT(milliseconds, 2); //lower than 2ms
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTime, testGetMillisecondsTimerAgaintsSleep)
+  {
+    double time1 = getMillisecondsTimer();
+    time::millisleep(800);
+    double time2 = getMillisecondsTimer();
  
     double milliseconds = (time2 - time1)*1000.0;
     ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux

@@ -72,10 +72,18 @@ namespace ra
     int getCopyrightYear();
 
     ///<summary>
-    ///Query the internal high resolution clock/timer to calculate the elapsed time since an undefined starting point.
+    ///Portable function to calculate the elapsed time with microseconds resolution.
     ///</summary>
-    ///<returns>Returns the elapsed time in seconds since an undefined starting point.</returns>
+    ///<remarks>The function query the internal high resolution clock/timer to calculate the elapsed time.</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution.</returns>
     double getMicrosecondsTimer();
+
+    ///<summary>
+    ///Portable function to calculate the elapsed time with milliseconds resolution.
+    ///</summary>
+    ///<remarks>The function uses the internal clock to calculate the elapsed time.</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution.</returns>
+    double getMillisecondsTimer();
 
   }; //namespace time
 } //namespace ra

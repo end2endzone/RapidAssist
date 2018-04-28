@@ -30,6 +30,16 @@ namespace ra
   namespace time
   {
 
+#ifdef __linux__
+    //linux:
+    //https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
+    //http://nadeausoftware.com/articles/2012/04/c_c_tip_how_measure_elapsed_real_time_benchmarking
+    //POSIX clocks benchmark: https://stackoverflow.com/a/13096917
+ 
+    //mach:
+    //https://gist.github.com/jbenet/1087739
+    //https://stackoverflow.com/questions/21665641/ns-precision-monotonic-clock-in-c-on-linux-and-os-x/21665642#21665642
+#endif
 
 #ifdef _WIN32
     //
@@ -40,8 +50,16 @@ namespace ra
     //  https://gamedev.stackexchange.com/questions/26759/best-way-to-get-elapsed-time-in-miliseconds-in-windows
     //
 
-    //interrupt independent
-    //warning for multicore processors
+    ///<summary>
+    ///Returns the elasped time in seconds since an arbitrary starting point.
+    ///</summary>
+    ///<remarks>
+    ///The function have the following properties:
+    ///  - Have below microsecond accuracy.
+    ///  - Use the QueryPerformanceCounter, affected by multicore processors.
+    ///  - Must be called from the same thread to compute elapsed time.
+    ///</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetPerformanceTimerWin32()
     {
       //Warning for processes running a multicore processors...
@@ -65,6 +83,11 @@ namespace ra
       return seconds;
     }
 
+    ///<summary>
+    ///Initialize the multimedia timer to have a 1 millisecond resolution.
+    ///By default, the resolution is 15.6ms (64Hz).
+    ///The function must be called once per process execution.
+    ///</summary>
     void InitMillisecondsInterruptTimer()
     {
       //allow running only once
@@ -86,6 +109,15 @@ namespace ra
       }
     }
 
+    ///<summary>
+    ///Returns the elasped time in seconds since an arbitrary starting point.
+    ///</summary>
+    ///<remarks>
+    ///The function have the following properties:
+    ///  - Have a fixed ~15.6ms accuracy.
+    ///  - Does not requires the multimedia timer initialization.
+    ///</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetTickCountTimer() //fast constant 15ms timer
     {
       DWORD millisecondsCounter = GetTickCount();
@@ -93,15 +125,17 @@ namespace ra
       return seconds;
     }
 
+    ///<summary>
+    ///Returns the elasped time in seconds since an arbitrary starting point.
+    ///</summary>
+    ///<remarks>
+    ///The function have the following properties:
+    ///  - Have 1ms accuracy.
+    ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
+    ///</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetMillisecondsTimerWin32()
     {
-      static bool firstPass = true;
-      if (firstPass)
-      {
-        firstPass = false;
-        InitMillisecondsInterruptTimer();
-      }
-
       DWORD millisecondsCounter = timeGetTime();
       double seconds = double(millisecondsCounter)/1000.0;
       return seconds;
@@ -113,6 +147,16 @@ namespace ra
     HINSTANCE hKernelDll = LoadLibrary(TEXT("Kernel32.dll"));
     FuncT GetSystemTimePreciseAsFileTime_ = (FuncT) GetProcAddress((HMODULE)hKernelDll, "GetSystemTimePreciseAsFileTime");
 
+    ///<summary>
+    ///Returns the elasped time in seconds since an arbitrary starting point.
+    ///</summary>
+    ///<remarks>
+    ///The function have the following properties:
+    ///  - Have ~1ms accuracy on Windows 7 and before.
+    ///  - Have ~2us accuracy on Windows 8 and up.
+    ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
+    ///</remarks>
+    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetSystemTimeTimerWin32()
     {
       FILETIME ft;
@@ -120,12 +164,12 @@ namespace ra
       if (GetSystemTimePreciseAsFileTime_)
       {
         //Windows 8, Windows Server 2012 and later
-        GetSystemTimePreciseAsFileTime_( &ft );
+        GetSystemTimePreciseAsFileTime_( &ft ); //microseconds accuracy
       }
       else
       {
         //Windows 2000 and later
-        GetSystemTimeAsFileTime( &ft );
+        GetSystemTimeAsFileTime( &ft ); //milliseconds accuracy
       }
       t = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
       return (double)t / 10000000.0;
@@ -143,19 +187,17 @@ namespace ra
 #ifdef WIN32
       //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
       //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
-      //accuracy and works on single or multiple core processors.
+      //accuracy and works on single and multiple core processors without having
+      //to lock the thread on the same core.
       if (GetSystemTimePreciseAsFileTime_)
       {
-        FILETIME ft;
-        GetSystemTimePreciseAsFileTime_(&ft);
-        ULONGLONG time = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
-        double seconds = double(time)/10000000.0;
+        double seconds = GetSystemTimeTimerWin32();
         return seconds;
       }
 
       //Fallback to using QueryPerformanceCounter() but the user must be aware that
       //if the current thread jumps to another core, the calclated elapsed time
-      //will be incorrect or can even be backward. The code which is calculaing the
+      //will be incorrect or can even be backward. The code which is calculating the
       //performance/elapsed time should lock the thread to a single core.
       return GetPerformanceTimerWin32();
 
@@ -171,6 +213,20 @@ namespace ra
       return seconds;
 #endif
     }
+
+    double getMillisecondsTimer()
+    {
+#ifdef WIN32
+      InitMillisecondsInterruptTimer();
+      return GetMillisecondsTimerWin32();
+#elif __linux__
+      struct timeval tm;
+      gettimeofday( &tm, NULL );
+      double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
+      return seconds;
+#endif
+    }
+
 
     DATETIME toDateTime(const std::tm & timeinfo)
     {
