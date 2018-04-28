@@ -14,6 +14,13 @@
 #include <unistd.h> // for usleep()
 #endif
 
+#ifdef WIN32
+#include <Mmsystem.h> //for timeGetTime()
+#pragma comment(lib, "winmm.lib") //for timeGetTime()
+#else
+#include <sys/time.h> //for clock_gettime()
+#endif
+
 #include <time.h> //for time() and localtime()
 #include <string>
 
@@ -22,6 +29,149 @@ namespace ra
 
   namespace time
   {
+
+
+#ifdef _WIN32
+    //
+    //Multiple timing solutions for Windows based systems.
+    //See the following for details:
+    //  http://nadeausoftware.com/articles/2012/04/c_c_tip_how_measure_elapsed_real_time_benchmarking
+    //  http://www.windowstimestamp.com/description
+    //  https://gamedev.stackexchange.com/questions/26759/best-way-to-get-elapsed-time-in-miliseconds-in-windows
+    //
+
+    //interrupt independent
+    //warning for multicore processors
+    double GetPerformanceTimerWin32()
+    {
+      //Warning for processes running a multicore processors...
+      //While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
+      //for multiple processors, bugs in the BIOS or drivers may result in these routines
+      //returning different values as the thread moves from one processor to another.
+      //So, it's best to keep the thread on a single processor.
+      //See the following for details:
+      //  https://msdn.microsoft.com/en-us/library/windows/desktop/ee417693(v=vs.85).aspx
+      //  https://stackoverflow.com/questions/44020619/queryperformancecounter-on-multi-core-processor-under-windows-10-behaves-erratic
+      //  https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247(v=vs.85).aspx (SetThreadAffinityMask function)
+
+      static LARGE_INTEGER frequency = {0};
+      //if first pass
+      if (frequency.QuadPart == 0)
+        QueryPerformanceFrequency(&frequency);
+
+      LARGE_INTEGER now;
+      QueryPerformanceCounter(&now);
+      double seconds = now.QuadPart / double(frequency.QuadPart);
+      return seconds;
+    }
+
+    void InitMillisecondsInterruptTimer()
+    {
+      //allow running only once
+      static bool firstPass = true;
+      if (!firstPass)
+        return;
+      firstPass = false;
+
+      //force 1ms resolution, default resolution is ~15ms
+      timeBeginPeriod(1);
+
+      //wait for the system to apply the new period
+      DWORD diff = 0;
+      while(diff == 0 || diff > 5)
+      {
+        DWORD time1 = timeGetTime();
+        DWORD time2 = timeGetTime();
+        diff = time2-time1;
+      }
+    }
+
+    double GetTickCountTimer() //fast constant 15ms timer
+    {
+      DWORD millisecondsCounter = GetTickCount();
+      double seconds = double(millisecondsCounter)/1000.0;
+      return seconds;
+    }
+
+    double GetMillisecondsTimerWin32()
+    {
+      static bool firstPass = true;
+      if (firstPass)
+      {
+        firstPass = false;
+        InitMillisecondsInterruptTimer();
+      }
+
+      DWORD millisecondsCounter = timeGetTime();
+      double seconds = double(millisecondsCounter)/1000.0;
+      return seconds;
+    }
+
+    //Find if GetSystemTimePreciseAsFileTime() function is available on current system
+    // https://stackoverflow.com/questions/24241916/how-to-check-win-api-function-support-during-runtime
+    typedef void (WINAPI *FuncT) (LPFILETIME lpSystemTimeAsFileTime);
+    HINSTANCE hKernelDll = LoadLibrary(TEXT("Kernel32.dll"));
+    FuncT GetSystemTimePreciseAsFileTime_ = (FuncT) GetProcAddress((HMODULE)hKernelDll, "GetSystemTimePreciseAsFileTime");
+
+    double GetSystemTimeTimerWin32()
+    {
+      FILETIME ft;
+      ULONGLONG t;
+      if (GetSystemTimePreciseAsFileTime_)
+      {
+        //Windows 8, Windows Server 2012 and later
+        GetSystemTimePreciseAsFileTime_( &ft );
+      }
+      else
+      {
+        //Windows 2000 and later
+        GetSystemTimeAsFileTime( &ft );
+      }
+      t = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
+      return (double)t / 10000000.0;
+    }
+#endif
+
+
+
+
+
+
+
+    double getMicrosecondsTimer()
+    {
+#ifdef WIN32
+      //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
+      //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
+      //accuracy and works on single or multiple core processors.
+      if (GetSystemTimePreciseAsFileTime_)
+      {
+        FILETIME ft;
+        GetSystemTimePreciseAsFileTime_(&ft);
+        ULONGLONG time = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
+        double seconds = double(time)/10000000.0;
+        return seconds;
+      }
+
+      //Fallback to using QueryPerformanceCounter() but the user must be aware that
+      //if the current thread jumps to another core, the calclated elapsed time
+      //will be incorrect or can even be backward. The code which is calculaing the
+      //performance/elapsed time should lock the thread to a single core.
+      return GetPerformanceTimerWin32();
+
+#elif __linux__
+      //Using CLOCK_MONOTONIC_RAW because timer is not adjusted by adjtime/NTP.
+      //We won't risk having a frequency adjustement while the process is running.
+      //See the following for details:
+      //  https://stackoverflow.com/questions/25583498/clock-monotonic-vs-clock-monotonic-raw-truncated-values
+      //  https://stackoverflow.com/questions/14270300/what-is-the-difference-between-clock-monotonic-clock-monotonic-raw
+      struct timespec now;
+      clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+      double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
+      return seconds;
+#endif
+    }
+
     DATETIME toDateTime(const std::tm & timeinfo)
     {
       DATETIME dt;
@@ -69,7 +219,7 @@ namespace ra
     {
       time_t rawtime;
       std::time(&rawtime);
-      
+
       std::tm timeinfo = *localtime(&rawtime);
       return timeinfo;
     }
@@ -78,7 +228,7 @@ namespace ra
     {
       time_t rawtime;
       std::time(&rawtime);
-      
+
       std::tm timeinfo = *gmtime(&rawtime);
       return timeinfo;
     }

@@ -1,3 +1,7 @@
+Changes for 0.3.0:
+
+* New microseconds and milliseconds timers.
+
 Changes for 0.2.0:
 
 * Moved all source code under `ra` namespace (for Rapid Assist)

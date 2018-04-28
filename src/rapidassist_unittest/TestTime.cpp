@@ -19,14 +19,14 @@ namespace ra { namespace time { namespace test
 
     //assert that millisleep() is actually sleeping
     std::tm time1 = getLocalTime();
-    ASSERT_EQ(0, time::millisleep(5000 + 50)); //at least 5 seconds
+    ASSERT_EQ(0, time::millisleep(3000 + 50)); //at least 3 seconds
     std::tm time2 = getLocalTime();
 
     //convert hour, minute and seconds to absolute seconds
     int seconds1 = time1.tm_hour*3600+time1.tm_min*60+time1.tm_sec;
     int seconds2 = time2.tm_hour*3600+time2.tm_min*60+time2.tm_sec;
     
-    static const int EXPECTED = 5;
+    static const int EXPECTED = 3;
     int diff = seconds2 - seconds1;
 
     //assert near
@@ -65,6 +65,37 @@ namespace ra { namespace time { namespace test
     std::tm utc = getUtcTime();
 
     ASSERT_NE(local.tm_hour, utc.tm_hour);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTime, testGetMicrosecondsTimerPerformance)
+  {
+    //find the resolution of the getHighResolutionTime() function
+    for (size_t i=0; i<10; i++)
+    {
+      double time1 = getMicrosecondsTimer();
+      double time2 = time1;
+ 
+      //loop until the returned value of getHighResolutionTime() has changed
+      while (time2 == time1)
+        time2 = getMicrosecondsTimer();
+ 
+      double milliseconds = (time2 - time1)*1000.0;
+      double microseconds = milliseconds*1000.0;
+      printf("%f microseconds, %f milliseconds\n", microseconds, milliseconds);
+ 
+      //we expect a maximum of 100 microseconds resolution
+      ASSERT_LT(microseconds, 100); //lower than 100us
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTime, testGetMicrosecondsTimerAgaintsSleep)
+  {
+    double time1 = getMicrosecondsTimer();
+    time::millisleep(800);
+    double time2 = getMicrosecondsTimer();
+ 
+    double milliseconds = (time2 - time1)*1000.0;
+    ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
