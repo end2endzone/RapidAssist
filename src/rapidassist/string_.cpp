@@ -295,17 +295,18 @@ namespace ra
 
 std::string& operator<<(std::string& str, const void * value)
 {
+  size_t address = reinterpret_cast<size_t>(value);
   char buffer[1024];
 #ifdef _WIN32
   if (ra::environment::isProcess32Bit())
-    sprintf(buffer, "0x%08IX", value);
+    sprintf(buffer, "0x%08IX", address);
   else if (ra::environment::isProcess64Bit())
-    sprintf(buffer, "0x%016IX", value);
+    sprintf(buffer, "0x%016IX", address);
 #else
   if (ra::environment::isProcess32Bit())
-    sprintf(buffer, "0x%08zX", value);
+    sprintf(buffer, "0x%08zX", address);
   else if (ra::environment::isProcess64Bit())
-    sprintf(buffer, "0x%016zX", value);
+    sprintf(buffer, "0x%016zX", address);
 #endif
   str.append(buffer);
   return str;
