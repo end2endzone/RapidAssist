@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Github Releases](https://img.shields.io/github/release/end2endzone/rapidassist.svg)](https://github.com/end2endzone/rapidassist/releases)
 
-RapidAssist is a lite cross-platform library that assist you with the most c++ repretitive task
+RapidAssist is a lite cross-platform library that assist you with the most c++ repretitive task.
 
 ## Status
 
@@ -45,7 +45,7 @@ TEST_F(TestGTestHelper, testFileExists)
 }
 ```
 
-# Build / Install
+# Build
 
 Please refer to file [INSTALL.md](INSTALL.md) for details on how installing/building the application.
 
