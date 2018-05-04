@@ -1,17 +1,19 @@
-# RapidAssist
+# RapidAssist #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Github Releases](https://img.shields.io/github/release/end2endzone/rapidassist.svg)](https://github.com/end2endzone/rapidassist/releases)
 
-RapidAssist is a lite cross-platform library that assist you with the most c++ repretitive task.
+RapidAssist is a lite cross-platform library that assist you with the most c++ repetitive task.
 
-## Status
+
+
+## Status ##
 
 Build:
 
 | Service | Build | Tests |
 |----|-------|-------|
 | AppVeyor | [![Build status](https://img.shields.io/appveyor/ci/end2endzone/RapidAssist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
-| Travic CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) |  |
+| Travis CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) |  |
 
 Statistics:
 
@@ -19,67 +21,83 @@ Statistics:
 |----------|-----------|
 | [![Statistics](https://buildstats.info/appveyor/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master) | [![Statistics](https://buildstats.info/travisci/chart/end2endzone/RapidAssist)](https://travis-ci.org/end2endzone/RapidAssist) |
 
-# Usage
+
+
+
+# Usage #
 
 The following instructions show how to use the library.
 
-## Source code example
+
+
+## Source code example ##
 The following section shows an example of using RapidAssist.
 
 Assume a developer needs to test the following library function:
 ```cpp
-#include "gtesthelper.h"
-
-TEST_F(TestGTestHelper, testFileExists)
+TEST_F(TestDemo, testCodeSample)
 {
   gTestHelper & hlp = gTestHelper::getInstance();
-  
+
   //create a dummy file
   static const int FILE_SIZE = 1000; //bytes
-  const std::string path = hlp.getTestQualifiedName() + ".tmp";
+  const std::string path = hlp.getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
   ASSERT_TRUE( hlp.createFile(path.c_str(), FILE_SIZE) );
-  
-  //assert that a file exists
-  ASSERT_TRUE ( hlp.fileExists( __FILE__ ) );
-  ASSERT_FALSE( hlp.fileExists( __FILE__"not exist" ) );
+
+  //test that a generated file is equals to the expected file
+  std::string generatedFile = generateTestFile();
+  std::string expectedFile = getExpectedTestFilePath();
+  ASSERT_TRUE ( hlp.isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
+
+  //split a string into multiple parts
+  StringVector words = splitString("The quick brown fox jumps over the lazy dog", " ");
+  size_t numWords = words.size();
+
+  //converting numeric values to string
+  std::string IntMaxStr = ra::strings::toString(UINT64_MAX); //returns "18446744073709551615"
+
+  //search and replace in strings
+  std::string whoiam = "My name is Antoine and I am a superhero";
+  int numReplaced = strReplace(whoiam, "hero", "vilan");
 }
 ```
 
-# Build
+
+
+
+# Build #
 
 Please refer to file [INSTALL.md](INSTALL.md) for details on how installing/building the application.
 
-# Testing
-RapidAssist comes with unit tests which help maintaining the product stability and level of quality.
 
-Test are build using the Google Test v1.6.0 framework. For more information on how googletest is working, see the [google test documentation primer](https://github.com/google/googletest/blob/release-1.8.0/googletest/docs/V1_6_Primer.md).  
 
-Test are automatically build when building the solution. See [INSTALL.md](INSTALL.md) for details on how to build the software.
 
-To run tests, open a file navigator and browse to the output folder (for example `c:\projects\rapidassist\build\bin\Release`) and run `rapidassist_tests.exe` executable.
+# Platform #
 
-Test results are saved in junit format in file `rapidassist_unittest.x86.debug.xml` or `rapidassist_unittest.x86.release.xml` depending on the selected configuration.
+RapidAssist has been tested with the following platform:
 
-See also the latest test results at the beginning of the document.
+*   Linux x86/x64
+*   Windows x86/x64
 
-# Compatible with
 
-RapidAssist is available for multiple platform:
 
-*   Linux
-*   Windows
-*   Mac OS (soon)
 
-# Versioning
+# Versioning #
 
 We use [Semantic Versioning 2.0.0](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/end2endzone/RapidAssist/tags).
 
-# Authors
+
+
+
+# Authors #
 
 * **Antoine Beauchamp** - *Initial work* - [end2endzone](https://github.com/end2endzone)
 
 See also the list of [contributors](https://github.com/end2endzone/RapidAssist/blob/master/AUTHORS) who participated in this project.
 
-# License
+
+
+
+# License #
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

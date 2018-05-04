@@ -1,4 +1,4 @@
-# RapidAssist - Installing #
+# Install #
 
 The library does not need to be installed on the system (it does not provide an installation package). It is deployed using a zip archive which only contains the source code which must be compiled to be used by other applications and libraries.
 
@@ -11,7 +11,7 @@ The following steps shows how to install the library:
 
 
 
-# Building #
+# Build #
 
 This section explains how to compile and build the software and how to get a development environment ready.
 
@@ -51,7 +51,7 @@ These are the base requirements to build and use RapidAssist:
 
 ### RapidAssist ###
 
-1) Follow [install](#Installing) instructions specified at the beginning of this document.
+1) Follow [install](#Install) instructions specified at the beginning of this document.
  
 2) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
 
@@ -74,7 +74,7 @@ Test are build using the Google Test v1.6.0 framework. For more information on h
 
 Test are automatically build when building the solution.
 
-To run tests, open a shell prompt and browse to the `build/bin` folder and run `rapidassist_unittest` executable. Windows users must also specify the configuration name (for example `build\bin\Release`).
+To run tests, navigate to the `build/bin` folder and run `rapidassist_unittest` executable. For Windows users, the executable is located in `build\bin\Release`.
 
 Test results are saved in junit format in file `rapidassist_unittest.x86.debug.xml` or `rapidassist_unittest.x86.release.xml` depending on the selected configuration.
 
