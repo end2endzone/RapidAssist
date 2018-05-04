@@ -1,4 +1,4 @@
-#include "string_.h"
+#include "strings.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()

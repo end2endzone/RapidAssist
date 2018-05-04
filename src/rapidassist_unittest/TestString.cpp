@@ -1,5 +1,5 @@
 #include "TestString.h"
-#include "string_.h"
+#include "strings.h"
 #include "environment.h"
 
 namespace ra { namespace strings { namespace test

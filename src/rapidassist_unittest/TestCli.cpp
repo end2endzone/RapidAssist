@@ -1,6 +1,6 @@
 #include "TestCli.h"
 #include "cli.h"
-#include "string_.h"
+#include "strings.h"
 
 namespace ra { namespace cli { namespace test
 {

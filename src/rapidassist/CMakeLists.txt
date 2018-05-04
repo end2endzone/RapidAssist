@@ -19,8 +19,8 @@ add_library(rapidassist STATIC
   random.h
   time_.cpp
   time_.h
-  string_.cpp
-  string_.h
+  strings.cpp
+  strings.h
 )
 
 link_directories(${LIBRARY_OUTPUT_PATH})

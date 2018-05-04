@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 #include "filesystem.h"
-#include "string_.h"
+#include "strings.h"
 #include "environment.h"
 #include "cli.h"
 

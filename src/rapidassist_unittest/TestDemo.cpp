@@ -1,6 +1,6 @@
 #include "TestDemo.h"
 #include "gtesthelper.h"
-#include "string_.h"
+#include "strings.h"
 
 using namespace ra::strings;
 
