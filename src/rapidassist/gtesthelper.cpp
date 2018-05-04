@@ -7,6 +7,7 @@
 #include "filesystem.h"
 #include "string_.h"
 #include "environment.h"
+#include "cli.h"
 
 using namespace ra::filesystem;
 using namespace ra::strings;
@@ -77,28 +78,6 @@ namespace ra
   //------------------------
   // Methods
   //------------------------
-  bool gTestHelper::findArgument(const char * iName, std::string & oValue, int argc, char **argv)
-  {
-    //Build search pattern
-    std::string pattern = "--";
-    pattern.append(iName);
-    pattern.append("=");
-
-    for(int i=0; i<argc; i++)
-    {
-      std::string arg = argv[i];
-      size_t pos = arg.find(pattern);
-      if (pos != std::string::npos)
-      {
-        //found. extracting value
-        oValue = subString2(arg, pos+1, 99999);
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   std::string gTestHelper::mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter)
   {
     return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
@@ -108,7 +87,7 @@ namespace ra
   {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
-    bool found = findArgument("gtest_filter", gtest_filter, argc, argv);
+    bool found = ra::cli::parseArgument("gtest_filter", gtest_filter, argc, argv);
     if (found)
       return mergeFilter(iPositiveFilter, iNegativeFilter, gtest_filter.c_str());
     return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);

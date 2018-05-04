@@ -8,6 +8,8 @@ add_executable(rapidassist_unittest
   main.cpp
   TestCli.cpp
   TestCli.h
+  TestDemo.cpp
+  TestDemo.h
   TestEnvironment.cpp
   TestEnvironment.h
   TestFilesystem.cpp

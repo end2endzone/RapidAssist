@@ -110,19 +110,6 @@ namespace ra
 
     //
     // Description:
-    //  Finds the given arguments within an argument list.
-    //  Returns true if the argument is found. Returns false otherwise.
-    //  Arguments must be supplied with the following format: --name=value
-    // Arguments:
-    //   iName:   The name of the argument
-    //   oValue:  The value of the argument (without the name of the argument)
-    //   argc:    The number of arguments supplied in argv.
-    //   argv:    The argument list.
-    // 
-    bool findArgument(const char * iName, std::string & oValue, int argc, char **argv);
-
-    //
-    // Description:
     //  This function build a GTEST filter automatically based on a given positive and a negative filter.
     //  The result filter format is the following:
     //    positive[-negative] where 
