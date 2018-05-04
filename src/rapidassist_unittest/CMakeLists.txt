@@ -14,8 +14,8 @@ add_executable(rapidassist_unittest
   TestEnvironment.h
   TestFilesystem.cpp
   TestFilesystem.h
-  TestGTestHelper.cpp
-  TestGTestHelper.h
+  TestGTestHelp.cpp
+  TestGTestHelp.h
   TestLogger.cpp
   TestLogger.h
   TestRandom.cpp

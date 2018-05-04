@@ -1,4 +1,4 @@
-#include "gtesthelper.h"
+#include "gtesthelp.h"
 #include <sstream> //for stringstream
 #include <iostream> //for std::hex
 #include <cstdio> //for remove()
@@ -14,6 +14,8 @@ using namespace ra::strings;
 
 namespace ra
 {
+  namespace gtesthelp
+  {
 
   //
   // Description:
@@ -61,29 +63,12 @@ namespace ra
     return tmp;
   }
 
-  gTestHelper::gTestHelper()
-  {
-  }
-
-  gTestHelper::~gTestHelper()
-  {
-  }
-
-  gTestHelper & gTestHelper::getInstance()
-  {
-    static gTestHelper instance;
-    return instance;
-  }
-
-  //------------------------
-  // Methods
-  //------------------------
-  std::string gTestHelper::mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter)
+  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter)
   {
     return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
   }
 
-  std::string gTestHelper::mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv)
+  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv)
   {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
@@ -93,7 +78,7 @@ namespace ra
     return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
   }
 
-  std::string gTestHelper::mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter)
+  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter)
   {
     std::string filter;
 
@@ -104,7 +89,7 @@ namespace ra
     {
       std::string argPositiveFilter;
       std::string argNegativeFilter;
-      gTestHelper::splitFilter(iExistingFilter, argPositiveFilter, argNegativeFilter);
+      splitFilter(iExistingFilter, argPositiveFilter, argNegativeFilter);
 
       //append argument filters to positiveFilter and negativeFilter filters
       if (positiveFilter == "")
@@ -147,7 +132,7 @@ namespace ra
     return filter;
   }
 
-  void gTestHelper::splitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter)
+  void splitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter)
   {
     oPositiveFilter = "";
     oNegativeFilter = "";
@@ -159,7 +144,7 @@ namespace ra
     if (filterString == "")
       return;
 
-    gTestHelper::StringVector filters;
+    StringVector filters;
     splitString(filters, iFilter, "-");
 
     if (filters.size() > 2)
@@ -187,7 +172,7 @@ namespace ra
     }
   }
 
-  gTestHelper::StringVector gTestHelper::getTestList(const char * iTestCasePath)
+  StringVector getTestList(const char * iTestCasePath)
   {
     //check that file exists
     if (!fileExists(iTestCasePath))
@@ -269,18 +254,18 @@ namespace ra
     return testlist;
   }
 
-  bool gTestHelper::isFileEquals(const char* iFile1, const char* iFile2)
+  bool isFileEquals(const char* iFile1, const char* iFile2)
   {
     std::string reason;
     return isFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/ );
   }
 
-  bool gTestHelper::isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason)
+  bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason)
   {
     return isFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/ );
   }
 
-  bool gTestHelper::isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences)
+  bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences)
   {
     //Build basic message
     oReason = "";
@@ -356,7 +341,7 @@ namespace ra
     return false;
   }
 
-  bool gTestHelper::getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FILE_DIFF> & oDifferences, size_t iMaxDifferences)
+  bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FILE_DIFF> & oDifferences, size_t iMaxDifferences)
   {
     FileWrapper f1(iFile1, "rb");
     if (f1.mPointer == NULL)
@@ -418,7 +403,7 @@ namespace ra
     return true;
   }
 
-  bool gTestHelper::findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter)
+  bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter)
   {
     if (!fileExists(iFilename))
       return false;
@@ -426,7 +411,7 @@ namespace ra
     oLine = -1;
     oCharacter = -1;
 
-    gTestHelper::StringVector lines;
+    StringVector lines;
     bool success = getTextFileContent( iFilename, lines );
     if (!success)
       return false;
@@ -446,7 +431,7 @@ namespace ra
     return false;
   }
 
-  bool gTestHelper::getTextFileContent(const char* iFilename, gTestHelper::StringVector & oLines )
+  bool getTextFileContent(const char* iFilename, StringVector & oLines )
   {
     oLines.clear();
 
@@ -470,7 +455,7 @@ namespace ra
     return false;
   }
 
-  bool gTestHelper::createFile(const char * iFilePath, size_t iSize)
+  bool createFile(const char * iFilePath, size_t iSize)
   {
     FILE * f = fopen(iFilePath, "wb");
     if (!f)
@@ -484,7 +469,7 @@ namespace ra
     return true;
   }
 
-  bool gTestHelper::createFile(const char * iFilePath)
+  bool createFile(const char * iFilePath)
   {
     FILE * f = fopen(iFilePath, "w");
     if (f == NULL)
@@ -497,7 +482,7 @@ namespace ra
     return true;
   }
 
-  void gTestHelper::changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue)
+  void changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue)
   {
     //read
     FILE * f = fopen(iFilePath, "rb");
@@ -522,54 +507,54 @@ namespace ra
     fclose(f);
   }
 
-  bool gTestHelper::isProcessorX86()
+  bool isProcessorX86()
   {
     return environment::isProcess32Bit();
   }
 
-  bool gTestHelper::isProcessorX64()
+  bool isProcessorX64()
   {
     return environment::isProcess64Bit();
   }
 
-  bool gTestHelper::isDebugCode()
+  bool isDebugCode()
   {
     return environment::isConfigurationDebug();
   }
 
-  bool gTestHelper::isReleaseCode()
+  bool isReleaseCode()
   {
     return environment::isConfigurationRelease();
   }
 
-  bool gTestHelper::isAppVeyor()
+  bool isAppVeyor()
   {
     return !environment::getEnvironmentVariable("APPVEYOR").empty();
   }
 
-  bool gTestHelper::isTravis()
+  bool isTravis()
   {
     return !environment::getEnvironmentVariable("TRAVIS").empty();
   }
 
-  bool gTestHelper::isJenkins()
+  bool isJenkins()
   {
     return !environment::getEnvironmentVariable("JENKINS_URL").empty();
   }
 
-  std::string gTestHelper::getTestSuiteName()
+  std::string getTestSuiteName()
   {
     std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
     return name;
   }
 
-  std::string gTestHelper::getTestCaseName()
+  std::string getTestCaseName()
   {
     std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     return name;
   }
 
-  std::string gTestHelper::getTestQualifiedName()
+  std::string getTestQualifiedName()
   {
     const char * testSuiteName = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
     const char * testCaseName = ::testing::UnitTest::GetInstance()->current_test_info()->name();
@@ -582,4 +567,5 @@ namespace ra
     return name;
   }
 
+  } //namespace gtesthelp
 } //namespace ra

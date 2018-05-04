@@ -1,41 +1,23 @@
-#ifndef RA_GTESTHELPER_H
-#define RA_GTESTHELPER_H
+#ifndef RA_GTESTHELP_H
+#define RA_GTESTHELP_H
 
 #include <string>
 #include <vector>
 
+#include "strings.h"
+
+using ra::strings::StringVector;
+
 namespace ra
 {
-
-  class gTestHelper
+  namespace gtesthelp
   {
-    //------------------------
-    // Singleton
-    //------------------------
-  private:
-    gTestHelper();
-  public:
-    ~gTestHelper();
-    static gTestHelper & getInstance();
-
-  public:
-    //------------------------
-    // Inner classes & structures
-    //------------------------
-
-    typedef std::vector<std::string> StringVector;
-
     struct FILE_DIFF
     {
       size_t offset;    //offset in files where a difference is located
       unsigned char c1; //character of first  file
       unsigned char c2; //character of second file
     };
-
-  public:
-    //------------------------
-    // Methods
-    //------------------------
 
     //
     // Description:
@@ -79,7 +61,7 @@ namespace ra
     //   iFilename:   The path of the file.
     //   oLines:      The content of the file line by line.
     // 
-    bool getTextFileContent(const char* iFilename, gTestHelper::StringVector & oLines );
+    bool getTextFileContent(const char* iFilename, StringVector & oLines );
 
     //
     // Description:
@@ -145,11 +127,11 @@ namespace ra
     //  Returns a list of all runnable test cases in a gTest compatible test.
     //  Each test case is listed in the following format: testsuite.testcase
     // Example:
-    //  TestGTestHelper.testFilters
+    //  TestGTestHelp.testFilters
     // Arguments:
     //  iTestCasePath:    Path to the GTest compatible executable file
     //
-    gTestHelper::StringVector getTestList(const char * iTestCasePath);
+    StringVector getTestList(const char * iTestCasePath);
 
     //
     // Description
@@ -186,8 +168,7 @@ namespace ra
     //
     std::string getTestQualifiedName();
 
-  };
-
+  } //namespace gtesthelp
 } //namespace ra
 
-#endif //RA_GTESTHELPER_H
+#endif //RA_GTESTHELP_H

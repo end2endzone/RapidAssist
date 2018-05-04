@@ -1,12 +1,10 @@
 #include "TestFilesystem.h"
 #include "filesystem.h"
 #include "time_.h"
-#include "gtesthelper.h"
+#include "gtesthelp.h"
 
 namespace ra { namespace filesystem { namespace test
 {
-  gTestHelper & helper = gTestHelper::getInstance();
-
   int countValues(const std::vector<std::string> & iList, const std::string & iValue)
   {
     int count = 0;
@@ -40,8 +38,8 @@ namespace ra { namespace filesystem { namespace test
     //test actual value
     {
       //create dummy file
-      std::string filename = helper.getTestQualifiedName();
-      ASSERT_TRUE( helper.createFile(filename.c_str()) );
+      std::string filename = ra::gtesthelp::getTestQualifiedName();
+      ASSERT_TRUE( ra::gtesthelp::createFile(filename.c_str()) );
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
@@ -112,8 +110,8 @@ namespace ra { namespace filesystem { namespace test
     //test found
     {
       //create dummy file
-      std::string filename = helper.getTestQualifiedName();
-      ASSERT_TRUE( helper.createFile(filename.c_str()) );
+      std::string filename = ra::gtesthelp::getTestQualifiedName();
+      ASSERT_TRUE( ra::gtesthelp::createFile(filename.c_str()) );
 
       bool exists = filesystem::fileExists(filename.c_str());
       ASSERT_TRUE(exists);
@@ -560,12 +558,15 @@ namespace ra { namespace filesystem { namespace test
   {
     //assert that unit of return value is seconds
     {
+      //synchronize to the beginning of a new second on wall-clock.
+      ra::time::waitNextSecond();
+
       static const uint64_t EXPECTED = 3;
-      const std::string filename1 = helper.getTestQualifiedName() + ".1.txt";
-      const std::string filename2 = helper.getTestQualifiedName() + ".2.txt";
-      ASSERT_TRUE( helper.createFile(filename1.c_str()) );
+      const std::string filename1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
+      const std::string filename2 = ra::gtesthelp::getTestQualifiedName() + ".2.txt";
+      ASSERT_TRUE( ra::gtesthelp::createFile(filename1.c_str()) );
       ra::time::millisleep(1000*EXPECTED + 50); //at least 3 seconds between the files
-      ASSERT_TRUE( helper.createFile(filename2.c_str()) );
+      ASSERT_TRUE( ra::gtesthelp::createFile(filename2.c_str()) );
 
       uint64_t time1 = filesystem::getFileModifiedDate(filename1);
       uint64_t time2 = filesystem::getFileModifiedDate(filename2);

@@ -11,8 +11,8 @@ add_library(rapidassist STATIC
   environment.h
   filesystem.cpp
   filesystem.h
-  gtesthelper.cpp
-  gtesthelper.h
+  gtesthelp.cpp
+  gtesthelp.h
   logger.cpp
   logger.h
   random.cpp

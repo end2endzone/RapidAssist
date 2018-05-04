@@ -1,11 +1,11 @@
-#ifndef TEST_RA_GTESTHELPER_H
-#define TEST_RA_GTESTHELPER_H
+#ifndef TEST_RA_GTESTHELP_H
+#define TEST_RA_GTESTHELP_H
 
 #include <gtest/gtest.h>
 
 namespace ra { namespace test {
 
-  class TestGTestHelper : public ::testing::Test
+  class TestGTestHelp : public ::testing::Test
   {
   public:
     virtual void SetUp();
@@ -15,4 +15,4 @@ namespace ra { namespace test {
 } //namespace test
 } //namespace ra
 
-#endif //TEST_RA_GTESTHELPER_H
+#endif //TEST_RA_GTESTHELP_H

@@ -54,10 +54,10 @@ add_dependencies(rapidassist_unittest rapidassist)
 
 
 
-# Add googletest to project
+# Add gtesthelp to project
 if (WIN32)
   # https://stackoverflow.com/a/12546288
-  # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
+  # Force building gtesthelp in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 endif()
 add_subdirectory(third_party/googletest)

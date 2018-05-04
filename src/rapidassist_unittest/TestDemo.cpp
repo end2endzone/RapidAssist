@@ -1,8 +1,9 @@
 #include "TestDemo.h"
-#include "gtesthelper.h"
+#include "gtesthelp.h"
 #include "strings.h"
 
 using namespace ra::strings;
+using namespace ra::gtesthelp;
 
 namespace ra { namespace test {
 
@@ -27,17 +28,15 @@ namespace ra { namespace test {
 
   TEST_F(TestDemo, testCodeSample)
   {
-    gTestHelper & hlp = gTestHelper::getInstance();
-  
     //create a dummy file
     static const int FILE_SIZE = 1000; //bytes
-    const std::string path = hlp.getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
-    ASSERT_TRUE( hlp.createFile(path.c_str(), FILE_SIZE) );
+    const std::string path = getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
+    ASSERT_TRUE( createFile(path.c_str(), FILE_SIZE) );
   
     //test that a generated file is equals to the expected file
     std::string generatedFile = generateTestFile();
     std::string expectedFile = getExpectedTestFilePath();
-    ASSERT_TRUE ( hlp.isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
+    ASSERT_TRUE ( isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
 
     //split a string into multiple parts
     StringVector words = splitString("The quick brown fox jumps over the lazy dog", " ");
