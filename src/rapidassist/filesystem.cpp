@@ -2,6 +2,7 @@
 #include "filesystem.h"
 
 #include <algorithm> //for std::transform(), sort()
+#include <string.h> //for strdup()
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -184,7 +185,7 @@ namespace ra
 #elif __linux__
     DIR *dp;
     struct dirent *dirp;
-    if((dp = opendir(dir.c_str())) == NULL)
+    if((dp = opendir(iPath)) == NULL)
     {
       return false;
     }
