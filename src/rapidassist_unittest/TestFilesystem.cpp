@@ -3,6 +3,11 @@
 #include "time_.h"
 #include "gtesthelp.h"
 
+#ifndef _WIN32
+#include <linux/fs.h>
+#include <sys/ioctl.h> //for ioctl()
+#endif
+
 namespace ra { namespace filesystem { namespace test
 {
   int countValues(const std::vector<std::string> & iList, const std::string & iValue)
@@ -85,7 +90,7 @@ namespace ra { namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testNormalizePath)
   {
-#ifdef WIN32
+#ifdef _WIN32
     //test properly formatted path
     {
       static const std::string EXPECTED = "C:\\temp\\foo\\bar.txt";
@@ -112,8 +117,8 @@ namespace ra { namespace filesystem { namespace test
 
     //test incorrectly formatted path
     {
-      static const std::string EXPECTED = "\\tmp\\foo\\bar.txt";
-      std::string path = "/tmp/foo/bar.txt";
+      static const std::string EXPECTED = "/tmp/foo/bar.txt";
+      std::string path = "\\tmp\\foo\\bar.txt";
       filesystem::normalizePath(path);
       ASSERT_EQ(EXPECTED, path);
     }
@@ -405,19 +410,38 @@ namespace ra { namespace filesystem { namespace test
       bool found = filesystem::fileExists(path.c_str());
       ASSERT_FALSE(found);
     }
-
+ 
     //test failure
     {
+#ifndef _WIN32
+      return; //test failure unsupported. See below.
+#endif
+      
       std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
       bool success = ra::gtesthelp::createFile(path.c_str());
       ASSERT_TRUE(success);
 
       //open the file so it cannot be deleted
-      FILE * f = fopen(path.c_str(), "rb");
+      FILE * f = fopen(path.c_str(), "w+");
       ASSERT_TRUE(f != NULL);
+
+#ifndef _WIN32
+      //On linux, an open file can be deleted.
+      //the 'immutable' flag can be set to prevents the file to be deleted
+      //but this requires sudo privileges
+      //int flags = FS_IMMUTABLE_FL;
+      //if(ioctl(fileno(f), FS_IOC_SETFLAGS, &flags) < 0) //set the immutable flag
+      //  perror("ioctl error");
+#endif
 
       success = filesystem::deleteFile(path.c_str());
       ASSERT_FALSE(success);
+
+#ifndef _WIN32
+      //unset the 'immutable' flag allow the file to be deleted.
+      //flags = 0;
+      //ioctl(fileno(f), FS_IOC_SETFLAGS, &flags); //unset the immutable flag
+#endif
 
       //release the file
       fclose(f);
@@ -879,14 +903,17 @@ namespace ra { namespace filesystem { namespace test
       const std::string filename1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
       const std::string filename2 = ra::gtesthelp::getTestQualifiedName() + ".2.txt";
       ASSERT_TRUE( ra::gtesthelp::createFile(filename1.c_str()) );
-      ra::time::millisleep(1000*EXPECTED + 50); //at least 3 seconds between the files
+      //allow 3 seconds between the files
+      for(uint64_t i=0; i<EXPECTED; i++)
+      {
+        ra::time::waitNextSecond();
+      }
       ASSERT_TRUE( ra::gtesthelp::createFile(filename2.c_str()) );
 
       uint64_t time1 = filesystem::getFileModifiedDate(filename1);
       uint64_t time2 = filesystem::getFileModifiedDate(filename2);
       uint64_t diff = time2 - time1;
-      ASSERT_GT(diff, EXPECTED-1); //allow 1 seconds of difference
-      ASSERT_LT(diff, EXPECTED+1); //allow 1 seconds of difference
+      ASSERT_GE(diff, EXPECTED);
     }
   }
   //--------------------------------------------------------------------------------------------------

@@ -238,7 +238,7 @@ namespace ra
       char *copypath = _strdup(iPath);
 #else
       char *copypath = strdup(iPath);
-      static const mode_t mode = 755;
+      static const mode_t mode = 0755;
 #endif
 
       status = 0;
@@ -327,8 +327,8 @@ namespace ra
       if (iPath == NULL)
         return false;
 
-      if (!fileExists(iPath))
-        return true;
+      //if (!fileExists(iPath))
+      //  return true;
 
       //file exists and must be deleted
 
