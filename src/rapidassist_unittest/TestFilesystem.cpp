@@ -17,6 +17,63 @@ namespace ra { namespace filesystem { namespace test
     return count;
   }
 
+  bool createCarsDirectory(const std::string & iBasePath)
+  {
+    // iBasePath
+    // |-cars
+    //   |-prices.txt
+    //   |-Mazda (empty folder)
+    //   |
+    //   |-Honda
+    //   | |-Civic.txt
+    //   |
+    //   |-Toyota
+    //   | |-Corolla.txt
+    //   | |-Camry.txt
+    //   |
+    //   |-Volkswagen
+    //     |-Passat.txt
+    //     |-Golf.txt
+    //     |-Jetta.txt
+
+    //create folders
+    ra::strings::StringVector folders;
+    folders.push_back(iBasePath + "/cars/Mazda");
+    folders.push_back(iBasePath + "/cars/Honda");
+    folders.push_back(iBasePath + "/cars/Toyota");
+    folders.push_back(iBasePath + "/cars/Volkswagen");
+    for(size_t i=0; i<folders.size(); i++)
+    {
+      std::string & folder = folders[i];
+      filesystem::normalizePath(folder);
+
+      bool success = filesystem::createFolder(folder.c_str());
+      if (!success)
+        return false;
+    }
+
+    //create the files
+    ra::strings::StringVector files;
+    files.push_back(iBasePath + "/cars/prices.txt");
+    files.push_back(iBasePath + "/cars/Honda/Civic.txt");
+    files.push_back(iBasePath + "/cars/Toyota/Corolla.txt");
+    files.push_back(iBasePath + "/cars/Toyota/Camry.txt");
+    files.push_back(iBasePath + "/cars/Volkswagen/Passat.txt");
+    files.push_back(iBasePath + "/cars/Volkswagen/Golf.txt");
+    files.push_back(iBasePath + "/cars/Volkswagen/Jetta.txt");
+    for(size_t i=0; i<files.size(); i++)
+    {
+      std::string & file = files[i];
+      filesystem::normalizePath(file);
+
+      bool success = ra::gtesthelp::createFile( file.c_str() );
+      if (!success)
+        return false;
+    }
+
+    return true;
+  }
+
   //--------------------------------------------------------------------------------------------------
   void TestFilesystem::SetUp()
   {
@@ -24,6 +81,43 @@ namespace ra { namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
   void TestFilesystem::TearDown()
   {
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testNormalizePath)
+  {
+#ifdef WIN32
+    //test properly formatted path
+    {
+      static const std::string EXPECTED = "C:\\temp\\foo\\bar.txt";
+      std::string path = EXPECTED;
+      filesystem::normalizePath(path);
+      ASSERT_EQ(EXPECTED, path);
+    }
+
+    //test incorrectly formatted path
+    {
+      static const std::string EXPECTED = "C:\\temp\\foo\\bar.txt";
+      std::string path = "C:/temp/foo/bar.txt";
+      filesystem::normalizePath(path);
+      ASSERT_EQ(EXPECTED, path);
+    }
+#else
+    //test properly formatted path
+    {
+      static const std::string EXPECTED = "/tmp/foo/bar.txt";
+      std::string path = EXPECTED;
+      filesystem::normalizePath(path);
+      ASSERT_EQ(EXPECTED, path);
+    }
+
+    //test incorrectly formatted path
+    {
+      static const std::string EXPECTED = "\\tmp\\foo\\bar.txt";
+      std::string path = "/tmp/foo/bar.txt";
+      filesystem::normalizePath(path);
+      ASSERT_EQ(EXPECTED, path);
+    }
+#endif
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetFileSize)
@@ -118,6 +212,107 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testFindFiles)
+  {
+    //test NULL
+    {
+      ra::strings::StringVector files;
+      bool success = filesystem::findFiles(files, NULL);
+      ASSERT_FALSE(success);
+    }
+
+    //test current directory
+    {
+      ra::strings::StringVector files;
+      bool success = filesystem::findFiles(files, ".", -1);
+      ASSERT_TRUE(success);
+      ASSERT_GT(files.size(), (size_t)0 );
+    }
+
+    //create cars directory tree
+    std::string basePath = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    {
+      bool carsOK = createCarsDirectory(basePath);
+      ASSERT_TRUE(carsOK);
+    }
+
+    //test subdirectory
+    {
+      ra::strings::StringVector files;
+      bool success = filesystem::findFiles(files, basePath.c_str());
+      ASSERT_TRUE(success);
+      ASSERT_GT(files.size(), (size_t)0 );
+
+      //search for known values
+      bool hasMazdaFolder = false; //test finding empty folders
+      bool hasHondaFolder = false; //test non-empty folder
+      bool hasPricesFile = false; //test for non-leaf files
+      bool hasJettaFile = false; //test last filename
+      for(size_t i=0; i<files.size(); i++)
+      {
+        const std::string & entry = files[i];
+        if (entry.find("Mazda") != std::string::npos)
+        {
+          hasMazdaFolder = true;
+        }
+        else if (entry.find("Honda") != std::string::npos)
+        {
+          hasHondaFolder = true;
+        }
+        else if (entry.find("prices.txt") != std::string::npos)
+        {
+          hasPricesFile = true;
+        }
+        else if (entry.find("Jetta") != std::string::npos)
+        {
+          hasJettaFile = true;
+        }
+      }
+      ASSERT_TRUE(hasMazdaFolder);
+      ASSERT_TRUE(hasHondaFolder);
+      ASSERT_TRUE(hasPricesFile);
+      ASSERT_TRUE(hasJettaFile);
+    }
+
+    //test depth
+    {
+      ra::strings::StringVector files;
+      bool success = filesystem::findFiles(files, basePath.c_str(), 1); //cars folders is found at level 1, cars direct subfolder and files are found at level 0.
+      ASSERT_TRUE(success);
+      ASSERT_GT(files.size(), (size_t)0 );
+
+      //search for known values
+      bool hasMazdaFolder = false; //test finding empty folders
+      bool hasHondaFolder = false; //test non-empty folder
+      bool hasPricesFile = false; //test for non-leaf files, leafs at level 1
+      bool hasJettaFile = false; //test for filenames at depth 2
+      for(size_t i=0; i<files.size(); i++)
+      {
+        const std::string & entry = files[i];
+        if (entry.find("Mazda") != std::string::npos)
+        {
+          hasMazdaFolder = true;
+        }
+        else if (entry.find("Honda") != std::string::npos)
+        {
+          hasHondaFolder = true;
+        }
+        else if (entry.find("prices.txt") != std::string::npos)
+        {
+          hasPricesFile = true;
+        }
+        else if (entry.find("Jetta") != std::string::npos)
+        {
+          hasJettaFile = true;
+        }
+      }
+      ASSERT_TRUE (hasMazdaFolder);
+      ASSERT_TRUE (hasHondaFolder);
+      ASSERT_TRUE(hasPricesFile);
+      ASSERT_FALSE(hasJettaFile);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFolderExists)
   {
     //test NULL
@@ -140,6 +335,125 @@ namespace ra { namespace filesystem { namespace test
 
       bool exists = filesystem::folderExists(currentFolder.c_str());
       ASSERT_TRUE(exists);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testCreateFolder)
+  {
+    //test NULL
+    {
+      bool success = filesystem::createFolder(NULL);
+      ASSERT_FALSE(success);
+    }
+
+    //test current folder
+    {
+      bool success = filesystem::createFolder("."); //should return true as the folder already exists
+      ASSERT_TRUE(success);
+    }
+
+    //test folder already exits (call twice)
+    {
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      bool success = false;
+      success = filesystem::createFolder(path.c_str());
+      ASSERT_TRUE(success);
+
+      //call createFolder() twice should still be a success
+      success = filesystem::createFolder(path.c_str());
+      ASSERT_TRUE(success);
+
+      //cleanup
+      deleteFolder(path.c_str());
+    }
+
+    //test subfolders
+    {
+      //build path with subfolders
+      char separator[] = {getPathSeparator(), '\0'};
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
+
+      bool success = false;
+      success = filesystem::createFolder(path.c_str());
+      ASSERT_TRUE(success);
+
+      //cleanup
+      deleteFolder(path.c_str());
+    }
+
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testDeleteFile)
+  {
+    //test NULL
+    {
+      bool success = filesystem::deleteFile(NULL);
+      ASSERT_FALSE(success);
+    }
+
+    //test success
+    {
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      bool success = ra::gtesthelp::createFile(path.c_str());
+      ASSERT_TRUE(success);
+
+      success = filesystem::deleteFile(path.c_str());
+      ASSERT_TRUE(success);
+
+      //assert file is actually deleted
+      bool found = filesystem::fileExists(path.c_str());
+      ASSERT_FALSE(found);
+    }
+
+    //test failure
+    {
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      bool success = ra::gtesthelp::createFile(path.c_str());
+      ASSERT_TRUE(success);
+
+      //open the file so it cannot be deleted
+      FILE * f = fopen(path.c_str(), "rb");
+      ASSERT_TRUE(f != NULL);
+
+      success = filesystem::deleteFile(path.c_str());
+      ASSERT_FALSE(success);
+
+      //release the file
+      fclose(f);
+
+      //try to delete again
+      success = filesystem::deleteFile(path.c_str());
+      ASSERT_TRUE(success);
+
+      //assert the file is really deleted
+      bool found = filesystem::fileExists(path.c_str());
+      ASSERT_FALSE(found);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testDeleteFolder)
+  {
+    //test NULL
+    {
+      bool success = filesystem::deleteFolder(NULL);
+      ASSERT_FALSE(success);
+    }
+
+    //create cars directory tree
+    std::string basePath = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    {
+      bool carsOK = createCarsDirectory(basePath);
+      ASSERT_TRUE(carsOK);
+    }
+
+    //test success
+    {
+      bool success = filesystem::deleteFolder(basePath.c_str());
+      ASSERT_TRUE(success);
+
+      //assert folder is actually deleted
+      ASSERT_FALSE( filesystem::folderExists(basePath.c_str()) );
     }
   }
   //--------------------------------------------------------------------------------------------------

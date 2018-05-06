@@ -65,6 +65,13 @@ namespace ra { namespace environment { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testGetLineSeparator)
+  {
+    const char * separator = environment::getLineSeparator();
+    ASSERT_TRUE( separator != NULL );
+    ASSERT_TRUE( !std::string(separator).empty() );
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace environment
 } //namespace ra

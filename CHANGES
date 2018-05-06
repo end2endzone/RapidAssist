@@ -2,6 +2,7 @@ Changes for 0.3.0:
 
 * New microseconds and milliseconds timers.
 * Moved all methods of class gTestHelper to ra::gtesthelp namespace.
+* New filesystem apis: normalizePath(), findFiles(), createFolder(), deleteFolder() and deleteFile()
 
 Changes for 0.2.0:
 

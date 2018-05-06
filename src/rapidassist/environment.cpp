@@ -65,5 +65,14 @@ namespace ra
 #endif
     }
 
+    const char * getLineSeparator()
+    {
+#ifdef _WIN32
+      return "\r\n";
+#else
+      return "\n";
+#endif
+    }
+
   } //namespace environment
 } //namespace ra

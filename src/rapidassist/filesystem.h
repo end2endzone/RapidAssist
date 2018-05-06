@@ -5,10 +5,18 @@
 #include <string>
 #include <vector>
 
+#include "strings.h"
+
 namespace ra
 {
   namespace filesystem
   {
+
+    ///<summary>
+    ///Normalizes a path.
+    ///</summary>
+    ///<param name="path">An valid file/folder path.</param>
+    void normalizePath(std::string & path);
 
     ///<summary>
     ///Returns the size of the given file path in bytes.
@@ -39,11 +47,42 @@ namespace ra
     bool fileExists(const char * iPath);
 
     ///<summary>
+    ///Find files in a directory / subdirectory.
+    ///</summary>
+    ///<param name="oFiles">The list of files found.</param>
+    ///<param name="iPath">An valid folder path.</param>
+    ///<param name="iDepth">The search depth. Use 0 for finding files in folder iPath (without subfolders). Use -1 for find all files in folder iPath (including subfolders). </param>
+    ///<return>Returns true when oFiles contains the list of files from folder iPath. Returns false otherwise.<return>
+    bool findFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
+    inline bool findFiles(ra::strings::StringVector & oFiles, const char * iPath) { return findFiles(oFiles, iPath, -1); }
+
+    ///<summary>
     ///Determine if a folder exists.
     ///</summary>
     ///<param name="iPath">An valid folder path.</param>
     ///<return>Returns true when the folder exists. Returns false otherwise.<return>
     bool folderExists(const char * iPath);
+
+    ///<summary>
+    ///Creates the specified directory.
+    ///</summary>
+    ///<param name="iPath">An valid folder path.</param>
+    ///<return>Returns true when the folder was created (or already exists). Returns false otherwise.<return>
+    bool createFolder(const char * iPath);
+
+    ///<summary>
+    ///Deletes the specified directory.
+    ///</summary>
+    ///<param name="iPath">An valid folder path.</param>
+    ///<return>Returns true when the folder was deleted (or does not exist). Returns false otherwise.<return>
+    bool deleteFolder(const char * iPath);
+
+    ///<summary>
+    ///Deletes the specified file.
+    ///</summary>
+    ///<param name="iPath">An valid file path.</param>
+    ///<return>Returns true when the file was deleted (or does not exist). Returns false otherwise.<return>
+    bool deleteFile(const char * iPath);
 
     ///<summary>
     ///Returns the file name of a tempporary file.
@@ -93,6 +132,7 @@ namespace ra
     ///</summary>
     ///<return>Returns the character that represents the path separator.<return>
     char getPathSeparator();
+    const char * getPathSeparatorStr();
 
     ///<summary>
     ///Returns the current folder

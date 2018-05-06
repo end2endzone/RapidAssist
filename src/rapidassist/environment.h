@@ -39,6 +39,12 @@ namespace ra
     ///<return>Returns true if the current process is in Release mode. Returns false otherwise.<return>
     bool isConfigurationRelease();
 
+    ///<summary>
+    ///Returns the line separator of the current system.
+    ///</summary>
+    ///<return>Returns the line separator for the current system.<return>
+    const char * getLineSeparator();
+
   } //namespace environment
 } //namespace ra
 

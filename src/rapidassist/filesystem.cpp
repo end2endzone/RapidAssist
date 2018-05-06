@@ -1,8 +1,7 @@
-#include "strings.h"
 #include "environment.h"
 #include "filesystem.h"
 
-#include <algorithm> //for std::transform()
+#include <algorithm> //for std::transform(), sort()
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,12 +10,15 @@
 #define stat _stat
 #define __getcwd _getcwd
 #define __chdir _chdir
+#define __rmdir _rmdir
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
 #elif __linux__
 #define __chdir chdir
 #define __getcwd getcwd
+#define __rmdir rmdir
 #include <unistd.h> //for getcwd()
+#include <dirent.h> //for opendir() and closedir()
 #endif
 
 namespace ra
@@ -24,6 +26,34 @@ namespace ra
 
   namespace filesystem
   {
+    struct greater
+    {
+      template<class T>
+      bool operator()(T const &a, T const &b) const { return a > b; }
+    };
+
+    void normalizePath(std::string & path)
+    {
+      char separator = getPathSeparator();
+
+      if (separator == '/')
+      {
+        //replace invalid path separator
+        ra::strings::strReplace(path, "\\", "/");
+      }
+      else if (separator == '\\')
+      {
+        //replace invalid path separator
+        ra::strings::strReplace(path, "/", "\\");
+      }
+
+      //make sure the last character of the path is not a separator
+      if (path.size() > 0 && path[path.size()-1] == separator)
+      {
+        //remove last character
+        path.erase( path.begin()+(path.size()-1) );
+      }
+    }
 
     uint32_t getFileSize(const char * iPath)
     {
@@ -73,6 +103,109 @@ namespace ra
       return true;
     }
 
+    inline bool isCurrentFolder(const std::string & iPath)
+    {
+      return iPath == ".";
+    }
+
+    inline bool isParentFolder(const std::string & iPath)
+    {
+      return iPath == "..";
+    }
+
+    bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iFolderPath, const std::string & iFilename, bool isFolder, int iDepth)
+    {
+      //is it a valid item ?
+      if (!isCurrentFolder(iFilename) && !isParentFolder(iFilename))
+      {
+        //build full path
+        std::string fullFilename;
+        fullFilename << iFolderPath << getPathSeparatorStr() << iFilename;
+        oFiles.push_back(fullFilename);
+
+        //should we recurse on folder ?
+        if (isFolder && iDepth != 0)
+        {
+          //find children
+          bool result = findFiles(oFiles, fullFilename.c_str(), iDepth-1);
+          if (!result)
+          {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    bool findFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth)
+    {
+      if (iPath == NULL)
+        return false;
+
+      if (!folderExists(iPath))
+        return false;
+
+#ifdef _WIN32
+      //Build a *.* query
+      std::string query;
+      query << iPath << "\\*";
+
+      WIN32_FIND_DATA findDataStruct;
+      HANDLE hFind = FindFirstFile(query.c_str(), &findDataStruct);
+
+      if(hFind == INVALID_HANDLE_VALUE)
+        return false;
+
+      //process directory entry
+      std::string filename = findDataStruct.cFileName;
+      bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+      if (!result)
+      {
+        FindClose(hFind);
+        return false;
+      }
+
+      //next files in folder
+      while (FindNextFile(hFind, &findDataStruct))
+      {
+        filename = findDataStruct.cFileName;
+        bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+        if (!result)
+        {
+          FindClose(hFind);
+          return false;
+        }
+      }
+      FindClose(hFind);
+      return true;
+#elif __linux__
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp = opendir(dir.c_str())) == NULL)
+    {
+      return false;
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+    {
+      std::string filename = dirp->d_name;
+
+      bool isFolder = (dirp->d_type == DT_DIR);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+      if (!result)
+      {
+        closedir(dp);
+        return false;
+      }
+    }
+    closedir(dp);
+    return true;
+#endif
+    }
+
     bool folderExists(const char * iPath)
     {
       if (iPath == NULL || iPath[0] == '\0')
@@ -83,6 +216,123 @@ namespace ra
       if (success)
         success = (__chdir(localFolder.c_str()) == 0);
       return success;
+    }
+
+    bool createFolder(const char * iPath)
+    {
+      if (iPath == NULL)
+        return false;
+
+      if (folderExists(iPath))
+        return true;
+
+      //folder does not already exists and must be created
+
+      //inspired from https://stackoverflow.com/a/675193
+      char *pp;
+      char *sp;
+      int   status;
+      char separator = getPathSeparator();
+#ifdef _WIN32
+      char *copypath = _strdup(iPath);
+#else
+      char *copypath = strdup(iPath);
+      static const mode_t mode = 755;
+#endif
+
+      status = 0;
+      pp = copypath;
+      while (status == 0 && (sp = strchr(pp, separator)) != 0)
+      {
+        if (sp != pp)
+        {
+          /* Neither root nor double slash in path */
+          *sp = '\0';
+#ifdef _WIN32
+          status = _mkdir(copypath);
+#else
+          status = mkdir(copypath, mode);
+#endif
+          if (status != 0)
+          {
+            //folder already exists?
+            if (folderExists(copypath))
+            {
+              status = 0;
+            }
+          }
+          *sp = separator;
+        }
+        pp = sp + 1;
+      }
+      if (status == 0)
+      {
+#ifdef _WIN32
+        status = _mkdir(iPath);
+#else
+        status = mkdir(iPath, mode);
+#endif
+      }
+      free(copypath);
+      return (status == 0);      
+    }
+
+    bool deleteFolder(const char * iPath)
+    {
+      if (iPath == NULL)
+        return false;
+
+      if (!folderExists(iPath))
+        return true;
+
+      //folder exists and must be deleted
+
+      //find all files and folders in specified directory
+      ra::strings::StringVector files;
+      bool foundFiles = findFiles(files, iPath);
+      if (!foundFiles)
+        return false;
+
+      //soft files in reverse order
+      //this allows deleting sub-folders and sub-files first
+      std::sort(files.begin(), files.end(), greater());
+
+      //process files and folders
+      for(size_t i=0; i<files.size(); i++)
+      {
+        const std::string & direntry = files[i];
+        if (fileExists(direntry.c_str()))
+        {
+          bool deleted = deleteFile(direntry.c_str());
+          if (!deleted)
+            return false; //failed to delete file
+        }
+        else
+        {
+          //assume direntry is a folder
+          int result = __rmdir(direntry.c_str());
+          if (result != 0)
+            return false; //failed deleting folder.
+        }
+      }
+
+      //delete the specified folder
+      int result = __rmdir(iPath);
+      return (result == 0);
+    }
+
+    bool deleteFile(const char * iPath)
+    {
+      if (iPath == NULL)
+        return false;
+
+      if (!fileExists(iPath))
+        return true;
+
+      //file exists and must be deleted
+
+      int result = remove(iPath);
+      return (result == 0);
     }
 
     std::string getTemporaryFileName()
@@ -265,6 +515,15 @@ namespace ra
       return '\\';
 #elif __linux__
       return '/';
+#endif
+    }
+
+    const char * getPathSeparatorStr()
+    {
+#ifdef _WIN32
+      return "\\";
+#elif __linux__
+      return "/";
 #endif
     }
 
