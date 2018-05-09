@@ -245,8 +245,7 @@ namespace ra
       bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
       if (!result)
       {
-        closedir(dp);
-        return false;
+        //Warning: Current user is not able to browse this directory.
       }
     }
     closedir(dp);
