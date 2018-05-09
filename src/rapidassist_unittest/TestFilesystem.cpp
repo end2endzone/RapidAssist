@@ -2,6 +2,7 @@
 #include "filesystem.h"
 #include "time_.h"
 #include "gtesthelp.h"
+#include "environment.h"
 
 #ifndef _WIN32
 #include <linux/fs.h>
@@ -315,6 +316,41 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_TRUE (hasHondaFolder);
       ASSERT_TRUE(hasPricesFile);
       ASSERT_FALSE(hasJettaFile);
+    }
+
+    //test root file system
+    {
+#ifdef _WIN32
+      const char * path = "C:\\";
+#else
+      const char * path = "/";
+#endif
+      ra::strings::StringVector files;
+      bool success = filesystem::findFiles(files, path, 1);
+      ASSERT_TRUE(success);
+      ASSERT_GT(files.size(), (size_t)0 );
+
+      //assert normalization
+#ifdef _WIN32
+      ASSERT_EQ( files[0].find("C:\\\\"), std::string::npos ); //assert that C:\\ (double backslashes) is not found
+#else
+      ASSERT_EQ( files[0].find("//"), std::string::npos ); //assert that // (double slashes) is not found
+#endif
+
+      //search for the last (almost) folder of the root file system.
+#ifdef _WIN32
+      const std::string pattern = environment::getEnvironmentVariable("windir"); //returns C:\Windows
+#else
+      const std::string pattern = "/var";
+#endif
+      //find the exact pattern in the list
+      bool found = false;
+      for(size_t i=0; i<files.size(); i++)
+      {
+        const std::string & file = files[i];
+        found |= (file == pattern);
+      }
+      ASSERT_TRUE(found);
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -975,7 +1011,7 @@ namespace ra { namespace filesystem { namespace test
     //test no write access
     {
 #ifdef _WIN32
-      const char * path = "C:\\bootmgr"; //premission denied file
+      const char * path = "C:\\bootmgr"; //premission denied file. Could also use `C:\Users\All Users\ntuser.pol'`
 #else
       const char * path = "/proc/cpuinfo"; //permission denied file
 #endif

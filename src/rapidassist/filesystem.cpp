@@ -153,64 +153,78 @@ namespace ra
       if (!isCurrentFolder(iFilename) && !isParentFolder(iFilename))
       {
         //build full path
-        std::string fullFilename;
-        fullFilename << iFolderPath << getPathSeparatorStr() << iFilename;
+        std::string fullFilename = iFolderPath;
+        normalizePath(fullFilename);
+        fullFilename << getPathSeparatorStr() << iFilename;
         oFiles.push_back(fullFilename);
-
+ 
         //should we recurse on folder ?
         if (isFolder && iDepth != 0)
         {
+          //compute new depth
+          int subDepth = iDepth-1;
+          if (subDepth < -1)
+            subDepth = -1;
+
           //find children
-          bool result = findFiles(oFiles, fullFilename.c_str(), iDepth-1);
+          bool result = findFiles(oFiles, fullFilename.c_str(), subDepth);
           if (!result)
           {
             return false;
           }
         }
       }
-
+ 
       return true;
     }
+
 
     bool findFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth)
     {
       if (iPath == NULL)
         return false;
-
-      if (!folderExists(iPath))
-        return false;
-
+ 
 #ifdef _WIN32
       //Build a *.* query
-      std::string query;
-      query << iPath << "\\*";
-
+      std::string query = iPath;
+      normalizePath(query);
+      query << "\\*";
+ 
       WIN32_FIND_DATA findDataStruct;
       HANDLE hFind = FindFirstFile(query.c_str(), &findDataStruct);
-
+ 
       if(hFind == INVALID_HANDLE_VALUE)
         return false;
-
+ 
       //process directory entry
       std::string filename = findDataStruct.cFileName;
       bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
       bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
       if (!result)
       {
-        FindClose(hFind);
-        return false;
+        //Warning: Current user is not able to browse this directory.
+        //For instance:
+        //
+        //  C:\Documents and Settings>dir
+        //   Volume in drive C is WINDOWS
+        //   Volume Serial Number is Z00Z-Z000
+        // 
+        //   Directory of C:\Documents and Settings
+        // 
+        //  File Not Found
       }
-
+ 
       //next files in folder
       while (FindNextFile(hFind, &findDataStruct))
       {
         filename = findDataStruct.cFileName;
         bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
         bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
         if (!result)
         {
-          FindClose(hFind);
-          return false;
+          //Warning: Current user is not able to browse this directory.
         }
       }
       FindClose(hFind);
@@ -222,11 +236,11 @@ namespace ra
     {
       return false;
     }
-
+ 
     while ((dirp = readdir(dp)) != NULL)
     {
       std::string filename = dirp->d_name;
-
+ 
       bool isFolder = (dirp->d_type == DT_DIR);
       bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
       if (!result)
