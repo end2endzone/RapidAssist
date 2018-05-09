@@ -917,6 +917,74 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasReadAccess)
+  {
+    //test NULL
+    {
+      bool result = filesystem::hasReadAccess(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test read access
+    {
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str()) );
+
+      bool hasRead = filesystem::hasReadAccess(path.c_str());
+      ASSERT_TRUE(hasRead);
+
+      //cleanup
+      filesystem::deleteFile(path.c_str());
+    }
+
+    //test no read access
+    {
+#ifdef _WIN32
+      //not supported. Cannot find a file that exists but cannot be read.
+      //Note, the file 'C:\pagefile.sys' can be found using FindFirstFile() but not with _stat() which I don't understand.
+      return;
+#else
+      const char * path = "/proc/sysrq-trigger"; //permission denied file
+      ASSERT_TRUE( filesystem::fileExists(path) );
+      bool hasRead = filesystem::hasReadAccess(path);
+      ASSERT_FALSE(hasRead);
+#endif
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasWriteAccess)
+  {
+    //test NULL
+    {
+      bool result = filesystem::hasWriteAccess(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test write access
+    {
+      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str()) );
+
+      bool hasWrite = filesystem::hasWriteAccess(path.c_str());
+      ASSERT_TRUE(hasWrite);
+
+      //cleanup
+      filesystem::deleteFile(path.c_str());
+    }
+
+    //test no write access
+    {
+#ifdef _WIN32
+      const char * path = "C:\\bootmgr"; //premission denied file
+#else
+      const char * path = "/proc/cpuinfo"; //permission denied file
+#endif
+      ASSERT_TRUE( filesystem::fileExists(path) );
+      bool hasWrite = filesystem::hasWriteAccess(path);
+      ASSERT_FALSE(hasWrite);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace filesystem
 } //namespace ra

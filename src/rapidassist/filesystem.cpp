@@ -1,5 +1,6 @@
 #include "environment.h"
 #include "filesystem.h"
+#include "random.h"
 
 #include <algorithm> //for std::transform(), sort()
 #include <string.h> //for strdup()
@@ -61,12 +62,13 @@ namespace ra
       if (iPath == NULL || iPath[0] == '\0')
         return 0;
 
-      FILE * f = fopen(iPath, "rb");
-      if (!f)
-        return 0;
-      uint32_t size = getFileSize(f);
-      fclose(f);
-      return size;
+      struct stat sb;
+      if(stat(iPath, &sb)==0)
+      {
+        return sb.st_size;
+      }
+
+      return 0;
     }
 
     uint32_t getFileSize(FILE * f)
@@ -97,11 +99,41 @@ namespace ra
       if (iPath == NULL || iPath[0] == '\0')
         return false;
 
-      FILE * f = fopen(iPath, "rb");
-      if (!f)
+      struct stat sb;
+      if(stat(iPath, &sb) == 0)
+      {
+        if ((sb.st_mode & S_IFREG) == S_IFREG)
+          return true;
+      }
+      return false;
+    }
+
+    bool hasReadAccess(const char * iPath)
+    {
+      if (iPath == NULL || iPath[0] == '\0')
         return false;
-      fclose(f);
-      return true;
+
+      struct stat sb;
+      if(stat(iPath, &sb)==0)
+      {
+        if ((sb.st_mode & S_IREAD) == S_IREAD)
+          return true;
+      }
+      return false;
+    }
+
+    bool hasWriteAccess(const char * iPath)
+    {
+      if (iPath == NULL || iPath[0] == '\0')
+        return false;
+
+      struct stat sb;
+      if(stat(iPath, &sb)==0)
+      {
+        if ((sb.st_mode & S_IWRITE) == S_IWRITE)
+          return true;
+      }
+      return false;
     }
 
     inline bool isCurrentFolder(const std::string & iPath)
@@ -114,6 +146,7 @@ namespace ra
       return iPath == "..";
     }
 
+    //shared cross-platform code for findFiles().
     bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iFolderPath, const std::string & iFilename, bool isFolder, int iDepth)
     {
       //is it a valid item ?
@@ -212,11 +245,18 @@ namespace ra
       if (iPath == NULL || iPath[0] == '\0')
         return false;
 
-      std::string localFolder = getCurrentFolder();
-      bool success = (__chdir(iPath) == 0);
-      if (success)
-        success = (__chdir(localFolder.c_str()) == 0);
-      return success;
+#ifdef _WIN32
+      //Note that the current windows implementation of folderExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
+      //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
+#endif
+
+      struct stat sb;
+      if(stat(iPath, &sb)==0)
+      {
+        if ((sb.st_mode & S_IFDIR) == S_IFDIR)
+          return true;
+      }
+      return false;
     }
 
     bool createFolder(const char * iPath)
@@ -327,11 +367,6 @@ namespace ra
       if (iPath == NULL)
         return false;
 
-      //if (!fileExists(iPath))
-      //  return true;
-
-      //file exists and must be deleted
-
       int result = remove(iPath);
       return (result == 0);
     }
@@ -339,7 +374,7 @@ namespace ra
     std::string getTemporaryFileName()
     {
       //get positive random value
-      int value = rand();
+      int value = random::getRandomInt();
       if (value < 0)
         value *= -1;
 
@@ -598,10 +633,6 @@ namespace ra
       std::string friendlySize;
 
       //Convert iSize to a formattedSize
-      //double unitPower = double(iUnit.getValue());
-      //double multiplicator = pow(1024.0, unitPower);
-      //double sizeInSpecifiedUnit = double(iSize)/multiplicator;
-      //double formattedSize = double(uint64_t(sizeInSpecifiedUnit * 100.0)) / 100.0;
       double formattedSize = 0.0;
       switch(iUnit)
       {

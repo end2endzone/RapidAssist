@@ -47,6 +47,20 @@ namespace ra
     bool fileExists(const char * iPath);
 
     ///<summary>
+    ///Determine if the current process has read access to a given file.
+    ///</summary>
+    ///<param name="iPath">An valid file path.</param>
+    ///<return>Returns true when the file can be read. Returns false otherwise.<return>
+    bool hasReadAccess(const char * iPath);
+
+    ///<summary>
+    ///Determine if the current process has read access to a given file.
+    ///</summary>
+    ///<param name="iPath">An valid file path.</param>
+    ///<return>Returns true when the file can be write. Returns false otherwise.<return>
+    bool hasWriteAccess(const char * iPath);
+
+    ///<summary>
     ///Find files in a directory / subdirectory.
     ///</summary>
     ///<param name="oFiles">The list of files found.</param>
