@@ -62,8 +62,8 @@ environment:
 
 before_build:
 - cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\before_build.bat
-- ps: $env:APPVEYOR_BUILD_FOLDER\ci\appveyor\read_version.ps1
-- ps: $env:APPVEYOR_BUILD_FOLDER\ci\appveyor\prepare_github_deploy.ps1
+- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\read_version.ps1"
+- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\prepare_github_deploy.ps1"
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
