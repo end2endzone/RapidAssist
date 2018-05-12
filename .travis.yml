@@ -15,7 +15,7 @@ script:
   mkdir build;
   cd build;
   cmake -DCMAKE_BUILD_TYPE=Release ..;
-- product_version=$(head -1 $PWD/version)
+- product_version=$(head -1 $TRAVIS_BUILD_DIR/version)
 - echo Building product version v$product_version...
 - make
 - cd bin;

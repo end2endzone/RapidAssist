@@ -61,9 +61,9 @@ environment:
   GOOGLETEST_HOME: c:\projects\rapidassist\third_party\googletest
 
 before_build:
-- cmd: call c:\projects\rapidassist\ci\appveyor\before_build.bat
-- ps: .\ci\appveyor\read_version.ps1
-- ps: .\ci\appveyor\prepare_github_deploy.ps1
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\before_build.bat
+- ps: $(APPVEYOR_BUILD_FOLDER)\ci\appveyor\read_version.ps1
+- ps: $(APPVEYOR_BUILD_FOLDER)\ci\appveyor\prepare_github_deploy.ps1
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
@@ -74,8 +74,8 @@ build:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-- cmd: call c:\projects\rapidassist\ci\appveyor\test_script.bat
-- cmd: call c:\projects\rapidassist\ci\appveyor\upload_test_results.bat
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\test_script.bat
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\upload_test_results.bat
 
 #---------------------------------#
 #      artifacts configuration    #
