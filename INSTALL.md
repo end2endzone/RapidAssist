@@ -1,4 +1,4 @@
-# RapidAssist - Installing #
+# Install #
 
 The library does not need to be installed on the system (it does not provide an installation package). It is deployed using a zip archive which only contains the source code which must be compiled to be used by other applications and libraries.
 
@@ -51,16 +51,18 @@ These are the base requirements to build and use RapidAssist:
 
 ### RapidAssist ###
 
-1) Follow [install](#Install) instructions specified at the beginning of this document.
- 
-2) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
+1) Follow [Install](#Install) instructions specified at the beginning of this document.
+
+2) Generate the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/third_party/googletest`.
+
+3) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
 
    * cd $RAPIDASSIST_HOME
    * mkdir build
    * cd build
    * cmake ..
 
-3) Build the source code:
+4) Build the source code:
    1) On Windows, open `RapidAssist.sln` with Visual Studio.
    2) On Linux, run `make` command.
 
