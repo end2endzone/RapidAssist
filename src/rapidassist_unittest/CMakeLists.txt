@@ -1,7 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/rapidassist)
 link_directories(${LIBRARY_OUTPUT_PATH})
 
-include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
+include_directories($ENV{GOOGLETEST_HOME}/include)
 #link_directories(${LIBRARY_OUTPUT_PATH})
 
 add_executable(rapidassist_unittest

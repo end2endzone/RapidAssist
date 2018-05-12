@@ -29,7 +29,7 @@ MESSAGE( STATUS "CMAKE_SYSTEM_PROCESSOR:   " ${CMAKE_SYSTEM_PROCESSOR} )
 MESSAGE("")
 SET(RAPIDASSIST_MAJOR_VERSION 0)
 SET(RAPIDASSIST_MINOR_VERSION 3)
-SET(RAPIDASSIST_PATCH_VERSION 0)
+SET(RAPIDASSIST_PATCH_VERSION 1)
 SET(RAPIDASSIST_PRERELEASE_VERSION "") #i.e: rc1
 SET(RAPIDASSIST_METADATA_VERSION "")   #i.e: build.45
 SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_MAJOR_VERSION}.${RAPIDASSIST_MINOR_VERSION}.${RAPIDASSIST_PATCH_VERSION})
@@ -54,11 +54,11 @@ add_dependencies(rapidassist_unittest rapidassist)
 
 
 
-# Add gtesthelp to project
+# Add googletest to project
 if (WIN32)
   # https://stackoverflow.com/a/12546288
-  # Force building gtesthelp in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
+  # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 endif()
-add_subdirectory(third_party/googletest)
+add_subdirectory($ENV{GOOGLETEST_HOME})
 set_target_properties(gtest_main PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
