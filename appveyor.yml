@@ -11,7 +11,7 @@
 # version format
 # version must contains build number to make sure that all commits are processed by appveyor.
 # If build number is not part of the version than appveyor build fails with the following message: "Build version x.y.z already exists."
-version: '{build}'
+version: "{branch} (#{build})"
 
 # branches to build
 branches:
@@ -40,8 +40,6 @@ clone_folder: c:\projects\rapidassist
 install:
 - cmd: echo INSTALL!
 - cmd: git submodule update --init --recursive
-- ps: .\ci\appveyor\prepare_github_deploy.ps1
-- cmd: call c:\projects\rapidassist\ci\appveyor\list_env_var.bat
 
 #---------------------------------#
 #       build configuration       #
@@ -58,11 +56,14 @@ configuration: Release
 #  - Debug
 #  - Release
 
+# environment variables
+environment:
+  GOOGLETEST_HOME: c:\projects\rapidassist\third_party\googletest
+
 before_build:
 - cmd: call c:\projects\rapidassist\ci\appveyor\before_build.bat
-
-#build_script:
-#- cmd: call c:\projects\rapidassist\ci\appveyor\build_script.bat
+- ps: .\ci\appveyor\read_version.ps1
+- ps: .\ci\appveyor\prepare_github_deploy.ps1
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln

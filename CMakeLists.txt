@@ -43,7 +43,8 @@ MESSAGE("RAPIDASSIST_VERSION_STRING: ${RAPIDASSIST_VERSION_STRING}")
 MESSAGE("")
 
 # Generate version files for different systems
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in"        "${PROJECT_BINARY_DIR}/src/rapidassist/version.h")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in"   "${PROJECT_BINARY_DIR}/src/rapidassist/version.h")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/version.in"                     "${CMAKE_CURRENT_SOURCE_DIR}/version")
 
 # Add source directories
 add_subdirectory(src/rapidassist)

@@ -6,13 +6,18 @@ os:
 branches:
   only:
   - master
+env:
+  global:
+  - GOOGLETEST_HOME=$TRAVIS_BUILD_DIR/third_party/googletest
 
 script:
 - cd $TRAVIS_BUILD_DIR;
   mkdir build;
   cd build;
   cmake -DCMAKE_BUILD_TYPE=Release ..;
-- cmake --build .;
+- product_version=$(head -1 $PWD/version)
+- echo Building product version v$product_version...
+- make
 - cd bin;
   ./rapidassist_unittest || true; #do not fail build even if a test fails.
 
