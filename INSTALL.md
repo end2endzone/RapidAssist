@@ -2,7 +2,7 @@
 
 The library does not need to be installed on the system (it does not provide an installation package). It is deployed using a zip archive which only contains the source code which must be compiled to be used by other applications and libraries.
 
-The following steps shows how to install the library:
+The following steps show how to install the library:
 
 1) Download the source code from an existing [tags](http://github.com/end2endzone/RapidAssist/tags) and extract the content to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
 
@@ -63,7 +63,7 @@ These are the base requirements to build and use RapidAssist:
    * cmake ..
 
 4) Build the source code:
-   1) On Windows, open `RapidAssist.sln` with Visual Studio.
+   1) On Windows, run `cmake --build . --config Release` or open `RapidAssist.sln` with Visual Studio.
    2) On Linux, run `make` command.
 
 
