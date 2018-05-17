@@ -49,11 +49,9 @@ These are the base requirements to build and use RapidAssist:
 ## Build steps ##
 
 
-### RapidAssist ###
-
 1) Follow [Install](#Install) instructions specified at the beginning of this document.
 
-2) Generate the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/third_party/googletest`.
+2) Set the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/third_party/googletest`.
 
 3) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
 
@@ -81,3 +79,4 @@ To run tests, browse to the `build/bin` folder and run `rapidassist_unittest` ex
 Test results are saved in junit format in file `rapidassist_unittest.x86.debug.xml` or `rapidassist_unittest.x86.release.xml` depending on the selected configuration.
 
 The latest test results are available at the beginning of the [README.md](README.md) file.
+
