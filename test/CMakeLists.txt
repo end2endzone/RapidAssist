@@ -1,4 +1,4 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories($ENV{GOOGLETEST_HOME}/include)
 
 add_executable(rapidassist_unittest

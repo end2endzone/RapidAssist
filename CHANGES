@@ -3,7 +3,7 @@ Changes for 0.3.2:
 * Now setting CMAKE_BUILD_TYPE to Release by default if not specified (linux only).
 * Moved third party libraries to /lib folder.
 * Using 'c++ best practices' file structure (/include /src /lib /test)
-* Fixed project include_directories() when RapidAssist used in other project.
+* Fixed project include_directories() when RapidAssist is used in other project.
 
 Changes for 0.3.1:
 
