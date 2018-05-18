@@ -350,7 +350,9 @@ namespace ra { namespace filesystem { namespace test
         const std::string & file = files[i];
         found |= (file == pattern);
       }
-      ASSERT_TRUE(found);
+      ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in folder '" << path << "'.\n"
+        "Found the following elements: \n" << 
+        strings::joinString(files, "\n").c_str();
     }
   }
   //--------------------------------------------------------------------------------------------------

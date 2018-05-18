@@ -101,7 +101,7 @@ namespace ra
     void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
     ///<summary>
-    ///Join a list of strings into a single string separating elements by iSeparator.
+    ///Join a list of strings into a single string separating each element by iSeparator.
     ///</summary>
     ///<param name="iList">The list of elements to join.</param>
     ///<param name="iSplitPattern">The splitting pattern.</param>
