@@ -60,7 +60,7 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/version.in"                         
 
 # Add source directories
 add_subdirectory(src/rapidassist)
-add_subdirectory(src/rapidassist_unittest)
+add_subdirectory(test)
 
 # Add googletest to project
 if (NOT TARGET gtest)
