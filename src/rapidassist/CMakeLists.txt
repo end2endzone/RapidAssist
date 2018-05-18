@@ -1,5 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
+#link_directories(${LIBRARY_OUTPUT_PATH})
+
+include_directories($ENV{GOOGLETEST_HOME}/include)
 #link_directories(${LIBRARY_OUTPUT_PATH})
 
 file(GLOB_RECURSE RAPIDASSIST_HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)

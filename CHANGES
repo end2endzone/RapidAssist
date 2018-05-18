@@ -1,6 +1,7 @@
 Changes for 0.3.1:
 
-* Fixed issue #01 - Use GOOGLETEST_HOME environment variable.
+* Fixed issue #1 - Use GOOGLETEST_HOME environment variable.
+* Using new 'c++ best practices' file structure (/include /src /lib /test)
 
 Changes for 0.3.0:
 

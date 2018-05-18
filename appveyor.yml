@@ -58,7 +58,7 @@ configuration: Release
 
 # environment variables
 environment:
-  GOOGLETEST_HOME: c:\projects\rapidassist\third_party\googletest
+  GOOGLETEST_HOME: c:\projects\rapidassist\lib\googletest
 
 before_build:
 - cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\before_build.bat
