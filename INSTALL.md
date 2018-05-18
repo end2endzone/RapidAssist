@@ -1,5 +1,5 @@
 # Install #
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 The library does not need to be installed on the system (it does not provide an installation package). The library is deployed using a zip archive which only contains source code. Each project that wants to use the library must compile the library from the source code.
 
 The following steps show how other projects can use the library:
@@ -11,13 +11,12 @@ The following steps show how other projects can use the library:
 
 
 # Build #
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 This section explains how to compile and build the software and how to get a development environment ready.
 
 
 
 ## Prerequisites ##
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Software Requirements ###
 The following software must be installed on the system for compiling source code:
@@ -40,7 +39,6 @@ These are the base requirements to build and use RapidAssist:
 
 
 ## Build steps ##
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 1) Follow [Install](#Install) instructions specified at the beginning of this document.
 
@@ -60,7 +58,7 @@ These are the base requirements to build and use RapidAssist:
 
 
 # Testing #
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 RapidAssist comes with unit tests which help maintaining the product stability and level of quality.
 
 Test are build using the Google Test v1.6.0 framework. For more information on how googletest is working, see the [google test documentation primer](https://github.com/google/googletest/blob/release-1.8.0/googletest/docs/V1_6_Primer.md).  
