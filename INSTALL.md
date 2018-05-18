@@ -44,7 +44,7 @@ These are the base requirements to build and use RapidAssist:
 
 1) Follow [Install](#Install) instructions specified at the beginning of this document.
 
-2) Set the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/third_party/googletest`.
+2) Set the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/lib/googletest`.
 
 3) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
 
