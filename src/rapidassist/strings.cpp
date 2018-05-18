@@ -290,6 +290,19 @@ namespace ra
       }
     }
 
+    std::string joinString(const StringVector & iList, const char * iSeparator)
+    {
+      std::string output;
+      for(size_t i=0; i<iList.size(); i++)
+      {
+        const std::string & value = iList[i];
+        if (!output.empty() && iSeparator != NULL)
+          output.append(iSeparator);
+        output.append(value);
+      }
+      return output;
+    }
+
   } //namespace strings
 } //namespace ra
 

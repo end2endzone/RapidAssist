@@ -465,6 +465,34 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testJoinString)
+  {
+    //test NULL
+    {
+      static const std::string EXPECTED = "Aa.Bb.Cc";
+      StringVector list = splitString(EXPECTED, ".");
+      std::string joinStr = joinString(list, (const char *)NULL); //same as empty separator
+      ASSERT_EQ(std::string("AaBbCc"), joinStr);
+    }
+
+    //test empty separator
+    {
+      static const std::string EXPECTED = "Aa.Bb.Cc";
+      StringVector list = splitString(EXPECTED, ".");
+      std::string joinStr = joinString(list, "");
+      ASSERT_EQ(std::string("AaBbCc"), joinStr);
+    }
+
+    //test normal
+    {
+      static const std::string EXPECTED = "Aa.Bb.Cc";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace strings
 } //namespace ra

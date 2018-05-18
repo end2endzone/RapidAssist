@@ -100,6 +100,13 @@ namespace ra
     ///<param name="iSplitPattern">The splitting pattern.</param>
     void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
+    ///<summary>
+    ///Join a list of strings into a single string separating elements by iSeparator.
+    ///</summary>
+    ///<param name="iList">The list of elements to join.</param>
+    ///<param name="iSplitPattern">The splitting pattern.</param>
+    std::string joinString(const StringVector & iList, const char * iSeparator);
+
   } //namespace strings
 } //namespace ra
 
