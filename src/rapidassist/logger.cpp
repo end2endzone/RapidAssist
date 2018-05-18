@@ -1,4 +1,4 @@
-#include "logger.h"
+#include "rapidassist/logger.h"
 
 #include <sstream>
 #include <stdarg.h> //for functions with "..." arguments

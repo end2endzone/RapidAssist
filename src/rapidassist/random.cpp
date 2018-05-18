@@ -1,4 +1,5 @@
-#include "random.h"
+#include "rapidassist/random.h"
+
 #include <cstdlib>  //for random
 #include <ctime>    //for random
 

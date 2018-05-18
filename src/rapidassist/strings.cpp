@@ -1,8 +1,8 @@
-#include "strings.h"
+#include "rapidassist/strings.h"
+#include "rapidassist/environment.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
-#include "environment.h"
 
 namespace ra
 {

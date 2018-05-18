@@ -1,26 +1,23 @@
+include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/third_party/googletest/include)
 #link_directories(${LIBRARY_OUTPUT_PATH})
 
+file(GLOB_RECURSE RAPIDASSIST_HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
+
+SET(RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/rapidassist)
+
 add_library(rapidassist STATIC 
   ${PROJECT_BINARY_DIR}/src/rapidassist/version.h
+  ${RAPIDASSIST_HEADERS}
   cli.cpp
-  cli.h
   cppencoder.cpp
-  cppencoder.h
   environment.cpp
-  environment.h
   filesystem.cpp
-  filesystem.h
   gtesthelp.cpp
-  gtesthelp.h
   logger.cpp
-  logger.h
   random.cpp
-  random.h
   time_.cpp
-  time_.h
   strings.cpp
-  strings.h
 )
 
 link_directories(${LIBRARY_OUTPUT_PATH})

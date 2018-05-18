@@ -1,5 +1,5 @@
 #include "TestEnvironment.h"
-#include "environment.h"
+#include "rapidassist/environment.h"
 
 namespace ra { namespace environment { namespace test
 {

@@ -1,5 +1,5 @@
 #include "TestLogger.h"
-#include "logger.h"
+#include "rapidassist/logger.h"
 
 namespace ra { namespace logger { namespace test
 {

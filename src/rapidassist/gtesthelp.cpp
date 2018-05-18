@@ -1,13 +1,15 @@
-#include "gtesthelp.h"
+#include "rapidassist/gtesthelp.h"
+
 #include <sstream> //for stringstream
 #include <iostream> //for std::hex
 #include <cstdio> //for remove()
+
 #include <gtest/gtest.h>
 
-#include "filesystem.h"
-#include "strings.h"
-#include "environment.h"
-#include "cli.h"
+#include "rapidassist/filesystem.h"
+#include "rapidassist/strings.h"
+#include "rapidassist/environment.h"
+#include "rapidassist/cli.h"
 
 using namespace ra::filesystem;
 using namespace ra::strings;

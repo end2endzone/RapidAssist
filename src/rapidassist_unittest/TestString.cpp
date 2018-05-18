@@ -1,6 +1,6 @@
 #include "TestString.h"
-#include "strings.h"
-#include "environment.h"
+#include "rapidassist/strings.h"
+#include "rapidassist/environment.h"
 
 namespace ra { namespace strings { namespace test
 {

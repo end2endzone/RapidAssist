@@ -1,5 +1,5 @@
 #include "TestGTestHelp.h"
-#include "gtesthelp.h"
+#include "rapidassist/gtesthelp.h"
 
 namespace ra { namespace test {
 

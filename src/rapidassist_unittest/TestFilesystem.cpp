@@ -1,8 +1,8 @@
 #include "TestFilesystem.h"
-#include "filesystem.h"
-#include "time_.h"
-#include "gtesthelp.h"
-#include "environment.h"
+#include "rapidassist/filesystem.h"
+#include "rapidassist/time_.h"
+#include "rapidassist/gtesthelp.h"
+#include "rapidassist/environment.h"
 
 #ifndef _WIN32
 #include <linux/fs.h>

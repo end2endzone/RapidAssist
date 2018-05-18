@@ -1,5 +1,5 @@
 #include "TestRandom.h"
-#include "random.h"
+#include "rapidassist/random.h"
 
 namespace ra { namespace random { namespace test
 {

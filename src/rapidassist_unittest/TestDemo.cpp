@@ -1,6 +1,6 @@
 #include "TestDemo.h"
-#include "gtesthelp.h"
-#include "strings.h"
+#include "rapidassist/gtesthelp.h"
+#include "rapidassist/strings.h"
 
 namespace ra { namespace test {
 

@@ -1,6 +1,6 @@
-#include "environment.h"
-#include "filesystem.h"
-#include "random.h"
+#include "rapidassist/environment.h"
+#include "rapidassist/filesystem.h"
+#include "rapidassist/random.h"
 
 #include <algorithm> //for std::transform(), sort()
 #include <string.h> //for strdup()

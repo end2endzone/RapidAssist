@@ -1,6 +1,6 @@
 #include "TestCli.h"
-#include "cli.h"
-#include "strings.h"
+#include "rapidassist/cli.h"
+#include "rapidassist/strings.h"
 
 namespace ra { namespace cli { namespace test
 {
