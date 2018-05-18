@@ -7,7 +7,6 @@ file(GLOB_RECURSE RAPIDASSIST_HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
 SET(RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/rapidassist)
 
 add_library(rapidassist STATIC 
-  ${PROJECT_BINARY_DIR}/src/rapidassist/version.h
   ${RAPIDASSIST_HEADERS}
   cli.cpp
   cppencoder.cpp
