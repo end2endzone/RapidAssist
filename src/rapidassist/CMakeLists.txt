@@ -1,7 +1,7 @@
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories($ENV{GOOGLETEST_HOME}/include)
 
-file(GLOB_RECURSE RAPIDASSIST_HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE RAPIDASSIST_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
 add_library(rapidassist STATIC 
   ${RAPIDASSIST_HEADERS}
