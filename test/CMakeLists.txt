@@ -1,8 +1,5 @@
 include_directories(${CMAKE_SOURCE_DIR}/include)
-#link_directories(${LIBRARY_OUTPUT_PATH})
-
 include_directories($ENV{GOOGLETEST_HOME}/include)
-#link_directories(${LIBRARY_OUTPUT_PATH})
 
 add_executable(rapidassist_unittest
   main.cpp
