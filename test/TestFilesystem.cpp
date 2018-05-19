@@ -339,7 +339,15 @@ namespace ra { namespace filesystem { namespace test
 
       //search for the last (almost) folder of the root file system.
 #ifdef _WIN32
-      const std::string pattern = environment::getEnvironmentVariable("windir"); //returns C:\Windows
+      //fix for appveyor
+      std::string windir = environment::getEnvironmentVariable("windir"); //returns C:\Windows
+      if (ra::gtesthelp::isAppVeyor() && windir == "C:\\windows")
+      {
+        //fix for appveyor which has 'windir' defined as 'C:\windows' instead of 'C:\Windows'.
+        windir = "C:\\Windows";
+      }
+
+      const std::string pattern = windir;
 #else
       const std::string pattern = "/var";
 #endif
