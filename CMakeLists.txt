@@ -59,6 +59,11 @@ MESSAGE("")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/rapidassist/version.h")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/version.in"                   "${CMAKE_CURRENT_SOURCE_DIR}/version")
 
+# Validate mandatory environment variables.
+if(NOT EXISTS "$ENV{GOOGLETEST_HOME}")
+  message(FATAL_ERROR "Could not find GOOGLETEST_HOME environment variable")
+endif()
+
 # Add source directories
 add_subdirectory(src/rapidassist)
 add_subdirectory(test)
