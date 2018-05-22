@@ -200,11 +200,13 @@ namespace ra
       int index = 0;
       while(iBuffer[index] != '\0')
       {
-        if (iBuffer[index] == 13 && iBuffer[index+1] == 10)
+        if (iBuffer[index] == '\n' && iBuffer[index+1] == '\r' && iBuffer[index+2] == '\0') //Windows
           iBuffer[index] = '\0';
-        else if (iBuffer[index] == 10 && iBuffer[index+1] == 13)
+        else if (iBuffer[index] == '\r' && iBuffer[index+1] == '\n' && iBuffer[index+2] == '\0') //Windows
           iBuffer[index] = '\0';
-        else if (iBuffer[index] == 10 && iBuffer[index+1] == '\0')
+        else if (iBuffer[index] == '\n' && iBuffer[index+1] == '\0') // UNIX
+          iBuffer[index] = '\0';
+        else if (iBuffer[index] == '\r' && iBuffer[index+1] == '\0') // OLD MAC
           iBuffer[index] = '\0';
 
         index++;

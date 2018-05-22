@@ -1,3 +1,7 @@
+Changes for 0.3.3:
+
+* Fixed a bug in ra::string::removeEOL() where some cases were not properly handled.
+
 Changes for 0.3.2:
 
 * Now setting CMAKE_BUILD_TYPE to Release by default if not specified (linux only).
