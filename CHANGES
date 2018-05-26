@@ -1,3 +1,7 @@
+Changes for 0.3.4:
+
+* Fixed incorrect product version in v0.3.3
+
 Changes for 0.3.3:
 
 * Fixed a bug in ra::string::removeEOL() where some cases were not properly handled.
