@@ -1,12 +1,12 @@
 # Install #
 
-The library does not need to be installed on the system (it does not provide an installation package). The library is deployed using a zip archive which only contains source code. Each project that wants to use the library must compile the library from the source code.
+The library does not provide an installation package. It is deployed using a zip archive which only contains source code. Other applications/libraries must compile the source code locally to use the library functionalities.
 
-The following steps show how other projects can use the library:
+The following steps show how other projects can find and use the library:
 
 1) Download the source code from an existing [tags](http://github.com/end2endzone/RapidAssist/tags) and extract the content to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
 
-2) Define the environment variable `RAPIDASSIST_HOME` to the location where the source code was extracted so that other projects may find the library.
+2) Define the environment variable `RAPIDASSIST_HOME` to the location where the source code was extracted.
 
 
 
@@ -40,11 +40,13 @@ These are the base requirements to build and use RapidAssist:
 
 ## Build steps ##
 
-1) Follow [Install](#Install) instructions specified at the beginning of this document.
+The following steps show how to build the library:
 
-2) Set the `GOOGLETEST_HOME` environment variable such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/lib/googletest`.
+1) Define the environment variable `RAPIDASSIST_HOME` to the location where the source code was extracted.
 
-3) Generate the _Visual Studio solution_ or the _Makefile_ using the following commands:
+2) Define the environment variable `GOOGLETEST_HOME` such that `GOOGLETEST_HOME=$RAPIDASSIST_HOME/lib/googletest`.
+
+3) Configure the _Visual Studio solution_ or the _Makefile_ using the following commands:
 
    * cd $RAPIDASSIST_HOME
    * mkdir build
