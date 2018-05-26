@@ -96,5 +96,5 @@ if(RAPIDASSIST_BUILD_TEST)
   add_dependencies(rapidassist_unittest gtest)
 endif()
 
-# Remove RAPIDASSIST_BUILD_TEST from the cache so calling `cmake ..` again will default RAPIDASSIST_BUILD_TEST to OFF again.
+# Remove RAPIDASSIST_BUILD_TEST from the cache so calling `cmake ..` again will reset the flag to default value.
 unset(RAPIDASSIST_BUILD_TEST CACHE)
