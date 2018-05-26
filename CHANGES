@@ -1,3 +1,7 @@
+Changes for 0.3.4:
+
+* Added build option flag RAPIDASSIST_BUILD_TEST which generates RapidAssist unit tests when set to ON.
+
 Changes for 0.3.3:
 
 * Fixed a bug in ra::string::removeEOL() where some cases were not properly handled.

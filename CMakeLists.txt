@@ -38,11 +38,13 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+#------------------------------------------------------------------------------------------------------------
 # Define product version according to Semantic Versioning v2.0.0 https://semver.org/
+#------------------------------------------------------------------------------------------------------------
 MESSAGE("")
 SET(RAPIDASSIST_MAJOR_VERSION 0)
 SET(RAPIDASSIST_MINOR_VERSION 3)
-SET(RAPIDASSIST_PATCH_VERSION 3)
+SET(RAPIDASSIST_PATCH_VERSION 4)
 SET(RAPIDASSIST_PRERELEASE_VERSION "") #i.e: rc1
 SET(RAPIDASSIST_METADATA_VERSION "")   #i.e: build.45
 SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_MAJOR_VERSION}.${RAPIDASSIST_MINOR_VERSION}.${RAPIDASSIST_PATCH_VERSION})
@@ -59,26 +61,40 @@ MESSAGE("")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/rapidassist/version.h")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/version.in"                   "${CMAKE_CURRENT_SOURCE_DIR}/version")
 
+#------------------------------------------------------------------------------------------------------------
 # Validate mandatory environment variables.
+#------------------------------------------------------------------------------------------------------------
 if(NOT EXISTS "$ENV{GOOGLETEST_HOME}")
   message(FATAL_ERROR "Could not find GOOGLETEST_HOME environment variable")
 endif()
 
+#------------------------------------------------------------------------------------------------------------
 # Add source directories
+#------------------------------------------------------------------------------------------------------------
 add_subdirectory(src/rapidassist)
-add_subdirectory(test)
 
-# Add googletest to project
-if (NOT TARGET gtest)
-  if (WIN32)
-    # https://stackoverflow.com/a/12546288
-    # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#------------------------------------------------------------------------------------------------------------
+# unit tests
+#------------------------------------------------------------------------------------------------------------
+option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist unit tests" OFF)
+if(RAPIDASSIST_BUILD_TEST)
+  add_subdirectory(test)
+
+  # Add googletest to project
+  if (NOT TARGET gtest)
+    if (WIN32)
+      # https://stackoverflow.com/a/12546288
+      # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
+      set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    endif()
+    add_subdirectory($ENV{GOOGLETEST_HOME})
+    set_target_properties(gtest_main PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
   endif()
-  add_subdirectory($ENV{GOOGLETEST_HOME})
-  set_target_properties(gtest_main PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+  # Define project dependencies
+  add_dependencies(rapidassist_unittest rapidassist)
+  add_dependencies(rapidassist_unittest gtest)
 endif()
 
-# Define project dependencies
-add_dependencies(rapidassist_unittest rapidassist)
-add_dependencies(rapidassist_unittest gtest)
+# Remove RAPIDASSIST_BUILD_TEST from the cache so calling `cmake ..` again will default RAPIDASSIST_BUILD_TEST to OFF again.
+unset(RAPIDASSIST_BUILD_TEST CACHE)

@@ -14,7 +14,7 @@ script:
 - cd $TRAVIS_BUILD_DIR;
   mkdir build;
   cd build;
-  cmake -DCMAKE_BUILD_TYPE=Release ..;
+  cmake -DCMAKE_BUILD_TYPE=Release -DRAPIDASSIST_BUILD_TEST=ON ..;
 - product_version=$(head -1 $TRAVIS_BUILD_DIR/version)
 - echo Building product version v$product_version...
 - make

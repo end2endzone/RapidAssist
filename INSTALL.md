@@ -57,6 +57,17 @@ These are the base requirements to build and use RapidAssist:
 
 
 
+### Build options ###
+
+The library support the `RAPIDASSIST_BUILD_TEST` build option. This boolean flag is used to control generation of the library unit tests targets. The flag is set to `OFF` by default.
+
+To enable the generation of unit test targets, run the following command at the cmake configuration time:
+```cmake
+cmake -DRAPIDASSIST_BUILD_TEST=ON ..
+```
+
+
+
 # Testing #
 
 RapidAssist comes with unit tests which help maintaining the product stability and level of quality.
