@@ -9,9 +9,9 @@ namespace ra
   namespace time
   {
 
-    ///<summary>
-    ///DATETIME stucture with human readable values
-    ///</summary>
+    /// <summary>
+    /// DATETIME stucture with human readable values
+    /// </summary>
     struct DATETIME
     {
       uint16_t year;  // year - [0, 65000]
@@ -25,64 +25,64 @@ namespace ra
       bool isdst;     // daylight savings time flag
     };
 
-    ///<summary>
-    ///Converts a std::tm structure to a DATETIME structure.
-    ///</summary>
-    ///<param name="timeinfo">The given std::tm value.</param>
-    ///<return>Returns a DATETIME structure matching the given std::tm info.<return>
+    /// <summary>
+    /// Converts a std::tm structure to a DATETIME structure.
+    /// </summary>
+    /// <param name="timeinfo">The given std::tm value.</param>
+    /// <returns>Returns a DATETIME structure matching the given std::tm info.</returns>
     DATETIME toDateTime(const std::tm & timeinfo);
 
-    ///<summary>
-    ///Converts a DATETIME structure to a std::tm structure.
-    ///</summary>
-    ///<param name="iDateTime">The given DATETIME value.</param>
-    ///<return>Returns a std::tm structure matching the given DATETIME info.<return>
+    /// <summary>
+    /// Converts a DATETIME structure to a std::tm structure.
+    /// </summary>
+    /// <param name="iDateTime">The given DATETIME value.</param>
+    /// <returns>Returns a std::tm structure matching the given DATETIME info.</returns>
     std::tm toTimeInfo(const DATETIME & iDateTime);
 
-    ///<summary>
-    ///Wait for the clock to jump to the next second. Synchronize the time clock to a new second.
-    ///</summary>
+    /// <summary>
+    /// Wait for the clock to jump to the next second. Synchronize the time clock to a new second.
+    /// </summary>
     void waitNextSecond();
 
-    ///<summary>
-    ///Returns the system local time.
-    ///</summary>
-    ///<return>Returns the system local time.<return>
+    /// <summary>
+    /// Returns the system local time.
+    /// </summary>
+    /// <returns>Returns the system local time.</returns>
     std::tm getLocalTime();
 
-    ///<summary>
-    ///Returns the system utc time.
-    ///</summary>
-    ///<return>Returns the system utc time.<return>
+    /// <summary>
+    /// Returns the system utc time.
+    /// </summary>
+    /// <returns>Returns the system utc time.</returns>
     std::tm getUtcTime();
 
-    ///<summary>
-    ///Sleep the current thread for the given amount of milliseconds
-    ///</summary>
-    ///<param name="iTime">The time in milliseconds where the thread must sleep.</param>
-    ///<return>On successfully sleeping for the requested interval, function returns 0.
-    ///        If the call is interrupted or encounters an error, then it returns -1<return>
+    /// <summary>
+    /// Sleep the current thread for the given amount of milliseconds
+    /// </summary>
+    /// <param name="milliseconds">The time in milliseconds where the thread must sleep.</param>
+    /// <returns>On successfully sleeping for the requested interval, function returns 0.
+    ///         If the call is interrupted or encounters an error, then it returns -1</returns>
     int millisleep(uint32_t milliseconds);
 
-    ///<summary>
-    ///Returns the year when the code was build.
-    ///Usefull for copyright messages.
-    ///</summary>
-    ///<return>Returns the year when the function was compiled.<return>
+    /// <summary>
+    /// Returns the year when the code was build.
+    /// Usefull for copyright messages.
+    /// </summary>
+    /// <returns>Returns the year when the function was compiled.</returns>
     int getCopyrightYear();
 
-    ///<summary>
-    ///Portable function to calculate the elapsed time with microseconds resolution.
-    ///</summary>
-    ///<remarks>The function query the internal high resolution clock/timer to calculate the elapsed time.</remarks>
-    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution. Returns -1.0 on error.</returns>
+    /// <summary>
+    /// Portable function to calculate the elapsed time with microseconds resolution.
+    /// </summary>
+    /// <remarks>The function query the internal high resolution clock/timer to calculate the elapsed time.</remarks>
+    /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution. Returns -1.0 on error.</returns>
     double getMicrosecondsTimer();
 
-    ///<summary>
-    ///Portable function to calculate the elapsed time with milliseconds resolution.
-    ///</summary>
-    ///<remarks>The function uses the internal clock to calculate the elapsed time.</remarks>
-    ///<returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
+    /// <summary>
+    /// Portable function to calculate the elapsed time with milliseconds resolution.
+    /// </summary>
+    /// <remarks>The function uses the internal clock to calculate the elapsed time.</remarks>
+    /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
     double getMillisecondsTimer();
 
   }; //namespace time

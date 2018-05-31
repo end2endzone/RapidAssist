@@ -12,179 +12,194 @@ namespace ra
   {
     typedef std::vector<std::string> StringVector;
 
-
-
-    ///<summary>
-    ///Defines if a string value is a numeric value.
-    ///A numeric value can be positive or negative.
-    ///A numeric value can be an integer or a floating point value.
-    ///</summary>
-    ///<return>True when iValue is numeric. False otherwise.<return>
+    /// <summary>
+    /// Defines if a string value is a numeric value.
+    /// A numeric value can be positive or negative.
+    /// A numeric value can be an integer or a floating point value.
+    /// </summary>
+    /// <returns>True when iValue is numeric. False otherwise.</returns>
     bool isNumeric(const char * iValue);
 
-    ///<summary>
-    ///Replace an occurance of a string by another.
-    ///</summary>
-    ///<param name="iString">The given string that need to be searched.</param>
-    ///<param name="iOldValue">The old value to replace.</param>
-    ///<param name="iNewValue">The new value to replace.</param>
-    ///<return>Returns the number of token that was replaced.<return>
+    /// <summary>
+    /// Replace an occurance of a string by another.
+    /// </summary>
+    /// <param name="iString">The given string that need to be searched.</param>
+    /// <param name="iOldValue">The old value to replace.</param>
+    /// <param name="iNewValue">The new value to replace.</param>
+    /// <returns>Returns the number of token that was replaced.</returns>
     int strReplace(std::string & iString, const char * iOldValue, const char * iNewValue);
 
-    ///<summary>
-    ///Converts the given value to string.
-    ///</summary>
-    ///<param name="value">The numeric value.</param>
-    ///<return>Converts the given value to string.<return>
+    /// <summary>
+    /// Converts the given value to string.
+    /// </summary>
+    /// <param name="value">The numeric value.</param>
+    /// <returns>Converts the given value to string.</returns>
     std::string toString(const uint64_t & value);
 
-    ///<summary>
-    ///Parse the given string into the given numeric variable.
-    ///</summary>
-    ///<param name="str">The input string which contains a numeric value.</param>
-    ///<param name="value">The output numeric value.</param>
-    ///<return>Returns true when the parsing is successful.<return>
+    /// <summary>
+    /// Parse the given string into the given numeric variable.
+    /// </summary>
+    /// <param name="str">The input string which contains a numeric value.</param>
+    /// <param name="oValue">The output numeric value.</param>
+    /// <returns>Returns true when the parsing is successful.</returns>
     bool parseValue(const std::string& str, uint64_t & oValue);
 
-    ///<summary>
-    ///Capitalize the first character of the given string.
-    ///</summary>
-    ///<param name="iValue">The string value to uppercase the first character.</param>
+    /// <summary>
+    /// Capitalize the first character of the given string.
+    /// </summary>
+    /// <param name="iValue">The string value to uppercase the first character.</param>
+    /// <returns>Returns the given string with the first character capitalized.</returns>
     std::string capitalizeFirstCharacter(const std::string & iValue);
 
-    ///<summary>
-    ///Upper case all characters of the given string.
-    ///</summary>
-    ///<param name="iValue">The string value to uppercase.</param>
-    std::string uppercase(const std::string & value);
+    /// <summary>
+    /// Upper case all characters of the given string.
+    /// </summary>
+    /// <param name="iValue">The string value to uppercase.</param>
+    /// <returns>Returns the given string uppercased.</returns>
+    std::string uppercase(const std::string & iValue);
 
-    ///<summary>
-    ///Lower case all characters of the given string.
-    ///</summary>
-    ///<param name="iValue">The string value to lowercase.</param>
-    std::string lowercase(const std::string & value);
+    /// <summary>
+    /// Lower case all characters of the given string.
+    /// </summary>
+    /// <param name="iValue">The string value to lowercase.</param>
+    /// <returns>Returns the given string lowercased.</returns>
+    std::string lowercase(const std::string & iValue);
 
-    ///<summary>
-    ///Removes occurance of unix/windows LF, CR or CRLF into the given string.
-    ///</summary>
-    ///<param name="iBuffer">The given buffer to modify.</param>
+    /// <summary>
+    /// Removes occurance of unix/windows LF, CR or CRLF into the given string.
+    /// </summary>
+    /// <param name="iBuffer">The given buffer to modify.</param>
     void removeEOL(char * iBuffer);
 
-    ///<summary>
-    ///Splits an input string into multiple string based on the given splitting character.
-    ///</summary>
-    ///<param name="iText">The input text to split.</param>
-    ///<param name="iSplitCharacter">The splitting character.</param>
-    ///<return>Returns a list of string.<return>
+    /// <summary>
+    /// Splits an input string into multiple string based on the given splitting character.
+    /// </summary>
+    /// <param name="iText">The input text to split.</param>
+    /// <param name="iSplitCharacter">The splitting character.</param>
+    /// <returns>Returns a list of string.</returns>
     StringVector splitString(const std::string & iText, char iSplitCharacter);
 
-    ///<summary>
-    ///Splits an input string into multiple string based on the given splitting character.
-    ///</summary>
-    ///<param name="iText">The input text to split.</param>
-    ///<param name="iSplitPattern">The splitting pattern.</param>
-    ///<return>Returns a list of string.<return>
+    /// <summary>
+    /// Splits an input string into multiple string based on the given splitting character.
+    /// </summary>
+    /// <param name="iText">The input text to split.</param>
+    /// <param name="iSplitPattern">The splitting pattern.</param>
+    /// <returns>Returns a list of string.</returns>
     StringVector splitString(const std::string & iText, const char * iSplitPattern);
 
-    ///<summary>
-    ///Splits an input string into multiple string based on the given splitting character and store the result in oList.
-    ///</summary>
-    ///<param name="iText">The input text to split.</param>
-    ///<param name="iSplitCharacter">The splitting character.</param>
+    /// <summary>
+    /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
+    /// </summary>
+    /// <param name="oList">The output list of string.</param>
+    /// <param name="iText">The input text to split.</param>
+    /// <param name="iSplitCharacter">The splitting character.</param>
     void splitString(StringVector & oList, const std::string & iText, char iSplitCharacter);
 
-    ///<summary>
-    ///Splits an input string into multiple string based on the given splitting character and store the result in oList.
-    ///</summary>
-    ///<param name="iText">The input text to split.</param>
-    ///<param name="iSplitPattern">The splitting pattern.</param>
+    /// <summary>
+    /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
+    /// </summary>
+    /// <param name="oList">The output list of string.</param>
+    /// <param name="iText">The input text to split.</param>
+    /// <param name="iSplitPattern">The splitting pattern.</param>
     void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
-    ///<summary>
-    ///Join a list of strings into a single string separating each element by iSeparator.
-    ///</summary>
-    ///<param name="iList">The list of elements to join.</param>
-    ///<param name="iSplitPattern">The splitting pattern.</param>
+    /// <summary>
+    /// Join a list of strings into a single string separating each element by iSeparator.
+    /// </summary>
+    /// <param name="iList">The list of elements to join.</param>
+    /// <param name="iSeparator">The string separator.</param>
+    /// <returns>Returns a list of strings merged into a single string separating each element by iSeparator.</returns>
     std::string joinString(const StringVector & iList, const char * iSeparator);
 
   } //namespace strings
 } //namespace ra
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const void * value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const std::string & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const char * value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const int8_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const uint8_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const int16_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const uint16_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const int32_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const uint32_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const int64_t & value);
 
-///<summary>
-///Streams a value to an existing string.
-///</summary>
-///<param name="value">The value to append to the given string.</param>
-///<return>Returns the given string.<return>
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const uint64_t & value);
 
 #endif //RA_STRING_H

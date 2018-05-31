@@ -172,9 +172,9 @@ namespace ra
       return copy;
     }
 
-    std::string uppercase(const std::string & value)
+    std::string uppercase(const std::string & iValue)
     {
-      std::string copy = value;
+      std::string copy = iValue;
       for(size_t i=0; i<copy.size(); i++)
       {
         copy[i] = (char)toupper(copy[i]);
@@ -182,9 +182,9 @@ namespace ra
       return copy;
     }
 
-    std::string lowercase(const std::string & value)
+    std::string lowercase(const std::string & iValue)
     {
-      std::string copy = value;
+      std::string copy = iValue;
       for(size_t i=0; i<copy.size(); i++)
       {
         copy[i] = (char)tolower(copy[i]);
