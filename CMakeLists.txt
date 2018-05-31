@@ -43,8 +43,8 @@ endif()
 #------------------------------------------------------------------------------------------------------------
 MESSAGE("")
 SET(RAPIDASSIST_MAJOR_VERSION 0)
-SET(RAPIDASSIST_MINOR_VERSION 3)
-SET(RAPIDASSIST_PATCH_VERSION 4)
+SET(RAPIDASSIST_MINOR_VERSION 4)
+SET(RAPIDASSIST_PATCH_VERSION 0)
 SET(RAPIDASSIST_PRERELEASE_VERSION "") #i.e: rc1
 SET(RAPIDASSIST_METADATA_VERSION "")   #i.e: build.45
 SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_MAJOR_VERSION}.${RAPIDASSIST_MINOR_VERSION}.${RAPIDASSIST_PATCH_VERSION})
@@ -96,5 +96,30 @@ if(RAPIDASSIST_BUILD_TEST)
   add_dependencies(rapidassist_unittest gtest)
 endif()
 
-# Remove RAPIDASSIST_BUILD_TEST from the cache so calling `cmake ..` again will reset the flag to default value.
-unset(RAPIDASSIST_BUILD_TEST CACHE)
+#------------------------------------------------------------------------------------------------------------
+# Generate doxygen documentation
+# See https://vicrucann.github.io/tutorials/quick-cmake-doxygen/
+#------------------------------------------------------------------------------------------------------------
+option(RAPIDASSIST_BUILD_DOC "Build RapidAssist documentation" OFF)
+if (RAPIDASSIST_BUILD_DOC)
+  # check if Doxygen is installed
+  find_package(Doxygen)
+  if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+ 
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+ 
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target( rapidassist_doc ALL
+      COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen"
+      VERBATIM )
+  else (DOXYGEN_FOUND)
+    message("Doxygen need to be installed to generate the doxygen documentation")
+  endif (DOXYGEN_FOUND)
+endif()

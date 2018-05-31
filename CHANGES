@@ -1,3 +1,7 @@
+Changes for 0.4.0:
+
+* New feature: Added support for doxygen API documentation. See build option `RAPIDASSIST_BUILD_DOC` for details.
+
 Changes for 0.3.4:
 
 * Fixed incorrect product version in v0.3.3
