@@ -61,22 +61,16 @@ The following steps show how to build the library:
 
 ### Build options ###
 
-**RAPIDASSIST_BUILD_TEST:**
+The following table shows the available build option supported:
 
-The library support the `RAPIDASSIST_BUILD_TEST` build option. This boolean flag is used to control generation of the library unit tests targets. The flag is set to `OFF` by default.
+| Name | Type | Default | Usage |
+|------|------|:-------:|-------|
+| RAPIDASSIST_BUILD_TEST | BOOL | OFF | Enable/disable the generation of unit tests target. |
+| RAPIDASSIST_BUILD_DOC  | BOOL | OFF | Enable/disable the generation of API documentation target. |
 
-To enable the generation of unit test targets, run the following command at the cmake configuration time:
+To enable a build option, run the following command at the cmake configuration time:
 ```cmake
-cmake -DRAPIDASSIST_BUILD_TEST=ON ..
-```
-
-**RAPIDASSIST_BUILD_DOC:**
-
-The library support the `RAPIDASSIST_BUILD_DOC` build option. This boolean flag is used to control generation of the doxygen documentation targets. The flag is set to `OFF` by default.
-
-To enable the generation of doxygen documentation targets, run the following command at the cmake configuration time:
-```cmake
-cmake -DRAPIDASSIST_BUILD_DOC=ON ..
+cmake -D<BUILD-OPTION-NAME>=ON ..
 ```
 
 
