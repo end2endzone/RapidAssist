@@ -42,15 +42,33 @@ The current categories are `cli` (command line interface), `environment`, `files
 The library does not intent to replace [Boost](https://www.boost.org/) or other full-featured cross-platform libraries.
 
 
+## Using RapidAssist in a CMake project ##
+
+Using the library in other projects is relatively easy as the library supports the [find_package()](https://cmake.org/cmake/help/v3.4/command/find_package.html) command.
+
+To create a project that have a dependency on RapidAssist, the `CMakeLists.txt` configuration file should look like this:
+
+```cmake
+find_package(rapidassist 0.4.0 REQUIRED)
+add_executable(fooexe <source_files> )
+target_link_libraries(fooexe rapidassist)
+```
+
+If RapidAssist or your project are installed to a non-conventional directory, you must specify the directory path to allow the `find_package()` command to properly resolve the location of RapidAssist's include and binary files. This can be achieved by defining the `rapidassist_DIR` environment variable.
+
+(TODO: CHOOSE THE RIGHT VERSION OF THE TEXT)
+
+If RapidAssist or your project are installed to a non-conventional directory, the `find_package()` command will not automatically find the library. To allow the `find_package()` to resolve the location of RapidAssist include and binary files, you must define the `rapidassist_DIR` environment variable to RapidAssist installation directory.
+
+
 
 ## Source code example ##
-The following section shows an example of using RapidAssist.
+The following section shows multiple examples of using RapidAssist.
 
-Assume a developer needs to test the following library function:
 ```cpp
 TEST_F(TestDemo, testCodeSample)
 {
-  //create a dummy file
+  //create a dummy file based on current gtest name
   static const int FILE_SIZE = 1000; //bytes
   const std::string path = ra::gtesthelp::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
   ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str(), FILE_SIZE) );
@@ -62,14 +80,14 @@ TEST_F(TestDemo, testCodeSample)
 
   //split a string into multiple parts
   StringVector words = ra::strings::splitString("The quick brown fox jumps over the lazy dog", " ");
-  size_t numWords = words.size();
+  size_t numWords = words.size(); //returns 9
 
   //converting numeric values to string
   std::string IntMaxStr = ra::strings::toString(UINT64_MAX); //returns "18446744073709551615"
 
-  //search and replace in strings
+  //execute search and replace in strings
   std::string whoiam = "My name is Antoine and I am a superhero.";
-  int numReplaced = ra::strings::strReplace(whoiam, "hero", "vilan");
+  int numReplaced = ra::strings::strReplace(whoiam, "hero", "vilan"); //returns 1
 }
 ```
 
