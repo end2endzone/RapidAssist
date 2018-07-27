@@ -54,12 +54,7 @@ add_executable(fooexe <source_files> )
 target_link_libraries(fooexe rapidassist)
 ```
 
-If RapidAssist or your project are installed to a non-conventional directory, you must specify the directory path to allow the `find_package()` command to properly resolve the location of RapidAssist's include and binary files. This can be achieved by defining the `rapidassist_DIR` environment variable.
-
-(TODO: CHOOSE THE RIGHT VERSION OF THE TEXT)
-
-If RapidAssist or your project are installed to a non-conventional directory, the `find_package()` command will not automatically find the library. To allow the `find_package()` to resolve the location of RapidAssist include and binary files, you must define the `rapidassist_DIR` environment variable to RapidAssist installation directory.
-
+In order for the `find_package()` command to automatically find the library, both RapidAssist and your project must be installed to the same installation directory. In other case, the installation path of RapidAssist must be specified manually by defining the `rapidassist_DIR` environment variable to RapidAssist installation directory. The `rapidassist_DIR` environment variable allows the `find_package()` command to properly resolve the path of RapidAssist include directory and binary files.
 
 
 ## Source code example ##
