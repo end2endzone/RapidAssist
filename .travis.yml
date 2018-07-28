@@ -12,6 +12,8 @@ script:
   ./install_googletest.sh;
 - cd $TRAVIS_BUILD_DIR/ci/travis;
   ./build_library.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;
+  ./build_client.sh;
 - cd $TRAVIS_BUILD_DIR/build/bin;
   ./rapidassist_unittest || true; #do not fail build even if a test fails.
 

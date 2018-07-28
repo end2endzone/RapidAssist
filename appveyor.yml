@@ -61,8 +61,7 @@ before_build:
 
 build_script:
 - cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_library.bat
-- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\read_version.ps1"
-- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\prepare_github_deploy.ps1"
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_client.bat
 
 #---------------------------------#
 #       tests configuration       #
