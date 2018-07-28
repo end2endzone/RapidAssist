@@ -1,24 +1,18 @@
 dist: trusty
-sudo: false
+sudo: required 
 language: cpp
 os:
 - linux
 branches:
   only:
   - master
-env:
-  global:
-  - GOOGLETEST_HOME=$TRAVIS_BUILD_DIR/lib/googletest
 
 script:
-- cd $TRAVIS_BUILD_DIR;
-  mkdir build;
-  cd build;
-  cmake -DRAPIDASSIST_BUILD_TEST=ON ..;
-- product_version=$(head -1 $TRAVIS_BUILD_DIR/version)
-- echo Building product version v$product_version...
-- make
-- cd bin;
+- cd $TRAVIS_BUILD_DIR/ci/travis;
+  ./install_googletest.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;
+  ./build_library.sh;
+- cd $TRAVIS_BUILD_DIR/build/bin;
   ./rapidassist_unittest || true; #do not fail build even if a test fails.
 
 after_success:

@@ -8,5 +8,5 @@ cd ..\..
 cd build\bin\Release
 rapidassist_unittest.exe
 
-::reset_error in case of test case fail
+::reset error in case of test case fail
 exit /b 0
