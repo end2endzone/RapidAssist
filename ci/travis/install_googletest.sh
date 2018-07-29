@@ -35,4 +35,3 @@ echo Installing into $GTEST_ROOT
 echo ============================================================================
 make install
 echo
-

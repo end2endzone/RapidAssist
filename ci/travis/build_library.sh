@@ -33,4 +33,3 @@ echo
 # Delete all temporary environment variable created
 unset GTEST_ROOT
 unset INSTALL_LOCATION
-
