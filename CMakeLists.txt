@@ -1,10 +1,40 @@
-cmake_minimum_required(VERSION 3.4.3)
+# CMakeLists.txt
+cmake_minimum_required(VERSION 3.4.3 FATAL_ERROR)
 project(RapidAssist)
+
+##############################################################################################################################################
+# Standard CMake variables
+##############################################################################################################################################
+
+# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
+# make it prominent in the GUI.
+option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
+
+# Set a default build type if none was specified.
+# See https://blog.kitware.com/cmake-and-the-default-build-type/
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  mark_as_advanced(CMAKE_BUILD_TYPE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+# Export no symbols by default (if the compiler supports it). 
+# This makes e.g. GCC's "visibility behavior" consistent with MSVC's.  
+# On Windows/MSVC this is a noop. 
+if (BUILD_SHARED_LIBS)
+  set(CMAKE_C_VISIBILITY_PRESET hidden) 
+  set(CMAKE_CXX_VISIBILITY_PRESET hidden) 
+endif()
 
 # Set the output folder where your program will be created
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(   LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
+##############################################################################################################################################
+# CMake properties
+##############################################################################################################################################
 MESSAGE( STATUS "PROJECT_NAME:             " ${PROJECT_NAME} )
 MESSAGE( STATUS "CMAKE_BINARY_DIR:         " ${CMAKE_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
@@ -26,80 +56,90 @@ MESSAGE( STATUS "CMAKE_SYSTEM_NAME:        " ${CMAKE_SYSTEM_NAME} )
 MESSAGE( STATUS "CMAKE_SYSTEM_VERSION:     " ${CMAKE_SYSTEM_VERSION} )
 MESSAGE( STATUS "CMAKE_SYSTEM_PROCESSOR:   " ${CMAKE_SYSTEM_PROCESSOR} )
 
-#------------------------------------------------------------------------------------------------------------
-# Set a default build type if none was specified.
-# See https://blog.kitware.com/cmake-and-the-default-build-type/
-#------------------------------------------------------------------------------------------------------------
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-  mark_as_advanced(CMAKE_BUILD_TYPE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+##############################################################################################################################################
+# Global settings
+##############################################################################################################################################
+
+# Product version according to Semantic Versioning v2.0.0 https://semver.org/
+set(RAPIDASSIST_VERSION_MAJOR 0)
+set(RAPIDASSIST_VERSION_MINOR 4)
+set(RAPIDASSIST_VERSION_PATCH 0)
+set(RAPIDASSIST_VERSION ${RAPIDASSIST_VERSION_MAJOR}.${RAPIDASSIST_VERSION_MINOR}.${RAPIDASSIST_VERSION_PATCH})
+
+# version.h file
+set(RAPIDASSIST_VERSION_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/version.h)
+message("Generating ${RAPIDASSIST_VERSION_HEADER}...")
+configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/version.h.in ${RAPIDASSIST_VERSION_HEADER} )
+
+# config.h file
+set(RAPIDASSIST_CONFIG_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/config.h)
+message("Generating ${RAPIDASSIST_CONFIG_HEADER}...")
+if (BUILD_SHARED_LIBS)
+  set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE "#define RAPIDASSIST_BUILT_AS_SHARED")
+else()
+  set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE "#define RAPIDASSIST_BUILT_AS_STATIC")
+endif()
+configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/config.h.in ${RAPIDASSIST_CONFIG_HEADER} )
+set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE)
+
+# Define installation directories
+set(RAPIDASSIST_INSTALL_BIN_DIR      "bin")
+set(RAPIDASSIST_INSTALL_LIB_DIR      "lib/rapidassist-${RAPIDASSIST_VERSION}")
+set(RAPIDASSIST_INSTALL_INCLUDE_DIR  "include/rapidassist-${RAPIDASSIST_VERSION}")
+set(RAPIDASSIST_INSTALL_CMAKE_DIR    ${RAPIDASSIST_INSTALL_LIB_DIR}) # CMake files (*.cmake) should have the same destination as the library files. Some also prefers to use "cmake".
+
+##############################################################################################################################################
+# Project settings
+##############################################################################################################################################
+
+# Force a debug postfix if none specified.
+# This allows publishing both release and debug binaries to the same location
+# and it helps to prevent linking with the wrong library on Windows.
+if(NOT CMAKE_DEBUG_POSTFIX)
+  set(CMAKE_DEBUG_POSTFIX "-d")
 endif()
 
-#------------------------------------------------------------------------------------------------------------
-# Define product version according to Semantic Versioning v2.0.0 https://semver.org/
-#------------------------------------------------------------------------------------------------------------
-MESSAGE("")
-SET(RAPIDASSIST_MAJOR_VERSION 0)
-SET(RAPIDASSIST_MINOR_VERSION 4)
-SET(RAPIDASSIST_PATCH_VERSION 0)
-SET(RAPIDASSIST_PRERELEASE_VERSION "") #i.e: rc1
-SET(RAPIDASSIST_METADATA_VERSION "")   #i.e: build.45
-SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_MAJOR_VERSION}.${RAPIDASSIST_MINOR_VERSION}.${RAPIDASSIST_PATCH_VERSION})
-IF(NOT ${RAPIDASSIST_PRERELEASE_VERSION} STREQUAL "")
-  SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_VERSION_STRING}-${RAPIDASSIST_PRERELEASE_VERSION})
-ENDIF()
-IF(NOT ${RAPIDASSIST_METADATA_VERSION} STREQUAL "")
-  SET(RAPIDASSIST_VERSION_STRING ${RAPIDASSIST_VERSION_STRING}+${RAPIDASSIST_METADATA_VERSION})
-ENDIF()
-MESSAGE("RAPIDASSIST_VERSION_STRING: ${RAPIDASSIST_VERSION_STRING}")
-MESSAGE("")
-
-# Generate version files for different systems
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/rapidassist/version.h")
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/version.in"                   "${CMAKE_CURRENT_SOURCE_DIR}/version")
-
-#------------------------------------------------------------------------------------------------------------
-# Validate mandatory environment variables.
-#------------------------------------------------------------------------------------------------------------
-if(NOT EXISTS "$ENV{GOOGLETEST_HOME}")
-  message(FATAL_ERROR "Could not find GOOGLETEST_HOME environment variable")
+# Prevents anoying warnings on MSVC
+if (WIN32)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-#------------------------------------------------------------------------------------------------------------
-# Add source directories
-#------------------------------------------------------------------------------------------------------------
+set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include )
+include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header files
+                    ${CMAKE_BINARY_DIR}/include               # for version.h included from *.cpp files
+                    ${CMAKE_BINARY_DIR}/include/rapidassist   # for export.h included by public rapidassist.h
+)
+
+# Subprojects
 add_subdirectory(src/rapidassist)
 
-#------------------------------------------------------------------------------------------------------------
 # unit tests
-#------------------------------------------------------------------------------------------------------------
-option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist unit tests" OFF)
+option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
 if(RAPIDASSIST_BUILD_TEST)
   add_subdirectory(test)
-
-  # Add googletest to project
-  if (NOT TARGET gtest)
-    if (WIN32)
-      # https://stackoverflow.com/a/12546288
-      # Force building googletest in `Multi-threaded Debug DLL (/MDd)` and `Multi-threaded DLL (/MD)`
-      set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    endif()
-    add_subdirectory($ENV{GOOGLETEST_HOME})
-    set_target_properties(gtest_main PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-  endif()
-
-  # Define project dependencies
-  add_dependencies(rapidassist_unittest rapidassist)
-  add_dependencies(rapidassist_unittest gtest)
 endif()
 
-#------------------------------------------------------------------------------------------------------------
+##############################################################################################################################################
+# Support for static and shared library
+##############################################################################################################################################
+
+if (BUILD_SHARED_LIBS)
+  set(RAPIDASSIST_EXPORT_HEADER_FILENAME "export.h")
+  set(RAPIDASSIST_EXPORT_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/${RAPIDASSIST_EXPORT_HEADER_FILENAME})
+  message("Generating ${RAPIDASSIST_EXPORT_HEADER_FILENAME} for shared library...")
+  include (GenerateExportHeader) 
+  GENERATE_EXPORT_HEADER(rapidassist 
+               BASE_NAME rapidassist 
+               EXPORT_MACRO_NAME RAPIDASSIST_EXPORT 
+               EXPORT_FILE_NAME ${RAPIDASSIST_EXPORT_HEADER} 
+               STATIC_DEFINE RAPIDASSIST_BUILT_AS_STATIC
+  )
+endif()
+
+##############################################################################################################################################
 # Generate doxygen documentation
 # See https://vicrucann.github.io/tutorials/quick-cmake-doxygen/
-#------------------------------------------------------------------------------------------------------------
+##############################################################################################################################################
 option(RAPIDASSIST_BUILD_DOC "Build RapidAssist documentation" OFF)
 if (RAPIDASSIST_BUILD_DOC)
   # check if Doxygen is installed
@@ -123,3 +163,43 @@ if (RAPIDASSIST_BUILD_DOC)
     message("Doxygen need to be installed to generate the doxygen documentation")
   endif (DOXYGEN_FOUND)
 endif()
+
+##############################################################################################################################################
+# Install
+##############################################################################################################################################
+
+# Install locations:   See https://unix.stackexchange.com/a/36874
+#   On UNIX, installs to "/usr/local".
+#   On Windows, installs to "C:\Program Files (x86)\${PROJECT_NAME}" or to "C:\Program Files\${PROJECT_NAME}" for 64 bit binaries
+
+# Version config verification file
+configure_file(${CMAKE_SOURCE_DIR}/cmake/rapidassist-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/rapidassist DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR})
+install(FILES ${RAPIDASSIST_EXPORT_HEADER}
+              ${RAPIDASSIST_VERSION_HEADER}
+              ${RAPIDASSIST_CONFIG_HEADER}
+              DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR}/rapidassist)
+install(FILES ${CMAKE_SOURCE_DIR}/cmake/rapidassist-config.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
+install(EXPORT rapidassist-targets DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
+
+##############################################################################################################################################
+# Packaging
+##############################################################################################################################################
+
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION ${RAPIDASSIST_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR "${RAPIDASSIST_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${RAPIDASSIST_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${RAPIDASSIST_VERSION_PATCH}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "RapidAssist - RapidAssist is a lite cross-platform library that assist you with the most c++ repetitive tasks.")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+
+# we don't want to split our program up into several things
+set(CPACK_MONOLITHIC_INSTALL 1)
+
+# This must be last
+include(CPack)
+

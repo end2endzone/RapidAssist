@@ -1,8 +1,10 @@
 Changes for 0.4.0:
 
 * New feature: Added support for doxygen API documentation. See build option `RAPIDASSIST_BUILD_DOC` for details.
+* New feature: Implemented 'make install' command support (issue #2).
 * Fixed documentation for some functions.
- 
+* Removed all submodule dependencies. Now manually downloading dependencies using scripts.
+
 Changes for 0.3.4:
 
 * Fixed incorrect product version in v0.3.3

@@ -56,17 +56,12 @@ configuration: Release
 #  - Debug
 #  - Release
 
-# environment variables
-environment:
-  GOOGLETEST_HOME: c:\projects\rapidassist\lib\googletest
-
 before_build:
-- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\before_build.bat
-- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\read_version.ps1"
-- ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\prepare_github_deploy.ps1"
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\install_googletest.bat
 
-build:
-  project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
+build_script:
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_library.bat
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_client.bat
 
 #---------------------------------#
 #       tests configuration       #
@@ -84,20 +79,3 @@ test_script:
 artifacts:
 - path: .\build\bin\Release\rapidassist_unittest.x86.release.xml
   name: rapidassistTest.x86.release.xml
-  
-#---------------------------------#
-#     deployment configuration    #
-#---------------------------------#
-
-#prepare deplying to github. See prepare_github_deploy.ps1 for more details.
-deploy:
-- provider: GitHub
-  tag: $(GITHUB_TAG_NAME)
-  release: $(GITHUB_RELEASE_NAME)
-  description: Latest successful AppVeyor CI builds of branch '$(APPVEYOR_REPO_BRANCH)', commit $(APPVEYOR_REPO_COMMIT)
-  auth_token:
-    secure: BgyLisMc154qWpkyBdh8OD+D9HMM+YnBkh7H4MEUShKO3aCU+Fn/XVGJ07fTsRmH
-  artifact: /(.*\.zip|.*\.exe)/
-  draft: false           #true means release is private (visible to contributors only), false is public (visible to everyone)
-  prerelease: true       #true for prerelease, false to identify this release as the 'latest release'
-  force_update: true
