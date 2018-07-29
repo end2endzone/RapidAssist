@@ -5,7 +5,7 @@ os:
 - linux
 branches:
   only:
-  - master
+  - make_install_support
 
 script:
 - cd $TRAVIS_BUILD_DIR/ci/travis;
