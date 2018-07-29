@@ -14,9 +14,9 @@ echo ===========================================================================
 echo Generating...
 echo ============================================================================
 cd $TRAVIS_BUILD_DIR
-mkdir build >/dev/null 2>/dev/null
+mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ../library
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
 
 echo ============================================================================
 echo Compiling...

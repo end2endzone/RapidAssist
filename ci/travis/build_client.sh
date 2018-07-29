@@ -8,7 +8,7 @@ if [ "$TRAVIS_BUILD_DIR" = "" ]; then
 fi
 
 export GTEST_ROOT=$TRAVIS_BUILD_DIR/third_parties/googletest/install
-export rapidassist_DIR=$TRAVIS_BUILD_DIR/library/install
+export rapidassist_DIR=$TRAVIS_BUILD_DIR/install
 echo rapidassist_DIR=$rapidassist_DIR
 
 echo ============================================================================
