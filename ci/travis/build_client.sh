@@ -28,3 +28,4 @@ echo
 # Delete all temporary environment variable created
 unset GTEST_ROOT
 unset rapidassist_DIR
+
