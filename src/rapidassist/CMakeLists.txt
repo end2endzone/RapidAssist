@@ -1,17 +1,33 @@
-file(GLOB_RECURSE headers ${CMAKE_SOURCE_DIR}/include/*.h)
+set(RAPIDASSIST_HEADER_FILES ""
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/cli.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/cppencoder.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/environment.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/logger.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/time_.h
+)
 
-find_package(GTest)
+if(RAPIDASSIST_BUILD_GTESTHELP)
+  # add another header file
+  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES} ${CMAKE_SOURCE_DIR}/include/rapidassist/gtesthelp.h)
+
+  find_package(GTest)
+
+  set(RAPIDASSIST_GTESTHELP_SOURCE_FILES gtesthelp.cpp)
+endif()
 
 add_library(rapidassist STATIC
-  ${headers}
+  ${RAPIDASSIST_HEADER_FILES}
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
+  ${RAPIDASSIST_GTESTHELP_SOURCE_FILES}
   cli.cpp
   cppencoder.cpp
   environment.cpp
   filesystem.cpp
-  gtesthelp.cpp
   logger.cpp
   random.cpp
   time_.cpp
@@ -19,8 +35,10 @@ add_library(rapidassist STATIC
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest
-if(NOT WIN32)
-  set(PTHREAD_LIBRARIES -pthread)
+if(RAPIDASSIST_BUILD_GTESTHELP)
+  if(NOT WIN32)
+    set(PTHREAD_LIBRARIES -pthread)
+  endif()
 endif()
 
 # Force CMAKE_DEBUG_POSTFIX for executables

@@ -1,12 +1,14 @@
-file(GLOB_RECURSE headers ${CMAKE_SOURCE_DIR}/include/*.h)
-
 find_package(GTest)
 
+if(RAPIDASSIST_BUILD_GTESTHELP)
+  set(RAPIDASSIST_GTESTHELP_TEST_FILES TestGTestHelp.cpp TestGTestHelp.h)
+endif()
+
 add_executable(rapidassist_unittest
-  ${headers}
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
+  ${RAPIDASSIST_GTESTHELP_TEST_FILES}
   main.cpp
   TestCli.cpp
   TestCli.h
@@ -16,8 +18,6 @@ add_executable(rapidassist_unittest
   TestEnvironment.h
   TestFilesystem.cpp
   TestFilesystem.h
-  TestGTestHelp.cpp
-  TestGTestHelp.h
   TestLogger.cpp
   TestLogger.h
   TestRandom.cpp

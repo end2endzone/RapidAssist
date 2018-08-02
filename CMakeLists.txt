@@ -99,7 +99,7 @@ if(NOT CMAKE_DEBUG_POSTFIX)
   set(CMAKE_DEBUG_POSTFIX "-d")
 endif()
 
-# Prevents anoying warnings on MSVC
+# Prevents annoying warnings on MSVC
 if (WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
@@ -110,11 +110,22 @@ include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header fi
                     ${CMAKE_BINARY_DIR}/include/rapidassist   # for export.h included by public rapidassist.h
 )
 
-# Subprojects
-add_subdirectory(src/rapidassist)
+# googletest dependency
+option(RAPIDASSIST_BUILD_GTESTHELP "Build the Google Test helper functions." ON)
 
 # unit tests
 option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
+if(RAPIDASSIST_BUILD_TEST)
+  if(NOT RAPIDASSIST_BUILD_GTESTHELP)
+    # force RAPIDASSIST_BUILD_GTESTHELP=ON
+    message(WARNING "Forcing RAPIDASSIST_BUILD_GTESTHELP to ON because RAPIDASSIST_BUILD_TEST is enabled.")
+    set(RAPIDASSIST_BUILD_GTESTHELP ON)
+  endif()
+endif()
+
+# Subprojects
+add_subdirectory(src/rapidassist)
+
 if(RAPIDASSIST_BUILD_TEST)
   add_subdirectory(test)
 endif()

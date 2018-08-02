@@ -4,6 +4,7 @@ Changes for 0.4.0:
 * New feature: Implemented 'make install' command support (issue #2).
 * Fixed documentation for some functions.
 * Removed all submodule dependencies. Now manually downloading dependencies using scripts.
+* New feature: Create build option for disabling dependency to GTest (issue #3)
 
 Changes for 0.3.4:
 
