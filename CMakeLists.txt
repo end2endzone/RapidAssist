@@ -92,6 +92,10 @@ set(RAPIDASSIST_INSTALL_CMAKE_DIR    ${RAPIDASSIST_INSTALL_LIB_DIR}) # CMake fil
 # Project settings
 ##############################################################################################################################################
 
+# Build options
+option(RAPIDASSIST_BUILD_GTESTHELP "Build the Google Test helper functions." ON)
+option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
+
 # Force a debug postfix if none specified.
 # This allows publishing both release and debug binaries to the same location
 # and it helps to prevent linking with the wrong library on Windows.
@@ -104,17 +108,14 @@ if (WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
+# Define include directories for source code.
+# The specified values will not be exported.
 set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include )
-include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header files
-                    ${CMAKE_BINARY_DIR}/include               # for version.h included from *.cpp files
-                    ${CMAKE_BINARY_DIR}/include/rapidassist   # for export.h included by public rapidassist.h
+include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header files, for source code.
+                    ${CMAKE_BINARY_DIR}/include/rapidassist   # for ${RAPIDASSIST_VERSION_HEADER} and ${RAPIDASSIST_CONFIG_HEADER} generated files.
 )
 
-# googletest dependency
-option(RAPIDASSIST_BUILD_GTESTHELP "Build the Google Test helper functions." ON)
-
 # unit tests
-option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
 if(RAPIDASSIST_BUILD_TEST)
   if(NOT RAPIDASSIST_BUILD_GTESTHELP)
     # force RAPIDASSIST_BUILD_GTESTHELP=ON
@@ -213,4 +214,3 @@ set(CPACK_MONOLITHIC_INSTALL 1)
 
 # This must be last
 include(CPack)
-

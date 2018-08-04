@@ -36,9 +36,9 @@ endif()
 # Force CMAKE_DEBUG_POSTFIX for executables
 set_target_properties(rapidassist_unittest PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
-target_include_directories(rapidassist_unittest PUBLIC $<BUILD_INTERFACE:${GTEST_INCLUDE_DIR}>)
+target_include_directories(rapidassist_unittest PRIVATE ${GTEST_INCLUDE_DIR})
 add_dependencies(rapidassist_unittest rapidassist)
-target_link_libraries(rapidassist_unittest PUBLIC rapidassist ${PTHREAD_LIBRARIES} ${GTEST_LIBRARIES} )
+target_link_libraries(rapidassist_unittest PUBLIC rapidassist PRIVATE ${PTHREAD_LIBRARIES} ${GTEST_LIBRARIES} )
 
 install(TARGETS rapidassist_unittest
         EXPORT rapidassist-targets
