@@ -187,16 +187,19 @@ endif()
 #   On UNIX, installs to "/usr/local".
 #   On Windows, installs to "C:\Program Files (x86)\${PROJECT_NAME}" or to "C:\Program Files\${PROJECT_NAME}" for 64 bit binaries
 
-# Version config verification file
+# Target config version verification file
 configure_file(${CMAKE_SOURCE_DIR}/cmake/rapidassist-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
+
+# Target config file
+configure_file(${CMAKE_SOURCE_DIR}/cmake/rapidassist-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config.cmake @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/rapidassist DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR})
 install(FILES ${RAPIDASSIST_EXPORT_HEADER}
               ${RAPIDASSIST_VERSION_HEADER}
               ${RAPIDASSIST_CONFIG_HEADER}
               DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR}/rapidassist)
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/rapidassist-config.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
 install(EXPORT rapidassist-targets DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
 
 ##############################################################################################################################################
