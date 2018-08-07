@@ -23,7 +23,7 @@ echo
 echo ============================================================================
 echo Compiling...
 echo ============================================================================
-mkdir build >/dev/null 2>/dev/null
+mkdir -p build
 cd build
 export GTEST_ROOT=$TRAVIS_BUILD_DIR/third_parties/googletest/install
 cmake -DCMAKE_INSTALL_PREFIX=$GTEST_ROOT -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF ..

@@ -15,7 +15,7 @@ echo ===========================================================================
 echo Generating...
 echo ============================================================================
 cd $TRAVIS_BUILD_DIR/client
-mkdir build >/dev/null 2>/dev/null
+mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 
