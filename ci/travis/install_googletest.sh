@@ -10,7 +10,7 @@ fi
 echo ============================================================================
 echo Cloning googletest into $TRAVIS_BUILD_DIR/third_parties/googletest
 echo ============================================================================
-mkdir $TRAVIS_BUILD_DIR/third_parties >/dev/null 2>/dev/null
+mkdir -p $TRAVIS_BUILD_DIR/third_parties
 cd $TRAVIS_BUILD_DIR/third_parties
 git clone "https://github.com/google/googletest.git"
 cd googletest
