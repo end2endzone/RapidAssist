@@ -24,6 +24,7 @@
 
 #include "rapidassist/strings.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/generics.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
@@ -398,15 +399,6 @@ namespace ra
       return tmp;
     }
 
-    template <class T>
-    void swap(T & a, T & b)
-    {
-      T tmp;
-      tmp = a;
-      a = b;
-      b = tmp;
-    }
-
     std::string reverse(const std::string & iStr)
     {
       std::string tmp = iStr;
@@ -420,7 +412,7 @@ namespace ra
         {
           if (i != (size - i - 1))
           {
-            swap(tmp[i], tmp[size - i - 1]);
+            ra::generics::swap(tmp[i], tmp[size - i - 1]);
           }
         }
       }
