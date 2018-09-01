@@ -1,3 +1,7 @@
+Changes for 0.4.1:
+
+* Fixed Travis CI scripts which was using `mkdir` to use the `-p` argument to not fail in directory already exists.
+
 Changes for 0.4.0:
 
 * New feature: Added support for doxygen API documentation. See build option `RAPIDASSIST_BUILD_DOC` for details.
