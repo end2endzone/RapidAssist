@@ -28,7 +28,8 @@
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
-#include <limits>
+#include <limits>   //for std::numeric_limits
+#include <stdarg.h> //for ...
 
 namespace ra
 {
@@ -417,6 +418,24 @@ namespace ra
         }
       }
       return tmp;
+    }
+
+    std::string format(const char * iFormat, ...)
+    {
+      std::string output;
+
+      va_list args;
+      va_start(args, iFormat);
+
+      static const int BUFFER_SIZE = 10240;
+      char buffer[BUFFER_SIZE];
+      buffer[0] = '\0';
+      vsprintf_s(buffer, BUFFER_SIZE, iFormat, args);
+      output = buffer;
+
+      va_end (args);
+
+      return output;
     }
 
   } //namespace strings

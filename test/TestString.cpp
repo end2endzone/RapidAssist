@@ -547,6 +547,12 @@ namespace ra { namespace strings { namespace test
     ASSERT_EQ("", reverse(""));
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testFormat)
+  {
+    std::string text = ra::strings::format("%d %s %c %3.2f", 23, "this is a string", 'e', 4.234);
+    ASSERT_EQ("23 this is a string e 4.23", text );
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace strings
 } //namespace ra

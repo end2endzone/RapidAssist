@@ -187,6 +187,13 @@ namespace ra
     /// <returns>Returns a mirror copy of the given string.</returns>
     std::string reverse(const std::string & iStr);
 
+    /// <summary>
+    /// Format a string.
+    /// </summary>
+    /// <param name="iFormat">The format of the string. Same as printf() format.</param>
+    /// <returns>Returns a formatted string with the given parameters inserted.</returns>
+    std::string format(const char * iFormat, ...);
+
   } //namespace strings
 } //namespace ra
 
