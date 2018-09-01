@@ -517,6 +517,36 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testTrim)
+  {
+    {
+      static const std::string value = "   abc   ";
+      ASSERT_EQ("abc", trim(value));
+      ASSERT_EQ("abc   ", trimLeft(value));
+      ASSERT_EQ("   abc", trimRight(value));
+    }
+
+    {
+      static const std::string value = "***abc***";
+      ASSERT_EQ("abc", trim(value, '*'));
+      ASSERT_EQ("abc***", trimLeft(value, '*'));
+      ASSERT_EQ("***abc", trimRight(value, '*'));
+    }
+
+    ASSERT_EQ("", trim(""));
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testReverse)
+  {
+    //assert even number of characters
+    ASSERT_EQ("abc", reverse("cba"));
+
+    //assert odd number of characters
+    ASSERT_EQ("abcd", reverse("dcba"));
+
+    ASSERT_EQ("", reverse(""));
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace strings
 } //namespace ra

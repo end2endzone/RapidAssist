@@ -135,6 +135,58 @@ namespace ra
     /// <returns>Returns a list of strings merged into a single string separating each element by iSeparator.</returns>
     std::string joinString(const StringVector & iList, const char * iSeparator);
 
+    /// <summary>
+    /// Removes left and right space characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trim(const std::string & iStr);
+
+    /// <summary>
+    /// Removes left and right occurrence of iChar characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <param name="iChar">The character to remove.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trim(const std::string & iStr, const char iChar);
+
+    /// <summary>
+    /// Removes right space characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trimRight(const std::string & iStr);
+
+    /// <summary>
+    /// Removes left space characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trimLeft(const std::string & iStr);
+
+    /// <summary>
+    /// Removes right occurrence of iChar characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <param name="iChar">The character to remove.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trimRight(const std::string & iStr, const char iChar);
+
+    /// <summary>
+    /// Removes left occurrence of iChar characters of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <param name="iChar">The character to remove.</param>
+    /// <returns>Returns the trimmed string.</returns>
+    std::string trimLeft(const std::string & iStr, const char iChar);
+
+    /// <summary>
+    /// Reverse order each character of the given string.
+    /// </summary>
+    /// <param name="iStr">The string to trim.</param>
+    /// <returns>Returns a mirror copy of the given string.</returns>
+    std::string reverse(const std::string & iStr);
+
   } //namespace strings
 } //namespace ra
 

@@ -27,6 +27,7 @@
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
+#include <limits>
 
 namespace ra
 {
@@ -327,6 +328,103 @@ namespace ra
         output.append(value);
       }
       return output;
+    }
+
+    std::string trim(const std::string & iStr)
+    {
+      return trimLeft(trimRight(iStr));
+    }
+
+    std::string trim(const std::string & iStr, const char iChar)
+    {
+      return trimLeft(trimRight(iStr, iChar), iChar);
+    }
+
+    std::string trimRight(const std::string & iStr)
+    {
+      return trimRight(iStr, ' ');
+    }
+
+    std::string trimLeft(const std::string & iStr)
+    {
+      return trimLeft(iStr, ' ');
+    }
+
+    std::string trimRight(const std::string & iStr, const char iChar)
+    {
+      static const size_t SIZE_T_MAX = std::numeric_limits< size_t >::max();
+      
+      std::string tmp = iStr;
+
+      if (iChar == '\0')
+        return tmp;
+
+      size_t size = iStr.size();
+      if (size)
+      {
+        size_t loopStart = size - 1;
+        size_t loopEnd = 0;
+        for(size_t i = loopStart; i >= loopEnd && i != SIZE_T_MAX; i--)
+        {
+          if (tmp[i] == iChar)
+          {
+            tmp.erase(i, 1);
+          }
+          else
+          {
+            //no need to continue looking
+            break;
+          }
+        }
+      }
+      return tmp;
+    }
+
+    std::string trimLeft(const std::string & iStr, const char iChar)
+    {
+      std::string tmp = iStr;
+
+      if (iChar == '\0')
+        return tmp;
+
+      size_t size = iStr.size();
+      if (size)
+      {
+        while(!tmp.empty() && tmp[0] == iChar)
+        {
+          tmp.erase(0, 1);
+        }
+      }
+      return tmp;
+    }
+
+    template <class T>
+    void swap(T & a, T & b)
+    {
+      T tmp;
+      tmp = a;
+      a = b;
+      b = tmp;
+    }
+
+    std::string reverse(const std::string & iStr)
+    {
+      std::string tmp = iStr;
+
+      size_t size = iStr.size();
+      if (size)
+      {
+        size_t loopStart = 0;
+        size_t loopEnd = (size - 1) / 2;
+        for(size_t i = loopStart; i <= loopEnd; i++)
+        {
+          if (i != (size - i - 1))
+          {
+            swap(tmp[i], tmp[size - i - 1]);
+          }
+        }
+      }
+      return tmp;
     }
 
   } //namespace strings

@@ -1,3 +1,7 @@
+Changes for 0.5.0:
+
+* New feature: Implemented ra::strings::trim() and ra::strings::reverse().
+
 Changes for 0.4.1:
 
 * Fixed Travis CI scripts which was using `mkdir` to use the `-p` argument to not fail in directory already exists.
