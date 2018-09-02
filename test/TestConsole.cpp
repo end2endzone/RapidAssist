@@ -73,7 +73,62 @@ namespace ra { namespace console { namespace test
     ASSERT_NE(before_y, after_y);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testSetCursorPos)
+  TEST_F(TestConsole, testGetCursorPosYAxis)
+  {
+    int before_x = 0;
+    int before_y = 0;
+    ra::console::getCursorPos(before_x, before_y);
+    
+    printf("Line1\nLine2\n");
+
+    int after_x = 0;
+    int after_y = 0;
+    ra::console::getCursorPos(after_x, after_y);
+
+    ASSERT_LT(before_y, after_y);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testGetCursorPosXAxis)
+  {
+    int before_x = 0;
+    int before_y = 0;
+    ra::console::getCursorPos(before_x, before_y);
+    
+    printf("Offset1");
+
+    int after_x = 0;
+    int after_y = 0;
+    ra::console::getCursorPos(after_x, after_y);
+
+    printf("\n");
+
+    ASSERT_LT(before_x, after_x);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, DISABLED_testGetCursorPosPerformance)
+  {
+    //loop for 3 seconds
+    static const double time_length = 3.0; //seconds
+    double time_start = ra::time::getMicrosecondsTimer();
+    double time_end = time_start + time_length;
+
+    int loop_count = 0;
+    while( ra::time::getMicrosecondsTimer() < time_end )
+    {
+      int before_x = 0;
+      int before_y = 0;
+      ra::console::getCursorPos(before_x, before_y);
+
+      loop_count++;
+    }
+
+    //compute average time per call
+    double timePerCallSec = time_length / double(loop_count);
+    double timePerCallMicro = timePerCallSec * 1000.0 * 1000.0;
+    printf("Time per getCursorPos() calls: %.6fus\n", timePerCallMicro);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, DISABLED_testSetCursorPos)
   {
     printf("Running test %s()", ra::gtesthelp::getTestQualifiedName().c_str());
 
@@ -89,6 +144,8 @@ namespace ra { namespace console { namespace test
     int after_x = 0;
     int after_y = 0;
     ra::console::getCursorPos(after_x, after_y);
+
+    printf("\n");
 
     ASSERT_NE(before_x, after_x);
     ASSERT_EQ(before_y, after_y);
