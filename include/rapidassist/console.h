@@ -33,7 +33,7 @@ namespace ra
     /// <summary>
     /// Returns the cursor position.
     /// </summary>
-    /// <remarks>The cosole x and y coordinate system is 0 based</remarks>
+    /// <remarks>The console x and y coordinate system is 0 based</remarks>
     /// <param name="x">The x coordinate of the cursor.</param>
     /// <param name="y">The y coordinate of the cursor.</param>
     void getCursorPos(int & x, int & y);
@@ -41,10 +41,21 @@ namespace ra
     /// <summary>
     /// Sets the cursor position.
     /// </summary>
-    /// <remarks>The cosole x and y coordinate system is 0 based</remarks>
+    /// <remarks>The console x and y coordinate system is 0 based</remarks>
     /// <param name="x">The x coordinate of the cursor.</param>
     /// <param name="y">The y coordinate of the cursor.</param>
     void setCursorPos(const int & x, const int & y);
+
+    /// <summary>
+    /// Gets the width and height of the console window.
+    /// </summary>
+    /// <remarks>
+    /// On Windows, the function returns the size of the console when maximized (and not the maximum length of a string without carriage return).
+    /// The result can be used to 'center' a text on the console.
+    /// </remarks>
+    /// <param name="width">The width of the console.</param>
+    /// <param name="height">The height of the console.</param>
+    void getDimension(int & width, int & height);
 
     /// <summary>
     /// Clears the screen.

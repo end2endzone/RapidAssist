@@ -79,6 +79,20 @@ namespace ra
 #endif
     }
 
+    void getDimension(int & width, int & height)
+    {
+#ifdef _WIN32
+      CONSOLE_SCREEN_BUFFER_INFO csbi;
+      GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+      width = (int)csbi.dwMaximumWindowSize.X;
+      height = (int)csbi.dwMaximumWindowSize.Y;
+#elif __linux__
+      //not implemented yet
+      width = 0;
+      height = 0;
+#endif
+    }
+
     void clearScreen()
     {
 		  //system("cls");

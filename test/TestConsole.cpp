@@ -94,6 +94,14 @@ namespace ra { namespace console { namespace test
     ASSERT_EQ(before_y, after_y);
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testGetDimension)
+  {
+    int width = -1;
+    int height = -1;
+    ra::console::getDimension(width, height);
+    printf("Console dimension: %dx%d\n", width, height);
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testGetAnimationSpriteLoop)
   {
     static const double refreshrate = 0.01;
@@ -121,7 +129,7 @@ namespace ra { namespace console { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testPrintAnimationCursor)
   {
-    static const double MAX_TIME_SECONDS = 5.0; //maximum running time is 5 seconds
+    static const double MAX_TIME_SECONDS = 3.0; //maximum running time of the test in seconds
 
     double time_start = ra::time::getMillisecondsTimer();
     double time_end = time_start + MAX_TIME_SECONDS;
