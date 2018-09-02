@@ -133,6 +133,52 @@ namespace ra { namespace console { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testForeGroundColor)
+  {
+    int color_first = (int)ra::console::Black;
+    int color_last = NUM_TEXT_COLOR - 1;
+
+    //show all colors possibilities
+    //for(int i=color_first; i <= color_last; i++)
+    //{
+    //  for(int j=color_first; j <= color_last; j++)
+    //  {
+    //    ra::console::TextColor foreground = (ra::console::TextColor)i;
+    //    ra::console::TextColor background = (ra::console::TextColor)j;
+    //    ra::console::setTextColor(foreground, background);
+    //    printf("%s on %s\n", ra::console::getTextColorName(foreground), ra::console::getTextColorName(background)); 
+    //  }
+    //}
+
+    //all foreground colors
+    for(int i=color_first; i <= color_last; i++)
+    {
+      ra::console::TextColor foreground = (ra::console::TextColor)i;
+      ra::console::TextColor background = ra::console::Black;
+      if (foreground == ra::console::Black)
+        background = ra::console::White;
+      ra::console::setTextColor(foreground, background);
+      printf("%s ", ra::console::getTextColorName(foreground)); 
+    }
+    printf("\n");
+
+    //all background colors
+    for(int i=color_first; i <= color_last; i++)
+    {
+      ra::console::TextColor foreground = ra::console::Black;
+      ra::console::TextColor background = (ra::console::TextColor)i;
+      if (background == ra::console::Black)
+        foreground = ra::console::White;
+      ra::console::setTextColor(foreground, background);
+      printf("%s ", ra::console::getTextColorName(background)); 
+    }
+    printf("\n");
+
+    //reset to default
+    ra::console::setDefaultTextColor();
+    printf("Back to normal...\n");
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace console
 } //namespace ra

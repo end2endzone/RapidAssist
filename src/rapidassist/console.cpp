@@ -27,7 +27,12 @@
 #include <vector>
 
 #ifdef _WIN32
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+#endif /* WIN32_LEAN_AND_MEAN */
 #include <Windows.h>
+
 #elif __linux__
 #endif
 
@@ -135,6 +140,304 @@ namespace ra
       pushCursorPos();
       printf("%c", getAnimationSprite(0.15));
       popCursorPos();
+    }
+
+    const char * getTextColorName(const TextColor & color)
+    {
+      switch(color)
+      {
+      case Black:
+        return "Black";
+        break;
+      case White:
+        return "White";
+        break;
+      case DarkBlue:
+        return "DarkBlue";
+        break;
+      case DarkGreen:
+        return "DarkGreen";
+        break;
+      case DarkCyan:
+        return "DarkCyan";
+        break;
+      case DarkRed:
+        return "DarkRed";
+        break;
+      case DarkMagenta:
+        return "DarkMagenta";
+        break;
+      case DarkYellow:
+        return "DarkYellow";
+        break;
+      case DarkGray:
+        return "DarkGray";
+        break;
+      case Blue:
+        return "Blue";
+        break;
+      case Green:
+        return "Green";
+        break;
+      case Cyan:
+        return "Cyan";
+        break;
+      case Red:
+        return "Red";
+        break;
+      case Magenta:
+        return "Magenta";
+        break;
+      case Yellow:
+        return "Yellow";
+        break;
+      case Gray:
+        return "Gray";
+        break;
+      default:
+        return "";
+      };
+    }
+
+    void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
+    {
+#ifdef _WIN32
+      WORD foregroundAttribute = 0;
+      switch(iForeground)
+      {
+      case Black:
+        foregroundAttribute = 0;
+        break;
+      case White:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      case DarkBlue:
+        foregroundAttribute = FOREGROUND_BLUE;
+        break;
+      case DarkGreen:
+        foregroundAttribute = FOREGROUND_GREEN;
+        break;
+      case DarkCyan:
+        foregroundAttribute = FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      case DarkRed:
+        foregroundAttribute = FOREGROUND_RED;
+        break;
+      case DarkMagenta:
+        foregroundAttribute = FOREGROUND_RED | FOREGROUND_BLUE;
+        break;
+      case DarkYellow:
+        foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN;
+        break;
+      case DarkGray:
+        foregroundAttribute = FOREGROUND_INTENSITY;
+        break;
+      case Blue:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_BLUE;
+        break;
+      case Green:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
+        break;
+      case Cyan:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      case Red:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED;
+        break;
+      case Magenta:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE;
+        break;
+      case Yellow:
+        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
+        break;
+      case Gray:
+        foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      };
+
+      WORD backgroundAttribute = 0;
+      switch(iBackground)
+      {
+      case Black:
+        backgroundAttribute = 0;
+        break;
+      case White:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        break;
+      case DarkBlue:
+        backgroundAttribute = BACKGROUND_BLUE;
+        break;
+      case DarkGreen:
+        backgroundAttribute = BACKGROUND_GREEN;
+        break;
+      case DarkCyan:
+        backgroundAttribute = BACKGROUND_GREEN | BACKGROUND_BLUE;
+        break;
+      case DarkRed:
+        backgroundAttribute = BACKGROUND_RED;
+        break;
+      case DarkMagenta:
+        backgroundAttribute = BACKGROUND_RED | BACKGROUND_BLUE;
+        break;
+      case DarkYellow:
+        backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN;
+        break;
+      case DarkGray:
+        backgroundAttribute = BACKGROUND_INTENSITY;
+        break;
+      case Blue:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
+        break;
+      case Green:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
+        break;
+      case Cyan:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        break;
+      case Red:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED;
+        break;
+      case Magenta:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
+        break;
+      case Yellow:
+        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
+        break;
+      case Gray:
+        backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        break;
+      };
+
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foregroundAttribute | backgroundAttribute);
+#elif __linux__
+      //not implemented yet
+#endif
+    }
+
+    void getTextColor(TextColor & oForeground, TextColor & oBackground)
+    {
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    
+    DWORD foregroundInfo = info.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    DWORD backgroundInfo = info.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+
+    //foreground
+    switch(foregroundInfo)
+    {
+    case 0:
+      oForeground = Black;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
+      oForeground = White;
+      break;
+    case FOREGROUND_BLUE:
+      oForeground = DarkBlue;
+      break;
+    case FOREGROUND_GREEN:
+      oForeground = DarkGreen;
+      break;
+    case FOREGROUND_GREEN | FOREGROUND_BLUE:
+      oForeground = DarkCyan;
+      break;
+    case FOREGROUND_RED:
+      oForeground = DarkRed;
+      break;
+    case FOREGROUND_RED | FOREGROUND_BLUE:
+      oForeground = DarkMagenta;
+      break;
+    case FOREGROUND_RED | FOREGROUND_GREEN:
+      oForeground = DarkYellow;
+      break;
+    case FOREGROUND_INTENSITY:
+      oForeground = DarkGray;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_BLUE:
+      oForeground = Blue;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_GREEN:
+      oForeground = Green;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE:
+      oForeground = Cyan;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_RED:
+      oForeground = Red;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE:
+      oForeground = Magenta;
+      break;
+    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN:
+      oForeground = Yellow;
+      break;
+    case FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
+      oForeground = Gray;
+      break;
+    };
+
+    //background
+    switch(backgroundInfo)
+    {
+    case 0:
+      oBackground = Black;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
+      oBackground = White;
+      break;
+    case BACKGROUND_BLUE:
+      oBackground = DarkBlue;
+      break;
+    case BACKGROUND_GREEN:
+      oBackground = DarkGreen;
+      break;
+    case BACKGROUND_GREEN | BACKGROUND_BLUE:
+      oBackground = DarkCyan;
+      break;
+    case BACKGROUND_RED:
+      oBackground = DarkRed;
+      break;
+    case BACKGROUND_RED | BACKGROUND_BLUE:
+      oBackground = DarkMagenta;
+      break;
+    case BACKGROUND_RED | BACKGROUND_GREEN:
+      oBackground = DarkYellow;
+      break;
+    case BACKGROUND_INTENSITY:
+      oBackground = DarkGray;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_BLUE:
+      oBackground = Blue;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_GREEN:
+      oBackground = Green;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE:
+      oBackground = Cyan;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_RED:
+      oBackground = Red;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE:
+      oBackground = Magenta;
+      break;
+    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN:
+      oBackground = Yellow;
+      break;
+    case BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
+      oBackground = Gray;
+      break;
+    };
+#elif __linux__
+      //not implemented yet
+      oForeground = Gray;
+      oBackground = Black;
+#endif
+    }
+
+    void setDefaultTextColor()
+    {
+      ra::console::setTextColor(ra::console::Gray, ra::console::Black);
     }
 
   } //namespace console

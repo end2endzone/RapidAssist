@@ -77,6 +77,55 @@ namespace ra
     /// </remarks>
     void printAnimationCursor();
 
+    /// <summary>Enumaration for all console text colors.</summary>
+    enum TextColor
+    {
+      Black = 0,
+      White,
+      Blue,
+      Green,
+      Cyan,
+      Red,
+      Magenta,
+      Yellow,
+      Gray,
+      DarkBlue,
+      DarkGreen,
+      DarkCyan,
+      DarkRed,
+      DarkMagenta,
+      DarkYellow,
+      DarkGray,
+    };
+
+    static const int NUM_TEXT_COLOR = 16;
+
+    /// <summary>
+    /// Returns the name of the given text color.
+    /// </summary>
+    /// <remarks>The called does not have the ownsership of the returned value.</remarks>
+    /// <returns>Returns the name of the given text color.</returns>
+    const char * getTextColorName(const TextColor & color);
+
+    /// <summary>
+    /// Set a new foreground and background text color.
+    /// </summary>
+    /// <param name="iForeground">The text foreground color.</param>
+    /// <param name="iBackground">The text background color.</param>
+    void setTextColor(const TextColor & iForeground, const TextColor & iBackground);
+
+    /// <summary>
+    /// Get the current foreground and background text color.
+    /// </summary>
+    /// <param name="oForeground">The text foreground color.</param>
+    /// <param name="oBackground">The text background color.</param>
+    void getTextColor(TextColor & oForeground, TextColor & oBackground);
+
+    /// <summary>
+    /// Set default foreground and background text colors.
+    /// </summary>
+    void setDefaultTextColor();
+
   } //namespace console
 } //namespace ra
 

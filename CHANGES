@@ -1,7 +1,8 @@
 Changes for 0.5.0:
 
 * New feature: Implemented ra::strings::trim() and ra::strings::reverse().
-* New feature: Generics, a.k.a. popular templates.
+* New feature: Implemented console text color support for Windows.
+* New feature: Created `generics` namespace, a.k.a. popular templates.
 * New feature: Created `console` namespace.
 * Fixed issue #5: String format function.
 
