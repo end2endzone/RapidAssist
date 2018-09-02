@@ -24,6 +24,7 @@
 
 #include "rapidassist/console.h"
 #include "rapidassist/time_.h"
+#include "rapidassist/environment.h"
 #include <vector>
 
 #ifdef _WIN32
@@ -34,6 +35,10 @@
 #include <Windows.h>
 
 #elif __linux__
+
+#include <cstdio>    // fileno()
+#include <unistd.h>  // isatty()
+
 #endif
 
 namespace ra
@@ -438,6 +443,51 @@ namespace ra
     void setDefaultTextColor()
     {
       ra::console::setTextColor(ra::console::Gray, ra::console::Black);
+    }
+
+    bool isDesktopGuiAvailable()
+    {
+#ifdef _WIN32
+      return true;
+#elif __linux__
+      std::string display = ra::environment::getEnvironmentVariable("DISPLAY");
+      bool hasDesktopGui = !display.empty();
+      return hasDesktopGui;
+#endif
+    }
+
+    bool isRunFromDesktop()
+    {
+#ifdef _WIN32
+      std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
+      bool hasNoPrompt = prompt.empty();
+      return hasNoPrompt;
+#elif __linux__
+      //https://stackoverflow.com/questions/13204177/how-to-find-out-if-running-from-terminal-or-gui
+      if (isatty(fileno(stdin)))
+        return false;
+      else
+        return true;
+#endif
+    }
+
+    bool hasConsoleOwnership()
+    {
+#ifdef _WIN32
+      //https://stackoverflow.com/questions/9009333/how-to-check-if-the-program-is-run-from-a-console
+      HWND consoleWnd = GetConsoleWindow();
+      DWORD dwConsoleProcessId = 0;
+      GetWindowThreadProcessId(consoleWnd, &dwConsoleProcessId);
+      DWORD dwCurrentProcessId = GetCurrentProcessId();
+      GetWindowThreadProcessId(consoleWnd, &dwConsoleProcessId);
+      if (dwCurrentProcessId==dwConsoleProcessId)
+      {
+        return true;
+      }
+      return false;
+#elif __linux__
+      return isRunFromDesktop();
+#endif
     }
 
   } //namespace console

@@ -179,6 +179,13 @@ namespace ra { namespace console { namespace test
     printf("Back to normal...\n");
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testDesktopConsole)
+  {
+    printf("isDesktopGuiAvailable()=%d\n", ra::console::isDesktopGuiAvailable());
+    printf("isRunFromDesktop()=%d\n", ra::console::isRunFromDesktop());
+    printf("hasConsoleOwnership()=%d\n", ra::console::hasConsoleOwnership());
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace console
 } //namespace ra

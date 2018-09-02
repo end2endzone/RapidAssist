@@ -126,6 +126,32 @@ namespace ra
     /// </summary>
     void setDefaultTextColor();
 
+    /// <summary>
+    /// Defines if the current running environment support a desktop GUI.
+    /// </summary>
+    /// <remarks>
+    /// On Windows, a GUI is always available (as the mane implies).
+    /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+    /// </remarks>
+    /// <returns>Returns true if a desktop gui is available. Returns false otherwise.</returns>
+    bool isDesktopGuiAvailable();
+
+    /// <summary>
+    /// Defines if the current running program is launched from desktop GUI.
+    /// </summary>
+    /// <remarks>
+    /// On Windows, a GUI is always available (as the mane implies).
+    /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+    /// </remarks>
+    /// <returns>Returns true if a desktop gui launched the program. Returns false otherwise.</returns>
+    bool isRunFromDesktop();
+
+    /// <summary>
+    /// Defines if the current running program has created the console window.
+    /// </summary>
+    /// <returns>Returns true if the current running program has created the console window. Returns false otherwise.</returns>
+    bool hasConsoleOwnership();
+
   } //namespace console
 } //namespace ra
 
