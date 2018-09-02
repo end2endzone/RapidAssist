@@ -224,34 +224,9 @@ namespace ra
 
     namespace ansi
     {
-      namespace ForegroundColor
-      {
-        enum Color
-        {
-          Black = 30,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          White,
-        };
-      }; //namespace ForegroundColor
-      namespace BackgroundColor
-      {
-        enum Color
-        {
-          Black = 40,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          White,
-        };
-      }; //namespace BackgroundColor
+      //https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+      //https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
+
       namespace FormatAttribute
       {
         enum Attr
@@ -264,7 +239,118 @@ namespace ra
           Reverse = 7,
           Hidden = 8
         };
+        const char * toString(const Attr & attr)
+        {
+          switch(attr)
+          {
+            case Default    : return "Default"   ; break;
+            case Bold       : return "Bold"      ; break;
+            case Dim        : return "Dim"       ; break;
+            case Underlined : return "Underlined"; break;
+            case Blink      : return "Blink"     ; break;
+            case Reverse    : return "Reverse"   ; break;
+            case Hidden     : return "Hidden"    ; break;
+          };
+          return "Unknown";
+        }
+        static const int NUM_COLOR_ATTR = 7;
       };
+      namespace ForegroundColor
+      {
+        enum Color
+        {
+          Default = 39,
+          Black = 30,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          LightGray,
+          DarkGray = 90,
+          LightRed,
+          LightGreen,
+          LightYellow,
+          LightBlue,
+          LightMagenta,
+          LightCyan,
+          White,
+        };
+        const char * toString(const Color & color)
+        {
+          switch(color)
+          {
+            case Default      : return "Default"      ; break;
+            case Black        : return "Black"        ; break;
+            case Red          : return "Red"          ; break;
+            case Green        : return "Green"        ; break;
+            case Yellow       : return "Yellow"       ; break;
+            case Blue         : return "Blue"         ; break;
+            case Magenta      : return "Magenta"      ; break;
+            case Cyan         : return "Cyan"         ; break;
+            case LightGray    : return "LightGray"    ; break;
+            case DarkGray     : return "DarkGray"     ; break;
+            case LightRed     : return "LightRed"     ; break;
+            case LightGreen   : return "LightGreen"   ; break;
+            case LightYellow  : return "LightYellow"  ; break;
+            case LightBlue    : return "LightBlue"    ; break;
+            case LightMagenta : return "LightMagenta" ; break;
+            case LightCyan    : return "LightCyan"    ; break;
+            case White        : return "White"        ; break;
+          };
+          return "Unknown";
+        }
+        static const int NUM_FOREGROUND_COLOR = 17;
+      }; //namespace ForegroundColor
+      namespace BackgroundColor
+      {
+        enum Color
+        {
+          Default = 49,
+          Black = 40,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          LightGray,
+          DarkGray = 100,
+          LightRed,
+          LightGreen,
+          LightYellow,
+          LightBlue,
+          LightMagenta,
+          LightCyan,
+          White,
+        };
+        const char * toString(const Color & color)
+        {
+          switch(color)
+          {
+            case Default      : return "Default"      ; break;
+            case Black        : return "Black"        ; break;
+            case Red          : return "Red"          ; break;
+            case Green        : return "Green"        ; break;
+            case Yellow       : return "Yellow"       ; break;
+            case Blue         : return "Blue"         ; break;
+            case Magenta      : return "Magenta"      ; break;
+            case Cyan         : return "Cyan"         ; break;
+            case LightGray    : return "LightGray"    ; break;
+            case DarkGray     : return "DarkGray"     ; break;
+            case LightRed     : return "LightRed"     ; break;
+            case LightGreen   : return "LightGreen"   ; break;
+            case LightYellow  : return "LightYellow"  ; break;
+            case LightBlue    : return "LightBlue"    ; break;
+            case LightMagenta : return "LightMagenta" ; break;
+            case LightCyan    : return "LightCyan"    ; break;
+            case White        : return "White"        ; break;
+          };
+          return "Unknown";
+        }
+        static const int NUM_BACKGROUND_COLOR = 17;
+      }; //namespace BackgroundColor
     }; //namespace ansi
     
     void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
@@ -379,9 +465,8 @@ namespace ra
       SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foregroundAttribute | backgroundAttribute);
 #elif __linux__
       ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::Default;
-
-      ansi::ForegroundColor::Color ansi_foreground;
-      ansi::BackgroundColor::Color ansi_background;
+      ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::Default;
+      ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::Default;
 
       //foreground
       switch(iForeground)
@@ -440,7 +525,7 @@ namespace ra
         ansi_foreground = ansi::ForegroundColor::Yellow;
         break;
       case Gray:
-        ansi_foreground = ansi::ForegroundColor::White;
+        ansi_foreground = ansi::ForegroundColor::LightGray;
         break;
       };
 
@@ -451,7 +536,7 @@ namespace ra
         ansi_background = ansi::BackgroundColor::Black;
         break;
       case White:
-        ansi_attr = ansi::FormatAttribute::Underlined;
+        //ansi_attr = ansi::FormatAttribute::Underlined;
         ansi_background = ansi::BackgroundColor::White;
         break;
       case DarkBlue:
@@ -473,8 +558,9 @@ namespace ra
         ansi_background = ansi::BackgroundColor::Yellow;
         break;
       case DarkGray:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Black;
+        //ansi_attr = ansi::FormatAttribute::Underlined;
+        //ansi_background = ansi::BackgroundColor::Black;
+        ansi_background = ansi::BackgroundColor::DarkGray;
         break;
       case Blue:
         ansi_attr = ansi::FormatAttribute::Underlined;
@@ -493,15 +579,16 @@ namespace ra
         ansi_background = ansi::BackgroundColor::Red;
         break;
       case Magenta:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Red;
+        //ansi_attr = ansi::FormatAttribute::Underlined;
+        //ansi_background = ansi::BackgroundColor::Red;
+        ansi_background = ansi::BackgroundColor::LightMagenta;
         break;
       case Yellow:
         ansi_attr = ansi::FormatAttribute::Underlined;
         ansi_background = ansi::BackgroundColor::Yellow;
         break;
       case Gray:
-        ansi_background = ansi::BackgroundColor::White;
+        ansi_background = ansi::BackgroundColor::LightGray;
         break;
       };
 
