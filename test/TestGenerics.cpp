@@ -23,7 +23,7 @@
  *********************************************************************************/
 
 #include "TestGenerics.h"
-#include "rapidassist\generics.h"
+#include "rapidassist/generics.h"
 
 namespace ra { namespace generics { namespace test
 {

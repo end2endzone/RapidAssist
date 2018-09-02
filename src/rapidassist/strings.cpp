@@ -30,6 +30,7 @@
 #include <string.h> //for strlen()
 #include <limits>   //for std::numeric_limits
 #include <stdarg.h> //for ...
+#include <stdio.h>  //for vsnprintf()
 
 namespace ra
 {
@@ -430,7 +431,7 @@ namespace ra
       static const int BUFFER_SIZE = 10240;
       char buffer[BUFFER_SIZE];
       buffer[0] = '\0';
-      vsprintf_s(buffer, BUFFER_SIZE, iFormat, args);
+      vsnprintf(buffer, BUFFER_SIZE, iFormat, args);
       output = buffer;
 
       va_end (args);
