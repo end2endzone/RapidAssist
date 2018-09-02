@@ -475,7 +475,6 @@ namespace ra
         ansi_foreground = ansi::ForegroundColor::Black;
         break;
       case White:
-        ansi_attr = ansi::FormatAttribute::Bold;
         ansi_foreground = ansi::ForegroundColor::White;
         break;
       case DarkBlue:
@@ -497,32 +496,25 @@ namespace ra
         ansi_foreground = ansi::ForegroundColor::Yellow;
         break;
       case DarkGray:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Black;
+        ansi_foreground = ansi::ForegroundColor::DarkGray;
         break;
       case Blue:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Blue;
+        ansi_foreground = ansi::ForegroundColor::LightBlue;
         break;
       case Green:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Green;
+        ansi_foreground = ansi::ForegroundColor::LightGreen;
         break;
       case Cyan:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Cyan;
+        ansi_foreground = ansi::ForegroundColor::LightCyan;
         break;
       case Red:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Red;
+        ansi_foreground = ansi::ForegroundColor::LightRed;
         break;
       case Magenta:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Magenta;
+        ansi_foreground = ansi::ForegroundColor::LightMagenta;
         break;
       case Yellow:
-        ansi_attr = ansi::FormatAttribute::Bold;
-        ansi_foreground = ansi::ForegroundColor::Yellow;
+        ansi_foreground = ansi::ForegroundColor::LightYellow;
         break;
       case Gray:
         ansi_foreground = ansi::ForegroundColor::LightGray;
@@ -536,7 +528,6 @@ namespace ra
         ansi_background = ansi::BackgroundColor::Black;
         break;
       case White:
-        //ansi_attr = ansi::FormatAttribute::Underlined;
         ansi_background = ansi::BackgroundColor::White;
         break;
       case DarkBlue:
@@ -558,34 +549,25 @@ namespace ra
         ansi_background = ansi::BackgroundColor::Yellow;
         break;
       case DarkGray:
-        //ansi_attr = ansi::FormatAttribute::Underlined;
-        //ansi_background = ansi::BackgroundColor::Black;
         ansi_background = ansi::BackgroundColor::DarkGray;
         break;
       case Blue:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Blue;
+        ansi_background = ansi::BackgroundColor::LightBlue;
         break;
       case Green:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Green;
+        ansi_background = ansi::BackgroundColor::LightGreen;
         break;
       case Cyan:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Cyan;
+        ansi_background = ansi::BackgroundColor::LightCyan;
         break;
       case Red:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Red;
+        ansi_background = ansi::BackgroundColor::LightRed;
         break;
       case Magenta:
-        //ansi_attr = ansi::FormatAttribute::Underlined;
-        //ansi_background = ansi::BackgroundColor::Red;
         ansi_background = ansi::BackgroundColor::LightMagenta;
         break;
       case Yellow:
-        ansi_attr = ansi::FormatAttribute::Underlined;
-        ansi_background = ansi::BackgroundColor::Yellow;
+        ansi_background = ansi::BackgroundColor::LightYellow;
         break;
       case Gray:
         ansi_background = ansi::BackgroundColor::LightGray;
