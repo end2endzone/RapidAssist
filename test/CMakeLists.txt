@@ -12,6 +12,8 @@ add_executable(rapidassist_unittest
   main.cpp
   TestCli.cpp
   TestCli.h
+  TestConsole.cpp
+  TestConsole.h
   TestDemo.cpp
   TestDemo.h
   TestEnvironment.cpp

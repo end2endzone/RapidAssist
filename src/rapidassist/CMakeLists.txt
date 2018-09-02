@@ -1,5 +1,6 @@
 set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/cli.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/console.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/cppencoder.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/environment.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
@@ -25,6 +26,7 @@ add_library(rapidassist STATIC
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
   ${RAPIDASSIST_GTESTHELP_SOURCE_FILES}
+  console.cpp
   cli.cpp
   cppencoder.cpp
   environment.cpp
