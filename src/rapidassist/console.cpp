@@ -36,8 +36,10 @@
 
 #elif __linux__
 
-#include <cstdio>    // fileno()
-#include <unistd.h>  // isatty()
+#include <cstdio>       // fileno()
+#include <unistd.h>     // isatty()
+#include <sys/ioctl.h>  // ioctl()
+#include <unistd.h>
 
 #endif
 
@@ -75,7 +77,7 @@ namespace ra
 		  coord.Y = y;
 		  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #elif __linux__
-      //not implemented yet
+      printf("\033[%d;%dH", y, x);
 #endif
     }
 
@@ -87,9 +89,10 @@ namespace ra
       width = (int)csbi.dwMaximumWindowSize.X;
       height = (int)csbi.dwMaximumWindowSize.Y;
 #elif __linux__
-      //not implemented yet
-      width = 0;
-      height = 0;
+      struct winsize ws;
+      ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+      width = (int)ws.ws_col;
+      height = (int)ws.ws_row;
 #endif
     }
 
@@ -119,6 +122,7 @@ namespace ra
       SetConsoleCursorPosition(hConsole, coordScreen);
 #elif __linux__
       //not implemented yet
+      printf("\033[2J");
 #endif
     }
 
@@ -218,6 +222,51 @@ namespace ra
       };
     }
 
+    namespace ansi
+    {
+      namespace ForegroundColor
+      {
+        enum Color
+        {
+          Black = 30,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          White,
+        };
+      }; //namespace ForegroundColor
+      namespace BackgroundColor
+      {
+        enum Color
+        {
+          Black = 40,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          White,
+        };
+      }; //namespace BackgroundColor
+      namespace FormatAttribute
+      {
+        enum Attr
+        {
+          Default = 0,
+          Bold = 1,
+          Dim = 2,
+          Underlined = 3,
+          Blink = 5,
+          Reverse = 7,
+          Hidden = 8
+        };
+      };
+    }; //namespace ansi
+    
     void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
     {
 #ifdef _WIN32
@@ -329,7 +378,135 @@ namespace ra
 
       SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foregroundAttribute | backgroundAttribute);
 #elif __linux__
-      //not implemented yet
+      ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::Default;
+
+      ansi::ForegroundColor::Color ansi_foreground;
+      ansi::BackgroundColor::Color ansi_background;
+
+      //foreground
+      switch(iForeground)
+      {
+      case Black:
+        ansi_foreground = ansi::ForegroundColor::Black;
+        break;
+      case White:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::White;
+        break;
+      case DarkBlue:
+        ansi_foreground = ansi::ForegroundColor::Blue;
+        break;
+      case DarkGreen:
+        ansi_foreground = ansi::ForegroundColor::Green;
+        break;
+      case DarkCyan:
+        ansi_foreground = ansi::ForegroundColor::Cyan;
+        break;
+      case DarkRed:
+        ansi_foreground = ansi::ForegroundColor::Red;
+        break;
+      case DarkMagenta:
+        ansi_foreground = ansi::ForegroundColor::Magenta;
+        break;
+      case DarkYellow:
+        ansi_foreground = ansi::ForegroundColor::Yellow;
+        break;
+      case DarkGray:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Black;
+        break;
+      case Blue:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Blue;
+        break;
+      case Green:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Green;
+        break;
+      case Cyan:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Cyan;
+        break;
+      case Red:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Red;
+        break;
+      case Magenta:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Magenta;
+        break;
+      case Yellow:
+        ansi_attr = ansi::FormatAttribute::Bold;
+        ansi_foreground = ansi::ForegroundColor::Yellow;
+        break;
+      case Gray:
+        ansi_foreground = ansi::ForegroundColor::White;
+        break;
+      };
+
+      //background
+      switch(iBackground)
+      {
+      case Black:
+        ansi_background = ansi::BackgroundColor::Black;
+        break;
+      case White:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::White;
+        break;
+      case DarkBlue:
+        ansi_background = ansi::BackgroundColor::Blue;
+        break;
+      case DarkGreen:
+        ansi_background = ansi::BackgroundColor::Green;
+        break;
+      case DarkCyan:
+        ansi_background = ansi::BackgroundColor::Cyan;
+        break;
+      case DarkRed:
+        ansi_background = ansi::BackgroundColor::Red;
+        break;
+      case DarkMagenta:
+        ansi_background = ansi::BackgroundColor::Magenta;
+        break;
+      case DarkYellow:
+        ansi_background = ansi::BackgroundColor::Yellow;
+        break;
+      case DarkGray:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Black;
+        break;
+      case Blue:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Blue;
+        break;
+      case Green:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Green;
+        break;
+      case Cyan:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Cyan;
+        break;
+      case Red:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Red;
+        break;
+      case Magenta:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Red;
+        break;
+      case Yellow:
+        ansi_attr = ansi::FormatAttribute::Underlined;
+        ansi_background = ansi::BackgroundColor::Yellow;
+        break;
+      case Gray:
+        ansi_background = ansi::BackgroundColor::White;
+        break;
+      };
+
+      printf("\033[%d;%d;%dm", (int)ansi_attr, (int)ansi_foreground, (int)ansi_background);
+      //printf("{%d;%d;%d}", (int)ansi_attr, (int)ansi_foreground, (int)ansi_background);
 #endif
     }
 
@@ -456,7 +633,11 @@ namespace ra
 
     void setDefaultTextColor()
     {
+#ifdef _WIN32
       ra::console::setTextColor(ra::console::Gray, ra::console::Black);
+#elif __linux__
+      printf("\033[0m");
+#endif
     }
 
     bool isDesktopGuiAvailable()
