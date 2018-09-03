@@ -432,138 +432,72 @@ namespace ra
         return "";
       };
     }
-
-    namespace ansi
-    {
-      //https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
-      //https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
-
-      namespace FormatAttribute
-      {
-        enum Attr
-        {
-          Default = 0,
-          Bold = 1,
-          Dim = 2,
-          Underlined = 3,
-          Blink = 5,
-          Reverse = 7,
-          Hidden = 8
-        };
-        const char * toString(const Attr & attr)
-        {
-          switch(attr)
-          {
-            case Default    : return "Default"   ; break;
-            case Bold       : return "Bold"      ; break;
-            case Dim        : return "Dim"       ; break;
-            case Underlined : return "Underlined"; break;
-            case Blink      : return "Blink"     ; break;
-            case Reverse    : return "Reverse"   ; break;
-            case Hidden     : return "Hidden"    ; break;
-          };
-          return "Unknown";
-        }
-        static const int NUM_COLOR_ATTR = 7;
-      };
-      namespace ForegroundColor
-      {
-        enum Color
-        {
-          Default = 39,
-          Black = 30,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          LightGray,
-          DarkGray = 90,
-          LightRed,
-          LightGreen,
-          LightYellow,
-          LightBlue,
-          LightMagenta,
-          LightCyan,
-          White,
-        };
-        const char * toString(const Color & color)
-        {
-          switch(color)
-          {
-            case Default      : return "Default"      ; break;
-            case Black        : return "Black"        ; break;
-            case Red          : return "Red"          ; break;
-            case Green        : return "Green"        ; break;
-            case Yellow       : return "Yellow"       ; break;
-            case Blue         : return "Blue"         ; break;
-            case Magenta      : return "Magenta"      ; break;
-            case Cyan         : return "Cyan"         ; break;
-            case LightGray    : return "LightGray"    ; break;
-            case DarkGray     : return "DarkGray"     ; break;
-            case LightRed     : return "LightRed"     ; break;
-            case LightGreen   : return "LightGreen"   ; break;
-            case LightYellow  : return "LightYellow"  ; break;
-            case LightBlue    : return "LightBlue"    ; break;
-            case LightMagenta : return "LightMagenta" ; break;
-            case LightCyan    : return "LightCyan"    ; break;
-            case White        : return "White"        ; break;
-          };
-          return "Unknown";
-        }
-        static const int NUM_FOREGROUND_COLOR = 17;
-      }; //namespace ForegroundColor
-      namespace BackgroundColor
-      {
-        enum Color
-        {
-          Default = 49,
-          Black = 40,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          LightGray,
-          DarkGray = 100,
-          LightRed,
-          LightGreen,
-          LightYellow,
-          LightBlue,
-          LightMagenta,
-          LightCyan,
-          White,
-        };
-        const char * toString(const Color & color)
-        {
-          switch(color)
-          {
-            case Default      : return "Default"      ; break;
-            case Black        : return "Black"        ; break;
-            case Red          : return "Red"          ; break;
-            case Green        : return "Green"        ; break;
-            case Yellow       : return "Yellow"       ; break;
-            case Blue         : return "Blue"         ; break;
-            case Magenta      : return "Magenta"      ; break;
-            case Cyan         : return "Cyan"         ; break;
-            case LightGray    : return "LightGray"    ; break;
-            case DarkGray     : return "DarkGray"     ; break;
-            case LightRed     : return "LightRed"     ; break;
-            case LightGreen   : return "LightGreen"   ; break;
-            case LightYellow  : return "LightYellow"  ; break;
-            case LightBlue    : return "LightBlue"    ; break;
-            case LightMagenta : return "LightMagenta" ; break;
-            case LightCyan    : return "LightCyan"    ; break;
-            case White        : return "White"        ; break;
-          };
-          return "Unknown";
-        }
-        static const int NUM_BACKGROUND_COLOR = 17;
-      }; //namespace BackgroundColor
-    }; //namespace ansi
     
+    const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr)
+    {
+      switch(attr)
+      {
+        case ansi::FormatAttribute::Default    : return "Default"   ; break;
+        case ansi::FormatAttribute::Bold       : return "Bold"      ; break;
+        case ansi::FormatAttribute::Dim        : return "Dim"       ; break;
+        case ansi::FormatAttribute::Underlined : return "Underlined"; break;
+        case ansi::FormatAttribute::Blink      : return "Blink"     ; break;
+        case ansi::FormatAttribute::Reverse    : return "Reverse"   ; break;
+        case ansi::FormatAttribute::Hidden     : return "Hidden"    ; break;
+      };
+      return "Unknown";
+    }
+
+    const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color)
+    {
+      switch(color)
+      {
+        case ansi::ForegroundColor::Default      : return "Default"      ; break;
+        case ansi::ForegroundColor::Black        : return "Black"        ; break;
+        case ansi::ForegroundColor::Red          : return "Red"          ; break;
+        case ansi::ForegroundColor::Green        : return "Green"        ; break;
+        case ansi::ForegroundColor::Yellow       : return "Yellow"       ; break;
+        case ansi::ForegroundColor::Blue         : return "Blue"         ; break;
+        case ansi::ForegroundColor::Magenta      : return "Magenta"      ; break;
+        case ansi::ForegroundColor::Cyan         : return "Cyan"         ; break;
+        case ansi::ForegroundColor::LightGray    : return "LightGray"    ; break;
+        case ansi::ForegroundColor::DarkGray     : return "DarkGray"     ; break;
+        case ansi::ForegroundColor::LightRed     : return "LightRed"     ; break;
+        case ansi::ForegroundColor::LightGreen   : return "LightGreen"   ; break;
+        case ansi::ForegroundColor::LightYellow  : return "LightYellow"  ; break;
+        case ansi::ForegroundColor::LightBlue    : return "LightBlue"    ; break;
+        case ansi::ForegroundColor::LightMagenta : return "LightMagenta" ; break;
+        case ansi::ForegroundColor::LightCyan    : return "LightCyan"    ; break;
+        case ansi::ForegroundColor::White        : return "White"        ; break;
+      };
+      return "Unknown";
+    }
+
+    const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color)
+    {
+      switch(color)
+      {
+        case ansi::BackgroundColor::Default      : return "Default"      ; break;
+        case ansi::BackgroundColor::Black        : return "Black"        ; break;
+        case ansi::BackgroundColor::Red          : return "Red"          ; break;
+        case ansi::BackgroundColor::Green        : return "Green"        ; break;
+        case ansi::BackgroundColor::Yellow       : return "Yellow"       ; break;
+        case ansi::BackgroundColor::Blue         : return "Blue"         ; break;
+        case ansi::BackgroundColor::Magenta      : return "Magenta"      ; break;
+        case ansi::BackgroundColor::Cyan         : return "Cyan"         ; break;
+        case ansi::BackgroundColor::LightGray    : return "LightGray"    ; break;
+        case ansi::BackgroundColor::DarkGray     : return "DarkGray"     ; break;
+        case ansi::BackgroundColor::LightRed     : return "LightRed"     ; break;
+        case ansi::BackgroundColor::LightGreen   : return "LightGreen"   ; break;
+        case ansi::BackgroundColor::LightYellow  : return "LightYellow"  ; break;
+        case ansi::BackgroundColor::LightBlue    : return "LightBlue"    ; break;
+        case ansi::BackgroundColor::LightMagenta : return "LightMagenta" ; break;
+        case ansi::BackgroundColor::LightCyan    : return "LightCyan"    ; break;
+        case ansi::BackgroundColor::White        : return "White"        ; break;
+      };
+      return "Unknown";
+    }
+
     void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
     {
 #ifdef _WIN32

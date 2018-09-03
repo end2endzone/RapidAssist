@@ -163,6 +163,81 @@ namespace ra
     /// <returns>Returns true if the current running program has created the console window. Returns false otherwise.</returns>
     bool hasConsoleOwnership();
 
+    ///<summary>ANSI color support functions</summary>
+    namespace ansi
+    {
+      //https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+      //https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
+
+      namespace FormatAttribute
+      {
+        enum Attr
+        {
+          Default = 0,
+          Bold = 1,
+          Dim = 2,
+          Underlined = 3,
+          Blink = 5,
+          Reverse = 7,
+          Hidden = 8
+        };
+        const char * toString(const Attr & attr);
+        static const int NUM_COLOR_ATTR = 7;
+      }; //namespace FormatAttribute
+
+      namespace ForegroundColor
+      {
+        enum Color
+        {
+          Default = 39,
+          Black = 30,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          LightGray,
+          DarkGray = 90,
+          LightRed,
+          LightGreen,
+          LightYellow,
+          LightBlue,
+          LightMagenta,
+          LightCyan,
+          White,
+        };
+        const char * toString(const Color & color);
+        static const int NUM_FOREGROUND_COLOR = 17;
+      }; //namespace ForegroundColor
+
+      namespace BackgroundColor
+      {
+        enum Color
+        {
+          Default = 49,
+          Black = 40,
+          Red,
+          Green,
+          Yellow,
+          Blue,
+          Magenta,
+          Cyan,
+          LightGray,
+          DarkGray = 100,
+          LightRed,
+          LightGreen,
+          LightYellow,
+          LightBlue,
+          LightMagenta,
+          LightCyan,
+          White,
+        };
+        const char * toString(const Color & color);
+        static const int NUM_BACKGROUND_COLOR = 17;
+      }; //namespace BackgroundColor
+    }; //namespace ansi
+
   } //namespace console
 } //namespace ra
 
