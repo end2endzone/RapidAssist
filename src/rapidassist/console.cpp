@@ -61,19 +61,16 @@ namespace ra
 
     std::vector<CursorCoordinate> gCursorPositionStack;
 
-    void getCursorPos(int & x, int & y)
+    void getCursorPos(int & col, int & row)
     {
 #ifdef _WIN32
 		  CONSOLE_SCREEN_BUFFER_INFO info;
 		  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-		  x = info.dwCursorPosition.X;
-		  y = info.dwCursorPosition.Y;
+		  col = info.dwCursorPosition.X;
+		  row = info.dwCursorPosition.Y;
 #elif __linux__
-      x = 0;
-      y = 0;
-
-      int row = 0;
-      int col = 0;
+      col = 0;
+      row = 0;
 
       //flush whatever was printed before
       fflush(stdout);
@@ -106,14 +103,13 @@ namespace ra
           //try to parse the result
           const char * lastchar = &buf[n];
           const char * nextchar = &buf[1];
-          //printf("(nextchar:%d)", (int)nextchar[0]);
 
           if (nextchar[0] == '[')
             nextchar++; //next character
           else
             nextchar = lastchar; //fail parsing. jump to the end of the string
 
-          // parse row
+          //parse row
           row = 0;
           while (nextchar[0] >= '0' && nextchar[0] <= '9')
           {
@@ -126,7 +122,7 @@ namespace ra
           else
             nextchar = lastchar; //fail parsing. jump to the end of the string
 
-          // parse col
+          //parse col
           col = 0;
           while (nextchar[0] >= '0' && nextchar[0] <= '9')
           {
@@ -145,21 +141,20 @@ namespace ra
 
       if (success)
       {
-        x = col - 1; //convert from ANSI 1-based to 0-based
-        y = row;
+        col--; //convert from ANSI 1-based to 0-based
       }
 #endif
     }
 
-    void setCursorPos(const int & x, const int & y)
+    void setCursorPos(const int & col, const int & row)
     {
 #ifdef _WIN32
 		  COORD coord;
-		  coord.X = x;
-		  coord.Y = y;
+		  coord.X = col;
+		  coord.Y = row;
 		  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #elif __linux__
-      printf("\033[%d;%dH", y, x);
+      printf("\033[%d;%dH", row, col);
 #endif
     }
 

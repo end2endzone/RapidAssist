@@ -34,17 +34,17 @@ namespace ra
     /// Returns the cursor position.
     /// </summary>
     /// <remarks>The console x and y coordinate system is 0 based</remarks>
-    /// <param name="x">The x coordinate of the cursor.</param>
-    /// <param name="y">The y coordinate of the cursor.</param>
-    void getCursorPos(int & x, int & y);
+    /// <param name="col">The x coordinate of the cursor.</param>
+    /// <param name="row">The y coordinate of the cursor.</param>
+    void getCursorPos(int & col, int & row);
 
     /// <summary>
     /// Sets the cursor position.
     /// </summary>
     /// <remarks>The console x and y coordinate system is 0 based</remarks>
-    /// <param name="x">The x coordinate of the cursor.</param>
-    /// <param name="y">The y coordinate of the cursor.</param>
-    void setCursorPos(const int & x, const int & y);
+    /// <param name="col">The x coordinate of the cursor.</param>
+    /// <param name="row">The y coordinate of the cursor.</param>
+    void setCursorPos(const int & col, const int & row);
 
     /// <summary>
     /// Gets the width and height of the console window.
