@@ -63,15 +63,25 @@ namespace ra
 
     void getCursorPos(int & col, int & row)
     {
-#ifdef _WIN32
-		  CONSOLE_SCREEN_BUFFER_INFO info;
-		  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-		  col = info.dwCursorPosition.X;
-		  row = info.dwCursorPosition.Y;
-#elif __linux__
       col = 0;
       row = 0;
 
+#ifdef _WIN32
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+      {
+        printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      col = csbiInfo.dwCursorPosition.X;
+      row = csbiInfo.dwCursorPosition.Y;
+#elif __linux__
       //flush whatever was printed before
       fflush(stdout);
 
@@ -149,10 +159,20 @@ namespace ra
     void setCursorPos(const int & col, const int & row)
     {
 #ifdef _WIN32
-		  COORD coord;
-		  coord.X = col;
-		  coord.Y = row;
-		  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      COORD coord;
+      coord.X = col;
+      coord.Y = row;
+      if (!SetConsoleCursorPosition(hStdout, coord))
+      {
+        printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
 #elif __linux__
       printf("\033[%d;%dH", row, col);
 #endif
@@ -160,11 +180,23 @@ namespace ra
 
     void getDimension(int & width, int & height)
     {
+      width = 0;
+      height = 0;
 #ifdef _WIN32
-      CONSOLE_SCREEN_BUFFER_INFO csbi;
-      GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-      width = (int)csbi.dwMaximumWindowSize.X;
-      height = (int)csbi.dwMaximumWindowSize.Y;
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+      {
+        printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      width = (int)csbiInfo.dwMaximumWindowSize.X;
+      height = (int)csbiInfo.dwMaximumWindowSize.Y;
 #elif __linux__
       struct winsize ws;
       ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
@@ -175,28 +207,45 @@ namespace ra
 
     void clearScreen()
     {
-		  //system("cls");
+      //system("cls");
 
 #ifdef _WIN32
-      COORD coordScreen = { 0, 0 };
-      DWORD cCharsWritten;
-      CONSOLE_SCREEN_BUFFER_INFO csbi;
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+      {
+        printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      COORD coord = { 0 , 0 };
+      DWORD dwNumberOfCharsWritten;
       DWORD dwConSize;
-      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-      GetConsoleScreenBufferInfo(hConsole, &csbi);
-      dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-      FillConsoleOutputCharacter(hConsole, TEXT(' '),
-                                dwConSize,
-                                coordScreen,
-                                &cCharsWritten);
-      GetConsoleScreenBufferInfo(hConsole, &csbi);
-      FillConsoleOutputAttribute(hConsole,
-                                csbi.wAttributes,
-                                dwConSize,
-                                coordScreen,
-                                &cCharsWritten);
-      SetConsoleCursorPosition(hConsole, coordScreen);
+      dwConSize = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), dwConSize, coord, &dwNumberOfCharsWritten))
+      {
+        printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+      {
+        printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, dwConSize, coord, &dwNumberOfCharsWritten))
+      {
+        printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      if (!SetConsoleCursorPosition(hStdout, coord))
+      {
+        printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
 #elif __linux__
       //not implemented yet
       printf("\033[2J");
@@ -234,7 +283,7 @@ namespace ra
       char sprite = gAnimationSprites[spriteIndex];
       return sprite;
     }
- 
+
     void printAnimationCursor()
     {
       pushCursorPos();
@@ -298,18 +347,18 @@ namespace ra
         return "";
       };
     }
-    
+
     const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr)
     {
       switch(attr)
       {
-        case ansi::FormatAttribute::Default    : return "Default"   ; break;
-        case ansi::FormatAttribute::Bold       : return "Bold"      ; break;
-        case ansi::FormatAttribute::Dim        : return "Dim"       ; break;
-        case ansi::FormatAttribute::Underlined : return "Underlined"; break;
-        case ansi::FormatAttribute::Blink      : return "Blink"     ; break;
-        case ansi::FormatAttribute::Reverse    : return "Reverse"   ; break;
-        case ansi::FormatAttribute::Hidden     : return "Hidden"    ; break;
+      case ansi::FormatAttribute::Default    : return "Default"   ; break;
+      case ansi::FormatAttribute::Bold       : return "Bold"      ; break;
+      case ansi::FormatAttribute::Dim        : return "Dim"       ; break;
+      case ansi::FormatAttribute::Underlined : return "Underlined"; break;
+      case ansi::FormatAttribute::Blink      : return "Blink"     ; break;
+      case ansi::FormatAttribute::Reverse    : return "Reverse"   ; break;
+      case ansi::FormatAttribute::Hidden     : return "Hidden"    ; break;
       };
       return "Unknown";
     }
@@ -318,23 +367,23 @@ namespace ra
     {
       switch(color)
       {
-        case ansi::ForegroundColor::Default      : return "Default"      ; break;
-        case ansi::ForegroundColor::Black        : return "Black"        ; break;
-        case ansi::ForegroundColor::Red          : return "Red"          ; break;
-        case ansi::ForegroundColor::Green        : return "Green"        ; break;
-        case ansi::ForegroundColor::Yellow       : return "Yellow"       ; break;
-        case ansi::ForegroundColor::Blue         : return "Blue"         ; break;
-        case ansi::ForegroundColor::Magenta      : return "Magenta"      ; break;
-        case ansi::ForegroundColor::Cyan         : return "Cyan"         ; break;
-        case ansi::ForegroundColor::LightGray    : return "LightGray"    ; break;
-        case ansi::ForegroundColor::DarkGray     : return "DarkGray"     ; break;
-        case ansi::ForegroundColor::LightRed     : return "LightRed"     ; break;
-        case ansi::ForegroundColor::LightGreen   : return "LightGreen"   ; break;
-        case ansi::ForegroundColor::LightYellow  : return "LightYellow"  ; break;
-        case ansi::ForegroundColor::LightBlue    : return "LightBlue"    ; break;
-        case ansi::ForegroundColor::LightMagenta : return "LightMagenta" ; break;
-        case ansi::ForegroundColor::LightCyan    : return "LightCyan"    ; break;
-        case ansi::ForegroundColor::White        : return "White"        ; break;
+      case ansi::ForegroundColor::Default      : return "Default"      ; break;
+      case ansi::ForegroundColor::Black        : return "Black"        ; break;
+      case ansi::ForegroundColor::Red          : return "Red"          ; break;
+      case ansi::ForegroundColor::Green        : return "Green"        ; break;
+      case ansi::ForegroundColor::Yellow       : return "Yellow"       ; break;
+      case ansi::ForegroundColor::Blue         : return "Blue"         ; break;
+      case ansi::ForegroundColor::Magenta      : return "Magenta"      ; break;
+      case ansi::ForegroundColor::Cyan         : return "Cyan"         ; break;
+      case ansi::ForegroundColor::LightGray    : return "LightGray"    ; break;
+      case ansi::ForegroundColor::DarkGray     : return "DarkGray"     ; break;
+      case ansi::ForegroundColor::LightRed     : return "LightRed"     ; break;
+      case ansi::ForegroundColor::LightGreen   : return "LightGreen"   ; break;
+      case ansi::ForegroundColor::LightYellow  : return "LightYellow"  ; break;
+      case ansi::ForegroundColor::LightBlue    : return "LightBlue"    ; break;
+      case ansi::ForegroundColor::LightMagenta : return "LightMagenta" ; break;
+      case ansi::ForegroundColor::LightCyan    : return "LightCyan"    ; break;
+      case ansi::ForegroundColor::White        : return "White"        ; break;
       };
       return "Unknown";
     }
@@ -343,23 +392,23 @@ namespace ra
     {
       switch(color)
       {
-        case ansi::BackgroundColor::Default      : return "Default"      ; break;
-        case ansi::BackgroundColor::Black        : return "Black"        ; break;
-        case ansi::BackgroundColor::Red          : return "Red"          ; break;
-        case ansi::BackgroundColor::Green        : return "Green"        ; break;
-        case ansi::BackgroundColor::Yellow       : return "Yellow"       ; break;
-        case ansi::BackgroundColor::Blue         : return "Blue"         ; break;
-        case ansi::BackgroundColor::Magenta      : return "Magenta"      ; break;
-        case ansi::BackgroundColor::Cyan         : return "Cyan"         ; break;
-        case ansi::BackgroundColor::LightGray    : return "LightGray"    ; break;
-        case ansi::BackgroundColor::DarkGray     : return "DarkGray"     ; break;
-        case ansi::BackgroundColor::LightRed     : return "LightRed"     ; break;
-        case ansi::BackgroundColor::LightGreen   : return "LightGreen"   ; break;
-        case ansi::BackgroundColor::LightYellow  : return "LightYellow"  ; break;
-        case ansi::BackgroundColor::LightBlue    : return "LightBlue"    ; break;
-        case ansi::BackgroundColor::LightMagenta : return "LightMagenta" ; break;
-        case ansi::BackgroundColor::LightCyan    : return "LightCyan"    ; break;
-        case ansi::BackgroundColor::White        : return "White"        ; break;
+      case ansi::BackgroundColor::Default      : return "Default"      ; break;
+      case ansi::BackgroundColor::Black        : return "Black"        ; break;
+      case ansi::BackgroundColor::Red          : return "Red"          ; break;
+      case ansi::BackgroundColor::Green        : return "Green"        ; break;
+      case ansi::BackgroundColor::Yellow       : return "Yellow"       ; break;
+      case ansi::BackgroundColor::Blue         : return "Blue"         ; break;
+      case ansi::BackgroundColor::Magenta      : return "Magenta"      ; break;
+      case ansi::BackgroundColor::Cyan         : return "Cyan"         ; break;
+      case ansi::BackgroundColor::LightGray    : return "LightGray"    ; break;
+      case ansi::BackgroundColor::DarkGray     : return "DarkGray"     ; break;
+      case ansi::BackgroundColor::LightRed     : return "LightRed"     ; break;
+      case ansi::BackgroundColor::LightGreen   : return "LightGreen"   ; break;
+      case ansi::BackgroundColor::LightYellow  : return "LightYellow"  ; break;
+      case ansi::BackgroundColor::LightBlue    : return "LightBlue"    ; break;
+      case ansi::BackgroundColor::LightMagenta : return "LightMagenta" ; break;
+      case ansi::BackgroundColor::LightCyan    : return "LightCyan"    ; break;
+      case ansi::BackgroundColor::White        : return "White"        ; break;
       };
       return "Unknown";
     }
@@ -473,7 +522,18 @@ namespace ra
         break;
       };
 
-      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foregroundAttribute | backgroundAttribute);
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+
+      if (!SetConsoleTextAttribute(hStdout, foregroundAttribute | backgroundAttribute))
+      {
+        printf("SetConsoleTextAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
 #elif __linux__
       ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::Default;
       ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::Default;
@@ -592,118 +652,131 @@ namespace ra
 
     void getTextColor(TextColor & oForeground, TextColor & oBackground)
     {
-#ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO info;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-    
-    DWORD foregroundInfo = info.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-    DWORD backgroundInfo = info.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
-
-    //foreground
-    switch(foregroundInfo)
-    {
-    case 0:
-      oForeground = Black;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = White;
-      break;
-    case FOREGROUND_BLUE:
-      oForeground = DarkBlue;
-      break;
-    case FOREGROUND_GREEN:
-      oForeground = DarkGreen;
-      break;
-    case FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = DarkCyan;
-      break;
-    case FOREGROUND_RED:
-      oForeground = DarkRed;
-      break;
-    case FOREGROUND_RED | FOREGROUND_BLUE:
-      oForeground = DarkMagenta;
-      break;
-    case FOREGROUND_RED | FOREGROUND_GREEN:
-      oForeground = DarkYellow;
-      break;
-    case FOREGROUND_INTENSITY:
-      oForeground = DarkGray;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_BLUE:
-      oForeground = Blue;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_GREEN:
-      oForeground = Green;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = Cyan;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_RED:
-      oForeground = Red;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE:
-      oForeground = Magenta;
-      break;
-    case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN:
-      oForeground = Yellow;
-      break;
-    case FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
       oForeground = Gray;
-      break;
-    };
-
-    //background
-    switch(backgroundInfo)
-    {
-    case 0:
       oBackground = Black;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = White;
-      break;
-    case BACKGROUND_BLUE:
-      oBackground = DarkBlue;
-      break;
-    case BACKGROUND_GREEN:
-      oBackground = DarkGreen;
-      break;
-    case BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = DarkCyan;
-      break;
-    case BACKGROUND_RED:
-      oBackground = DarkRed;
-      break;
-    case BACKGROUND_RED | BACKGROUND_BLUE:
-      oBackground = DarkMagenta;
-      break;
-    case BACKGROUND_RED | BACKGROUND_GREEN:
-      oBackground = DarkYellow;
-      break;
-    case BACKGROUND_INTENSITY:
-      oBackground = DarkGray;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_BLUE:
-      oBackground = Blue;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_GREEN:
-      oBackground = Green;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = Cyan;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_RED:
-      oBackground = Red;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE:
-      oBackground = Magenta;
-      break;
-    case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN:
-      oBackground = Yellow;
-      break;
-    case BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = Gray;
-      break;
-    };
+
+#ifdef _WIN32
+      HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (hStdout == INVALID_HANDLE_VALUE)
+      {
+        printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+      {
+        printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return;
+      }
+
+      DWORD foregroundInfo = csbiInfo.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+      DWORD backgroundInfo = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+
+      //foreground
+      switch(foregroundInfo)
+      {
+      case 0:
+        oForeground = Black;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
+        oForeground = White;
+        break;
+      case FOREGROUND_BLUE:
+        oForeground = DarkBlue;
+        break;
+      case FOREGROUND_GREEN:
+        oForeground = DarkGreen;
+        break;
+      case FOREGROUND_GREEN | FOREGROUND_BLUE:
+        oForeground = DarkCyan;
+        break;
+      case FOREGROUND_RED:
+        oForeground = DarkRed;
+        break;
+      case FOREGROUND_RED | FOREGROUND_BLUE:
+        oForeground = DarkMagenta;
+        break;
+      case FOREGROUND_RED | FOREGROUND_GREEN:
+        oForeground = DarkYellow;
+        break;
+      case FOREGROUND_INTENSITY:
+        oForeground = DarkGray;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_BLUE:
+        oForeground = Blue;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_GREEN:
+        oForeground = Green;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE:
+        oForeground = Cyan;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_RED:
+        oForeground = Red;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE:
+        oForeground = Magenta;
+        break;
+      case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN:
+        oForeground = Yellow;
+        break;
+      case FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
+        oForeground = Gray;
+        break;
+      };
+
+      //background
+      switch(backgroundInfo)
+      {
+      case 0:
+        oBackground = Black;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
+        oBackground = White;
+        break;
+      case BACKGROUND_BLUE:
+        oBackground = DarkBlue;
+        break;
+      case BACKGROUND_GREEN:
+        oBackground = DarkGreen;
+        break;
+      case BACKGROUND_GREEN | BACKGROUND_BLUE:
+        oBackground = DarkCyan;
+        break;
+      case BACKGROUND_RED:
+        oBackground = DarkRed;
+        break;
+      case BACKGROUND_RED | BACKGROUND_BLUE:
+        oBackground = DarkMagenta;
+        break;
+      case BACKGROUND_RED | BACKGROUND_GREEN:
+        oBackground = DarkYellow;
+        break;
+      case BACKGROUND_INTENSITY:
+        oBackground = DarkGray;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_BLUE:
+        oBackground = Blue;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_GREEN:
+        oBackground = Green;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE:
+        oBackground = Cyan;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_RED:
+        oBackground = Red;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE:
+        oBackground = Magenta;
+        break;
+      case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN:
+        oBackground = Yellow;
+        break;
+      case BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
+        oBackground = Gray;
+        break;
+      };
 #elif __linux__
       //not implemented yet
       oForeground = Gray;
@@ -750,15 +823,26 @@ namespace ra
     {
 #ifdef _WIN32
       //https://stackoverflow.com/questions/9009333/how-to-check-if-the-program-is-run-from-a-console
-      HWND consoleWnd = GetConsoleWindow();
-      DWORD dwConsoleProcessId = 0;
-      GetWindowThreadProcessId(consoleWnd, &dwConsoleProcessId);
-      DWORD dwCurrentProcessId = GetCurrentProcessId();
-      GetWindowThreadProcessId(consoleWnd, &dwConsoleProcessId);
-      if (dwCurrentProcessId==dwConsoleProcessId)
+      HWND hConsoleWnd = GetConsoleWindow();
+      if (hConsoleWnd == NULL)
       {
+        printf("Failed calling GetConsoleWindow(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return false;
+      }
+      DWORD dwConsoleProcessId = 0;
+      if (!GetWindowThreadProcessId(hConsoleWnd, &dwConsoleProcessId))
+      {
+        printf("Failed calling GetWindowThreadProcessId(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
+        return false;
+      }
+      DWORD dwCurrentProcessId = GetCurrentProcessId();
+      if (dwCurrentProcessId == dwConsoleProcessId)
+      {
+        //the current process is the process that created this console.
         return true;
       }
+
+      //another process created the console (ie: cmd.exe)
       return false;
 #elif __linux__
       return isRunFromDesktop();
