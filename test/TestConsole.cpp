@@ -51,28 +51,6 @@ namespace ra { namespace console { namespace test
     ASSERT_EQ(0, after_x);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetCursorPos)
-  {
-    int before_x = 0;
-    int before_y = 0;
-    ra::console::getCursorPos(before_x, before_y);
-    
-    //new value for y
-    printf("Running test %s()\n", ra::gtesthelp::getTestQualifiedName().c_str());
-    
-    //new value for x
-    printf("done!");
-
-    int after_x = 0;
-    int after_y = 0;
-    ra::console::getCursorPos(after_x, after_y);
-
-    printf("\n");
-
-    ASSERT_NE(before_x, after_x);
-    ASSERT_NE(before_y, after_y);
-  }
-  //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testGetCursorPosYAxis)
   {
     int before_x = 0;
@@ -85,7 +63,21 @@ namespace ra { namespace console { namespace test
     int after_y = 0;
     ra::console::getCursorPos(after_x, after_y);
 
-    ASSERT_LT(before_y, after_y);
+    //note: if Line1 and Line2 was printed at the bottom of the console/terminal, then the text scrolled up leaving Line1 and Line2 at the same y offset.
+
+    //detect if Line2 was printed at the bottom of the screen
+    int width = -1;
+    int height = -1;
+    ra::console::getDimension(width, height);
+    if (after_y == height)
+    {
+      printf("inconclusive...\n");
+    }
+    else
+    {
+      //test proceed as normal
+      ASSERT_LT(before_y, after_y);
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testGetCursorPosXAxis)
@@ -105,7 +97,7 @@ namespace ra { namespace console { namespace test
     ASSERT_LT(before_x, after_x);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, DISABLED_testGetCursorPosPerformance)
+  TEST_F(TestConsole, testGetCursorPosPerformance)
   {
     //loop for 3 seconds
     static const double time_length = 3.0; //seconds
