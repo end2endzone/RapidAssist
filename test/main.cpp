@@ -47,8 +47,26 @@ int main(int argc, char **argv)
   //Disable TestTime.testGetUtcTime() on AppVeyor or Travis CI
   if (ra::gtesthelp::isAppVeyor() || ra::gtesthelp::isTravis())
   {
+    std::string basefilter = ::testing::GTEST_FLAG(filter);
+
     //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
-    std::string newFilter = ra::gtesthelp::mergeFilter("", "TestTime.testGetUtcTime", ::testing::GTEST_FLAG(filter).c_str());
+    std::string newFilter = ra::gtesthelp::mergeFilter("", "TestTime.testGetUtcTime", basefilter.c_str());
+
+    //AppVeyor does not like console tests. They must be not executing inside a console.
+    //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::getCursorPos', line 79.
+    //I guess that it is because standard output is beeing redirected for the purpose of logging the program output.
+    //
+    //Travis does not like console tests either. The program hang or enters an infinite loop. Don't really know.
+    //Travis reported failure: 
+    //    No output has been received in the last 10m0s, this potentially indicates a stalled build or something wrong with the build itself.
+    //    Check the details on how to adjust your build configuration on: https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
+    //    The build has been terminated
+    //
+    //Disabling all console tests.
+    printf("*** Running unit test on AppVeyor/Travis CI ***\n");
+    printf("*** Disabling TestConsole.* unit tests ***\n");
+    newFilter = ra::gtesthelp::mergeFilter("", "TestConsole.*", newFilter.c_str());
+
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
 

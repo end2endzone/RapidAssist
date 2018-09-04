@@ -1,7 +1,8 @@
 @echo off
 
 cd /d %~dp0
-cd ..\..
+cd ..\.. 
+set APPVEYOR=True
 set APPVEYOR_BUILD_FOLDER=%cd%
 echo Emulating appveyor's environment.
 echo APPVEYOR_BUILD_FOLDER set to '%APPVEYOR_BUILD_FOLDER%'
