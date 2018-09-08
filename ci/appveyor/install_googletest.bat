@@ -25,7 +25,7 @@ echo ===========================================================================
 mkdir build >NUL 2>NUL
 cd build
 set GTEST_ROOT=%APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install
-cmake -DCMAKE_INSTALL_PREFIX=%GTEST_ROOT% -Dgtest_force_shared_crt=ON ..
+cmake -DCMAKE_INSTALL_PREFIX=%GTEST_ROOT% -Dgtest_force_shared_crt=ON -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 cmake --build . --config Release
 if %errorlevel% neq 0 exit /b %errorlevel%
