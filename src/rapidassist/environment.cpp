@@ -23,6 +23,7 @@
  *********************************************************************************/
 
 #include "rapidassist/environment.h"
+#include "rapidassist\strings.h"
 #include <cstdlib> //for getenv()
 
 #ifdef _WIN32
