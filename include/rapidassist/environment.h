@@ -26,6 +26,9 @@
 #define RA_ENVIRONMENT_H
 
 #include <string>
+#include <stdint.h>
+
+#include "rapidassist\strings.h"
 
 namespace ra
 {
@@ -38,6 +41,23 @@ namespace ra
     /// <param name="iName">Name of the variable</param>
     /// <returns>Returns the value of the given environment variable.</returns>
     std::string getEnvironmentVariable(const char * iName);
+
+    /// <summary>
+    /// Sets a new value for a given environment variable.
+    /// </summary>
+    /// <remarks>Use setEnvironmentVariable(name, NULL) for deleting an existing variable.</remarks>
+    /// <param name="iName">Name of the variable</param>
+    /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
+    /// <returns>Returns true when successful. Returns false otherwise.</returns>
+    bool setEnvironmentVariable(const char * iName, const char * iValue);
+    bool setEnvironmentVariable(const char * iName, const   int8_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const  int16_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const uint16_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const  int32_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const uint32_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const  int64_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const uint64_t & iValue);
 
     /// <summary>
     /// Returns if the current process is 32 bit.

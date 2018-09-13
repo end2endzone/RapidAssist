@@ -74,6 +74,67 @@ namespace ra { namespace environment { namespace test
     }
 #endif
   }
+  TEST_F(TestEnvironment, testSetEnvironmentVariable)
+  {
+    const char * name = "RAPIDASSIST_FOO";
+     
+    //test basic set
+    {
+      //make sure the variable **is not** defined
+      std::string actual = environment::getEnvironmentVariable(name);
+      ASSERT_EQ("", actual);
+ 
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR") );
+      ASSERT_EQ("BAR", environment::getEnvironmentVariable(name));
+    }
+ 
+    //test delete
+    {
+      //make sure the variable **is** defined
+      std::string actual = environment::getEnvironmentVariable(name);
+      ASSERT_NE("", actual);
+ 
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "") );
+      ASSERT_EQ("", environment::getEnvironmentVariable(name));
+    }
+ 
+    //test NULL
+    {
+      ASSERT_FALSE( environment::setEnvironmentVariable(NULL, NULL) );
+      ASSERT_TRUE(  environment::setEnvironmentVariable(name, NULL) );
+    }
+ 
+    //test empty string
+    {
+      ASSERT_FALSE( environment::setEnvironmentVariable("", NULL) );
+    }
+ 
+    //test override
+    {
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR2") );
+ 
+      ASSERT_EQ("BAR2", environment::getEnvironmentVariable(name));
+    }
+
+    //test small integer
+    {
+      const int value = 42;
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
+ 
+      ASSERT_EQ("42", environment::getEnvironmentVariable(name));
+    }
+
+    //test big integers
+    {
+      const int64_t value = 9223372036854775807;
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
+ 
+      ASSERT_EQ("9223372036854775807", environment::getEnvironmentVariable(name));
+    }
+  }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testProcessXXBit)
   {

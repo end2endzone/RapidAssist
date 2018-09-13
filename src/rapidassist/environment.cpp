@@ -25,6 +25,12 @@
 #include "rapidassist/environment.h"
 #include <cstdlib> //for getenv()
 
+#ifdef _WIN32
+#define __putenv(x) _putenv(x);
+#elif __linux__
+#define __putenv(x) putenv(x);
+#endif
+
 namespace ra
 {
   namespace environment
@@ -40,6 +46,36 @@ namespace ra
       else
         return std::string(value);
     }
+
+    bool setEnvironmentVariable(const char * iName, const char * iValue)
+    {
+      //validate invalid inputs
+      if (iName == NULL || strlen(iName) == 0)
+      {
+        return false;
+      }
+ 
+      std::string command;
+      command.append(iName);
+      command.append("=");
+      if (iValue)
+      {
+        command.append(iValue);
+      }
+ 
+      int result = __putenv(command.c_str());
+      bool success = (result == 0);
+      return success;
+    }
+
+    bool setEnvironmentVariable(const char * iName, const   int8_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int16_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint16_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int32_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint32_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int64_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint64_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
 
     bool isProcess32Bit()
     {
