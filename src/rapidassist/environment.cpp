@@ -25,12 +25,8 @@
 #include "rapidassist/environment.h"
 #include "rapidassist/strings.h"
 #include <cstdlib> //for getenv()
-
-#ifdef _WIN32
-#define __putenv(x) _putenv(x);
-#elif __linux__
-#define __putenv(x) putenv(x);
-#endif
+#include <cstring> //for strlen()
+#include <string.h> //for strdup()
 
 namespace ra
 {
@@ -64,19 +60,37 @@ namespace ra
         command.append(iValue);
       }
  
-      int result = __putenv(command.c_str());
+#ifdef _WIN32
+      int result = _putenv(command.c_str());
+#elif __linux__
+      //unix requires an string that can be modified suggesting that function putenv() keeps the pointer for itself.
+      char * tmp = strdup(command.c_str());
+      int result = -1; //failure
+      if (tmp != NULL)
+        result = putenv(tmp);
+#endif
+
       bool success = (result == 0);
+
+#ifdef __linux__
+      if (!success)
+      {
+        //free the given pointer on failure.
+        free(tmp);
+      }
+#endif
+
       return success;
     }
 
-    bool setEnvironmentVariable(const char * iName, const   int8_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int16_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint16_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int32_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint32_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int64_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint64_t & iValue) { return setEnvironmentVariable(iName, (std::string() << iValue).c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const   int8_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int16_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint16_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int32_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint32_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const  int64_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
+    bool setEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
 
     bool isProcess32Bit()
     {

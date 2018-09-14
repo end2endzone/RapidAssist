@@ -100,13 +100,13 @@ namespace ra { namespace environment { namespace test
  
     //test NULL
     {
-      ASSERT_FALSE( environment::setEnvironmentVariable(NULL, NULL) );
-      ASSERT_TRUE(  environment::setEnvironmentVariable(name, NULL) );
+      ASSERT_FALSE( environment::setEnvironmentVariable( (const char *)(NULL), (const char *)(NULL) ) );
+      ASSERT_TRUE(  environment::setEnvironmentVariable(name, (const char *)(NULL) ) );
     }
  
     //test empty string
     {
-      ASSERT_FALSE( environment::setEnvironmentVariable("", NULL) );
+      ASSERT_FALSE( environment::setEnvironmentVariable("", (const char *)(NULL) ) );
     }
  
     //test override
