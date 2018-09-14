@@ -99,19 +99,21 @@ namespace ra
       char buf[32];
       while(!success && loopcount < MAX_LOOP_COUNT)
       {
-        write(0, "\033[6n", 4);
+        ssize_t numWrite = write(0, "\033[6n", 4);
         fflush(stdout);
 
-        ssize_t n = read(0, buf, sizeof(buf)-1);
+        ssize_t numRead = 0;
+        if (numWrite == 4)
+          numRead = read(0, buf, sizeof(buf)-1);
 
         //validate format \033[63;1R
-        if(buf[0] == '\033' && buf[n - 1] == 'R')
+        if(numWrite == 4 && numRead >= 6 && buf[0] == '\033' && buf[numRead - 1] == 'R')
         {
           buf[0] = '!'; //in case we want to print buf for debugging
-          buf[n] = '\0';
+          buf[numRead] = '\0';
 
           //try to parse the result
-          const char * lastchar = &buf[n];
+          const char * lastchar = &buf[numRead];
           const char * nextchar = &buf[1];
 
           if (nextchar[0] == '[')
