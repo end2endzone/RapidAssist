@@ -26,7 +26,7 @@
 #include "rapidassist/strings.h"
 #include <cstdlib> //for getenv()
 #include <cstring> //for strlen()
-#include <string.h> //for strdup()
+#include <stdlib.h> //for setenv(), unsetenv()
 
 namespace ra
 {
@@ -52,6 +52,7 @@ namespace ra
         return false;
       }
  
+#ifdef _WIN32
       std::string command;
       command.append(iName);
       command.append("=");
@@ -59,27 +60,17 @@ namespace ra
       {
         command.append(iValue);
       }
- 
-#ifdef _WIN32
       int result = _putenv(command.c_str());
 #elif __linux__
-      //unix requires an string that can be modified suggesting that function putenv() keeps the pointer for itself.
-      char * tmp = strdup(command.c_str());
       int result = -1; //failure
-      if (tmp != NULL)
-        result = putenv(tmp);
+      bool erase = (iValue == NULL || strlen(iValue) == 0);
+      if (erase)
+        result = unsetenv(iName);
+      else
+        result = setenv(iName, iValue, 1); //overwrite existing
 #endif
 
       bool success = (result == 0);
-
-#ifdef __linux__
-      if (!success)
-      {
-        //free the given pointer on failure.
-        free(tmp);
-      }
-#endif
-
       return success;
     }
 
