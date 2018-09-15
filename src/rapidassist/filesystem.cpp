@@ -887,12 +887,11 @@ namespace ra
       if (isAbsolutePath(iPath))
         return iPath;
  
-      std::string exec = ra::process::getCurrentProcessPath();
-      std::string exec_dir = ra::filesystem::getParentPath(exec);
-      ra::filesystem::normalizePath(exec_dir);
- 
+      std::string dir = ra::process::getCurrentProcessDir();
+      ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
+
       std::string tmpPath;
-      tmpPath.append(exec_dir);
+      tmpPath.append(dir);
       tmpPath.append(ra::filesystem::getPathSeparatorStr());
       tmpPath.append(iPath);
  
@@ -906,11 +905,11 @@ namespace ra
       if (isAbsolutePath(iPath))
         return iPath;
  
-      std::string cur_dir = ra::filesystem::getCurrentFolder();
-      ra::filesystem::normalizePath(cur_dir);
+      std::string dir = ra::filesystem::getCurrentFolder();
+      ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
      
       std::string tmpPath;
-      tmpPath.append(cur_dir);
+      tmpPath.append(dir);
       tmpPath.append(ra::filesystem::getPathSeparatorStr());
       tmpPath.append(iPath);
  
