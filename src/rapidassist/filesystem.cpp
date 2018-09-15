@@ -788,22 +788,20 @@ namespace ra
     {
       std::string path;
 #ifdef _WIN32
-      char buffer[MAX_PATH] = {0};
-      HMODULE hModule = NULL;
-      if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-              GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-              (LPCSTR) __FUNCTION__,
-              &hModule))
+      HMODULE hModule = GetModuleHandle(NULL);
+      if (hModule == NULL)
       {
         int ret = GetLastError();
-        return path;
+        return path; //failure
       }
-      //get the path of this DLL
-      GetModuleFileName(hModule, buffer, sizeof(buffer));
-      if (buffer[0] != '\0')
+      //get the path of this process
+      char buffer[MAX_PATH] = {0};
+      if (!GetModuleFileName(hModule, buffer, sizeof(buffer)))
       {
-        path = buffer;
+        int ret = GetLastError();
+        return path; //failure
       }
+      path = buffer;
 #elif __linux__
 #endif
       //not supported
