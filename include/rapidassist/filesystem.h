@@ -210,6 +210,41 @@ namespace ra
     /// <returns>Returns the modified date of the given file.</returns>
     uint64_t getFileModifiedDate(const std::string & iPath);
 
+    /// <summary>
+    /// Determine if the given path is an absolute path or not.
+    /// </summary>
+    /// <param name="iPath">An valid file or directory path.</param>
+    /// <returns>Returns true if the given path is absolute. Returns false otherwise.</returns>
+    bool isAbsolutePath(const std::string & iPath);
+ 
+    /// <summary>
+    /// Resolves path that contains `..` or `.` elements to an absolute path.
+    /// </summary>
+    /// <remarks>
+    /// On Linux,   one cannot walk down past the root: "/.."   is the same as "/".
+    /// On Windows, one cannot walk down past the root: "C:\.." is the same as "C:\".
+    /// </remarks>
+    /// <param name="iPath">An valid relative file or directory path.</param>
+    /// <returns>Returns the resolved path.</returns>
+    std::string resolvePath(const std::string & iPath);
+ 
+    /// <summary>
+    /// Build an absolute path from the given relative path based on the directory of the current executable.
+    /// </summary>
+    /// <param name="iPath">An valid relative file or directory path.</param>
+    /// <returns>Returns the absolute path.</returns>
+    /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
+    std::string getAbsolutePathFromExecutable(const std::string & iPath);
+ 
+    /// <summary>
+    /// Build an absolute path from the given relative path based on the current directory.
+    /// </summary>
+    /// <param name="iPath">An valid relative file or directory path.</param>
+    /// <returns>Returns the absolute path.</returns>
+    /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
+    std::string getAbsolutePathFromCurrentDirectory(const std::string & iPath);
+
+
   } //namespace filesystem
 } //namespace ra
 

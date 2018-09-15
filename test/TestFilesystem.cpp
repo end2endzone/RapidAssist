@@ -1055,6 +1055,158 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testAbsolutePath)
+  {
+#ifdef _WIN32
+    ASSERT_TRUE(  ra::filesystem::isAbsolutePath("C:\\boot.ini") );
+    ASSERT_TRUE(  ra::filesystem::isAbsolutePath("\\\\filesrv1\\public\\list.xml") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath("src\\main.cpp") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath(".\\src\\main.cpp") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath("..\\src\\main.cpp") );
+#elif __linux__
+    ASSERT_TRUE(  ra::filesystem::isAbsolutePath("/home") );
+    ASSERT_TRUE(  ra::filesystem::isAbsolutePath("/bin/bash") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath("src/main.cpp") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath(".//src/main.cpp") );
+    ASSERT_FALSE( ra::filesystem::isAbsolutePath("..//src/main.cpp") );
+#endif
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetAbsolutePathFromExecutable)
+  {
+    //test already absolute
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\windows\\system32\\cmd.exe";
+#elif __linux__
+      std::string testPath = "/bin/bash";
+#endif
+      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+ 
+      ASSERT_EQ(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+ 
+    //test relative path
+    {
+      std::string testPath = "files\\images\\slashscreen.png";
+      ra::filesystem::normalizePath(testPath);
+
+      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+      ASSERT_NE(testPath, actual);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+ 
+    //test filename only
+    {
+      std::string testPath = "slashscreen.png";
+      ra::filesystem::normalizePath(testPath);
+
+      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+      ASSERT_NE(testPath, actual);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetAbsolutePathFromCurrentDirectory)
+  {
+    //test already absolute
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\windows\\system32\\cmd.exe";
+#elif __linux__
+      std::string testPath = "/bin/bash";
+#endif
+      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+ 
+      ASSERT_EQ(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+ 
+    //test relative path
+    {
+      std::string testPath = "files\\images\\slashscreen.png";
+      ra::filesystem::normalizePath(testPath);
+
+      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+      ASSERT_NE(testPath, actual);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+ 
+    //test filename only
+    {
+      std::string testPath = "slashscreen.png";
+      ra::filesystem::normalizePath(testPath);
+
+      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+      ASSERT_NE(testPath, actual);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath)
+  {
+    //test with ..
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\foo\\bar\\..\\baz\\myapp.exe";
+#elif __linux__
+      std::string testPath = "/foo/bar/../baz/myapp";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
+      ASSERT_NE(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+
+#ifdef _WIN32
+      ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);
+#elif __linux__
+      ASSERT_EQ("/foo/baz/myapp", actual);
+#endif
+    }
+
+    //test with .
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\foo\\bar\\.\\baz\\myapp.exe";
+#elif __linux__
+      std::string testPath = "/foo/bar/./baz/myapp";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_EQ(std::string::npos, actual.find("/./")); // . element removed from path
+      ASSERT_EQ(std::string::npos, actual.find("\\.\\")); // . element removed from path
+      ASSERT_NE(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+
+#ifdef _WIN32
+      ASSERT_EQ("C:\\foo\\bar\\baz\\myapp.exe", actual);
+#elif __linux__
+      ASSERT_EQ("/foo/bar/baz/myapp", actual);
+#endif
+    }
+
+    //test erroneous path
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\foo\\..\\..\\..\\myapp.exe";
+#elif __linux__
+      std::string testPath = "/foo/../../../myapp";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
+      ASSERT_NE(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+
+#ifdef _WIN32
+      ASSERT_EQ("C:\\myapp.exe", actual);
+#elif __linux__
+      ASSERT_EQ("/myapp", actual);
+#endif
+    }
+  }
 } //namespace test
 } //namespace filesystem
 } //namespace ra

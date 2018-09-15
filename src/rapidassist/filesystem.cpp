@@ -28,6 +28,7 @@
 
 #include <algorithm> //for std::transform(), sort()
 #include <string.h> //for strdup()
+#include <stdlib.h> //for realpath()
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -45,6 +46,7 @@
 #define __rmdir rmdir
 #include <unistd.h> //for getcwd()
 #include <dirent.h> //for opendir() and closedir()
+#include <linux/limits.h> //for PATH_MAX
 #endif
 
 namespace ra
@@ -741,5 +743,109 @@ namespace ra
       return mod_time;
     }
 
+#ifdef _WIN32
+    inline bool isDriveLetter(char c)
+    {
+      if (c >= 'a' && c <= 'z')
+        return true;
+      if (c >= 'A' && c <= 'Z')
+        return true;
+      return false;
+    }
+#endif
+    bool isAbsolutePath(const std::string & iPath)
+    {
+      if (iPath.length() > 0 && iPath[0] == ra::filesystem::getPathSeparator())
+        return true; //this is also true for `\\server\shared` path on Windows.
+#ifdef _WIN32
+      if (iPath.length() > 2 && iPath[1] == ':' && iPath[2] == '\\' && isDriveLetter(iPath[0]))
+        return true; // For `C:\` format on Windows
+#endif
+      return false;
+    }
+ 
+    std::string resolvePath(const std::string & iPath)
+    {
+      std::string output;
+#ifdef _WIN32
+      char absolutePath[_MAX_PATH+1] = "";
+      if ( _fullpath(absolutePath, iPath.c_str(), _MAX_PATH) )
+      {
+        output = absolutePath;
+      }
+#elif __linux__
+      //http://man7.org/linux/man-pages/man7/path_resolution.7.html
+      char resolved_path[PATH_MAX];
+      if ( realpath(iPath.c_str(), resolved_path) != NULL )
+      {
+        output = resolved_path;
+      }
+#endif
+      return output;
+    }
+ 
+    std::string getCurrentExecutablePath()
+    {
+      std::string path;
+#ifdef _WIN32
+      char buffer[MAX_PATH] = {0};
+      HMODULE hModule = NULL;
+      if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+              GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+              (LPCSTR) __FUNCTION__,
+              &hModule))
+      {
+        int ret = GetLastError();
+        return path;
+      }
+      //get the path of this DLL
+      GetModuleFileName(hModule, buffer, sizeof(buffer));
+      if (buffer[0] != '\0')
+      {
+        path = buffer;
+      }
+#elif __linux__
+#endif
+      //not supported
+      return path;
+    }
+ 
+    std::string getAbsolutePathFromExecutable(const std::string & iPath)
+    {
+      if (isAbsolutePath(iPath))
+        return iPath;
+ 
+      std::string exec = getCurrentExecutablePath();
+      std::string exec_dir = ra::filesystem::getParentPath(exec);
+      ra::filesystem::normalizePath(exec_dir);
+ 
+      std::string tmpPath;
+      tmpPath.append(exec_dir);
+      tmpPath.append(ra::filesystem::getPathSeparatorStr());
+      tmpPath.append(iPath);
+ 
+      std::string resolved = resolvePath(tmpPath);
+ 
+      return resolved;
+    }
+ 
+    std::string getAbsolutePathFromCurrentDirectory(const std::string & iPath)
+    {
+      if (isAbsolutePath(iPath))
+        return iPath;
+ 
+      std::string cur_dir = ra::filesystem::getCurrentFolder();
+      ra::filesystem::normalizePath(cur_dir);
+     
+      std::string tmpPath;
+      tmpPath.append(cur_dir);
+      tmpPath.append(ra::filesystem::getPathSeparatorStr());
+      tmpPath.append(iPath);
+ 
+      std::string resolved = resolvePath(tmpPath);
+ 
+      return resolved;
+    }
+ 
   } //namespace filesystem
 } //namespace ra
