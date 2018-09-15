@@ -25,6 +25,7 @@
 #include "rapidassist/environment.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/random.h"
+#include "rapidassist/process.h"
 
 #include <algorithm> //for std::transform(), sort()
 #include <string.h> //for strdup()
@@ -783,37 +784,13 @@ namespace ra
 #endif
       return output;
     }
- 
-    std::string getCurrentExecutablePath()
-    {
-      std::string path;
-#ifdef _WIN32
-      HMODULE hModule = GetModuleHandle(NULL);
-      if (hModule == NULL)
-      {
-        int ret = GetLastError();
-        return path; //failure
-      }
-      //get the path of this process
-      char buffer[MAX_PATH] = {0};
-      if (!GetModuleFileName(hModule, buffer, sizeof(buffer)))
-      {
-        int ret = GetLastError();
-        return path; //failure
-      }
-      path = buffer;
-#elif __linux__
-#endif
-      //not supported
-      return path;
-    }
- 
+  
     std::string getAbsolutePathFromExecutable(const std::string & iPath)
     {
       if (isAbsolutePath(iPath))
         return iPath;
  
-      std::string exec = getCurrentExecutablePath();
+      std::string exec = ra::process::getCurrentExecutablePath();
       std::string exec_dir = ra::filesystem::getParentPath(exec);
       ra::filesystem::normalizePath(exec_dir);
  

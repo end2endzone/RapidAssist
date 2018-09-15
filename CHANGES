@@ -6,7 +6,9 @@ Changes for 0.5.0:
 * New feature: Implemented ra::environment::setEnvironmentVariable().
 * New feature: Created `generics` namespace, a.k.a. popular templates.
 * New feature: Created `console` namespace.
+* New feature: Created `process` namespace.
 * Fixed issue #5: String format function.
+* Fixed issue #6: Implement getCurrentProcessPath() function.
 
 Changes for 0.4.1:
 

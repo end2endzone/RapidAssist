@@ -24,6 +24,8 @@ add_executable(rapidassist_unittest
   TestGenerics.h
   TestLogger.cpp
   TestLogger.h
+  TestProcess.cpp
+  TestProcess.h
   TestRandom.cpp
   TestRandom.h
   TestString.cpp

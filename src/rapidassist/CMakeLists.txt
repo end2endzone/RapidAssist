@@ -6,6 +6,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/generics.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/logger.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/process.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/time_.h
@@ -32,6 +33,7 @@ add_library(rapidassist STATIC
   environment.cpp
   filesystem.cpp
   logger.cpp
+  process.cpp
   random.cpp
   time_.cpp
   strings.cpp
