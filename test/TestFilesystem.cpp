@@ -1240,7 +1240,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
     }
 
-    //test erroneous path
+    //test too many \..\ elements
     {
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\..\\..\\..\\myapp.exe";
@@ -1258,6 +1258,24 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("C:\\myapp.exe", actual);
 #elif __linux__
       ASSERT_EQ("/myapp", actual);
+#endif
+    }
+
+    //test with impossible to resolve situations (relative path)
+    {
+#ifdef _WIN32
+      std::string testPath = "..\\foo\\..\\..\\bar\\baz\\..\\myapp.exe";
+#elif __linux__
+      std::string testPath = "../foo/../../bar/baz/../myapp";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_FALSE(actual.empty());
+
+#ifdef _WIN32
+      ASSERT_EQ("..\\..\\bar\\myapp.exe", actual);
+#elif __linux__
+      ASSERT_EQ("../../bar/myapp", actual);
 #endif
     }
   }
