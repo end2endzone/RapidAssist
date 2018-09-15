@@ -1083,6 +1083,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
  
+      ASSERT_FALSE(actual.empty());
       ASSERT_EQ(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
@@ -1093,6 +1094,8 @@ namespace ra { namespace filesystem { namespace test
       ra::filesystem::normalizePath(testPath);
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
+
+      ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
@@ -1103,6 +1106,8 @@ namespace ra { namespace filesystem { namespace test
       ra::filesystem::normalizePath(testPath);
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
+
+      ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
@@ -1119,6 +1124,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
  
+      ASSERT_FALSE(actual.empty());
       ASSERT_EQ(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
@@ -1139,6 +1145,8 @@ namespace ra { namespace filesystem { namespace test
       ra::filesystem::normalizePath(testPath);
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
+
+      ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
@@ -1155,6 +1163,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
  
+      ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
       ASSERT_NE(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
@@ -1163,6 +1172,27 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);
 #elif __linux__
       ASSERT_EQ("/foo/baz/myapp", actual);
+#endif
+    }
+
+    //test with .. at the end
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\foo\\bar\\..";
+#elif __linux__
+      std::string testPath = "/foo/bar/..";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_FALSE(actual.empty());
+      ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
+      ASSERT_NE(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+
+#ifdef _WIN32
+      ASSERT_EQ("C:\\foo", actual);
+#elif __linux__
+      ASSERT_EQ("/foo", actual);
 #endif
     }
 
@@ -1175,6 +1205,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
  
+      ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("/./")); // . element removed from path
       ASSERT_EQ(std::string::npos, actual.find("\\.\\")); // . element removed from path
       ASSERT_NE(actual, testPath);
@@ -1187,6 +1218,28 @@ namespace ra { namespace filesystem { namespace test
 #endif
     }
 
+    //test with . at the end
+    {
+#ifdef _WIN32
+      std::string testPath = "C:\\foo\\bar\\.";
+#elif __linux__
+      std::string testPath = "/foo/bar/.";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_FALSE(actual.empty());
+      ASSERT_EQ(std::string::npos, actual.find("/./")); // . element removed from path
+      ASSERT_EQ(std::string::npos, actual.find("\\.\\")); // . element removed from path
+      ASSERT_NE(actual, testPath);
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+
+#ifdef _WIN32
+      ASSERT_EQ("C:\\foo\\bar", actual);
+#elif __linux__
+      ASSERT_EQ("/foo/bar", actual);
+#endif
+    }
+
     //test erroneous path
     {
 #ifdef _WIN32
@@ -1196,6 +1249,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
  
+      ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
       ASSERT_NE(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
@@ -1206,6 +1260,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/myapp", actual);
 #endif
     }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testIsRootDirectory)
+  {
+#ifdef _WIN32
+    ASSERT_TRUE( ra::filesystem::isRootDirectory("C:\\") );
+    ASSERT_TRUE( ra::filesystem::isRootDirectory("c:\\") );
+    ASSERT_TRUE( ra::filesystem::isRootDirectory("z:\\") );
+    ASSERT_FALSE( ra::filesystem::isRootDirectory("c:\\foo") );
+    ASSERT_FALSE( ra::filesystem::isRootDirectory("c:") );
+#elif __linux__
+    ASSERT_TRUE( ra::filesystem::isRootDirectory("/") );
+    ASSERT_FALSE( ra::filesystem::isRootDirectory("/foo") );
+#endif
   }
 } //namespace test
 } //namespace filesystem

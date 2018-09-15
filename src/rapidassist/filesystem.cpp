@@ -764,24 +764,121 @@ namespace ra
 #endif
       return false;
     }
+
+    bool isRootDirectory(const std::string & iPath)
+    {
+      if (iPath == "/")
+        return true;
+#ifdef _WIN32
+      if (iPath.length() == 3 && iPath[1] == ':' && iPath[2] == '\\' && isDriveLetter(iPath[0]))
+        return true; // For `C:\` format on Windows
+#endif
+      return false;
+    }
  
+    size_t find(const ra::strings::StringVector & items, size_t offset, const std::string & value)
+    {
+      for(size_t i=offset; i<items.size(); i++)
+      {
+        const std::string & str = items[i];
+        if (str == value)
+          return i;
+      }
+      return std::string::npos;
+    }
+
     std::string resolvePath(const std::string & iPath)
     {
       std::string output;
-#ifdef _WIN32
-      char absolutePath[_MAX_PATH+1] = "";
-      if ( _fullpath(absolutePath, iPath.c_str(), _MAX_PATH) )
+//#ifdef _WIN32
+//      char absolutePath[_MAX_PATH+1] = "";
+//      if ( _fullpath(absolutePath, iPath.c_str(), _MAX_PATH) )
+//      {
+//        output = absolutePath;
+//      }
+//#endif
+
+      static const std::string CURRENT_DIRECTORY = ".";
+      static const std::string PREVIOUS_DIRECTORY = "..";
+      std::string path = iPath;
+
+      //remove `/./` path elements
       {
-        output = absolutePath;
+        std::string pattern;
+        pattern << ra::filesystem::getPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::getPathSeparatorStr();
+        ra::strings::strReplace(path, pattern.c_str(), ra::filesystem::getPathSeparatorStr());
+
+        //look for a path that ends with /. or \.
+        pattern.clear();
+        pattern << ra::filesystem::getPathSeparatorStr() << ".";
+        if (path.size() >= pattern.size() && pattern == &path[path.size()-pattern.size()])
+        {
+          //remove the ending
+          size_t offset = path.size() - pattern.size();
+          path.erase( offset, pattern.size() );
+        }
       }
-#elif __linux__
-      //http://man7.org/linux/man-pages/man7/path_resolution.7.html
-      char resolved_path[PATH_MAX];
-      if ( realpath(iPath.c_str(), resolved_path) != NULL )
+
+      //remove `/../` path elements
       {
-        output = resolved_path;
+        //split by path separator
+        ra::strings::StringVector elements;
+        ra::strings::splitString(elements, path, ra::filesystem::getPathSeparatorStr());
+        
+        //search for /..
+        size_t offset = 0; //current index of the element where we are searching
+        size_t index = find(elements, offset, PREVIOUS_DIRECTORY);
+        while(index != std::string::npos)
+        {
+          if (index == 0)
+          {
+            //there is nothing we can do with this element
+            offset = index + 1; //continue resolving from the next element
+          }
+          else
+          {
+            //get previous element
+            const std::string & previousElement = elements[index-1];
+
+            if (previousElement == PREVIOUS_DIRECTORY)
+            {
+              //there is nothing we can do with this element
+              offset = index + 1; //continue resolving from the next element
+            }
+            else
+            {
+              //remove the `..` element
+              elements.erase(elements.begin() + index);
+
+              //should we remove the element before
+              if (  isRootDirectory(previousElement) || // Linux
+                    isRootDirectory(previousElement + "\\") // Windows
+                    )
+              {
+                //one cannot walk down past the root
+
+                //keep same offset. The next search will occurs where the deleted `..` element was.
+              }
+              else
+              {
+                //erase previous element
+                elements.erase(elements.begin() + (index - 1));
+
+                offset = index - 1; //The next search will occurs where `previousElement` was.
+              }
+            }
+          }
+
+          //search again
+          index = find(elements, offset, PREVIOUS_DIRECTORY);
+        }
+
+        //join the string back again
+        path = ra::strings::joinString(elements, ra::filesystem::getPathSeparatorStr());
       }
-#endif
+
+      output = path;
+
       return output;
     }
   

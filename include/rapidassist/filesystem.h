@@ -218,6 +218,17 @@ namespace ra
     bool isAbsolutePath(const std::string & iPath);
  
     /// <summary>
+    /// Determine if the given path is a root directory.
+    /// </summary>
+    /// <remarks>
+    /// On Linux,   the root directory is "/".
+    /// On Windows, there is one root directory per drive identified by a drive letter followed by ":\". For instance "C:\".
+    /// </remarks>
+    /// <param name="iPath">An valid file or directory path.</param>
+    /// <returns>Returns true if the given path is a root directory. Returns false otherwise.</returns>
+    bool isRootDirectory(const std::string & iPath);
+ 
+    /// <summary>
     /// Resolves path that contains `..` or `.` elements to an absolute path.
     /// </summary>
     /// <remarks>
