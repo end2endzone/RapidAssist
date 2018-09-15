@@ -1094,7 +1094,7 @@ namespace ra { namespace filesystem { namespace test
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
  
     //test filename only
@@ -1104,7 +1104,7 @@ namespace ra { namespace filesystem { namespace test
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1120,7 +1120,7 @@ namespace ra { namespace filesystem { namespace test
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
  
       ASSERT_EQ(actual, testPath);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
  
     //test relative path
@@ -1130,7 +1130,7 @@ namespace ra { namespace filesystem { namespace test
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
  
     //test filename only
@@ -1140,7 +1140,7 @@ namespace ra { namespace filesystem { namespace test
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1157,7 +1157,7 @@ namespace ra { namespace filesystem { namespace test
  
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
       ASSERT_NE(actual, testPath);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);

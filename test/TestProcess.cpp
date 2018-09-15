@@ -41,6 +41,7 @@ namespace ra { namespace process { namespace test
   TEST_F(TestProcess, testGetCurrentProcessPath)
   {
     std::string path = ra::process::getCurrentProcessPath();
+    printf("Process path: %s\n", path.c_str());
     ASSERT_TRUE(!path.empty());
     ASSERT_TRUE( ra::filesystem::fileExists(path.c_str()) );
   }
@@ -48,6 +49,7 @@ namespace ra { namespace process { namespace test
   TEST_F(TestProcess, testGetCurrentProcessDir)
   {
     std::string dir = ra::process::getCurrentProcessDir();
+    printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());
     ASSERT_TRUE( ra::filesystem::folderExists(dir.c_str()) );
   }
