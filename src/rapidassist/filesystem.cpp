@@ -790,7 +790,7 @@ namespace ra
       if (isAbsolutePath(iPath))
         return iPath;
  
-      std::string exec = ra::process::getCurrentExecutablePath();
+      std::string exec = ra::process::getCurrentProcessPath();
       std::string exec_dir = ra::filesystem::getParentPath(exec);
       ra::filesystem::normalizePath(exec_dir);
  

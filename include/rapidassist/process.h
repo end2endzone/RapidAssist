@@ -36,7 +36,7 @@ namespace ra
     /// Provides the file path of the current executing process.
     /// </summary>
     /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
-    std::string getCurrentExecutablePath();
+    std::string getCurrentProcessPath();
 
   } //namespace process
 } //namespace ra

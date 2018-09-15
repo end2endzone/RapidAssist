@@ -38,9 +38,9 @@ namespace ra { namespace process { namespace test
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestProcess, testSuccess)
+  TEST_F(TestProcess, testGetCurrentProcessPath)
   {
-    std::string path = ra::process::getCurrentExecutablePath();
+    std::string path = ra::process::getCurrentProcessPath();
     ASSERT_TRUE(!path.empty());
     ASSERT_TRUE( ra::filesystem::fileExists(path.c_str()) );
   }

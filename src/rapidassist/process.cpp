@@ -36,7 +36,7 @@ namespace ra
   namespace process
   {
 
-    std::string getCurrentExecutablePath()
+    std::string getCurrentProcessPath()
     {
       std::string path;
 #ifdef _WIN32
