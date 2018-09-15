@@ -785,7 +785,7 @@ namespace ra
       return output;
     }
   
-    std::string getAbsolutePathFromExecutable(const std::string & iPath)
+    std::string getPathBasedOnCurrentProcess(const std::string & iPath)
     {
       if (isAbsolutePath(iPath))
         return iPath;
@@ -804,7 +804,7 @@ namespace ra
       return resolved;
     }
  
-    std::string getAbsolutePathFromCurrentDirectory(const std::string & iPath)
+    std::string getPathBasedOnCurrentDirectory(const std::string & iPath)
     {
       if (isAbsolutePath(iPath))
         return iPath;

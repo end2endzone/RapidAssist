@@ -234,7 +234,7 @@ namespace ra
     /// <param name="iPath">An valid relative file or directory path.</param>
     /// <returns>Returns the absolute path.</returns>
     /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-    std::string getAbsolutePathFromExecutable(const std::string & iPath);
+    std::string getPathBasedOnCurrentProcess(const std::string & iPath);
  
     /// <summary>
     /// Build an absolute path from the given relative path based on the current directory.
@@ -242,7 +242,7 @@ namespace ra
     /// <param name="iPath">An valid relative file or directory path.</param>
     /// <returns>Returns the absolute path.</returns>
     /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-    std::string getAbsolutePathFromCurrentDirectory(const std::string & iPath);
+    std::string getPathBasedOnCurrentDirectory(const std::string & iPath);
 
 
   } //namespace filesystem

@@ -1072,7 +1072,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testGetAbsolutePathFromExecutable)
+  TEST_F(TestFilesystem, testGetPathBasedOnCurrentProcess)
   {
     //test already absolute
     {
@@ -1081,7 +1081,7 @@ namespace ra { namespace filesystem { namespace test
 #elif __linux__
       std::string testPath = "/bin/bash";
 #endif
-      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
  
       ASSERT_EQ(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
@@ -1092,7 +1092,7 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "files\\images\\slashscreen.png";
       ra::filesystem::normalizePath(testPath);
 
-      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
@@ -1102,13 +1102,13 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "slashscreen.png";
       ra::filesystem::normalizePath(testPath);
 
-      std::string actual = ra::filesystem::getAbsolutePathFromExecutable(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentProcess(testPath);
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testGetAbsolutePathFromCurrentDirectory)
+  TEST_F(TestFilesystem, testGetPathBasedOnCurrentDirectory)
   {
     //test already absolute
     {
@@ -1117,7 +1117,7 @@ namespace ra { namespace filesystem { namespace test
 #elif __linux__
       std::string testPath = "/bin/bash";
 #endif
-      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
  
       ASSERT_EQ(actual, testPath);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
@@ -1128,7 +1128,7 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "files\\images\\slashscreen.png";
       ra::filesystem::normalizePath(testPath);
 
-      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
@@ -1138,7 +1138,7 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "slashscreen.png";
       ra::filesystem::normalizePath(testPath);
 
-      std::string actual = ra::filesystem::getAbsolutePathFromCurrentDirectory(testPath);
+      std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
       ASSERT_NE(testPath, actual);
       ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
