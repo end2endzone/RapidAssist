@@ -25,11 +25,16 @@
 #include "rapidassist/process.h"
 #include "rapidassist/filesystem.h"
 
+#include <string>
+
 #ifdef WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h> // for GetModuleHandleEx()
+#   ifndef WIN32_LEAN_AND_MEAN
+#   define WIN32_LEAN_AND_MEAN 1
+#   endif
+#   include <windows.h> // for GetModuleHandleEx()
+#elif __linux__
+#   include <unistd.h>
+#   include <limits.h>
 #endif
 
 namespace ra
@@ -56,8 +61,26 @@ namespace ra
       }
       path = buffer;
 #elif __linux__
+      //from https://stackoverflow.com/a/33249023
+      char exePath[PATH_MAX + 1] = {0};
+      ssize_t len = ::readlink("/proc/self/exe", exePath, sizeof(exePath));
+      if (len == -1 || len == sizeof(exePath))
+        len = 0;
+      exePath[len] = '\0';
+      path = exePath;
+
+      //fallback from https://stackoverflow.com/a/7052225
+      if (path.empty())
+      {
+        char process_id_path[32];
+        sprintf( process_id_path, "/proc/%d/exe", getpid() );
+        len = ::readlink(process_id_path, exePath, sizeof(exePath));
+        if (len == -1 || len == sizeof(exePath))
+          len = 0;
+        exePath[len] = '\0';
+        path = exePath;
+      }
 #endif
-      //not supported
       return path;
     }
 
