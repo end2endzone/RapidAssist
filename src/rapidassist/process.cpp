@@ -23,6 +23,7 @@
  *********************************************************************************/
 
 #include "rapidassist/process.h"
+#include "rapidassist/filesystem.h"
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -58,6 +59,16 @@ namespace ra
 #endif
       //not supported
       return path;
+    }
+
+    std::string getCurrentProcessDir()
+    {
+      std::string dir;
+      std::string execPath = getCurrentProcessPath();
+      if (execPath.empty())
+        return dir; //failure
+      dir = ra::filesystem::getParentPath(execPath);
+      return dir;
     }
 
   } //namespace process

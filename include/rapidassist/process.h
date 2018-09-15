@@ -38,6 +38,12 @@ namespace ra
     /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
     std::string getCurrentProcessPath();
 
+    /// <summary>
+    /// Provides the directory of the current executing process.
+    /// </summary>
+    /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
+    std::string getCurrentProcessDir();
+
   } //namespace process
 } //namespace ra
 
