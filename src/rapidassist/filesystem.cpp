@@ -838,7 +838,7 @@ namespace ra
           else
           {
             //get previous element
-            const std::string & previousElement = elements[index-1];
+            const std::string & previousElement = elements[index-1]; 
 
             if (previousElement == PREVIOUS_DIRECTORY)
             {
@@ -850,10 +850,13 @@ namespace ra
               //remove the `..` element
               elements.erase(elements.begin() + index);
 
-              //should we remove the element before
-              if (  isRootDirectory(previousElement) || // Linux
-                    isRootDirectory(previousElement + "\\") // Windows
-                    )
+              //should we remove the element before?
+              //Note:
+              //On Windows, the root element is defined by the string "C:" (without the \ character). The \ character must be
+              //added to `previousElement` to be properly detected by `isRootDirectory()`.
+              //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
+              //separator which creates an empty string element when calling `ra::strings::splitString()`.
+              if ( isRootDirectory(previousElement + ra::filesystem::getPathSeparatorStr()) )
               {
                 //one cannot walk down past the root
 

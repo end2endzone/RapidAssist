@@ -1097,7 +1097,7 @@ namespace ra { namespace filesystem { namespace test
 
       ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
  
     //test filename only
@@ -1109,7 +1109,7 @@ namespace ra { namespace filesystem { namespace test
 
       ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1126,7 +1126,7 @@ namespace ra { namespace filesystem { namespace test
  
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(actual, testPath);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
  
     //test relative path
@@ -1136,7 +1136,7 @@ namespace ra { namespace filesystem { namespace test
 
       std::string actual = ra::filesystem::getPathBasedOnCurrentDirectory(testPath);
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
  
     //test filename only
@@ -1148,25 +1148,27 @@ namespace ra { namespace filesystem { namespace test
 
       ASSERT_FALSE(actual.empty());
       ASSERT_NE(testPath, actual);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testResolvePath)
+  TEST_F(TestFilesystem, testResolvePath01)
   {
     //test with ..
     {
+      SCOPED_TRACE("test with ..");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..\\baz\\myapp.exe";
 #elif __linux__
       std::string testPath = "/foo/bar/../baz/myapp";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
       ASSERT_NE(actual, testPath);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);
@@ -1174,20 +1176,25 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/foo/baz/myapp", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath02)
+  {
     //test with .. at the end
     {
+      SCOPED_TRACE("test with .. at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..";
 #elif __linux__
       std::string testPath = "/foo/bar/..";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
- 
+      SCOPED_TRACE(actual);
+
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
       ASSERT_NE(actual, testPath);
-      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) ) << "actual=" << actual.c_str();
+      ASSERT_TRUE( ra::filesystem::isAbsolutePath(actual) );
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo", actual);
@@ -1195,15 +1202,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/foo", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath03)
+  {
     //test with .
     {
+      SCOPED_TRACE("test with .");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.\\baz\\myapp.exe";
 #elif __linux__
       std::string testPath = "/foo/bar/./baz/myapp";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("/./")); // . element removed from path
@@ -1217,15 +1229,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/foo/bar/baz/myapp", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath04)
+  {
     //test with . at the end
     {
+      SCOPED_TRACE("test with . at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.";
 #elif __linux__
       std::string testPath = "/foo/bar/.";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("/./")); // . element removed from path
@@ -1239,15 +1256,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/foo/bar", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath05)
+  {
     //test too many \..\ elements
     {
+      SCOPED_TRACE("test too many \\..\\ elements");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\..\\..\\..\\myapp.exe";
 #elif __linux__
       std::string testPath = "/foo/../../../myapp";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
       ASSERT_EQ(std::string::npos, actual.find("..")); // .. element removed from path
@@ -1260,15 +1282,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("/myapp", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath06)
+  {
     //test with impossible to resolve situations (relative path)
     {
+      SCOPED_TRACE("test with impossible to resolve situations (relative path)");
 #ifdef _WIN32
       std::string testPath = "..\\foo\\..\\..\\bar\\baz\\..\\myapp.exe";
 #elif __linux__
       std::string testPath = "../foo/../../bar/baz/../myapp";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
 
@@ -1278,15 +1305,20 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("../../bar/myapp", actual);
 #endif
     }
-
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testResolvePath07)
+  {
     //test buggy path. See issue #11 https://github.com/end2endzone/RapidAssist/issues/11
     {
+      SCOPED_TRACE("test buggy path");
 #ifdef _WIN32
       std::string testPath = "\\home\\pi\\dev\\github\\RapidAssist\\build\\bin\\files\\images\\slashscreen.png";
 #elif __linux__
       std::string testPath = "/home/pi/dev/github/RapidAssist/build/bin/files/images/slashscreen.png";
 #endif
       std::string actual = ra::filesystem::resolvePath(testPath);
+      SCOPED_TRACE(actual);
  
       ASSERT_FALSE(actual.empty());
 
