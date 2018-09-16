@@ -295,6 +295,13 @@ namespace ra
             oList.push_back("");
           }
 
+          //does this separator follows another separator?
+          if (i >= pattern.size() && strncmp(&iText[i - pattern.size()], pattern.c_str(), pattern.size()) == 0)
+          {
+            //consecutive separators
+            oList.push_back("");
+          }
+
           i += pattern.size();
 
           //does iText ends with a separator?
@@ -326,7 +333,7 @@ namespace ra
       for(size_t i=0; i<iList.size(); i++)
       {
         const std::string & value = iList[i];
-        if (!output.empty() && iSeparator != NULL)
+        if (i > 0 && iSeparator != NULL)
           output.append(iSeparator);
         output.append(value);
       }

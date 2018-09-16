@@ -1278,6 +1278,24 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("../../bar/myapp", actual);
 #endif
     }
+
+    //test buggy path. See issue #11 https://github.com/end2endzone/RapidAssist/issues/11
+    {
+#ifdef _WIN32
+      std::string testPath = "\\home\\pi\\dev\\github\\RapidAssist\\build\\bin\\files\\images\\slashscreen.png";
+#elif __linux__
+      std::string testPath = "/home/pi/dev/github/RapidAssist/build/bin/files/images/slashscreen.png";
+#endif
+      std::string actual = ra::filesystem::resolvePath(testPath);
+ 
+      ASSERT_FALSE(actual.empty());
+
+#ifdef _WIN32
+      ASSERT_EQ(testPath, actual);
+#elif __linux__
+      ASSERT_EQ(testPath, actual);
+#endif
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testIsRootDirectory)

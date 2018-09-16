@@ -487,6 +487,36 @@ namespace ra { namespace strings { namespace test
       ASSERT_EQ("Bb", list[2]);
       ASSERT_EQ("Cc", list[3]);
     }
+
+    //test with only a separator
+    {
+      static const std::string INPUT = ".";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(2, list.size());
+      ASSERT_EQ("", list[0]);
+      ASSERT_EQ("", list[1]);
+    }
+
+    //test consecutive separators
+    {
+      static const std::string INPUT = "Aa..Bb";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(3, list.size());
+      ASSERT_EQ("Aa", list[0]);
+      ASSERT_EQ("",   list[1]);
+      ASSERT_EQ("Bb", list[2]);
+    }
+
+    //test only separators
+    {
+      static const std::string INPUT = "...";
+      StringVector list = splitString(INPUT, ".");
+      ASSERT_EQ(4, list.size());
+      ASSERT_EQ("", list[0]);
+      ASSERT_EQ("", list[1]);
+      ASSERT_EQ("", list[2]);
+      ASSERT_EQ("", list[3]);
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testJoinString)
@@ -510,6 +540,51 @@ namespace ra { namespace strings { namespace test
     //test normal
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+
+    //test last character is separator
+    {
+      static const std::string EXPECTED = "Aa.Bb.Cc.";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+
+    //test first character is separator
+    {
+      static const std::string EXPECTED = ".Aa.Bb.Cc";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+
+    //test first and last character are separator
+    {
+      static const std::string EXPECTED = ".Aa.Bb.Cc.";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+
+    //test consecutive separators
+    {
+      static const std::string EXPECTED = "Aa..Bb";
+      static const char * SEPARATOR = ".";
+      StringVector list = splitString(EXPECTED, SEPARATOR);
+      std::string joinStr = joinString(list, SEPARATOR);
+      ASSERT_EQ(EXPECTED, joinStr);
+    }
+
+    //test only separators
+    {
+      static const std::string EXPECTED = "...";
       static const char * SEPARATOR = ".";
       StringVector list = splitString(EXPECTED, SEPARATOR);
       std::string joinStr = joinString(list, SEPARATOR);
