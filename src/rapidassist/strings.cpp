@@ -275,17 +275,6 @@ namespace ra
     std::string toString(const    float & value) { return toStringT(value); }
     std::string toString(const   double & value) { return toStringT(value); }
 
-    bool parseValue(const std::string& str, uint64_t & oValue)
-    {
-      //return parseValueT(str, oValue);
-      parseT(str.c_str(), oValue);
-
-      //verify
-      std::string & tmp = toString(oValue);
-      bool success = (tmp == str);
-      return success;
-    }
-
     bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
     bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
     bool parse(const std::string& str,  int16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }

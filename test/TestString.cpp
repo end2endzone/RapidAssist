@@ -192,7 +192,7 @@ namespace ra { namespace strings { namespace test
 
       //assert parseValue()
       uint64_t actualValue = 0;
-      bool parsed = parseValue(EXPECTED_STR, actualValue);
+      bool parsed = parse(EXPECTED_STR, actualValue);
       ASSERT_TRUE(parsed);
       ASSERT_EQ(EXPECTED_VALUE, actualValue);
     }

@@ -75,7 +75,6 @@ namespace ra
     /// <param name="str">The input string which contains a numeric value.</param>
     /// <param name="oValue">The output numeric value.</param>
     /// <returns>Returns true when the parsing is successful.</returns>
-    bool parseValue(const std::string& str, uint64_t & oValue);
     bool parse(const std::string& str,   int8_t & oValue);
     bool parse(const std::string& str,  uint8_t & oValue);
     bool parse(const std::string& str,  int16_t & oValue);
