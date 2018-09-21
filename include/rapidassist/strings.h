@@ -58,7 +58,16 @@ namespace ra
     /// </summary>
     /// <param name="value">The numeric value.</param>
     /// <returns>Converts the given value to string.</returns>
+    std::string toString(const   int8_t & value);
+    std::string toString(const  uint8_t & value);
+    std::string toString(const  int16_t & value);
+    std::string toString(const uint16_t & value);
+    std::string toString(const  int32_t & value);
+    std::string toString(const uint32_t & value);
+    std::string toString(const  int64_t & value);
     std::string toString(const uint64_t & value);
+    std::string toString(const    float & value);
+    std::string toString(const   double & value);
 
     /// <summary>
     /// Parse the given string into the given numeric variable.
@@ -67,6 +76,16 @@ namespace ra
     /// <param name="oValue">The output numeric value.</param>
     /// <returns>Returns true when the parsing is successful.</returns>
     bool parseValue(const std::string& str, uint64_t & oValue);
+    bool parse(const std::string& str,   int8_t & oValue);
+    bool parse(const std::string& str,  uint8_t & oValue);
+    bool parse(const std::string& str,  int16_t & oValue);
+    bool parse(const std::string& str, uint16_t & oValue);
+    bool parse(const std::string& str,  int32_t & oValue);
+    bool parse(const std::string& str, uint32_t & oValue);
+    bool parse(const std::string& str,  int64_t & oValue);
+    bool parse(const std::string& str, uint64_t & oValue);
+    bool parse(const std::string& str,    float & oValue);
+    bool parse(const std::string& str,   double & oValue);
 
     /// <summary>
     /// Capitalize the first character of the given string.
@@ -284,5 +303,21 @@ std::string& operator<<(std::string& str, const int64_t & value);
 /// <param name="value">The value to append to the given string.</param>
 /// <returns>Returns the given string.</returns>
 std::string& operator<<(std::string& str, const uint64_t & value);
+
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
+std::string& operator<<(std::string& str, const float & value);
+
+/// <summary>
+/// Streams a value to an existing string.
+/// </summary>
+/// <param name="str">The destination string.</param>
+/// <param name="value">The value to append to the given string.</param>
+/// <returns>Returns the given string.</returns>
+std::string& operator<<(std::string& str, const double & value);
 
 #endif //RA_STRING_H

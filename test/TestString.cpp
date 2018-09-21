@@ -25,10 +25,41 @@
 #include "TestString.h"
 #include "rapidassist/strings.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/random.h"
+#include <stdint.h>
+#include <float.h>
 
 namespace ra { namespace strings { namespace test
 {
-  
+  struct FLOAT_ITOA_TEST
+  {
+    float fraction_numerator;
+    float fraction_denominator;
+    const char * str;
+  };
+  struct DOUBLE_ITOA_TEST
+  {
+    double fraction_numerator;
+    double fraction_denominator;
+    const char * str;
+  };
+  const FLOAT_ITOA_TEST float_itoa_tests[] = {
+    {1.0f, 1.0f, "1"},
+    {-1.0f, 1.0f, "-1"},
+    {0.5f, 1.0f, "0.5"},              // 0.44999999
+    {1.0f, 7.0f, "0.14285715"},       // 0.142857 15
+    {1234.0f, 9999.0f, "0.12341234"}, // 0.1234 1234
+  };
+  const DOUBLE_ITOA_TEST double_itoa_tests[] = {
+    {1.0, 1.0, "1"},
+    {-1.0, 1.0, "-1"},
+    {0.3, 1.0, "0.29999999999999999"},        // 0.29999999999999999
+    {1.0, 7.0, "0.14285714285714285"},        // 0.142857 142857 14285
+    {1234.0, 9999.0, "0.12341234123412341"},  // 0.1234 1234 1234 1234 1
+  };
+  const size_t float_itoa_tests_count  = sizeof(float_itoa_tests)/sizeof(float_itoa_tests[0]);
+  const size_t double_itoa_tests_count = sizeof(double_itoa_tests)/sizeof(double_itoa_tests[0]);
+
   //--------------------------------------------------------------------------------------------------
   void TestString::SetUp()
   {
@@ -626,6 +657,322 @@ namespace ra { namespace strings { namespace test
   {
     std::string text = ra::strings::format("%d %s %c %3.2f", 23, "this is a string", 'e', 4.234);
     ASSERT_EQ("23 this is a string e 4.23", text );
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testFloatingPointStreamOperator)
+  {
+    {
+      const float f = 1.0f;
+      std::string s;
+      s << f;
+      ASSERT_EQ("1", s);
+    }
+    {
+      const double d = 1.0;
+      std::string s;
+      s << d;
+      ASSERT_EQ("1", s);
+    }
+    {
+      const float f = 1.0f/7.0f;  // 0.142857 15
+      std::string s;
+      s << f;
+      ASSERT_EQ("0.14285715", s);
+    }
+    {
+      const double d = 1.0/7.0;  // 0.142857 142857 14285
+      std::string s;
+      s << d;
+      ASSERT_EQ("0.14285714285714285", s);
+    }
+    {
+      const float f = 1234.0f/9999.0f;  // 0.1234 1234
+      std::string s;
+      s << f;
+      ASSERT_EQ("0.12341234", s);
+    }
+    {
+      const double d = 1234.0/9999.0;  // 0.1234 1234 1234 1234 1
+      std::string s;
+      s << d;
+      ASSERT_EQ("0.12341234123412341", s);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringUInt8_t)
+  {
+    typedef uint8_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)0; //UINT8_MIN
+      ASSERT_EQ("0", toString(value));
+    }
+    {
+      test_type value = UINT8_MAX;
+      ASSERT_EQ("255", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringSInt8_t)
+  {
+    typedef int8_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)INT8_MIN;
+      ASSERT_EQ("-128", toString(value));
+    }
+    {
+      test_type value = INT8_MAX;
+      ASSERT_EQ("127", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringUInt16_t)
+  {
+    typedef uint16_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)0; //UINT16_MIN
+      ASSERT_EQ("0", toString(value));
+    }
+    {
+      test_type value = UINT16_MAX;
+      ASSERT_EQ("65535", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringSInt16_t)
+  {
+    typedef int16_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)INT16_MIN;
+      ASSERT_EQ("-32768", toString(value));
+    }
+    {
+      test_type value = INT16_MAX;
+      ASSERT_EQ("32767", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringUInt32_t)
+  {
+    typedef uint32_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)0; //UINT32_MIN
+      ASSERT_EQ("0", toString(value));
+    }
+    {
+      test_type value = UINT32_MAX;
+      ASSERT_EQ("4294967295", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringSInt32_t)
+  {
+    typedef int32_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)INT32_MIN;
+      ASSERT_EQ("-2147483648", toString(value));
+    }
+    {
+      test_type value = INT32_MAX;
+      ASSERT_EQ("2147483647", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringUInt64_t)
+  {
+    typedef uint64_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)0; //UINT64_MIN
+      ASSERT_EQ("0", toString(value));
+    }
+    {
+      test_type value = UINT64_MAX;
+      ASSERT_EQ("18446744073709551615", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringSInt64_t)
+  {
+    typedef int64_t test_type;
+    {
+      test_type value = (test_type)32;
+      ASSERT_EQ("32", toString(value));
+    }
+    {
+      test_type value = (test_type)INT64_MIN;
+      ASSERT_EQ("-9223372036854775808", toString(value));
+    }
+    {
+      test_type value = INT64_MAX;
+      ASSERT_EQ("9223372036854775807", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringFloatingPoint)
+  {
+    {
+      const float f = 1.0f;
+      std::string s = toString(f);
+      ASSERT_EQ("1", s);
+    }
+    {
+      const double d = 1.0;
+      std::string s = toString(d);
+      ASSERT_EQ("1", s);
+    }
+    {
+      const float f = 1.0f/7.0f;  // 0.142857 15
+      std::string s = toString(f);
+      ASSERT_EQ("0.14285715", s);
+    }
+    {
+      const double d = 1.0/7.0;  // 0.142857 142857 14285
+      std::string s = toString(d);
+      ASSERT_EQ("0.14285714285714285", s);
+    }
+    {
+      const float f = 1234.0f/9999.0f;  // 0.1234 1234
+      std::string s = toString(f);
+      ASSERT_EQ("0.12341234", s);
+    }
+    {
+      const double d = 1234.0/9999.0;  // 0.1234 1234 1234 1234 1
+      std::string s = toString(d);
+      ASSERT_EQ("0.12341234123412341", s);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, test_ftoa_atof)
+  {
+    for(size_t i=0; i<float_itoa_tests_count; i++)
+    {
+      SCOPED_TRACE(i);
+      const FLOAT_ITOA_TEST & test = float_itoa_tests[i];
+      
+      //compute the fraction
+      float fraction = test.fraction_numerator/test.fraction_denominator;
+      SCOPED_TRACE(fraction);
+
+      //convert to string
+      std::string str1 = ra::strings::toString(fraction);
+      std::string str2; str2 << fraction;
+      SCOPED_TRACE(str1);
+      SCOPED_TRACE(str2);
+
+      ASSERT_EQ(test.str, str1);
+      ASSERT_EQ(test.str, str2);
+      ASSERT_EQ(str1, str2);
+
+      //convert back to float
+      float parsed_value = 0.0f;
+      bool success = ra::strings::parse(str1, parsed_value);
+      ASSERT_TRUE(success);
+
+      ASSERT_NEAR(fraction, parsed_value, 0.0000001f);
+    }
+
+    //try again with a few random guess
+    for(size_t i=0; i<1000; i++)
+    {
+      //compute the fraction
+      float value = ra::random::getRandomFloat(-FLT_MAX, FLT_MAX); 
+      SCOPED_TRACE(value);
+
+      //convert to string
+      std::string str1 = ra::strings::toString(value);
+      std::string str2; str2 << value;
+      SCOPED_TRACE(str1);
+      SCOPED_TRACE(str2);
+
+      ASSERT_EQ(str1, str2);
+
+      //convert back to float
+      float parsed_value = 0.0f;
+      bool success = ra::strings::parse(str1, parsed_value);
+      ASSERT_TRUE(success);
+
+      ASSERT_NEAR(value, parsed_value, 0.0000001f);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, test_dtoa_atod)
+  {
+    for(size_t i=0; i<double_itoa_tests_count; i++)
+    {
+      SCOPED_TRACE(i);
+      const DOUBLE_ITOA_TEST & test = double_itoa_tests[i];
+      
+      //compute the fraction
+      double fraction = test.fraction_numerator/test.fraction_denominator;
+      SCOPED_TRACE(fraction);
+
+      //convert to string
+      std::string str1 = ra::strings::toString(fraction);
+      std::string str2; str2 << fraction;
+      SCOPED_TRACE(str1);
+      SCOPED_TRACE(str2);
+
+      ASSERT_EQ(test.str, str1);
+      ASSERT_EQ(test.str, str2);
+      ASSERT_EQ(str1, str2);
+
+      //convert back to double
+      double parsed_value = 0.0;
+      bool success = ra::strings::parse(str1, parsed_value);
+      ASSERT_TRUE(success);
+
+      ASSERT_NEAR(fraction, parsed_value, 0.0000000000000001);
+    }
+
+    //try again with a few random guess
+    for(size_t i=0; i<1000; i++)
+    {
+      //compute the fraction
+      double value = ra::random::getRandomDouble(-DBL_MAX, DBL_MAX); 
+      SCOPED_TRACE(value);
+
+      //convert to string
+      std::string str1 = ra::strings::toString(value);
+      std::string str2; str2 << value;
+      SCOPED_TRACE(str1);
+      SCOPED_TRACE(str2);
+
+      ASSERT_EQ(str1, str2);
+
+      //convert back to double
+      double parsed_value = 0.0;
+      bool success = ra::strings::parse(str1, parsed_value);
+      ASSERT_TRUE(success);
+
+      ASSERT_NEAR(value, parsed_value, 0.0000001f);
+    }
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

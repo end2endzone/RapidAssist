@@ -31,38 +31,39 @@
 #include <limits>   //for std::numeric_limits
 #include <stdarg.h> //for ...
 #include <stdio.h>  //for vsnprintf()
+#include <iomanip>  //for std::setprecision()
 
 namespace ra
 {
 
   namespace strings
   {
-    template <class T>
-    inline bool parseValueT (const std::string& str, T & t)
-    {
-      static const T ZERO = (T)0;
-      static const T MULTIPLIER = (T)10;
-      static const T SIGN_MULTIPLIER = (T)-1;
-      bool parseOK = false;
-      t = ZERO;
-      for(size_t i=0; i<str.size(); i++)
-      {
-        char c = str[i];
-        if (c >= '0' && c <= '9')
-        {
-          t *= MULTIPLIER;
-          c -= '0'; //convert character to numeric value
-          t += (T)c;
-          parseOK = true;
-        }
-        else if (c == '-')
-        {
-          t *= SIGN_MULTIPLIER;
-          parseOK = true;
-        }
-      }
-      return parseOK;
-    }
+    //template <class T>
+    //inline bool parseValueT (const std::string& str, T & t)
+    //{
+    //  static const T ZERO = (T)0;
+    //  static const T MULTIPLIER = (T)10;
+    //  static const T SIGN_MULTIPLIER = (T)-1;
+    //  bool parseOK = false;
+    //  t = ZERO;
+    //  for(size_t i=0; i<str.size(); i++)
+    //  {
+    //    char c = str[i];
+    //    if (c >= '0' && c <= '9')
+    //    {
+    //      t *= MULTIPLIER;
+    //      c -= '0'; //convert character to numeric value
+    //      t += (T)c;
+    //      parseOK = true;
+    //    }
+    //    else if (c == '-')
+    //    {
+    //      t *= SIGN_MULTIPLIER;
+    //      parseOK = true;
+    //    }
+    //  }
+    //  return parseOK;
+    //}
 
     //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
     template <class T>
@@ -70,18 +71,17 @@ namespace ra
     {
       std::stringstream out;
       out << t;
-      std::string s;
-      s = out.str().c_str();
+      std::string & s = out.str();
       return s;
     }
 
-    //template <class T>
-    //inline void toT (const char * iValue, T & t)
-    //{
-    //  std::string tmpString = iValue;
-    //  std::istringstream inputStream(tmpString);
-    //  inputStream >> t;
-    //}
+    template <class T>
+    inline void parseT (const char * iValue, T & t)
+    {
+      std::string tmpString = iValue;
+      std::istringstream inputStream(tmpString);
+      inputStream >> t;
+    }
 
     //specializations
     template<>
@@ -89,8 +89,7 @@ namespace ra
     {
       std::stringstream out;
       out << (int)t;
-      std::string s;
-      s = out.str();
+      std::string & s = out.str();
       return s;
     }
     template<>
@@ -98,29 +97,114 @@ namespace ra
     {
       std::stringstream out;
       out << (int)t;
-      std::string s;
-      s = out.str();
+      std::string & s = out.str();
+      return s;
+    }
+    template<>
+    inline std::string toStringT<int8_t>(const int8_t & t)
+    {
+      std::stringstream out;
+      out << (int)t;
+      std::string & s = out.str();
+      return s;
+    }
+    template<>
+    inline std::string toStringT<float>(const float & t)
+    {
+      std::stringstream out;
+      out << std::setprecision(8) << t;
+      std::string & s = out.str();
+      return s;
+    }
+    template<>
+    inline std::string toStringT<double>(const double & t)
+    {
+      std::stringstream out;
+      out << std::setprecision(17) << t;
+      std::string & s = out.str();
       return s;
     }
 
-    //template<>
-    //inline void toT<unsigned char>(const char * iValue, unsigned char & t)
-    //{
-    //  std::string tmpString = iValue;
-    //  std::istringstream inputStream(tmpString);
-    //  uint16 tmp = 0;
-    //  inputStream >> tmp;
-    //  t = (unsigned char)tmp;
-    //}
-    //template<>
-    //inline void toT<char>(const char * iValue, char & t)
-    //{
-    //  std::string tmpString = iValue;
-    //  std::istringstream inputStream(tmpString);
-    //  sint16 tmp = 0;
-    //  inputStream >> tmp;
-    //  t = (char)tmp;
-    //}
+    template<>
+    inline void parseT<unsigned char>(const char * iValue, unsigned char & t)
+    {
+      std::string tmpString = iValue;
+      std::istringstream inputStream(tmpString);
+      uint16_t tmp = 0;
+      inputStream >> tmp;
+      t = (unsigned char)tmp;
+    }
+    template<>
+    inline void parseT<char>(const char * iValue, char & t)
+    {
+      std::string tmpString = iValue;
+      std::istringstream inputStream(tmpString);
+      int16_t tmp = 0;
+      inputStream >> tmp;
+      t = (char)tmp;
+    }
+    template<>
+    inline void parseT<int8_t>(const char * iValue, int8_t & t)
+    {
+      std::string tmpString = iValue;
+      std::istringstream inputStream(tmpString);
+      int16_t tmp = 0;
+      inputStream >> tmp;
+      t = (char)tmp;
+    }
+
+    template <typename T>
+    inline std::string toStringPrecision (const T & t, int numDigits)
+    {
+      //compute length (in digits) of integer part
+      static const uint64_t DIGIT_SIZE = 10;
+      int64_t integer_part = static_cast<int64_t>(t);
+      int length = 0;
+      while(integer_part > 0)
+      {
+        length++;
+        integer_part /= DIGIT_SIZE;
+      }
+
+      int precision = numDigits - length;
+
+      //build format for this type
+      static const int FORMAT_SIZE = 8;
+      char format[FORMAT_SIZE];
+      format[0] = '%';
+      format[1] = '.';
+      if (precision >= 10)
+      {
+        format[2] = '0'+(char)(precision/10);
+        format[3] = '0'+(char)(precision%10);
+        format[4] = 'f';
+        format[5] = '\0';
+      }
+      else
+      {
+        format[2] = '0'+(char)(precision%10);
+        format[3] = 'f';
+        format[4] = '\0';
+      }
+
+      //do the sprintf()
+      static const int BUFFER_SIZE = 32;
+      char tmp[BUFFER_SIZE];
+      sprintf(tmp, format, t);
+      std::string buffer = tmp;
+
+      //remove non significant zeros
+      buffer = ra::strings::trimRight(buffer, '0');
+  
+      //remove last character if it is a dot
+      size_t last_char_offset = buffer.size()-1;
+      if (!buffer.empty() && buffer[last_char_offset] == '.')
+      {
+        buffer.erase(last_char_offset, 1); //remove the dot
+      }
+
+      return buffer;
+    }
 
     bool isNumeric(const char * iValue)
     {
@@ -180,15 +264,38 @@ namespace ra
       return numOccurance;
     }
 
-    std::string toString(const uint64_t & value)
-    {
-      return toStringT(value);
-    }
+    std::string toString(const   int8_t & value) { return toStringT(value); }
+    std::string toString(const  uint8_t & value) { return toStringT(value); }
+    std::string toString(const  int16_t & value) { return toStringT(value); }
+    std::string toString(const uint16_t & value) { return toStringT(value); }
+    std::string toString(const  int32_t & value) { return toStringT(value); }
+    std::string toString(const uint32_t & value) { return toStringT(value); }
+    std::string toString(const  int64_t & value) { return toStringT(value); }
+    std::string toString(const uint64_t & value) { return toStringT(value); }
+    std::string toString(const    float & value) { return toStringT(value); }
+    std::string toString(const   double & value) { return toStringT(value); }
 
     bool parseValue(const std::string& str, uint64_t & oValue)
     {
-      return parseValueT(str, oValue);
+      //return parseValueT(str, oValue);
+      parseT(str.c_str(), oValue);
+
+      //verify
+      std::string & tmp = toString(oValue);
+      bool success = (tmp == str);
+      return success;
     }
+
+    bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,    float & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,   double & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
 
     std::string capitalizeFirstCharacter(const std::string & iValue)
     {
@@ -482,64 +589,98 @@ std::string& operator<<(std::string& str, const char * value)
 
 std::string& operator<<(std::string& str, const int16_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const uint16_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const int8_t & value)
 {
-  std::stringstream out;
-  out << (int16_t)value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const uint8_t & value)
 {
-  std::stringstream out;
-  out << (uint16_t)value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const int32_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const uint32_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const int64_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
 
 std::string& operator<<(std::string& str, const uint64_t & value)
 {
-  std::stringstream out;
-  out << value;
-  str.append( out.str() );
+  //std::stringstream out;
+  //out << value;
+  //str.append( out.str() );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
+  return str;
+}
+
+std::string& operator<<(std::string& str, const float & value)
+{
+  //std::string & buffer = ra::strings::toStringPrecision(value, 8);
+  //str.append( buffer );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
+  return str;
+}
+
+std::string& operator<<(std::string& str, const double & value)
+{
+  //std::string & buffer = ra::strings::toStringPrecision(value, 17);
+  //str.append( buffer );
+  std::string & out = ra::strings::toStringT(value);
+  str.append( out );
   return str;
 }
