@@ -56,6 +56,8 @@ namespace ra
     bool setEnvironmentVariable(const char * iName, const uint32_t & iValue);
     bool setEnvironmentVariable(const char * iName, const  int64_t & iValue);
     bool setEnvironmentVariable(const char * iName, const uint64_t & iValue);
+    bool setEnvironmentVariable(const char * iName, const    float & iValue);
+    bool setEnvironmentVariable(const char * iName, const   double & iValue);
 
     /// <summary>
     /// Returns if the current process is 32 bit.

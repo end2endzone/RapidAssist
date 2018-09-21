@@ -134,6 +134,24 @@ namespace ra { namespace environment { namespace test
  
       ASSERT_EQ("9223372036854775807", environment::getEnvironmentVariable(name));
     }
+
+    //test float
+    {
+      const float value = 1.3f;
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
+ 
+      ASSERT_EQ("1.3", environment::getEnvironmentVariable(name));
+    }
+
+    //test double
+    {
+      const float value = 1.7f;
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
+      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
+ 
+      ASSERT_EQ("1.7", environment::getEnvironmentVariable(name));
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testProcessXXBit)
