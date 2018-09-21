@@ -114,7 +114,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "DeaDbeef";
       std::string str = "deadbeef";
-      int numReplacements = strReplace(str, "d", "D");
+      int numReplacements = replace(str, "d", "D");
       ASSERT_EQ(2, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -123,7 +123,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "beefDeaD";
       std::string str = "beefdead";
-      int numReplacements = strReplace(str, "d", "D");
+      int numReplacements = replace(str, "d", "D");
       ASSERT_EQ(2, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -132,7 +132,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "aabbccddeeff";
       std::string str = "deadbeef";
-      int numReplacements = strReplace(str, "deadbeef", "aabbccddeeff");
+      int numReplacements = replace(str, "deadbeef", "aabbccddeeff");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -141,7 +141,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "deadbeef";
       std::string str = "deadbeef";
-      int numReplacements = strReplace(str, "notfound", "error");
+      int numReplacements = replace(str, "notfound", "error");
       ASSERT_EQ(0, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -150,7 +150,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "super deadbeef";
       std::string str = "deadbeef";
-      int numReplacements = strReplace(str, "dead", "super dead");
+      int numReplacements = replace(str, "dead", "super dead");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -159,7 +159,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "dead!";
       std::string str = "deadbeef";
-      int numReplacements = strReplace(str, "beef", "!");
+      int numReplacements = replace(str, "beef", "!");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }

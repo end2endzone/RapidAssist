@@ -70,7 +70,7 @@ namespace ra { namespace test {
 
     //search and replace in strings
     std::string whoiam = "My name is Antoine and I am a superhero.";
-    int numReplaced = ra::strings::strReplace(whoiam, "hero", "vilan");
+    int numReplaced = ra::strings::replace(whoiam, "hero", "vilan");
   }
 
 } //namespace test

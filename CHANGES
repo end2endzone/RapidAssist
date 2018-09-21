@@ -11,6 +11,7 @@ Changes for 0.5.0:
 * Fixed issue  #6: Implement getCurrentProcessPath() function.
 * Fixed issue  #7: Function for absolute path to relative path.
 * Fixed issue #11: joinString() fails if first element of list is an empty string.
+* Fixed issue #12: Rename `strReplace()` to `replace()`.
 
 Changes for 0.4.1:
 

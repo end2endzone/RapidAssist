@@ -238,7 +238,7 @@ namespace ra
       return true;
     }
 
-    int strReplace(std::string & iString, const char * iOldValue, const char * iNewValue)
+    int replace(std::string & iString, const char * iOldValue, const char * iNewValue)
     {
       std::string tmpOldValue = iOldValue;
       std::string tmpNewValue = iNewValue;

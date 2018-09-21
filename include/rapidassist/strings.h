@@ -51,7 +51,7 @@ namespace ra
     /// <param name="iOldValue">The old value to replace.</param>
     /// <param name="iNewValue">The new value to replace.</param>
     /// <returns>Returns the number of token that was replaced.</returns>
-    int strReplace(std::string & iString, const char * iOldValue, const char * iNewValue);
+    int replace(std::string & iString, const char * iOldValue, const char * iNewValue);
 
     /// <summary>
     /// Converts the given value to string.

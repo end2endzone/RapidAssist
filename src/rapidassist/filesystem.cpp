@@ -68,12 +68,12 @@ namespace ra
       if (separator == '/')
       {
         //replace invalid path separator
-        ra::strings::strReplace(path, "\\", "/");
+        ra::strings::replace(path, "\\", "/");
       }
       else if (separator == '\\')
       {
         //replace invalid path separator
-        ra::strings::strReplace(path, "/", "\\");
+        ra::strings::replace(path, "/", "\\");
       }
 
       //make sure the last character of the path is not a separator
@@ -465,10 +465,10 @@ namespace ra
         {
           std::string element83 = element;
           std::string ext = getFileExtention(element);
-          strings::strReplace(element83, (std::string(".")+ext).c_str(), ""); //remove extension from filename
-          strings::strReplace(ext, " ", ""); //remove spaces in extension
+          strings::replace(element83, (std::string(".")+ext).c_str(), ""); //remove extension from filename
+          strings::replace(ext, " ", ""); //remove spaces in extension
           ext = ext.substr(0, 3); //truncate file extension
-          strings::strReplace(element83, " ", ""); //remove spaces
+          strings::replace(element83, " ", ""); //remove spaces
           element83 = element83.substr(0, 6); //truncate file name
           element83.append("~1");
           if (!ext.empty())
@@ -806,7 +806,7 @@ namespace ra
       {
         std::string pattern;
         pattern << ra::filesystem::getPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::getPathSeparatorStr();
-        ra::strings::strReplace(path, pattern.c_str(), ra::filesystem::getPathSeparatorStr());
+        ra::strings::replace(path, pattern.c_str(), ra::filesystem::getPathSeparatorStr());
 
         //look for a path that ends with /. or \.
         pattern.clear();
