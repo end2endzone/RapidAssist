@@ -363,15 +363,7 @@ namespace ra { namespace filesystem { namespace test
 
       //search for the last (almost) folder of the root file system.
 #ifdef _WIN32
-      //fix for appveyor
-      std::string windir = environment::getEnvironmentVariable("windir"); //returns C:\Windows
-      if (ra::gtesthelp::isAppVeyor() && windir == "C:\\windows")
-      {
-        //fix for appveyor which has 'windir' defined as 'C:\windows' instead of 'C:\Windows'.
-        windir = "C:\\Windows";
-      }
-
-      const std::string pattern = windir;
+      const std::string pattern = environment::getEnvironmentVariable("windir"); //returns C:\Windows or C:\windows
 #else
       const std::string pattern = "/var";
 #endif
@@ -381,6 +373,14 @@ namespace ra { namespace filesystem { namespace test
       {
         const std::string & file = files[i];
         found |= (file == pattern);
+
+#ifdef _WIN32
+        //fix for multiple Windows system (including AppVeyor) which has 'windir' defined as 'C:\windows' instead of 'C:\Windows'.
+        if (pattern == "C:\\windows")
+        {
+          found |= (file == "C:\\Windows");
+        }
+#endif
       }
       ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in folder '" << path << "'.\n"
         "Found the following elements: \n" << 
