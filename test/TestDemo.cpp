@@ -30,6 +30,8 @@ namespace ra { namespace test {
 
   void TestDemo::SetUp()
   {
+    ASSERT_TRUE( ra::gtesthelp::createFile("demo1.tmp") );
+    ASSERT_TRUE( ra::gtesthelp::createFile("demo2.tmp") );
   }
 
   void TestDemo::TearDown()
@@ -39,12 +41,12 @@ namespace ra { namespace test {
   std::string generateTestFile()
   {
     //for testing purpose only
-    return std::string(__FILE__);
+    return std::string("demo1.tmp");
   }
   std::string getExpectedTestFilePath()
   {
     //for testing purpose only
-    return std::string(__FILE__);
+    return std::string("demo2.tmp");
   }
 
   TEST_F(TestDemo, testCodeSample)

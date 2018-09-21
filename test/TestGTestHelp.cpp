@@ -29,6 +29,9 @@ namespace ra { namespace test {
 
   void TestGTestHelp::SetUp()
   {
+    ASSERT_TRUE( ra::gtesthelp::createFile("text1.tmp") );
+    ASSERT_TRUE( ra::gtesthelp::createFile("text2.tmp") );
+    ASSERT_TRUE( ra::gtesthelp::createFile("binary1.tmp", 1024) );
   }
 
   void TestGTestHelp::TearDown()
@@ -38,8 +41,8 @@ namespace ra { namespace test {
   TEST_F(TestGTestHelp, testFile1NotFound)
   {
     std::string msg;
-    const char * file1 = "C:\\TEMP\\notfound.tmp";
-    const char * file2 = __FILE__;
+    const char * file1 = "notfound.tmp";
+    const char * file2 = "text1.tmp";
     bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is not found."), std::string::npos) << msg.c_str();
@@ -48,10 +51,11 @@ namespace ra { namespace test {
   TEST_F(TestGTestHelp, testFile2NotFound)
   {
     std::string msg;
-    const char * file1 = __FILE__;
-    const char * file2 = "C:\\TEMP\\notfound.tmp";
+    const char * file1 = "text1.tmp";
+    const char * file2 = "notfound.tmp";
     bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
     ASSERT_FALSE(equals) << msg.c_str();
+    SCOPED_TRACE(msg);
     ASSERT_NE(msg.find("Second file is not found."), std::string::npos) << msg.c_str();
   }
 
@@ -98,9 +102,10 @@ namespace ra { namespace test {
   TEST_F(TestGTestHelp, testSmallFileEquals)
   {
     std::string msg;
-    const char * file1 = __FILE__;
-    const char * file2 = __FILE__;
+    const char * file1 = "text1.tmp";
+    const char * file2 = "text2.tmp";
     bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
+    SCOPED_TRACE(msg);
     ASSERT_TRUE(equals) << msg.c_str();
     ASSERT_EQ(msg, "") << msg.c_str();
   }
