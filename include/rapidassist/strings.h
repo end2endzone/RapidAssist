@@ -119,7 +119,7 @@ namespace ra
     /// <param name="iText">The input text to split.</param>
     /// <param name="iSplitCharacter">The splitting character.</param>
     /// <returns>Returns a list of string.</returns>
-    StringVector splitString(const std::string & iText, char iSplitCharacter);
+    StringVector split(const std::string & iText, char iSplitCharacter);
 
     /// <summary>
     /// Splits an input string into multiple string based on the given splitting character.
@@ -127,7 +127,7 @@ namespace ra
     /// <param name="iText">The input text to split.</param>
     /// <param name="iSplitPattern">The splitting pattern.</param>
     /// <returns>Returns a list of string.</returns>
-    StringVector splitString(const std::string & iText, const char * iSplitPattern);
+    StringVector split(const std::string & iText, const char * iSplitPattern);
 
     /// <summary>
     /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
@@ -135,7 +135,7 @@ namespace ra
     /// <param name="oList">The output list of string.</param>
     /// <param name="iText">The input text to split.</param>
     /// <param name="iSplitCharacter">The splitting character.</param>
-    void splitString(StringVector & oList, const std::string & iText, char iSplitCharacter);
+    void split(StringVector & oList, const std::string & iText, char iSplitCharacter);
 
     /// <summary>
     /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
@@ -143,7 +143,7 @@ namespace ra
     /// <param name="oList">The output list of string.</param>
     /// <param name="iText">The input text to split.</param>
     /// <param name="iSplitPattern">The splitting pattern.</param>
-    void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern);
+    void split(StringVector & oList, const std::string & iText, const char * iSplitPattern);
 
     /// <summary>
     /// Join a list of strings into a single string separating each element by iSeparator.
@@ -151,7 +151,7 @@ namespace ra
     /// <param name="iList">The list of elements to join.</param>
     /// <param name="iSeparator">The string separator.</param>
     /// <returns>Returns a list of strings merged into a single string separating each element by iSeparator.</returns>
-    std::string joinString(const StringVector & iList, const char * iSeparator);
+    std::string join(const StringVector & iList, const char * iSeparator);
 
     /// <summary>
     /// Removes left and right space characters of the given string.

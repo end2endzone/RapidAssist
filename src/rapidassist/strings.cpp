@@ -337,28 +337,28 @@ namespace ra
       }
     }
 
-    StringVector splitString(const std::string & iText, char iSplitCharacter)
+    StringVector split(const std::string & iText, char iSplitCharacter)
     {
       char pattern[] = {iSplitCharacter, '\0'};
       StringVector list;
-      splitString(list, iText, pattern);
+      split(list, iText, pattern);
       return list;
     }
 
-    StringVector splitString(const std::string & iText, const char * iSplitPattern)
+    StringVector split(const std::string & iText, const char * iSplitPattern)
     {
       StringVector list;
-      splitString(list, iText, iSplitPattern);
+      split(list, iText, iSplitPattern);
       return list;
     }
 
-    void splitString(StringVector & oList, const std::string & iText, char iSplitCharacter)
+    void split(StringVector & oList, const std::string & iText, char iSplitCharacter)
     {
       char pattern[] = {iSplitCharacter, '\0'};
-      splitString(oList, iText, pattern);
+      split(oList, iText, pattern);
     }
 
-    void splitString(StringVector & oList, const std::string & iText, const char * iSplitPattern)
+    void split(StringVector & oList, const std::string & iText, const char * iSplitPattern)
     {
       oList.clear();
 
@@ -423,7 +423,7 @@ namespace ra
       }
     }
 
-    std::string joinString(const StringVector & iList, const char * iSeparator)
+    std::string join(const StringVector & iList, const char * iSeparator)
     {
       std::string output;
       for(size_t i=0; i<iList.size(); i++)

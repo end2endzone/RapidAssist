@@ -13,6 +13,7 @@ Changes for 0.5.0:
 * Fixed issue #11: joinString() fails if first element of list is an empty string.
 * Fixed issue #12: Rename `strReplace()` to `replace()`.
 * Fixed issue #13: Rename `parseValue()` to `parse()`.
+* Fixed issue #14: Rename `splitString()` to `split()` and `joinString()` to `join()`.
 
 Changes for 0.4.1:
 

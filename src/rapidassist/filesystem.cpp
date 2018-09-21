@@ -823,7 +823,7 @@ namespace ra
       {
         //split by path separator
         ra::strings::StringVector elements;
-        ra::strings::splitString(elements, path, ra::filesystem::getPathSeparatorStr());
+        ra::strings::split(elements, path, ra::filesystem::getPathSeparatorStr());
         
         //search for /..
         size_t offset = 0; //current index of the element where we are searching
@@ -855,7 +855,7 @@ namespace ra
               //On Windows, the root element is defined by the string "C:" (without the \ character). The \ character must be
               //added to `previousElement` to be properly detected by `isRootDirectory()`.
               //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
-              //separator which creates an empty string element when calling `ra::strings::splitString()`.
+              //separator which creates an empty string element when calling `ra::strings::split()`.
               if ( isRootDirectory(previousElement + ra::filesystem::getPathSeparatorStr()) )
               {
                 //one cannot walk down past the root
@@ -877,7 +877,7 @@ namespace ra
         }
 
         //join the string back again
-        path = ra::strings::joinString(elements, ra::filesystem::getPathSeparatorStr());
+        path = ra::strings::join(elements, ra::filesystem::getPathSeparatorStr());
       }
 
       output = path;

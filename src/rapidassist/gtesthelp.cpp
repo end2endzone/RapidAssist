@@ -171,7 +171,7 @@ namespace ra
         return;
 
       StringVector filters;
-      splitString(filters, iFilter, "-");
+      split(filters, iFilter, "-");
 
       if (filters.size() > 2)
       {

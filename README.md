@@ -79,7 +79,7 @@ TEST_F(TestDemo, testCodeSample)
   ASSERT_TRUE ( ra::gtesthelp::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
 
   //split a string into multiple parts
-  StringVector words = ra::strings::splitString("The quick brown fox jumps over the lazy dog", " ");
+  StringVector words = ra::strings::split("The quick brown fox jumps over the lazy dog", " ");
   size_t numWords = words.size(); //returns 9
 
   //converting numeric values to string
@@ -87,7 +87,7 @@ TEST_F(TestDemo, testCodeSample)
 
   //execute search and replace in strings
   std::string whoiam = "My name is Antoine and I am a superhero.";
-  int numReplaced = ra::strings::strReplace(whoiam, "hero", "vilan"); //returns 1
+  int numReplaced = ra::strings::replace(whoiam, "hero", "vilan"); //returns 1
 }
 ```
 

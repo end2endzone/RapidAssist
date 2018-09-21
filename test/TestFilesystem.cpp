@@ -384,7 +384,7 @@ namespace ra { namespace filesystem { namespace test
       }
       ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in folder '" << path << "'.\n"
         "Found the following elements: \n" << 
-        strings::joinString(files, "\n").c_str();
+        strings::join(files, "\n").c_str();
     }
   }
   //--------------------------------------------------------------------------------------------------

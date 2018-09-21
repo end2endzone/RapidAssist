@@ -474,7 +474,7 @@ namespace ra { namespace strings { namespace test
     //test NULL
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = splitString(INPUT, (const char *)NULL); //same as not found
+      StringVector list = split(INPUT, (const char *)NULL); //same as not found
       ASSERT_EQ(1, list.size());
       ASSERT_EQ(INPUT, list[0]);
     }
@@ -482,7 +482,7 @@ namespace ra { namespace strings { namespace test
     //test no split found
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = splitString(INPUT, "!");
+      StringVector list = split(INPUT, "!");
       ASSERT_EQ(1, list.size());
       ASSERT_EQ(INPUT, list[0]);
     }
@@ -490,7 +490,7 @@ namespace ra { namespace strings { namespace test
     //test found
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(3, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("Bb", list[1]);
@@ -500,7 +500,7 @@ namespace ra { namespace strings { namespace test
     //test last character is separator
     {
       static const std::string INPUT = "Aa.Bb.Cc.";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("Bb", list[1]);
@@ -511,7 +511,7 @@ namespace ra { namespace strings { namespace test
     //test first character is separator
     {
       static const std::string INPUT = ".Aa.Bb.Cc";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("",   list[0]);
       ASSERT_EQ("Aa", list[1]);
@@ -522,7 +522,7 @@ namespace ra { namespace strings { namespace test
     //test with only a separator
     {
       static const std::string INPUT = ".";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(2, list.size());
       ASSERT_EQ("", list[0]);
       ASSERT_EQ("", list[1]);
@@ -531,7 +531,7 @@ namespace ra { namespace strings { namespace test
     //test consecutive separators
     {
       static const std::string INPUT = "Aa..Bb";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(3, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("",   list[1]);
@@ -541,7 +541,7 @@ namespace ra { namespace strings { namespace test
     //test only separators
     {
       static const std::string INPUT = "...";
-      StringVector list = splitString(INPUT, ".");
+      StringVector list = split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("", list[0]);
       ASSERT_EQ("", list[1]);
@@ -555,16 +555,16 @@ namespace ra { namespace strings { namespace test
     //test NULL
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
-      StringVector list = splitString(EXPECTED, ".");
-      std::string joinStr = joinString(list, (const char *)NULL); //same as empty separator
+      StringVector list = split(EXPECTED, ".");
+      std::string joinStr = join(list, (const char *)NULL); //same as empty separator
       ASSERT_EQ(std::string("AaBbCc"), joinStr);
     }
 
     //test empty separator
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
-      StringVector list = splitString(EXPECTED, ".");
-      std::string joinStr = joinString(list, "");
+      StringVector list = split(EXPECTED, ".");
+      std::string joinStr = join(list, "");
       ASSERT_EQ(std::string("AaBbCc"), joinStr);
     }
 
@@ -572,8 +572,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -581,8 +581,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa.Bb.Cc.";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -590,8 +590,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = ".Aa.Bb.Cc";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -599,8 +599,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = ".Aa.Bb.Cc.";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -608,8 +608,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa..Bb";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -617,8 +617,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "...";
       static const char * SEPARATOR = ".";
-      StringVector list = splitString(EXPECTED, SEPARATOR);
-      std::string joinStr = joinString(list, SEPARATOR);
+      StringVector list = split(EXPECTED, SEPARATOR);
+      std::string joinStr = join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
   }
