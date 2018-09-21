@@ -902,7 +902,7 @@ namespace ra { namespace strings { namespace test
     for(size_t i=0; i<1000; i++)
     {
       //compute the fraction
-      float value = ra::random::getRandomFloat(-FLT_MAX, FLT_MAX); 
+      float value = ra::random::getRandomFloat(-1000000.0f, +1000000.0f); 
       SCOPED_TRACE(value);
 
       //convert to string
@@ -955,7 +955,7 @@ namespace ra { namespace strings { namespace test
     for(size_t i=0; i<1000; i++)
     {
       //compute the fraction
-      double value = ra::random::getRandomDouble(-DBL_MAX, DBL_MAX); 
+      double value = ra::random::getRandomDouble(-100000000000.0f, +100000000000.0f); 
       SCOPED_TRACE(value);
 
       //convert to string
