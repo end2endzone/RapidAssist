@@ -44,18 +44,25 @@ namespace ra { namespace strings { namespace test
     const char * str;
   };
   const FLOAT_ITOA_TEST float_itoa_tests[] = {
-    {1.0f, 1.0f, "1"},
-    {-1.0f, 1.0f, "-1"},
-    {0.5f, 1.0f, "0.5"},              // 0.44999999
-    {1.0f, 7.0f, "0.14285715"},       // 0.142857 15
-    {1234.0f, 9999.0f, "0.12341234"}, // 0.1234 1234
+    {1.0f, 1.0f, "1"},                    // 1.0000000
+    {-1.0f, 1.0f, "-1"},                  // -1.0000000
+    {0.45f, 1.0f, "0.449999988"},         // 0.44999999
+    {0.5f, 1.0f, "0.5"},                  // 0.50000000
+    {1.0f, 7.0f, "0.142857149"},          // 0.142857 15
+    {1234.0f, 9999.0f, "0.123412341"},    // 0.1234 1234
+    {112704.88f, 1.0f, "112704.883"},     // 112704.88
+    {(((float)14263 / 32767) + 1000000.0f),     1.0f, "1000000.44"},      //test value. See toStringT<float> implementation notes.
+    {(((float)1234 / 9999) + 1000.0f),          1.0f, "1000.12341"},      //test value. See toStringT<float> implementation notes.
+    {(9998877665544332211.0f / 1000000000.0f),  1.0f, "9.9988777e+009"},  //test value. See toStringT<float> implementation notes.
+    {(998877654321.0f / 1000000000.0f),         1.0f, "998.877625"},      //test value. See toStringT<float> implementation notes.
+    {5.3f,                                      1.0f, "5.30000019"},      //test value. See toStringT<float> implementation notes.
   };
   const DOUBLE_ITOA_TEST double_itoa_tests[] = {
     {1.0, 1.0, "1"},
     {-1.0, 1.0, "-1"},
     {0.3, 1.0, "0.29999999999999999"},        // 0.29999999999999999
     {1.0, 7.0, "0.14285714285714285"},        // 0.142857 142857 14285
-    {1234.0, 9999.0, "0.12341234123412341"},  // 0.1234 1234 1234 1234 1
+    {112704.875, 1.0, "112704.875"},          // 112704.875
   };
   const size_t float_itoa_tests_count  = sizeof(float_itoa_tests)/sizeof(float_itoa_tests[0]);
   const size_t double_itoa_tests_count = sizeof(double_itoa_tests)/sizeof(double_itoa_tests[0]);
@@ -677,7 +684,7 @@ namespace ra { namespace strings { namespace test
       const float f = 1.0f/7.0f;  // 0.142857 15
       std::string s;
       s << f;
-      ASSERT_EQ("0.14285715", s);
+      ASSERT_EQ("0.142857149", s);
     }
     {
       const double d = 1.0/7.0;  // 0.142857 142857 14285
@@ -689,7 +696,7 @@ namespace ra { namespace strings { namespace test
       const float f = 1234.0f/9999.0f;  // 0.1234 1234
       std::string s;
       s << f;
-      ASSERT_EQ("0.12341234", s);
+      ASSERT_EQ("0.123412341", s);
     }
     {
       const double d = 1234.0/9999.0;  // 0.1234 1234 1234 1234 1
@@ -850,7 +857,7 @@ namespace ra { namespace strings { namespace test
     {
       const float f = 1.0f/7.0f;  // 0.142857 15
       std::string s = toString(f);
-      ASSERT_EQ("0.14285715", s);
+      ASSERT_EQ("0.142857149", s);
     }
     {
       const double d = 1.0/7.0;  // 0.142857 142857 14285
@@ -860,7 +867,7 @@ namespace ra { namespace strings { namespace test
     {
       const float f = 1234.0f/9999.0f;  // 0.1234 1234
       std::string s = toString(f);
-      ASSERT_EQ("0.12341234", s);
+      ASSERT_EQ("0.123412341", s);
     }
     {
       const double d = 1234.0/9999.0;  // 0.1234 1234 1234 1234 1
@@ -877,12 +884,12 @@ namespace ra { namespace strings { namespace test
       const FLOAT_ITOA_TEST & test = float_itoa_tests[i];
       
       //compute the fraction
-      float fraction = test.fraction_numerator/test.fraction_denominator;
-      SCOPED_TRACE(fraction);
+      float value = test.fraction_numerator/test.fraction_denominator;
+      SCOPED_TRACE(value);
 
       //convert to string
-      std::string str1 = ra::strings::toString(fraction);
-      std::string str2; str2 << fraction;
+      std::string str1 = ra::strings::toString(value);
+      std::string str2; str2 << value;
       SCOPED_TRACE(str1);
       SCOPED_TRACE(str2);
 
@@ -895,11 +902,12 @@ namespace ra { namespace strings { namespace test
       bool success = ra::strings::parse(str1, parsed_value);
       ASSERT_TRUE(success);
 
-      ASSERT_NEAR(fraction, parsed_value, 0.0000001f);
+      //we truly wants a bitwise compare
+      ASSERT_EQ(value, parsed_value);
     }
 
     //try again with a few random guess
-    for(size_t i=0; i<1000; i++)
+    for(size_t i=0; i<20000; i++)
     {
       //compute the fraction
       float value = ra::random::getRandomFloat(-1000000.0f, +1000000.0f); 
@@ -918,7 +926,8 @@ namespace ra { namespace strings { namespace test
       bool success = ra::strings::parse(str1, parsed_value);
       ASSERT_TRUE(success);
 
-      ASSERT_NEAR(value, parsed_value, 0.0000001f);
+      //we truly wants a bitwise compare
+      ASSERT_EQ(value, parsed_value);
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -930,12 +939,12 @@ namespace ra { namespace strings { namespace test
       const DOUBLE_ITOA_TEST & test = double_itoa_tests[i];
       
       //compute the fraction
-      double fraction = test.fraction_numerator/test.fraction_denominator;
-      SCOPED_TRACE(fraction);
+      double value = test.fraction_numerator/test.fraction_denominator;
+      SCOPED_TRACE(value);
 
       //convert to string
-      std::string str1 = ra::strings::toString(fraction);
-      std::string str2; str2 << fraction;
+      std::string str1 = ra::strings::toString(value);
+      std::string str2; str2 << value;
       SCOPED_TRACE(str1);
       SCOPED_TRACE(str2);
 
@@ -948,11 +957,12 @@ namespace ra { namespace strings { namespace test
       bool success = ra::strings::parse(str1, parsed_value);
       ASSERT_TRUE(success);
 
-      ASSERT_NEAR(fraction, parsed_value, 0.0000000000000001);
+      //we truly wants a bitwise compare
+      ASSERT_EQ(value, parsed_value);
     }
 
     //try again with a few random guess
-    for(size_t i=0; i<1000; i++)
+    for(size_t i=0; i<20000; i++)
     {
       //compute the fraction
       double value = ra::random::getRandomDouble(-100000000000.0f, +100000000000.0f); 
@@ -971,7 +981,82 @@ namespace ra { namespace strings { namespace test
       bool success = ra::strings::parse(str1, parsed_value);
       ASSERT_TRUE(success);
 
-      ASSERT_NEAR(value, parsed_value, 0.0000001f);
+      //we truly wants a bitwise compare
+      ASSERT_EQ(value, parsed_value);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, test_tostring_decimal_digits_float)
+  {
+    //test default behavior
+    {
+      const float value = 0.876543210f;
+      ASSERT_EQ("1",          ra::strings::toString(value, 0) );
+      ASSERT_EQ("0.9",        ra::strings::toString(value, 1) );
+      ASSERT_EQ("0.88",       ra::strings::toString(value, 2) );
+      ASSERT_EQ("0.877",      ra::strings::toString(value, 3) );
+      ASSERT_EQ("0.8765",     ra::strings::toString(value, 4) );
+      ASSERT_EQ("0.87654",    ra::strings::toString(value, 5) );
+      ASSERT_EQ("0.876543",   ra::strings::toString(value, 6) );
+      ASSERT_EQ("0.8765432",  ra::strings::toString(value, 7) );
+      ASSERT_EQ("0.87654322", ra::strings::toString(value, 8) ); //that's an exception
+    }
+
+    //test non significant zeros
+    {
+      const float value = 0.1f;
+      ASSERT_EQ("0",      ra::strings::toString(value, 0) );
+      ASSERT_EQ("0.1",    ra::strings::toString(value, 1) );
+      ASSERT_EQ("0.10",   ra::strings::toString(value, 2) );
+      ASSERT_EQ("0.100",  ra::strings::toString(value, 3) );
+      ASSERT_EQ("0.1000", ra::strings::toString(value, 4) );
+    }
+
+    //test big value
+    {
+      const float value = 1000.0f;
+      ASSERT_EQ("1000",      ra::strings::toString(value, 0) );
+      ASSERT_EQ("1000.0",    ra::strings::toString(value, 1) );
+      ASSERT_EQ("1000.00",   ra::strings::toString(value, 2) );
+      ASSERT_EQ("1000.000",  ra::strings::toString(value, 3) );
+      ASSERT_EQ("1000.0000", ra::strings::toString(value, 4) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, test_tostring_decimal_digits_double)
+  {
+    //test default behavior
+    {
+      const double value = 0.876543210;
+      ASSERT_EQ("1",          ra::strings::toString(value, 0) );
+      ASSERT_EQ("0.9",        ra::strings::toString(value, 1) );
+      ASSERT_EQ("0.88",       ra::strings::toString(value, 2) );
+      ASSERT_EQ("0.877",      ra::strings::toString(value, 3) );
+      ASSERT_EQ("0.8765",     ra::strings::toString(value, 4) );
+      ASSERT_EQ("0.87654",    ra::strings::toString(value, 5) );
+      ASSERT_EQ("0.876543",   ra::strings::toString(value, 6) );
+      ASSERT_EQ("0.8765432",  ra::strings::toString(value, 7) );
+      ASSERT_EQ("0.87654321", ra::strings::toString(value, 8) );
+    }
+
+    //test non significant zeros
+    {
+      const double value = 0.1;
+      ASSERT_EQ("0",      ra::strings::toString(value, 0) );
+      ASSERT_EQ("0.1",    ra::strings::toString(value, 1) );
+      ASSERT_EQ("0.10",   ra::strings::toString(value, 2) );
+      ASSERT_EQ("0.100",  ra::strings::toString(value, 3) );
+      ASSERT_EQ("0.1000", ra::strings::toString(value, 4) );
+    }
+
+    //test big value
+    {
+      const double value = 1000.0;
+      ASSERT_EQ("1000",      ra::strings::toString(value, 0) );
+      ASSERT_EQ("1000.0",    ra::strings::toString(value, 1) );
+      ASSERT_EQ("1000.00",   ra::strings::toString(value, 2) );
+      ASSERT_EQ("1000.000",  ra::strings::toString(value, 3) );
+      ASSERT_EQ("1000.0000", ra::strings::toString(value, 4) );
     }
   }
   //--------------------------------------------------------------------------------------------------

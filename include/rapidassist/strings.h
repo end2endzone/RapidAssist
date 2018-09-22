@@ -57,7 +57,15 @@ namespace ra
     /// Converts the given value to string.
     /// </summary>
     /// <param name="value">The numeric value.</param>
+    /// <param name="digits">The number of digits after the decimal point.</param>
     /// <returns>Converts the given value to string.</returns>
+    /// <remarks>
+    /// For floating points, the string conversion uses as much digits so that converting the value to string and back to the original type does not looses quality.
+    /// The function assumes that most use of 32 bit floating point values probably target a practical range of   -1 million to   +1 million, and requires a precision of  9.
+    /// The function assumes that most use of 64 bit floating point values probably target a practical range of -100 billion to +100 billion, and requires a precision of 17.
+    /// However, this creates artifacts like converting 5.3f to string returns "5.30000019".
+    /// If you need digits precision, use toString(value, digits) instead.
+    /// </remarks>
     std::string toString(const   int8_t & value);
     std::string toString(const  uint8_t & value);
     std::string toString(const  int16_t & value);
@@ -68,6 +76,8 @@ namespace ra
     std::string toString(const uint64_t & value);
     std::string toString(const    float & value);
     std::string toString(const   double & value);
+    std::string toString(const    float & value, int digits);
+    std::string toString(const   double & value, int digits);
 
     /// <summary>
     /// Parse the given string into the given numeric variable.

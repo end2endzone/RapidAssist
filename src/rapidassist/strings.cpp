@@ -111,8 +111,89 @@ namespace ra
     template<>
     inline std::string toStringT<float>(const float & t)
     {
+      //To get a lossless conversion from float to string, a precision of at least 8 is required.
+      //However, in order to get the maximum number of digits while printing the number (((float)14263 / 32767) + 1000000.0f), which is displayed as 1000000.4 in Visual Studio 2010, a precision of 11 is required.
+      //If we toString() using different precision, we get the following:
+      //   6 := 1e+006
+      //   7 := 1000000
+      //   8 := 1000000.4
+      //   9 := 1000000.44
+      //  10 := 1000000.438
+      //  11 := 1000000.4375
+      //  12 := 1000000.4375
+      //  13 := ...
+      //  14 := ...
+      //  15 := ...
+      //  16 := ...
+      //  17 := ...
+      //  
+      //The required precision to get a lossless toString() is different for all values.
+      //For instance, the value "(((float)1234 / 9999) + 1000.0f)" which in theory is 1000.1234 1234 1234 1234 1234... requires a precision of 17:
+      //   6 := 1000.12
+      //   7 := 1000.123
+      //   8 := 1000.1234
+      //   9 := 1000.12341
+      //  10 := 1000.123413
+      //  11 := 1000.1234131
+      //  12 := 1000.12341309
+      //  13 := 1000.123413086
+      //  14 := 1000.1234130859
+      //  15 := 1000.12341308594
+      //  16 := 1000.123413085938
+      //  17 := 1000.1234130859375
+      //  18 := 1000.1234130859375
+      //  19 := ...
+      //  20 := ...
+      //  21 := ...
+      //  
+      //The value (9998877665544332211.0f / 1000000000.0f) requires a precision of 10:
+      //   6 := 9.99888e+009
+      //   7 := 9.998878e+009
+      //   8 := 9.9988777e+009
+      //   9 := 9.9988777e+009
+      //  10 := 9998877696
+      //  11 := 9998877696
+      //  12 := ...
+      //  
+      //The value (998877654321.0f / 1000000000.0f) requires a precision of 17:
+      //   6 := 998.878
+      //   7 := 998.8776
+      //   8 := 998.87762
+      //   9 := 998.877625
+      //  10 := 998.8776245
+      //  11 := 998.87762451
+      //  12 := 998.877624512
+      //  13 := 998.8776245117
+      //  14 := 998.87762451172
+      //  15 := 998.877624511719
+      //  16 := 998.8776245117188
+      //  17 := 998.87762451171875
+      //  18 := 998.87762451171875
+      //  19 := ...
+      //
+      //However, if we simply set 5.3f (which is in fact 5.3000002) and we use a too much precision, we get only rounding errors:
+      //   6 := 5.3
+      //   7 := 5.3
+      //   8 := 5.3000002
+      //   9 := 5.30000019
+      //  10 := 5.300000191
+      //  11 := 5.3000001907
+      //  12 := 5.30000019073
+      //  13 := 5.300000190735
+      //  14 := 5.3000001907349
+      //  15 := 5.30000019073486
+      //  16 := 5.300000190734863
+      //  17 := 5.3000001907348633
+      //  18 := 5.3000001907348633
+      //  19 := ...
+      //  
+      //
+      //In the end, we can never know what is the required precision. Most use of floating point should probably target a practical range of -1 million to +1 million.
+      //Adjusting precision so that a random number between -1 million and +1 million can be converted to string and back to float without loosing quality.
+      //A precision of 9 is required for this.
+
       std::stringstream out;
-      out << std::setprecision(8) << t;
+      out << std::setprecision(9) << t;
       std::string & s = out.str();
       return s;
     }
@@ -156,6 +237,11 @@ namespace ra
     template <typename T>
     inline std::string toStringPrecision (const T & t, int numDigits)
     {
+      if (numDigits < 0)
+        numDigits = 0;
+      if (numDigits > 99)
+        numDigits = 99;
+
       //compute length (in digits) of integer part
       static const uint64_t DIGIT_SIZE = 10;
       int64_t integer_part = static_cast<int64_t>(t);
@@ -166,7 +252,7 @@ namespace ra
         integer_part /= DIGIT_SIZE;
       }
 
-      int precision = numDigits - length;
+      int precision = numDigits + length;
 
       //build format for this type
       static const int FORMAT_SIZE = 8;
@@ -194,7 +280,11 @@ namespace ra
       std::string buffer = tmp;
 
       //remove non significant zeros
-      buffer = ra::strings::trimRight(buffer, '0');
+      bool haveDot = (buffer.find('.', 0) != std::string::npos);
+      if (haveDot)
+      {
+        buffer = ra::strings::trimRight(buffer, '0');
+      }
   
       //remove last character if it is a dot
       size_t last_char_offset = buffer.size()-1;
@@ -202,6 +292,42 @@ namespace ra
       {
         buffer.erase(last_char_offset, 1); //remove the dot
       }
+
+      return buffer;
+    }
+
+    template <typename T>
+    inline std::string toStringDigits (const T & t, int numDigits)
+    {
+      if (numDigits < 0)
+        numDigits = 0;
+      if (numDigits > 99)
+        numDigits = 99;
+
+      //build format for this type
+      static const int FORMAT_SIZE = 8;
+      char format[FORMAT_SIZE];
+      format[0] = '%';
+      format[1] = '.';
+      if (numDigits >= 10)
+      {
+        format[2] = '0'+(char)(numDigits/10);
+        format[3] = '0'+(char)(numDigits%10);
+        format[4] = 'f';
+        format[5] = '\0';
+      }
+      else
+      {
+        format[2] = '0'+(char)(numDigits%10);
+        format[3] = 'f';
+        format[4] = '\0';
+      }
+
+      //do the sprintf()
+      static const int BUFFER_SIZE = 32;
+      char tmp[BUFFER_SIZE];
+      sprintf(tmp, format, t);
+      std::string buffer = tmp;
 
       return buffer;
     }
@@ -274,6 +400,9 @@ namespace ra
     std::string toString(const uint64_t & value) { return toStringT(value); }
     std::string toString(const    float & value) { return toStringT(value); }
     std::string toString(const   double & value) { return toStringT(value); }
+
+    std::string toString(const    float & value, int digits){ return toStringDigits(value, digits); }
+    std::string toString(const   double & value, int digits){ return toStringDigits(value, digits); }
 
     bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
     bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
@@ -658,7 +787,7 @@ std::string& operator<<(std::string& str, const uint64_t & value)
 
 std::string& operator<<(std::string& str, const float & value)
 {
-  //std::string & buffer = ra::strings::toStringPrecision(value, 8);
+  //std::string & buffer = ra::strings::toStringDigits(value, 8);
   //str.append( buffer );
   std::string & out = ra::strings::toStringT(value);
   str.append( out );
@@ -667,7 +796,7 @@ std::string& operator<<(std::string& str, const float & value)
 
 std::string& operator<<(std::string& str, const double & value)
 {
-  //std::string & buffer = ra::strings::toStringPrecision(value, 17);
+  //std::string & buffer = ra::strings::toStringDigits(value, 17);
   //str.append( buffer );
   std::string & out = ra::strings::toStringT(value);
   str.append( out );
