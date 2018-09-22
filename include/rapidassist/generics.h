@@ -37,7 +37,7 @@ namespace ra
     /// </summary>
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
-    template <typename T> void swap(T & a, T & b)
+    template <typename T> inline void swap(T & a, T & b)
     {
       T tmp;
       tmp = a;
@@ -51,7 +51,7 @@ namespace ra
     /// <param name="low">The minimum allowed value.</param>
     /// <param name="high">The maximum allowed value.</param>
     /// <returns>Returns low if the given value is lower than low. Returns high if the given value is higher than high. Returns value otherwise.</returns>
-    template <typename T> T constrain(const T & value, const T & low, const T & high)
+    template <typename T> inline T constrain(const T & value, const T & low, const T & high)
     {
       return (value < low ? low : (value > high ? high : value) );
     }
@@ -62,7 +62,7 @@ namespace ra
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
     /// <returns>Returns the minimum value bewteen two given values.</returns>
-    template <typename T> const T & minimum(const T & a, const T & b)
+    template <typename T> inline const T & minimum(const T & a, const T & b)
     {
       return (a < b ? a : b);
     }
@@ -73,7 +73,7 @@ namespace ra
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
     /// <returns>Returns the maximum value bewteen two given values.</returns>
-    template <typename T> const T & maximum(const T & a, const T & b)
+    template <typename T> inline const T & maximum(const T & a, const T & b)
     {
       return (a > b ? a : b);
     }
@@ -87,10 +87,40 @@ namespace ra
     /// <param name="out_min">The minimum value of the output value.</param>
     /// <param name="out_max">The maximum value of the output value.</param>
     /// <returns>Returns the output value.</returns>
-    template <typename T> T map(const T & x, const T & in_min, const T & in_max, const T & out_min, const T & out_max)
+    template <typename T> inline T map(const T & x, const T & in_min, const T & in_max, const T & out_min, const T & out_max)
     {
       T value = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
       return value;
+    }
+
+    /// <summary>
+    /// Returns true if the two given number are near each other given an epsilon value.
+    /// </summary>
+    /// <param name="value1">The first value.</param>
+    /// <param name="value2">The second value.</param>
+    /// <param name="epsilon">The epsilon value (tolerance).</param>
+    /// <returns>Returns true if the two given number are near each other given an epsilon value.</returns>
+    template <typename T> inline bool near(const T & value1, const T & value2, const T & epsilon)
+    {
+      T value1_min = value1 - epsilon;
+      T value1_max = value1 + epsilon;
+      if (value1_min <= value2 && value2 <= value1_max)
+        return true;
+      else
+        return false;
+    }
+
+    /// <summary>
+    /// Copy the memory representation of a given type to another type.
+    /// </summary>
+    /// <param name="value">The value to convert as another type.</param>
+    /// <returns>Returns the memory representation of a given type into another type.</returns>
+    template <typename T,typename S> inline T readAs(const S & value)
+    {
+      const void * sPtr = &value;
+      const T * tPtr = static_cast<const T *>(sPtr);
+      const T & tValue = (*tPtr);
+      return tValue;
     }
 
   } //namespace generics

@@ -96,6 +96,55 @@ namespace ra { namespace generics { namespace test
     ASSERT_EQ(212, ra::generics::map<int>(100, celsius_freeze, celsius_boil, fahrenheit_freeze, fahrenheit_boil));
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testNear)
+  {
+    //as integer
+    ASSERT_FALSE( ra::generics::near(5, 9, 1) );    //epsilon too small
+    ASSERT_FALSE( ra::generics::near(9, 5, 1) );    //epsilon too small
+    ASSERT_TRUE ( ra::generics::near(5, 9, 4) );    //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(9, 5, 4) );    //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(5, 9, 400) );  //epsilon too big
+    ASSERT_TRUE ( ra::generics::near(9, 5, 400) );  //epsilon too big
+
+    //as float
+    ASSERT_FALSE( ra::generics::near(5.0f, 9.0f, 1.0f) );   //epsilon too small
+    ASSERT_FALSE( ra::generics::near(9.0f, 5.0f, 1.0f) );   //epsilon too small
+    ASSERT_TRUE ( ra::generics::near(5.0f, 9.0f, 4.0f) );   //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(9.0f, 5.0f, 4.0f) );   //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(5.0f, 9.0f, 400.0f) ); //epsilon too big
+    ASSERT_TRUE ( ra::generics::near(9.0f, 5.0f, 400.0f) ); //epsilon too big
+
+    //as double
+    ASSERT_FALSE( ra::generics::near(5.0, 9.0, 1.0) );    //epsilon too small
+    ASSERT_FALSE( ra::generics::near(9.0, 5.0, 1.0) );    //epsilon too small
+    ASSERT_TRUE ( ra::generics::near(5.0, 9.0, 4.0) );    //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(9.0, 5.0, 4.0) );    //epsilon is exact
+    ASSERT_TRUE ( ra::generics::near(5.0, 9.0, 400.0) );  //epsilon too big
+    ASSERT_TRUE ( ra::generics::near(9.0, 5.0, 400.0) );  //epsilon too big
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testReadAs)
+  {
+    //float (32 bit) to integer (32 bit)
+    {
+      float f = 0.0f;
+      int32_t i = 0;
+      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f) );
+
+      f = 0.1f;
+      i = 1036831949;
+      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f) );
+
+      f = 100000.0f;
+      i = 1203982336;
+      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f) );
+
+      f = 1.3958644e+010f;
+      i = 1347420160;
+      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace generics
 } //namespace ra
