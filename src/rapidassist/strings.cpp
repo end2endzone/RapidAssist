@@ -71,7 +71,7 @@ namespace ra
     {
       std::stringstream out;
       out << t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
 
@@ -89,7 +89,7 @@ namespace ra
     {
       std::stringstream out;
       out << (int)t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
     template<>
@@ -97,7 +97,7 @@ namespace ra
     {
       std::stringstream out;
       out << (int)t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
     template<>
@@ -105,7 +105,7 @@ namespace ra
     {
       std::stringstream out;
       out << (int)t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
     template<>
@@ -194,7 +194,7 @@ namespace ra
 
       std::stringstream out;
       out << std::setprecision(9) << t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
     template<>
@@ -202,7 +202,7 @@ namespace ra
     {
       std::stringstream out;
       out << std::setprecision(17) << t;
-      std::string & s = out.str();
+      const std::string & s = out.str();
       return s;
     }
 
@@ -404,16 +404,16 @@ namespace ra
     std::string toString(const    float & value, int digits){ return toStringDigits(value, digits); }
     std::string toString(const   double & value, int digits){ return toStringDigits(value, digits); }
 
-    bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,  int16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str, uint16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,  int32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str, uint32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,  int64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str, uint64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,    float & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
-    bool parse(const std::string& str,   double & oValue) { parseT(str.c_str(), oValue); /*verify*/ std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint16_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint32_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,  int64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str, uint64_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,    float & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
+    bool parse(const std::string& str,   double & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
 
     std::string capitalizeFirstCharacter(const std::string & iValue)
     {
@@ -710,7 +710,7 @@ std::string& operator<<(std::string& str, const int16_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -720,7 +720,7 @@ std::string& operator<<(std::string& str, const uint16_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -730,7 +730,7 @@ std::string& operator<<(std::string& str, const int8_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -740,7 +740,7 @@ std::string& operator<<(std::string& str, const uint8_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -750,7 +750,7 @@ std::string& operator<<(std::string& str, const int32_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -760,7 +760,7 @@ std::string& operator<<(std::string& str, const uint32_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -770,7 +770,7 @@ std::string& operator<<(std::string& str, const int64_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -780,7 +780,7 @@ std::string& operator<<(std::string& str, const uint64_t & value)
   //std::stringstream out;
   //out << value;
   //str.append( out.str() );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -789,7 +789,7 @@ std::string& operator<<(std::string& str, const float & value)
 {
   //std::string & buffer = ra::strings::toStringDigits(value, 8);
   //str.append( buffer );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
@@ -798,7 +798,7 @@ std::string& operator<<(std::string& str, const double & value)
 {
   //std::string & buffer = ra::strings::toStringDigits(value, 17);
   //str.append( buffer );
-  std::string & out = ra::strings::toStringT(value);
+  const std::string & out = ra::strings::toStringT(value);
   str.append( out );
   return str;
 }
