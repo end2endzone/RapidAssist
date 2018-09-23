@@ -31,7 +31,7 @@ int main(void)
   std::string whoiam = "My name is Antoine and I am a superhero.";
 
   //process with search and replace in string.
-  int numReplaced = ra::strings::strReplace(whoiam, "hero", "vilan");
+  int numReplaced = ra::strings::replace(whoiam, "hero", "vilan");
   
   //output result on console.
   printf("%s", whoiam.c_str());
