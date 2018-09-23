@@ -39,6 +39,13 @@ namespace ra
 
   namespace strings
   {
+
+    //constants
+    static const int  FLOAT_TOSTRING_LOSSLESS_PRECISION =  9;
+    static const int DOUBLE_TOSTRING_LOSSLESS_PRECISION = 17;
+
+
+
     //template <class T>
     //inline bool parseValueT (const std::string& str, T & t)
     //{
@@ -194,7 +201,7 @@ namespace ra
       //A precision of 9 is required for this.
 
       std::stringstream out;
-      out << std::setprecision(9) << t;
+      out << std::setprecision(FLOAT_TOSTRING_LOSSLESS_PRECISION) << t;
       const std::string & s = out.str();
       return s;
     }
@@ -202,7 +209,7 @@ namespace ra
     inline std::string toStringT<double>(const double & t)
     {
       std::stringstream out;
-      out << std::setprecision(17) << t;
+      out << std::setprecision(DOUBLE_TOSTRING_LOSSLESS_PRECISION) << t;
       const std::string & s = out.str();
       return s;
     }
@@ -409,7 +416,7 @@ namespace ra
     {
       static const float epsilon = 0.0000001f;
 
-      for(int digits = 0; digits < 9; digits++)
+      for(int digits = 0; digits < FLOAT_TOSTRING_LOSSLESS_PRECISION; digits++)
       {
         const std::string & str = toString(value, digits);
         float parsed_value = 0.0f;
@@ -430,7 +437,7 @@ namespace ra
     {
       static const double epsilon = 0.0000000000000001;
 
-      for(int digits = 0; digits < 17; digits++)
+      for(int digits = 0; digits < DOUBLE_TOSTRING_LOSSLESS_PRECISION; digits++)
       {
         const std::string & str = toString(value, digits);
         double parsed_value = 0.0;
