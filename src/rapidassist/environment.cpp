@@ -84,12 +84,12 @@ namespace ra
     bool setEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
     bool setEnvironmentVariable(const char * iName, const    float & iValue)
     {
-      std::string tmp = ra::strings::toStringShort(iValue);
+      const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       return setEnvironmentVariable(iName, tmp.c_str() );
     }
     bool setEnvironmentVariable(const char * iName, const   double & iValue)
     {
-      std::string tmp = ra::strings::toStringShort(iValue);
+      const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       return setEnvironmentVariable(iName, tmp.c_str() );
     }
 

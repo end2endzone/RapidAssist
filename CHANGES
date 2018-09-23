@@ -7,6 +7,7 @@ Changes for 0.5.0:
 * New feature: Created `generics` namespace, a.k.a. popular templates.
 * New feature: Created `console` namespace.
 * New feature: Created `process` namespace.
+* New feature: Normalized floating point values conversion to string: toStringLossless(), toStringLossy() or toStringFormatted().
 * Fixed issue  #5: String format function.
 * Fixed issue  #6: Implement getCurrentProcessPath() function.
 * Fixed issue  #7: Function for absolute path to relative path.
