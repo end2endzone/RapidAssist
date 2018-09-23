@@ -1064,6 +1064,29 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringShort)
+  {
+    //float
+    {
+      ASSERT_EQ( "1.2"      , ra::strings::toStringShort(1.2f     ) );
+      ASSERT_EQ( "1.22"     , ra::strings::toStringShort(1.22f    ) );
+      ASSERT_EQ( "1.222"    , ra::strings::toStringShort(1.222f   ) );
+      ASSERT_EQ( "1.2222"   , ra::strings::toStringShort(1.2222f  ) );
+      ASSERT_EQ( "1.22223"  , ra::strings::toStringShort(1.22223f ) );
+      ASSERT_EQ( "1.222233" , ra::strings::toStringShort(1.222233f) );
+    }
+
+    //double
+    {
+      ASSERT_EQ( "1.2"      , ra::strings::toStringShort(1.2      ) );
+      ASSERT_EQ( "1.22"     , ra::strings::toStringShort(1.22     ) );
+      ASSERT_EQ( "1.222"    , ra::strings::toStringShort(1.222    ) );
+      ASSERT_EQ( "1.2222"   , ra::strings::toStringShort(1.2222   ) );
+      ASSERT_EQ( "1.22223"  , ra::strings::toStringShort(1.22223  ) );
+      ASSERT_EQ( "1.222233" , ra::strings::toStringShort(1.222233 ) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace strings
 } //namespace ra

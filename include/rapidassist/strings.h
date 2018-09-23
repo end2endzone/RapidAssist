@@ -80,6 +80,24 @@ namespace ra
     std::string toString(const   double & value, int digits);
 
     /// <summary>
+    /// Converts the given value to a string.
+    //  This is a lossy conversion but the result string is the shortest string representation without changing the given value more than 0.0000001f.
+    /// The appropriate number of digits after the decimal point is automatically detected.
+    /// </summary>
+    /// <param name="value">The numeric value.</param>
+    /// <returns>Converts the given value to string.</returns>
+    std::string toStringShort(const    float & value);
+
+    /// <summary>
+    /// Converts the given value to a string.
+    //  This is a lossy conversion but the result string is the shortest string representation without changing the given value more than 0.0000000000000001.
+    /// The appropriate number of digits after the decimal point is automatically detected.
+    /// </summary>
+    /// <param name="value">The numeric value.</param>
+    /// <returns>Converts the given value to string.</returns>
+    std::string toStringShort(const   double & value);
+
+    /// <summary>
     /// Parse the given string into the given numeric variable.
     /// </summary>
     /// <param name="str">The input string which contains a numeric value.</param>

@@ -137,11 +137,11 @@ namespace ra { namespace environment { namespace test
 
     //test float
     {
-      const float value = 1.3f;
+      const float value = 1.2f; // that is "1.20000005". Should be rounded to 1.2.
       ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
       ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
  
-      ASSERT_EQ("1.3", environment::getEnvironmentVariable(name));
+      ASSERT_EQ("1.2", environment::getEnvironmentVariable(name));
     }
 
     //test double

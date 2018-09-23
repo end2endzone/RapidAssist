@@ -32,6 +32,7 @@
 #include <stdarg.h> //for ...
 #include <stdio.h>  //for vsnprintf()
 #include <iomanip>  //for std::setprecision()
+#include <cmath>    //for abs()
 
 namespace ra
 {
@@ -403,6 +404,48 @@ namespace ra
 
     std::string toString(const    float & value, int digits){ return toStringDigits(value, digits); }
     std::string toString(const   double & value, int digits){ return toStringDigits(value, digits); }
+
+    std::string toStringShort(const    float & value)
+    {
+      static const float epsilon = 0.0000001f;
+
+      for(int digits = 0; digits < 9; digits++)
+      {
+        const std::string & str = toString(value, digits);
+        float parsed_value = 0.0f;
+        parse(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+        float diff = std::abs(parsed_value-value);
+        if (diff <= epsilon)
+        {
+          //this is the shortest representation
+          return str;
+        }
+      }
+
+      const std::string & str = toString(value); //lossless conversion
+      return str;
+    }
+
+    std::string toStringShort(const   double & value)
+    {
+      static const double epsilon = 0.0000000000000001;
+
+      for(int digits = 0; digits < 17; digits++)
+      {
+        const std::string & str = toString(value, digits);
+        double parsed_value = 0.0;
+        parse(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+        float diff = std::abs(parsed_value-value);
+        if (diff <= epsilon)
+        {
+          //this is the shortest representation
+          return str;
+        }
+      }
+
+      const std::string & str = toString(value); //lossless conversion
+      return str;
+    }
 
     bool parse(const std::string& str,   int8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
     bool parse(const std::string& str,  uint8_t & oValue) { parseT(str.c_str(), oValue); /*verify*/ const std::string & tmp = toString(oValue); bool success = (tmp == str); return success; }
