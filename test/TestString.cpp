@@ -53,11 +53,6 @@ namespace ra { namespace strings { namespace test
     {112704.88f, 1.0f, "112704.883"},     // 112704.88
     {(((float)14263 / 32767) + 1000000.0f),     1.0f, "1000000.44"},      //test value. See toStringT<float> implementation notes.
     {(((float)1234 / 9999) + 1000.0f),          1.0f, "1000.12341"},      //test value. See toStringT<float> implementation notes.
-#ifdef _WIN32
-    {(9998877665544332211.0f / 1000000000.0f),  1.0f, "9.9988777e+009"},  //test value. See toStringT<float> implementation notes.
-#elif __linux__
-    {(9998877665544332211.0f / 1000000000.0f),  1.0f, "9.9988777e+09"},   //test value. See toStringT<float> implementation notes.
-#endif
     {(998877654321.0f / 1000000000.0f),         1.0f, "998.877625"},      //test value. See toStringT<float> implementation notes.
     {5.3f,                                      1.0f, "5.30000019"},      //test value. See toStringT<float> implementation notes.
   };

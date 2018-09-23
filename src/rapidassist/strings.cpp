@@ -435,7 +435,7 @@ namespace ra
         const std::string & str = toString(value, digits);
         double parsed_value = 0.0;
         parse(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
-        float diff = std::abs(parsed_value-value);
+        double diff = std::abs(parsed_value-value);
         if (diff <= epsilon)
         {
           //this is the shortest representation
