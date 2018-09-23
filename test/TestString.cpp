@@ -114,7 +114,7 @@ namespace ra { namespace strings { namespace test
     ASSERT_FALSE(strings::isNumeric("+12.34!"));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testStrReplace)
+  TEST_F(TestString, testReplace)
   {
     //at the beginning
     {
@@ -475,7 +475,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testSplitString)
+  TEST_F(TestString, testSplit)
   {
     //test NULL
     {
@@ -556,7 +556,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testJoinString)
+  TEST_F(TestString, testJoin)
   {
     //test NULL
     {
