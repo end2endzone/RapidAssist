@@ -41,10 +41,10 @@ namespace ra
   {
 
     //constants
-    static const int  FLOAT_TOSTRING_LOSSLESS_PRECISION =  9;
-    static const int DOUBLE_TOSTRING_LOSSLESS_PRECISION = 17;
-    static const  float  FLOAT_TOSTRING_LOSSY_EPSILON = 0.0000001f;
-    static const double DOUBLE_TOSTRING_LOSSY_EPSILON = 0.0000000000000001;
+    const int  FLOAT_TOSTRING_LOSSLESS_PRECISION =  9;
+    const int DOUBLE_TOSTRING_LOSSLESS_PRECISION = 17;
+    const  float  FLOAT_TOSTRING_LOSSY_EPSILON = 0.0000001f;
+    const double DOUBLE_TOSTRING_LOSSY_EPSILON = 0.0000000000000001;
 
     //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
     template <class T>
