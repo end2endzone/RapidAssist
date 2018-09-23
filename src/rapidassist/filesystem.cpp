@@ -465,7 +465,7 @@ namespace ra
         {
           std::string element83 = element;
           std::string ext = getFileExtention(element);
-          strings::replace(element83, (std::string(".")+ext).c_str(), ""); //remove extension from filename
+          strings::replace(element83, (std::string(".")+ext), ""); //remove extension from filename
           strings::replace(ext, " ", ""); //remove spaces in extension
           ext = ext.substr(0, 3); //truncate file extension
           strings::replace(element83, " ", ""); //remove spaces
@@ -806,7 +806,7 @@ namespace ra
       {
         std::string pattern;
         pattern << ra::filesystem::getPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::getPathSeparatorStr();
-        ra::strings::replace(path, pattern.c_str(), ra::filesystem::getPathSeparatorStr());
+        ra::strings::replace(path, pattern, ra::filesystem::getPathSeparatorStr());
 
         //look for a path that ends with /. or \.
         pattern.clear();
