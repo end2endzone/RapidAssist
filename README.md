@@ -1,3 +1,6 @@
+![RapidAssist logo](docs/RapidAssist-splashscreen.jpg?raw=true)
+
+
 # RapidAssist #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Github Releases](https://img.shields.io/github/release/end2endzone/rapidassist.svg)](https://github.com/end2endzone/rapidassist/releases)
