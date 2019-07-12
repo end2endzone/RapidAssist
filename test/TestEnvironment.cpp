@@ -175,6 +175,73 @@ namespace ra { namespace environment { namespace test
     ASSERT_TRUE( !std::string(separator).empty() );
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testGetEnvironmentVariables)
+  {
+    ra::strings::StringVector variables = environment::getEnvironmentVariables();
+    ASSERT_GT( variables.size(), 0 );
+
+    //find 3 expected names in the list
+    bool found1 = false;
+    bool found2 = false;
+    bool found3 = false;
+    #ifdef _WIN32
+    static const char * variable1 = "USERNAME";
+    static const char * variable2 = "TEMP";
+    static const char * variable3 = "PATH";
+    #else
+    static const char * variable1 = "USER";
+    static const char * variable2 = "HOME";
+    static const char * variable3 = "PATH";
+    #endif
+    std::string variable_list; //build a list of all found variables in case of a failure.
+    for(size_t i=0; i<variables.size(); i++)
+    {
+      const std::string & value = variables[i];
+
+      //build a list of all found variables in case of a failure.
+      if (!variable_list.empty())
+        variable_list += "\n";
+      variable_list += ra::strings::toString(i) + "=" + value;
+
+      //look for expected names
+      if (value == variable1)  found1 = true;
+      if (value == variable2)  found2 = true;
+      if (value == variable3)  found3 = true;
+    }
+
+    ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();
+    ASSERT_TRUE(found2) << "The environment variable '" << variable2 << "' was not found in the list of variables:\n" << variable_list.c_str();
+    ASSERT_TRUE(found3) << "The environment variable '" << variable3 << "' was not found in the list of variables:\n" << variable_list.c_str();
+
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testExpand)
+  {
+    //expand strings that contains 3 expected variable names
+    #ifdef _WIN32
+    static const char * variable1 = "%USERNAME%";
+    static const char * variable2 = "%TEMP%";
+    static const char * variable3 = "%Path%";
+    #else
+    static const char * variable1 = "$USER";
+    static const char * variable2 = "$HOME";
+    static const char * variable3 = "$PATH";
+    #endif
+
+    std::string raw_string1 = std::string("<") + variable1 + ">";
+    std::string raw_string2 = std::string("<") + variable2 + ">";
+    std::string raw_string3 = std::string("<") + variable3 + ">";
+
+    std::string expanded_string1 = ra::environment::expand(raw_string1);
+    std::string expanded_string2 = ra::environment::expand(raw_string2);
+    std::string expanded_string3 = ra::environment::expand(raw_string3);
+
+    ASSERT_NE( raw_string1, expanded_string1 ) << "raw_string1=" << raw_string1.c_str();
+    ASSERT_NE( raw_string2, expanded_string2 ) << "raw_string2=" << raw_string2.c_str();
+    ASSERT_NE( raw_string3, expanded_string3 ) << "raw_string3=" << raw_string3.c_str();
+
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace environment
 } //namespace ra

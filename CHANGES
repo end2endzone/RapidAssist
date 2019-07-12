@@ -1,3 +1,8 @@
+Changes for 0.6.0:
+
+* Fixed issue #23: ra::environment::getEnvironmentVariables().
+* Fixed issue #31: ra::environment::expand()
+
 Changes for 0.5.0:
 
 * New feature: Implemented ra::strings::trim() and ra::strings::reverse().

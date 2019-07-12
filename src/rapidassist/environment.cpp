@@ -27,6 +27,7 @@
 #include <cstdlib> //for getenv()
 #include <cstring> //for strlen()
 #include <stdlib.h> //for setenv(), unsetenv()
+#include <stdio.h>
 
 namespace ra
 {
@@ -149,6 +150,86 @@ namespace ra
       return "\n";
 #endif
     }
+
+#ifdef _WIN32
+#else
+    extern char **environ;
+#endif
+
+    ra::strings::StringVector getEnvironmentVariables()
+    {
+      ra::strings::StringVector vars;
+
+      char *s = *environ;
+
+      int i = 0;
+      s = *(environ+i);
+
+      while(s)
+      {
+        std::string definition = s;
+        size_t offset = definition.find('=');
+        if (offset != std::string::npos)
+        {
+          std::string name = definition.substr(0, offset);
+          std::string value = definition.substr(offset+1);
+          int a = 0;
+
+          vars.push_back(name);
+        }
+
+        //next var
+        i++; 
+        s = *(environ+i);
+      }
+
+      return vars;
+    }
+
+    std::string expand(const std::string & iValue)
+    {
+      std::string output = iValue;
+
+      ra::strings::StringVector variables = getEnvironmentVariables();
+      for(size_t i=0; i<variables.size(); i++)
+      {
+        const std::string & name = variables[i];
+
+#ifdef _WIN32
+        std::string pattern = std::string("%") + name + std::string("%");
+#else
+        std::string pattern = std::string("$") + name;
+#endif
+        std::string value = ra::environment::getEnvironmentVariable(name.c_str());
+
+        //process with search and replace
+        ra::strings::replace(output, pattern, value);
+
+#ifdef _WIN32
+        //On Windows, the expansion is not case sensitive.
+        //also look for case insensitive replacement
+        std::string pattern_uppercase = ra::strings::uppercase(pattern);
+        std::string output_uppercase = ra::strings::uppercase(output);
+        size_t pattern_pos = output_uppercase.find(pattern_uppercase);
+        while (pattern_pos != std::string::npos)
+        {
+          //extract the pattern from the value.
+          //ie: the value contains %systemdrive% instead of the official %SystemDrive%
+          std::string pattern2 = output.substr(pattern_pos, pattern.size());
+
+          //process with search and replace using the unofficial pattern
+          ra::strings::replace(output, pattern2, value);
+
+          //search again for next pattern
+          output_uppercase = ra::strings::uppercase(output);
+          pattern_pos = output_uppercase.find(pattern_uppercase);
+        }
+#endif
+      }
+
+      return output;
+    }
+
 
   } //namespace environment
 } //namespace ra

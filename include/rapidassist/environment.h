@@ -28,6 +28,8 @@
 #include <string>
 #include <stdint.h>
 
+#include "strings.h"
+
 namespace ra
 {
   namespace environment
@@ -88,6 +90,19 @@ namespace ra
     /// </summary>
     /// <returns>Returns the line separator for the current system.</returns>
     const char * getLineSeparator();
+
+    /// <summary>
+    /// Returns the list of environment variables defined in the current process.
+    /// </summary>
+    /// <returns>Returns the list of environment variables.</returns>
+    ra::strings::StringVector getEnvironmentVariables();
+
+    /// <summary>
+    /// Expand the given string that contains environment variable references with the values.
+    /// </summary>
+    /// <returns>Returns the given string with expanded variables.</returns>
+    /// <param name="iValue">The value of the string that must be expanded.</param>
+    std::string expand(const std::string & iValue);
 
   } //namespace environment
 } //namespace ra
