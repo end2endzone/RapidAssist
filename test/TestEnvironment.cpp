@@ -187,7 +187,7 @@ namespace ra { namespace environment { namespace test
     #ifdef _WIN32
     static const char * variable1 = "USERNAME";
     static const char * variable2 = "TEMP";
-    static const char * variable3 = "PATH";
+    static const char * variable3 = "Path";
     #else
     static const char * variable1 = "USER";
     static const char * variable2 = "HOME";
@@ -206,7 +206,9 @@ namespace ra { namespace environment { namespace test
       //look for expected names
       if (value == variable1)  found1 = true;
       if (value == variable2)  found2 = true;
-      if (value == variable3)  found3 = true;
+
+      //Note: In a windows console, the variable is named 'Path' but when unit tests are launched from Visual Studio, the name is 'PATH'.
+      if (value == variable3 || value == ra::strings::uppercase(variable3)) found3 = true;
     }
 
     ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();
