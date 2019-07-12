@@ -29,6 +29,12 @@
 #include <stdlib.h> //for setenv(), unsetenv()
 #include <stdio.h>
 
+#ifdef _WIN32
+#else
+  //for getEnvironmentVariables()
+  extern char **environ;
+#endif
+
 namespace ra
 {
   namespace environment
@@ -150,11 +156,6 @@ namespace ra
       return "\n";
 #endif
     }
-
-#ifdef _WIN32
-#else
-    extern char **environ;
-#endif
 
     ra::strings::StringVector getEnvironmentVariables()
     {
