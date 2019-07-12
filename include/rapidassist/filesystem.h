@@ -135,6 +135,12 @@ namespace ra
     std::string getTemporaryFilePath();
 
     /// <summary>
+    /// Returns the path of the tempporary folder.
+    /// </summary>
+    /// <returns>Returns the path of the tempporary folder.</returns>
+    std::string getTemporaryFolder();
+
+    /// <summary>
     /// Returns the parent element of a path. For files, returns the file's directory. For folders, returns the parent path
     /// </summary>
     /// <param name="iPath">The input path to split.</param>
@@ -255,6 +261,50 @@ namespace ra
     /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
     std::string getPathBasedOnCurrentDirectory(const std::string & iPath);
 
+    /// <summary>
+    /// copyFile() callback interface
+    /// </summary>
+    class IProgressReport
+    {
+    public:
+      /// <summary>
+      /// CopyFile() callback function.
+      /// </summary>
+      /// <param name="progress">The progress of the file copy. Ranges [0, 1] inclusive.</param>
+      virtual void onProgressReport(double progress) = 0;
+    };
+
+    /// <summary>
+    /// CopyFile() callback function.
+    /// </summary>
+    /// <param name="progress">The progress of the file copy. Ranges [0, 1] inclusive.</param>
+    typedef void (*ProgressReportCallback)(double);
+
+    /// <summary>
+    /// Copy a file to another destination.
+    /// </summary>
+    /// <param name="source_path">The source file path to copy.</param>
+    /// <param name="destination_path">The destination file path.</param>
+    /// <returns>Returns true if file copy is successful. Returns false otherwise.</returns>
+    bool copyFile(const std::string & source_path, const std::string & destination_path);
+
+    /// <summary>
+    /// Copy a file to another destination.
+    /// </summary>
+    /// <param name="source_path">The source file path to copy.</param>
+    /// <param name="destination_path">The destination file path.</param>
+    /// <param name="progress_functor">A valid IProgressReport pointer to handle the copy callback.</param>
+    /// <returns>Returns true if file copy is successful. Returns false otherwise.</returns>
+    bool copyFile(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor);
+
+    /// <summary>
+    /// Copy a file to another destination.
+    /// </summary>
+    /// <param name="source_path">The source file path to copy.</param>
+    /// <param name="destination_path">The destination file path.</param>
+    /// <param name="progress_function">A valid ProgressReportCallback function pointer to handle the copy callback.</param>
+    /// <returns>Returns true if file copy is successful. Returns false otherwise.</returns>
+    bool copyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function);
 
   } //namespace filesystem
 } //namespace ra

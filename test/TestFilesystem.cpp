@@ -27,6 +27,7 @@
 #include "rapidassist/time_.h"
 #include "rapidassist/gtesthelp.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/process.h"
 
 #ifndef _WIN32
 #include <linux/fs.h>
@@ -625,6 +626,13 @@ namespace ra { namespace filesystem { namespace test
         ASSERT_EQ(1, count) << "Found value '" << path << "' " << count << " times in the list.";
       }
     }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetTemporaryFolder)
+  {
+    std::string temp_dir = filesystem::getTemporaryFolder();
+    ASSERT_TRUE( !temp_dir.empty() );
+    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetParentPath)
@@ -1362,6 +1370,84 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE( ra::filesystem::isRootDirectory("/") );
     ASSERT_FALSE( ra::filesystem::isRootDirectory("/foo") );
 #endif
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testCopyFileBasic)
+  {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
+
+    ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
+    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    
+    bool copied = ra::filesystem::copyFile(process_path, output_path);
+    ASSERT_TRUE( copied ) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE( ra::filesystem::fileExists(output_path.c_str()) ) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::getFileSize(process_path.c_str());
+    uint32_t target_size = ra::filesystem::getFileSize(output_path.c_str());
+    ASSERT_EQ( source_size, target_size );
+  }
+  //--------------------------------------------------------------------------------------------------
+  void myCopyFileCallbackFunction(double progress)
+  {
+    printf("%s(%.2f)\n", __FUNCTION__, progress);
+  }
+  TEST_F(TestFilesystem, testCopyFileCallbackFunction)
+  {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
+
+    ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
+    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    
+    bool copied = ra::filesystem::copyFile(process_path, output_path, &myCopyFileCallbackFunction);
+    ASSERT_TRUE( copied ) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE( ra::filesystem::fileExists(output_path.c_str()) ) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::getFileSize(process_path.c_str());
+    uint32_t target_size = ra::filesystem::getFileSize(output_path.c_str());
+    ASSERT_EQ( source_size, target_size );
+  }
+  //--------------------------------------------------------------------------------------------------
+  class CopyFileCallbackFunctor : public virtual ra::filesystem::IProgressReport
+  {
+  public:
+    CopyFileCallbackFunctor() {};
+    virtual ~CopyFileCallbackFunctor() {};
+    virtual void onProgressReport(double progress)
+    {
+      printf("%s(%.2f)\n", __FUNCTION__, progress);
+    }
+  };
+  TEST_F(TestFilesystem, testCopyFileCallbackFunctor)
+  {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
+
+    ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
+    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    
+    CopyFileCallbackFunctor functor;
+    bool copied = ra::filesystem::copyFile(process_path, output_path, &functor);
+    ASSERT_TRUE( copied ) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE( ra::filesystem::fileExists(output_path.c_str()) ) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::getFileSize(process_path.c_str());
+    uint32_t target_size = ra::filesystem::getFileSize(output_path.c_str());
+    ASSERT_EQ( source_size, target_size );
   }
 } //namespace test
 } //namespace filesystem
