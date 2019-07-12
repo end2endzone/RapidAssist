@@ -331,6 +331,11 @@ namespace ra
           *sp = '\0';
 #ifdef _WIN32
           status = _mkdir(copypath);
+          if (status == -1 && strlen(copypath) == 2 && copypath[1] == ':') //issue #27
+            status = 0; //fix for _mkdir("C:") like
+          int errno_copy = errno;
+          if (status == -1 && errno == EEXIST)
+            status = 0; //File already exist
 #else
           status = mkdir(copypath, mode);
 #endif

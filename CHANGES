@@ -1,6 +1,7 @@
 Changes for 0.6.0:
 
 * Fixed issue #23: ra::environment::getEnvironmentVariables().
+* Fixed issue #27: createFolder() fails with absolute path.
 * Fixed issue #31: ra::environment::expand()
 
 Changes for 0.5.0:

@@ -457,6 +457,26 @@ namespace ra { namespace filesystem { namespace test
       deleteFolder(path.c_str());
     }
 
+    //test issue #27
+    {
+      #ifdef _WIN32
+      std::string temp_dir = ra::environment::getEnvironmentVariable("TEMP");
+      #else
+      std::string temp_dir = "/var/tmp";
+      #endif
+
+      //build path with subfolders
+      const char * separator = getPathSeparatorStr();
+      std::string path = temp_dir + separator + ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
+
+      bool success = false;
+      success = filesystem::createFolder(path.c_str());
+      ASSERT_TRUE(success);
+
+      //cleanup
+      deleteFolder(path.c_str());
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testDeleteFile)
