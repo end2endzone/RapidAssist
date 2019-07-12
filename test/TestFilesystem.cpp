@@ -1393,8 +1393,16 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_EQ( source_size, target_size );
   }
   //--------------------------------------------------------------------------------------------------
+  static bool gProgressBegin = false;
+  static bool gProgressEnd   = false;
   void myCopyFileCallbackFunction(double progress)
   {
+    //remember first and last callbacks
+    if (progress == 0.0)
+      gProgressBegin = true;
+    if (progress == 1.0)
+      gProgressEnd = true;
+
     printf("%s(%.2f)\n", __FUNCTION__, progress);
   }
   TEST_F(TestFilesystem, testCopyFileCallbackFunction)
@@ -1409,6 +1417,8 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
     ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
     
+    gProgressBegin = false;
+    gProgressEnd   = false;
     bool copied = ra::filesystem::copyFile(process_path, output_path, &myCopyFileCallbackFunction);
     ASSERT_TRUE( copied ) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
     ASSERT_TRUE( ra::filesystem::fileExists(output_path.c_str()) ) << "File '" << output_path.c_str() << "' not found.";
@@ -1416,17 +1426,32 @@ namespace ra { namespace filesystem { namespace test
     uint32_t source_size = ra::filesystem::getFileSize(process_path.c_str());
     uint32_t target_size = ra::filesystem::getFileSize(output_path.c_str());
     ASSERT_EQ( source_size, target_size );
+
+    //assert that first and last progress was received
+    ASSERT_TRUE(gProgressBegin);
+    ASSERT_TRUE(gProgressEnd  );
   }
   //--------------------------------------------------------------------------------------------------
   class CopyFileCallbackFunctor : public virtual ra::filesystem::IProgressReport
   {
   public:
-    CopyFileCallbackFunctor() {};
+    CopyFileCallbackFunctor() : mProgressBegin(false), mProgressEnd(false) {};
     virtual ~CopyFileCallbackFunctor() {};
     virtual void onProgressReport(double progress)
     {
+      //remember first and last callbacks
+      if (progress == 0.0)
+        mProgressBegin = true;
+      if (progress == 1.0)
+        mProgressEnd = true;
+
       printf("%s(%.2f)\n", __FUNCTION__, progress);
     }
+    bool hasProgressBegin() { return mProgressBegin; }
+    bool hasProgressEnd  () { return mProgressEnd  ; }
+  private:
+    bool mProgressBegin;
+    bool mProgressEnd  ;
   };
   TEST_F(TestFilesystem, testCopyFileCallbackFunctor)
   {
@@ -1448,6 +1473,10 @@ namespace ra { namespace filesystem { namespace test
     uint32_t source_size = ra::filesystem::getFileSize(process_path.c_str());
     uint32_t target_size = ra::filesystem::getFileSize(output_path.c_str());
     ASSERT_EQ( source_size, target_size );
+
+    //assert that first and last progress was received
+    ASSERT_TRUE(functor.hasProgressBegin());
+    ASSERT_TRUE(functor.hasProgressEnd  ());
   }
 } //namespace test
 } //namespace filesystem

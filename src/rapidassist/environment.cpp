@@ -24,8 +24,8 @@
 
 #include "rapidassist/environment.h"
 #include "rapidassist/strings.h"
-#include <cstdlib> //for getenv()
-#include <cstring> //for strlen()
+#include <cstdlib>  //for getenv()
+#include <cstring>  //for strlen()
 #include <stdlib.h> //for setenv(), unsetenv()
 #include <stdio.h>
 
