@@ -92,16 +92,18 @@ namespace ra
     const char * getLineSeparator();
 
     /// <summary>
-    /// Returns the list of environment variables defined in the current process.
+    /// Returns a list of all environment variables defined by the current process.
     /// </summary>
-    /// <returns>Returns the list of environment variables.</returns>
+    /// <returns>Returns a list of all environment variables.</returns>
     ra::strings::StringVector getEnvironmentVariables();
 
     /// <summary>
-    /// Expand the given string that contains environment variable references with the values.
+    /// Expand a file path by replacing environment variable reference by the actual variable's value.
+    /// Unix    environment variables syntax must in the following form:  $name where  'name' is an environment variable.
+    /// Windows environment variables syntax must in the following form:  %name% where 'name' is an environment variable.
     /// </summary>
-    /// <returns>Returns the given string with expanded variables.</returns>
-    /// <param name="iValue">The value of the string that must be expanded.</param>
+    /// <param name="iValue">The path that must be expanded.</param>
+    /// <returns>Returns a new string with the expanded strings.</returns>
     std::string expand(const std::string & iValue);
 
   } //namespace environment
