@@ -112,13 +112,30 @@ namespace ra
     std::string getFilename(const char * iPath)
     {
       if (iPath == NULL || iPath[0] == '\0')
-        return std::string();
+        return "";
 
       std::string folder;
       std::string filename;
       splitPath(iPath, folder, filename);
 
       return filename;
+    }
+
+    std::string getFilenameWithoutExtension(const char * iPath)
+    {
+      if (iPath == NULL || iPath[0] == '\0')
+        return "";
+
+      std::string filename = ra::filesystem::getFilename(iPath);
+      std::string extension = ra::filesystem::getFileExtention(iPath);
+  
+      //extract filename without extension
+      std::string filenameWE = filename.substr(0, filename.size() - extension.size());
+  
+      //remove last dot of the filename if required
+      filenameWE = ra::strings::trimRight(filenameWE, '.');
+
+      return filenameWE;
     }
 
     bool fileExists(const char * iPath)

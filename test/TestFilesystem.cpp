@@ -218,6 +218,37 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetFilenameWithoutExtension)
+  {
+    //test NULL
+    {
+      static const std::string EXPECTED = "";
+      std::string filename = filesystem::getFilenameWithoutExtension(NULL);
+      ASSERT_EQ(EXPECTED, filename);
+    }
+
+    //test filename only
+    {
+      static const std::string EXPECTED = "foo";
+      std::string filename = filesystem::getFilenameWithoutExtension("foo.bar");
+      ASSERT_EQ(EXPECTED, filename);
+    }
+
+    //test full path (unix style)
+    {
+      static const std::string EXPECTED = "foo";
+      std::string filename = filesystem::getFilenameWithoutExtension("/home/myFolder/foo.bar");
+      ASSERT_EQ(EXPECTED, filename);
+    }
+
+    //test full path (windows style)
+    {
+      static const std::string EXPECTED = "foo";
+      std::string filename = filesystem::getFilenameWithoutExtension("C:\\Users\\Antoine\\Desktop\\myFolder\\foo.bar");
+      ASSERT_EQ(EXPECTED, filename);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFileExists)
   {
     //test NULL
