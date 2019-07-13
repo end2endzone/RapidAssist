@@ -815,6 +815,19 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testToStringBoolean)
+  {
+    typedef bool test_type;
+    {
+      test_type value = true;
+      ASSERT_EQ("true", toString(value));
+    }
+    {
+      test_type value = false;
+      ASSERT_EQ("false", toString(value));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testToStringLosslessFloat)
   {
     //try with a few random guess
@@ -1035,6 +1048,43 @@ namespace ra { namespace strings { namespace test
       ASSERT_NE(lossless, lossy);
     }
 
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestString, testParseBoolean)
+  {
+    ASSERT_TRUE ( ra::strings::parseBoolean("true" ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("tRuE" ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("yes"  ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("yEs"  ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("on"   ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("oN"   ));
+
+    ASSERT_FALSE( ra::strings::parseBoolean("false"));
+    ASSERT_FALSE( ra::strings::parseBoolean("fALsE"));
+    ASSERT_FALSE( ra::strings::parseBoolean("no"   ));
+    ASSERT_FALSE( ra::strings::parseBoolean("nO"   ));
+    ASSERT_FALSE( ra::strings::parseBoolean("off"  ));
+    ASSERT_FALSE( ra::strings::parseBoolean("oFF"  ));
+
+    ASSERT_FALSE( ra::strings::parseBoolean("anythingelse"));
+
+    bool b = false;
+    ASSERT_TRUE( ra::strings::parse("true" , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("tRuE" , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("yes"  , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("yEs"  , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("on"   , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("oN"   , b)); ASSERT_TRUE( b );
+
+    ASSERT_TRUE( ra::strings::parse("false", b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("fALsE", b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("no"   , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("nO"   , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("off"  , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("oFF"  , b)); ASSERT_FALSE( b );
+
+    //assert cannot parse
+    ASSERT_FALSE( ra::strings::parse("anythingelse", b));
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

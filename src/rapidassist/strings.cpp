@@ -303,6 +303,13 @@ namespace ra
       return numOccurance;
     }
 
+    std::string toString(const bool & value)
+    {
+      if (value)
+        return std::string("true");
+      return std::string("false");
+    }
+
     //default base type excepted floating points
     std::string toString(const   int8_t & value) { return toStringT(value); }
     std::string toString(const  uint8_t & value) { return toStringT(value); }
@@ -372,6 +379,19 @@ namespace ra
     std::string toString(const    float & value){ return toStringLossy(value,  FLOAT_TOSTRING_LOSSY_EPSILON); }
     std::string toString(const   double & value){ return toStringLossy(value, DOUBLE_TOSTRING_LOSSY_EPSILON); }
 
+    bool parseBoolean(const std::string & str)
+    {
+      if (str == "1")
+        return true;
+      else if (ra::strings::uppercase(str) == "TRUE")
+        return true;
+      else if (ra::strings::uppercase(str) == "YES")
+        return true;
+      else if (ra::strings::uppercase(str) == "ON")
+        return true;
+      return false;
+    }
+
     bool parse(const std::string& str,   int8_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toString(oValue);         bool lossless = (tmp == str); return lossless; }
     bool parse(const std::string& str,  uint8_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toString(oValue);         bool lossless = (tmp == str); return lossless; }
     bool parse(const std::string& str,  int16_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toString(oValue);         bool lossless = (tmp == str); return lossless; }
@@ -382,6 +402,38 @@ namespace ra
     bool parse(const std::string& str, uint64_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toString(oValue);         bool lossless = (tmp == str); return lossless; }
     bool parse(const std::string& str,    float & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toStringLossless(oValue); bool lossless = (tmp == str); return lossless; }
     bool parse(const std::string& str,   double & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = toStringLossless(oValue); bool lossless = (tmp == str); return lossless; }
+    bool parse(const std::string& str,     bool & oValue)
+    {
+      //first try to parse the value as a string
+      std::string upper_str = ra::strings::uppercase(str);
+      if (upper_str ==  "TRUE") { oValue =  true; return true; }
+      if (upper_str ==   "YES") { oValue =  true; return true; }
+      if (upper_str ==    "ON") { oValue =  true; return true; }
+      if (upper_str == "FALSE") { oValue = false; return true; }
+      if (upper_str ==    "NO") { oValue = false; return true; }
+      if (upper_str ==   "OFF") { oValue = false; return true; }
+
+      //then try to parse the value as a signed integer
+      int64_t signed_integer = 0;
+      bool parsed = parse(str, signed_integer);
+      if (parsed)
+      {
+        oValue = (signed_integer != 0);
+        return true;
+      }
+
+      //try to parse the value as an unsigned integer
+      uint64_t unsigned_integer = 0;
+      parsed = parse(str, unsigned_integer);
+      if (parsed)
+      {
+        oValue = (unsigned_integer != 0);
+        return true;
+      }
+
+      //failed parsing
+      return false;
+    }
 
     std::string capitalizeFirstCharacter(const std::string & iValue)
     {

@@ -68,6 +68,13 @@ namespace ra
     /// <summary>
     /// Converts the given value to string.
     /// </summary>
+    /// <param name="value">The boolean value.</param>
+    /// <returns>Converts the given value to string.</returns>
+    std::string toString(const bool & value);
+
+    /// <summary>
+    /// Converts the given value to string.
+    /// </summary>
     /// <param name="value">The numeric value.</param>
     /// <returns>Converts the given value to string.</returns>
     std::string toString(const   int8_t & value);
@@ -138,6 +145,13 @@ namespace ra
     std::string toString(const   double & value);
 
     /// <summary>
+    /// Parse the given string as a boolean value.
+    /// </summary>
+    /// <param name="str">The input string which contains a boolean string representation.</param>
+    /// <returns>Returns true when the given string is logically 'true'. Returns false otherwise.</returns>
+    bool parseBoolean(const std::string & str);
+
+    /// <summary>
     /// Parse the given string into the given numeric variable.
     /// </summary>
     /// <param name="str">The input string which contains a numeric value.</param>
@@ -153,6 +167,7 @@ namespace ra
     bool parse(const std::string& str, uint64_t & oValue);
     bool parse(const std::string& str,    float & oValue);
     bool parse(const std::string& str,   double & oValue);
+    bool parse(const std::string& str,     bool & oValue);
 
     /// <summary>
     /// Capitalize the first character of the given string.
