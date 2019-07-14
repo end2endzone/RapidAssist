@@ -64,10 +64,10 @@ namespace ra
     std::string getFilename(const char * iPath);
 
     /// <summary>
-    /// Returns the filename without extension of the given path.
+    /// Get the file name of a path without the extension.
     /// </summary>
-    /// <param name="iPath">An valid file path.</param>
-    /// <returns>Returns the filename without extension of the given path.</returns>
+    /// <param name="iPath">The file path of a file.</param>
+    /// <returns>Returns the file name without the extension.</returns>
     std::string getFilenameWithoutExtension(const char * iPath);
 
     /// <summary>
