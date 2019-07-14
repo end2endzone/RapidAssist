@@ -69,6 +69,24 @@ namespace ra
     std::string dir = getWin32Directory(CSIDL_PROFILE);
     return dir;
 #else
+    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
+    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
+    struct passwd pwd;
+    struct passwd *result = NULL;
+    char buf[1024];
+    uid_t uid = geteuid();
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0)
+    {
+      if (result != NULL)
+        return result->pw_dir;
+    }
+    
+    //fallback to HOME env variable
+    std::string env_home = ra::environment::getEnvironmentVariable("HOME");
+    if (!env_home.empty())
+      return env_home;
+    
+    //failure
     return "~";
 #endif
   }
@@ -89,7 +107,7 @@ namespace ra
     std::string dir = getWin32Directory(CSIDL_PERSONAL);
     return dir;
 #else
-    return "~/Documents";
+    return std::string(getHomeDirectory()) + "/Documents";
 #endif
   }
 
@@ -99,7 +117,7 @@ namespace ra
     std::string dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
     return dir;
 #else
-    return "~/Desktop";
+    return std::string(getHomeDirectory()) + "/Desktop";
 #endif
   }
 
@@ -121,11 +139,16 @@ namespace ra
     //failure
     return "";
 #else
+    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
+    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
+    struct passwd pwd;
+    struct passwd *result = NULL;
+    char buf[1024];
     uid_t uid = geteuid();
-    struct passwd *pw = getpwuid(uid);
-    if (pw)
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0)
     {
-      return pw->pw_name;
+      if (result != NULL)
+        return result->pw_name;
     }
 
     //fallback to LOGNAME env variable

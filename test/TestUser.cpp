@@ -45,11 +45,11 @@ namespace ra { namespace user { namespace test
     std::string desk_dir = ra::user::getDesktopDirectory();
     std::string username = ra::user::getUsername();
 
-    printf("home_dir=%s\n", home_dir.c_str());
-    printf(" app_dir=%s\n",  app_dir.c_str());
-    printf("docs_dir=%s\n", docs_dir.c_str());
-    printf("desk_dir=%s\n", desk_dir.c_str());
-    printf("username=%s\n", username.c_str());
+    printf("home_dir: %s\n", home_dir.c_str());
+    printf(" app_dir: %s\n",  app_dir.c_str());
+    printf("docs_dir: %s\n", docs_dir.c_str());
+    printf("desk_dir: %s\n", desk_dir.c_str());
+    printf("username: %s\n", username.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUser, testFoldersExisting)

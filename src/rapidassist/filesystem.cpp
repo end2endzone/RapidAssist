@@ -27,9 +27,11 @@
 #include "rapidassist/random.h"
 #include "rapidassist/process.h"
 
-#include <algorithm> //for std::transform(), sort()
-#include <string.h> //for strdup()
-#include <stdlib.h> //for realpath()
+#include <cstring>    //for std::strerror
+#include <iostream>   //for std::cout
+#include <algorithm>  //for std::transform(), sort()
+#include <string.h>   //for strdup()
+#include <stdlib.h>   //for realpath()
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -310,9 +312,12 @@ namespace ra
       struct stat sb;
       if(stat(iPath, &sb)==0)
       {
-        if ((sb.st_mode & S_IFDIR) == S_IFDIR)
-          return true;
+        //if ((sb.st_mode & S_IFDIR) == S_IFDIR)
+        //  return true;
+        bool isdir = S_ISDIR(sb.st_mode);
+        return isdir;
       }
+      std::cout << "stat() failed:" << std::strerror(errno) << std::endl;
       return false;
     }
 
