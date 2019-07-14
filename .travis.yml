@@ -14,7 +14,8 @@ script:
   ./build_library.sh;
 - cd $TRAVIS_BUILD_DIR/ci/travis;
   ./build_client.sh;
-- mkdir ~/Documents    #required for TestUser.testFoldersExisting() because /home/travis/Documents does not exists!
+- mkdir ~/Documents   #required for TestUser.testFoldersExisting() because /home/travis/Documents does not exists!
+- mkdir ~/Desktop     #required for TestUser.testFoldersExisting() because /home/travis/Desktop   does not exists!
 - cd $TRAVIS_BUILD_DIR/ci/travis;
   ./test_script.sh;
 
