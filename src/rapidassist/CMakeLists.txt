@@ -10,6 +10,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/time_.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
 )
 
 if(RAPIDASSIST_BUILD_GTESTHELP)
@@ -35,8 +36,9 @@ add_library(rapidassist STATIC
   logger.cpp
   process.cpp
   random.cpp
-  time_.cpp
   strings.cpp
+  time_.cpp
+  user.cpp
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest

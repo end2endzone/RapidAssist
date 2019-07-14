@@ -32,6 +32,8 @@ add_executable(rapidassist_unittest
   TestString.h
   TestTime.cpp
   TestTime.h
+  TestUser.cpp
+  TestUser.h
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest
