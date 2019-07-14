@@ -491,11 +491,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test issue #27
     {
-      #ifdef _WIN32
-      std::string temp_dir = ra::environment::getEnvironmentVariable("TEMP");
-      #else
-      std::string temp_dir = "/var/tmp";
-      #endif
+      std::string temp_dir = ra::filesystem::getTemporaryFolder();
 
       //build path with subfolders
       const char * separator = getPathSeparatorStr();
