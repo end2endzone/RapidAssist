@@ -23,6 +23,7 @@
  *********************************************************************************/
 
 #include "rapidassist/user.h"
+#include "rapidassist/environment.h"
 
 #ifdef WIN32
 #   include <Shlobj.h>
@@ -68,7 +69,7 @@ namespace ra
     std::string dir = getWin32Directory(CSIDL_PROFILE);
     return dir;
 #else
-    return "/~";
+    return "~";
 #endif
   }
 
@@ -107,8 +108,18 @@ namespace ra
 #ifdef _WIN32
     char username[UNLEN + 1] = {0};
     DWORD size = UNLEN + 1;
-    GetUserName(username, &size);
-    return username;
+    if(SUCCEEDED( GetUserName(username, &size) ))
+    {
+      return username;
+    }
+
+    //fallback to USERNAME env variable
+    std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");
+    if (!env_username.empty())
+      return env_username;
+
+    //failure
+    return "";
 #else
     uid_t uid = geteuid();
     struct passwd *pw = getpwuid(uid);
@@ -117,6 +128,12 @@ namespace ra
       return pw->pw_name;
     }
 
+    //fallback to LOGNAME env variable
+    std::string env_logname = ra::environment::getEnvironmentVariable("LOGNAME");
+    if (!env_logname.empty())
+      return env_logname;
+
+    //failure
     return "";
 #endif
   }
