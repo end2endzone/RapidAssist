@@ -420,6 +420,29 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testFindFileFromPaths)
+  {
+    //test no result
+    {
+      ra::strings::StringVector locations;
+      bool success = ra::filesystem::findFileFromPaths("a file that cannot be found", locations);
+      ASSERT_FALSE(success);
+    }
+
+    //test single result
+    {
+#ifdef _WIN32
+      const std::string filename = "shell32.dll";
+#else
+      const std::string filename = "man";
+#endif
+      ra::strings::StringVector locations;
+      bool success = ra::filesystem::findFileFromPaths(filename, locations);
+      ASSERT_TRUE(success);
+      ASSERT_EQ(1, locations.size());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFolderExists)
   {
     //test NULL

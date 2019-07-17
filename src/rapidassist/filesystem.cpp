@@ -297,6 +297,63 @@ namespace ra
 #endif
     }
 
+    bool findFileFromPaths(const std::string & filename, ra::strings::StringVector & locations)
+    {
+      locations.clear();
+
+      //define separator in PATH environment variable
+  #ifdef _WIN32
+      static const char * separator = ";";
+  #else
+      static const char * separator = ":";
+  #endif
+
+      std::string path_env = ra::environment::getEnvironmentVariable("PATH");
+      if (path_env.empty())
+        return false;
+
+      //split each path
+      ra::strings::StringVector paths;
+      ra::strings::split(paths, path_env, separator);
+    
+      //search within all paths
+      bool found = false;
+      for(size_t i=0; i<paths.size(); i++)
+      {
+        std::string path = paths[i];
+      
+        //expand the path in case it contains environment variables
+        path = ra::environment::expand(path.c_str());
+
+        //Remove the last path separator (\ or / characters)
+        ra::filesystem::normalizePath(path);
+
+        //append the query filename
+        path += ra::filesystem::getPathSeparatorStr();
+        path += filename;
+
+        //look if the file exists
+        if (ra::filesystem::fileExists(path.c_str()))
+        {
+          //found a possible match for filename
+          locations.push_back(path);
+          found = true;
+        }
+      }
+
+      return found;
+    }
+
+    std::string findFileFromPaths(const std::string & filename)
+    {
+      ra::strings::StringVector locations;
+      bool found = findFileFromPaths(filename, locations);
+      if (!found || locations.size() == 0)
+        return "";
+      const std::string & first = locations[0];
+      return first;
+    }
+
     bool folderExists(const char * iPath)
     {
       if (iPath == NULL || iPath[0] == '\0')

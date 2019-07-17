@@ -102,6 +102,21 @@ namespace ra
     inline bool findFiles(ra::strings::StringVector & oFiles, const char * iPath) { return findFiles(oFiles, iPath, -1); }
 
     /// <summary>
+    /// Finds a file using the PATH environment variable.
+    /// </summary>
+    /// <param name="filename">The filename that we are searching for.</param>
+    /// <param name="locations">The path locations where the file was found.</param>
+    /// <returns>Returns true if the filename was found at least once. Returns false otherwise.</returns>
+    bool findFileFromPaths(const std::string & filename, ra::strings::StringVector & locations);
+
+    /// <summary>
+    /// Finds a file using the PATH environment variable.
+    /// </summary>
+    /// <param name="filename">The filename that we are searching for.</param>
+    /// <returns>Returns the first location where the file was found. Returns empty string otherwise.</returns>
+    std::string findFileFromPaths(const std::string & filename);
+
+    /// <summary>
     /// Determine if a folder exists.
     /// </summary>
     /// <param name="iPath">An valid folder path.</param>
