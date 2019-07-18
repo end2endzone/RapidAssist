@@ -11,4 +11,4 @@ echo ===========================================================================
 echo Testing project
 echo ============================================================================
 cd $TRAVIS_BUILD_DIR/build/bin;
-./rapidassist_unittest --gtest_filter=*TestUser* || true; #do not fail build even if a test fails.
+./rapidassist_unittest || true; #do not fail build even if a test fails.
