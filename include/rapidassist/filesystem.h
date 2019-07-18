@@ -194,6 +194,14 @@ namespace ra
     void splitPath(const std::string & iPath, std::vector<std::string> & oElements);
 
     /// <summary>
+    /// Convert an absolute path to a relative path based on the given path.
+    /// </summary>
+    /// <param name="base_path">The base path from which the relate path is constructed.</param>
+    /// <param name="test_path">The full path that must be converted.</param>
+    /// <returns>Returns a relative path from 'base_path' to 'test_path'. Returns an empty string on failure.</returns>
+    std::string makeRelativePath(const std::string & base_path, const std::string & test_path);
+
+    /// <summary>
     /// Gets the character that represents the path separator.
     /// </summary>
     /// <returns>Returns the character that represents the path separator.</returns>
