@@ -901,6 +901,64 @@ namespace ra { namespace filesystem { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testMakeRelativePath)
+  {
+    //test deeper directory
+    {
+#ifdef _WIN32
+      const std::string base_path = "C:\\Program Files\\Foo";
+      const std::string test_path = "C:\\Program Files\\Foo\\Bar\\Baz";
+      const std::string expected_path = "Bar\\Baz";
+#else
+      const std::string base_path = "/media/cdrom";
+      const std::string test_path = "/media/cdrom/Bar/Baz";
+      const std::string expected_path = "Bar/Baz";
+#endif
+      std::string relative_path = ra::filesystem::makeRelativePath(base_path, test_path);
+      ASSERT_EQ( expected_path, relative_path );
+    }
+
+    //test root directory is the common ground
+    {
+#ifdef _WIN32
+      const std::string base_path = "C:\\Program Files\\GIMP 2";
+      const std::string test_path = "C:\\temp\\images";
+      const std::string expected_path = "..\\..\\temp\\images";
+#else
+      const std::string base_path = "/usr/bin";
+      const std::string test_path = "/mnt/portable";
+      const std::string expected_path = "../../mnt/portable";
+#endif
+      std::string relative_path = ra::filesystem::makeRelativePath(base_path, test_path);
+      ASSERT_EQ( expected_path, relative_path );
+    }
+
+    //test first directory is the common ground
+    {
+#ifdef _WIN32
+      const std::string base_path = "C:\\Program Files\\GIMP 2";
+      const std::string test_path = "C:\\Program Files\\Microsoft Office";
+      const std::string expected_path = "..\\Microsoft Office";
+#else
+      const std::string base_path = "/usr/bin";
+      const std::string test_path = "/usr/sbin";
+      const std::string expected_path = "../sbin";
+#endif
+      std::string relative_path = ra::filesystem::makeRelativePath(base_path, test_path);
+      ASSERT_EQ( expected_path, relative_path );
+    }
+
+#ifdef _WIN32
+    //test unrelated path
+    {
+      const std::string base_path = "C:\\Program Files\\Microsoft Office";
+      const std::string test_path = "D:\\temp";
+      std::string relative_path = ra::filesystem::makeRelativePath(base_path, test_path);
+      ASSERT_TRUE( relative_path.empty() ) << "relative_path expected to be empty string but is '" << relative_path << "'.";
+    }
+#endif
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetCurrentFolder)
   {
     std::string curdir = getCurrentFolder();
@@ -1528,6 +1586,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE(functor.hasProgressBegin());
     ASSERT_TRUE(functor.hasProgressEnd  ());
   }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace filesystem
 } //namespace ra

@@ -7,6 +7,7 @@ Changes for 0.6.0:
 * Fixed issue #25: Get current user system directories.
 * Fixed issue #26: parseBoolean() and toString(bool).
 * Fixed issue #27: createFolder() fails with absolute path.
+* Fixed issue #28: ra::filesystem::makeRelativePath().
 * Fixed issue #29: ra::filesystem::copyFile().
 * Fixed issue #31: ra::environment::expand().
 
