@@ -1663,6 +1663,142 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testReadTextFile)
+  {
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = 
+      "The"   + newline +
+      "quick" + newline +
+      "brown" + newline +
+      "fox"   + newline +
+      "jumps" + newline +
+      "over"  + newline +
+      "the"   + newline +
+      "lazy"  + newline +
+      "dog." ;
+    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+    //read as lines
+    ra::strings::StringVector lines;
+    bool readok = readTextFile(file_path, lines, true);
+    ASSERT_TRUE( readok );
+
+    //assert each lines properly readed
+    static const size_t num_expected_lines = 9;
+    ASSERT_EQ(num_expected_lines, lines.size());
+    ASSERT_EQ(std::string("The"  ), lines[0]);
+    ASSERT_EQ(std::string("quick"), lines[1]);
+    ASSERT_EQ(std::string("brown"), lines[2]);
+    ASSERT_EQ(std::string("fox"  ), lines[3]);
+    ASSERT_EQ(std::string("jumps"), lines[4]);
+    ASSERT_EQ(std::string("over" ), lines[5]);
+    ASSERT_EQ(std::string("the"  ), lines[6]);
+    ASSERT_EQ(std::string("lazy" ), lines[7]);
+    ASSERT_EQ(std::string("dog." ), lines[8]);
+
+    //read as a single buffer
+    std::string buffer;
+    readok = readTextFile(file_path, buffer);
+    ASSERT_TRUE( readok );
+
+    //assert content is properly readed
+#ifdef _WIN32
+    // CRLF characters are replaced by CR when a file is readed in text mode
+    std::string expected = content;
+    ra::strings::replace(expected, newline, "\n");
+#else
+    std::string expected = content;
+#endif
+    ASSERT_EQ( expected.size(), buffer.size() );
+    ASSERT_EQ( expected, buffer );
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testWriteTextFileBuffer)
+  {
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = 
+      "The"   + newline +
+      "quick" + newline +
+      "brown" + newline +
+      "fox"   + newline +
+      "jumps" + newline +
+      "over"  + newline +
+      "the"   + newline +
+      "lazy"  + newline +
+      "dog." ;
+    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+    //assert file size
+#ifdef _WIN32
+    const size_t expected_file_size = 52;
+#else
+    const size_t expected_file_size = 52-8; // 1 byte per newline less than windows version
+#endif
+    const size_t file_size = ra::filesystem::getFileSize(file_path.c_str());
+    ASSERT_EQ( expected_file_size, file_size );
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testWriteTextFileLines)
+  {
+    const std::string newline = ra::environment::getLineSeparator();
+
+    //building word list
+    static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
+    ra::strings::StringVector word_list;
+    ra::strings::split(word_list, sentence, " ");
+
+    //assert writing without adding new line between words
+    const std::string file_path1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
+    bool success = ra::filesystem::writeTextFile(file_path1, word_list, false);
+    ASSERT_TRUE( success );
+
+    //read the generated file as a binary string
+    std::string binary;
+    bool readed = ra::filesystem::readFile(file_path1, binary);
+    ASSERT_TRUE( readed );
+
+    //assert no newline between words
+    static const std::string expected_binary = "Thequickbrownfoxjumpsoverthelazydog.";
+    ASSERT_EQ( expected_binary, binary );
+
+    //assert file size
+    {
+      const size_t expected_file_size = 36;
+      const size_t file_size = ra::filesystem::getFileSize(file_path1.c_str());
+      ASSERT_EQ( expected_file_size, file_size );
+    }
+
+    //assert writing with new line between words
+    const std::string file_path2 = ra::gtesthelp::getTestQualifiedName() + ".2.txt";
+    success = ra::filesystem::writeTextFile(file_path2, word_list, true);
+    ASSERT_TRUE( success );
+
+    //read the generated file as a binary string
+    readed = ra::filesystem::readFile(file_path2, binary);
+    ASSERT_TRUE( readed );
+
+    //assert newline between words
+    {
+      const size_t minimum_file_size = 40;
+      const size_t file_size = ra::filesystem::getFileSize(file_path2.c_str());
+      ASSERT_GT( file_size, minimum_file_size );
+    }
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path1.c_str());
+    ra::filesystem::deleteFile(file_path2.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace filesystem
 } //namespace ra
