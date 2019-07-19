@@ -370,6 +370,44 @@ namespace ra
     /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
     bool fileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue);
 
+    /// <summary>
+    /// Reads a text file line by line and store the output into the 'lines' variable.
+    /// Note that on Windows platform, CRLF line ending will be converted to CR line ending.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="lines">The content of each line of text.</param>
+    /// <param name="trim_newline_characters">Defines if the function should trim the new-line characters at the end of each lines.  See also 'insert_newline_characters' argument of function 'writeTextFile()'.</param>
+    /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
+    bool readTextFile(const std::string & path, ra::strings::StringVector & lines, bool trim_newline_characters = true);
+
+    /// <summary>
+    /// Reads a text file and store the content into the 'content' variable.
+    /// Note that on Windows platform, CRLF line ending will be converted to CR line ending.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="content">The content of the text file.</param>
+    /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
+    bool readTextFile(const std::string & path, std::string & content);
+
+    /// <summary>
+    /// Write the given content into a text file.
+    /// Note that on Windows platform, CR line ending will be converted to CRLF line ending.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="content">The content of the text file to write into the file.</param>
+    /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
+    bool writeTextFile(const std::string & path, const std::string & content);
+
+    /// <summary>
+    /// Writes the given lines of text into a text file.
+    /// Note that on Windows platform, CR line ending will be converted to CRLF line ending.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="lines">The lines that we want to write to the file.</param>
+    /// <param name="insert_newline_characters">Defines if the function should insert new-line characters at the end of each line. See also 'trim_newline_characters' argument of function 'readTextFile()'.</param>
+    /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
+    bool writeTextFile(const std::string & path, const ra::strings::StringVector & lines, bool insert_newline_characters = true);
+
   } //namespace filesystem
 } //namespace ra
 

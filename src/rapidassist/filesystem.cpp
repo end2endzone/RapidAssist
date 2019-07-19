@@ -1211,5 +1211,79 @@ namespace ra
       return true;
     }
 
+    bool readTextFile(const std::string & path, ra::strings::StringVector & lines, bool trim_newline_characters)
+    {
+      lines.clear();
+
+      static const int BUFFER_SIZE = 10240;
+      char buffer[BUFFER_SIZE];
+
+      FILE* f = fopen(path.c_str(), "r");
+      if (!f)
+        return false;
+
+      while( fgets(buffer, BUFFER_SIZE, f) != NULL )
+      {
+        if (trim_newline_characters)
+        {
+          //remove last CRLF at the end of the string
+          ra::strings::removeEOL(buffer);
+        }
+
+        std::string line = buffer;
+        lines.push_back(line);
+      }
+      fclose(f);
+      return true;
+    }
+
+    bool readTextFile(const std::string & path, std::string & content)
+    {
+      ra::strings::StringVector lines;
+      bool success = readTextFile(path.c_str(), lines, false);
+      if (!success)
+        return false;
+
+      //merge all lines (including newline characters)
+      content = ra::strings::join(lines, "");
+      return true;
+    }
+
+    bool writeTextFile(const std::string & path, const std::string & content)
+    {
+      FILE* f = fopen(path.c_str(), "w");
+      if (!f)
+        return false;
+
+      fputs(content.c_str(), f);
+      fclose(f);
+      return true;
+    }
+
+    bool writeTextFile(const std::string & path, const ra::strings::StringVector & lines, bool insert_newline_characters)
+    {
+      FILE* f = fopen(path.c_str(), "w");
+      if (!f)
+        return false;
+
+      for(size_t i=0; i<lines.size(); i++)
+      {
+        const std::string & line = lines[i];
+        fputs(line.c_str(), f);
+
+        //add a newline character between each lines
+        if (insert_newline_characters)
+        {
+          bool isLast = (i==lines.size()-1);
+          if (!isLast)
+          {
+            fputs(ra::environment::getLineSeparator(), f);
+          }
+        }
+      }
+      fclose(f);
+      return true;
+    }
+
   } //namespace filesystem
 } //namespace ra
