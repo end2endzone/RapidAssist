@@ -337,7 +337,7 @@ namespace ra
     bool copyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function);
 
     /// <summary>
-    /// Reads the first 'size' bytes of file 'path' and copy the data of the file to 'data' variable.
+    /// Reads the first 'size' bytes of file 'path' and copy the binary data to 'data' variable.
     /// </summary>
     /// <param name="path">The path of the file.</param>
     /// <param name="size">The number of bytes to peek into the file.</param>
@@ -346,7 +346,7 @@ namespace ra
     bool peekFile(const std::string & path, size_t size, std::string & data);
 
     /// <summary>
-    /// Reads the data of the given file path and copy the data to 'data' variable.
+    /// Reads the binary data of the given file into the 'data' variable.
     /// </summary>
     /// <param name="path">The path of the file.</param>
     /// <param name="data">The variable that will contains the readed bytes.</param>
@@ -354,7 +354,7 @@ namespace ra
     bool readFile(const std::string & path, std::string & data);
 
     /// <summary>
-    /// Writes the given data to a file.
+    /// Writes the given binary data to a file.
     /// </summary>
     /// <param name="path">The path of the file.</param>
     /// <param name="data">The data to write to the file.</param>

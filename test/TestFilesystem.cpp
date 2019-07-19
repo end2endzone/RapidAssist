@@ -28,6 +28,7 @@
 #include "rapidassist/gtesthelp.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/process.h"
+#include "rapidassist/random.h"
 
 #ifndef _WIN32
 #include <linux/fs.h>
@@ -1585,6 +1586,81 @@ namespace ra { namespace filesystem { namespace test
     //assert that first and last progress was received
     ASSERT_TRUE(functor.hasProgressBegin());
     ASSERT_TRUE(functor.hasProgressEnd  ());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testReadFile)
+  {
+    //test file not found
+    {
+      const std::string file_path = "this file is not found";
+      std::string content;
+      bool success = ra::filesystem::readFile(file_path, content);
+      ASSERT_FALSE( success );
+    }
+
+    //test file read
+    {
+      const std::string file_path = ra::process::getCurrentProcessPath();
+      std::string content;
+      bool success = ra::filesystem::readFile(file_path, content);
+      ASSERT_TRUE( success );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testWriteFile)
+  {
+    //test write fail
+    {
+      const std::string file_path = ra::filesystem::getCurrentFolder() +
+                                    ra::filesystem::getPathSeparatorStr() + "foo" +
+                                    ra::filesystem::getPathSeparatorStr() + "bar" +
+                                    ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".bin"; //folder 'foo\bar' does not exists.
+      const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
+      const std::string content = ra::random::getRandomString(content_size);
+      bool success = ra::filesystem::writeFile(file_path, content);
+      ASSERT_FALSE( success );
+    }
+
+    //test random content write
+    {
+      const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".bin";
+      const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
+      const std::string content = ra::random::getRandomString(content_size);
+      bool success = ra::filesystem::writeFile(file_path, content);
+      ASSERT_TRUE( success );
+
+      //assert write success
+      const bool found = ra::filesystem::fileExists(file_path.c_str());
+      const size_t write_size = ra::filesystem::getFileSize(file_path.c_str());
+      ASSERT_EQ( content_size, write_size );
+
+      //cleanup
+      ra::filesystem::deleteFile(file_path.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testReadWriteFileDataLoss)
+  {
+    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".bin";
+    const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
+    const std::string content_write = ra::random::getRandomString(content_size);
+    bool success = ra::filesystem::writeFile(file_path, content_write);
+    ASSERT_TRUE( success );
+
+    //assert write success
+    const size_t write_size = ra::filesystem::getFileSize(file_path.c_str());
+    ASSERT_EQ( content_size, write_size );
+
+    std::string content_read;
+    success = ra::filesystem::readFile(file_path, content_read);
+    ASSERT_TRUE( success );
+
+    //assert that we readed the same amount of data
+    ASSERT_EQ( content_write.size(), content_read.size() );
+    ASSERT_EQ( content_write, content_read ); //and the same data
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
