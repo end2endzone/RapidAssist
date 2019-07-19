@@ -337,32 +337,32 @@ namespace ra
     bool copyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function);
 
     /// <summary>
-    /// Reads the first 'size' bytes of file 'path' and copy the content of the file to 'content' variable.
+    /// Reads the first 'size' bytes of file 'path' and copy the data of the file to 'data' variable.
     /// </summary>
     /// <param name="path">The path of the file.</param>
     /// <param name="size">The number of bytes to peek into the file.</param>
-    /// <param name="content">The variable that will contains the readed bytes.</param>
+    /// <param name="data">The variable that will contains the readed bytes.</param>
     /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
-    bool peekFile(const std::string & path, size_t size, std::string & content);
+    bool peekFile(const std::string & path, size_t size, std::string & data);
 
     /// <summary>
-    /// Reads the content of the given file path and copy the content to 'content' variable.
+    /// Reads the data of the given file path and copy the data to 'data' variable.
     /// </summary>
     /// <param name="path">The path of the file.</param>
-    /// <param name="content">The variable that will contains the readed bytes.</param>
+    /// <param name="data">The variable that will contains the readed bytes.</param>
     /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
-    bool readFile(const std::string & path, std::string & content);
+    bool readFile(const std::string & path, std::string & data);
 
     /// <summary>
-    /// Writes the given content to a file.
+    /// Writes the given data to a file.
     /// </summary>
     /// <param name="path">The path of the file.</param>
-    /// <param name="content">The content to write to the file.</param>
+    /// <param name="data">The data to write to the file.</param>
     /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
-    bool writeFile(const std::string & path, const std::string & content);
+    bool writeFile(const std::string & path, const std::string & data);
 
     /// <summary>
-    /// Process a search and replace operation on the content of the given file.
+    /// Process a search and replace operation on the data of the given file.
     /// </summary>
     /// <param name="path">The path of the file.</param>
     /// <param name="oldvalue">The old value to replace by the new value.</param>

@@ -1129,12 +1129,12 @@ namespace ra
       return copyFileInternal(source_path, destination_path, NULL, progress_function);
     }
 
-    bool peekFile(const std::string & path, size_t size, std::string & content)
+    bool peekFile(const std::string & path, size_t size, std::string & data)
     {
       //static const std::string EMPTY;
-      content = "";
+      data = "";
 
-      //allocate a buffer which can hold the content of the file
+      //allocate a buffer which can hold the data of the file
       size_t file_size = ra::filesystem::getFileSize(path.c_str());
       size_t max_read_size = (file_size < size ? file_size : size);
 
@@ -1150,7 +1150,7 @@ namespace ra
       }
       memset(buffer, 0, max_read_size);
 
-      //read the content
+      //read the data
       size_t read_size = fread(buffer, 1, max_read_size, f);
       if (read_size != max_read_size)
       {
@@ -1161,50 +1161,50 @@ namespace ra
 
       fclose(f);
 
-      //copy the content of the buffer to the output string
-      content.assign(buffer, max_read_size);
+      //copy the data of the buffer to the output string
+      data.assign(buffer, max_read_size);
 
       //we do not need the buffer anymore
       delete[] buffer;
 
-      bool success = (content.size() == max_read_size);
+      bool success = (data.size() == max_read_size);
       return success;
     }
 
-    bool readFile(const std::string & path, std::string & content)
+    bool readFile(const std::string & path, std::string & data)
     {
       uint32_t file_size = ra::filesystem::getFileSize(path.c_str());
-      bool readed = peekFile(path, file_size, content);
+      bool readed = peekFile(path, file_size, data);
       return readed;
     }
 
-    bool writeFile(const std::string & path, const std::string & content)
+    bool writeFile(const std::string & path, const std::string & data)
     {
       FILE * f = fopen(path.c_str(), "wb");
       if (!f)
         return false;
  
-      size_t size_write = fwrite(content.c_str(), 1, content.size(), f);
+      size_t size_write = fwrite(data.c_str(), 1, data.size(), f);
  
       fclose(f);
  
-      bool success = (content.size() == size_write);
+      bool success = (data.size() == size_write);
       return success;
     }
 
     bool fileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue)
     {
-      std::string content;
-      if (!readFile(path, content))
+      std::string data;
+      if (!readFile(path, data))
         return false;
 
-      int num_finding = ra::strings::replace(content, oldvalue, newvalue);
+      int num_finding = ra::strings::replace(data, oldvalue, newvalue);
 
       //does the file was modified?
       if (num_finding)
       {
         //yes, write modifications to the file
-        if (!writeFile(path, content))
+        if (!writeFile(path, data))
           return false;
       }
 
