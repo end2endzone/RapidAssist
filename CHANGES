@@ -1,6 +1,8 @@
 Changes for 0.6.0:
 
 * Fixed issue #15: ra::filesystem::readFile() and writeFile().
+* Fixed issue #16: SAFE_WARNING_DISABLE macro.
+* Fixed issue #17: SAFE_DELETE macro.
 * Fixed issue #19: where() or which() function.
 * Fixed issue #22: ra::filesystem::getFilenameWithoutExtension().
 * Fixed issue #23: ra::environment::getEnvironmentVariables().

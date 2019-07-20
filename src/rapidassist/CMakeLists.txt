@@ -6,6 +6,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/generics.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/logger.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/macros.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/process.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
