@@ -1799,6 +1799,75 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::deleteFile(file_path2.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testPeekFile)
+  {
+    const std::string newline = ra::environment::getLineSeparator();
+
+    //building word list
+    static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
+
+    //create a test file
+    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+
+    //create a huge file
+    std::string buffer;
+    buffer.reserve(500*(sentence.size()+10)); //help speed the test a bit
+    for(size_t i=0; i<500; i++)
+    {
+      buffer += sentence;
+      buffer += "\n";
+      buffer += ra::strings::toString(i);
+      buffer += "\n";
+    }
+    bool write_ok = ra::filesystem::writeFile(file_path, buffer);
+    ASSERT_TRUE( write_ok );
+    buffer.clear();
+
+    //try different peek size for testing
+    {
+      static const size_t peek_sizes[] = {
+        1234,
+        50,
+        1,
+        0,
+      };
+      const size_t num_peek_sizes = sizeof(peek_sizes)/sizeof(peek_sizes[0]);
+
+      for(size_t i=0; i<num_peek_sizes; i++)
+      {
+        const size_t peek_size = peek_sizes[i];
+        std::string buffer;
+        bool peek_ok = ra::filesystem::peekFile(file_path, peek_size, buffer);
+        ASSERT_TRUE( peek_ok ) << "Failed peeking " << peek_size << " bytes into file '" << file_path << "'.";
+        ASSERT_EQ( peek_size, buffer.size() );
+      }
+    }
+
+    //peek into the file
+    {
+      const size_t peek_size = 155;
+      bool peek_ok = ra::filesystem::peekFile(file_path, peek_size, buffer);
+      ASSERT_TRUE( peek_ok );
+      ASSERT_EQ( peek_size, buffer.size() );
+
+      //assert the expected content
+      static const std::string expected = "The quick brown fox jumps over the lazy dog.\n0\nThe quick brown fox jumps over the lazy dog.\n1\nThe quick brown fox jumps over the lazy dog.\n2\nThe quick brow";
+      ASSERT_EQ( peek_size, expected.size() );
+      ASSERT_EQ( expected.size(), buffer.size() );
+      ASSERT_EQ( expected, buffer );
+    }
+
+    //peek bigger than the file's size
+    {
+      const size_t file_size = (size_t)ra::filesystem::getFileSize(file_path.c_str());
+      const size_t peek_size = file_size + 10000;
+      bool peek_ok = ra::filesystem::peekFile(file_path, peek_size, buffer);
+      ASSERT_TRUE( peek_ok );
+      ASSERT_EQ( file_size, buffer.size() );
+    }
+
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace filesystem
 } //namespace ra
