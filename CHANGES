@@ -1,5 +1,6 @@
 Changes for 0.6.0:
 
+* Fixed issue #15: ra::filesystem::readFile() and writeFile().
 * Fixed issue #19: where() or which() function.
 * Fixed issue #22: ra::filesystem::getFilenameWithoutExtension().
 * Fixed issue #23: ra::environment::getEnvironmentVariables().
@@ -10,6 +11,7 @@ Changes for 0.6.0:
 * Fixed issue #28: ra::filesystem::makeRelativePath().
 * Fixed issue #29: ra::filesystem::copyFile().
 * Fixed issue #31: ra::environment::expand().
+* Fixed issue #34: ra::filesystem::writeTextFile().
 
 Changes for 0.5.0:
 
