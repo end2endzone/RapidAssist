@@ -459,26 +459,12 @@ namespace ra
 
     bool getTextFileContent(const char* iFilename, StringVector & oLines )
     {
-      oLines.clear();
+      if (iFilename == NULL)
+        return false;
 
-      static const int BUFFER_SIZE = 10240;
-      char buffer[BUFFER_SIZE];
-
-      FILE* f = fopen(iFilename, "r");
-      if (f)
-      {
-        while( fgets(buffer, BUFFER_SIZE, f) != NULL )
-        {
-          //remove last CRLF at the end of the string
-          removeEOL(buffer);
-
-          std::string line = buffer;
-          oLines.push_back(line);
-        }
-        fclose(f);
-        return true;
-      }
-      return false;
+      std::string path = iFilename;
+      bool success = ra::filesystem::readTextFile(path, oLines, true);
+      return success;
     }
 
     bool createFile(const char * iFilePath, size_t iSize)

@@ -12,6 +12,7 @@ Changes for 0.6.0:
 * Fixed issue #29: ra::filesystem::copyFile().
 * Fixed issue #31: ra::environment::expand().
 * Fixed issue #34: ra::filesystem::writeTextFile().
+* Fixed issue #37: Move ra:gtesthelp::getTextFileContent() to ra::filesystem::readTextFileContent().
 
 Changes for 0.5.0:
 
