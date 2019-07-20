@@ -1866,6 +1866,39 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ( file_size, buffer.size() );
     }
 
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testFileReplace)
+  {
+    //create a test file
+    static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
+    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool write_ok = ra::filesystem::writeTextFile(file_path, sentence);
+    ASSERT_TRUE( write_ok );
+
+    //process with search and replace
+    bool replaced1 = ra::filesystem::fileReplace(file_path, "brown",  "rainbow");
+    bool replaced2 = ra::filesystem::fileReplace(file_path, "fox",    "chameleon");
+    bool replaced3 = ra::filesystem::fileReplace(file_path, "quick",  "hungry");
+    bool replaced4 = ra::filesystem::fileReplace(file_path, "jumps",  "swings his tongue");
+    bool replaced5 = ra::filesystem::fileReplace(file_path, "over the lazy dog",  "from 0 to 60 miles per hour in a hundredth of a second");
+    ASSERT_TRUE( replaced1 );
+    ASSERT_TRUE( replaced2 );
+    ASSERT_TRUE( replaced3 );
+    ASSERT_TRUE( replaced4 );
+    ASSERT_TRUE( replaced5 );
+
+    //read the replaced file
+    std::string text;
+    bool read_ok = ra::filesystem::readTextFile(file_path, text);
+    ASSERT_TRUE( read_ok );
+    static const std::string expected = "The hungry rainbow chameleon swings his tongue from 0 to 60 miles per hour in a hundredth of a second.";
+    ASSERT_EQ( expected, text );
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
