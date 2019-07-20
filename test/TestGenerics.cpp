@@ -24,6 +24,7 @@
 
 #include "TestGenerics.h"
 #include "rapidassist/generics.h"
+#include "rapidassist/strings.h"
 
 namespace ra { namespace generics { namespace test
 {
@@ -142,6 +143,381 @@ namespace ra { namespace generics { namespace test
       f = 1.3958644e+010f;
       i = 1347420160;
       ASSERT_EQ(i, ra::generics::readAs<int32_t>(f) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testReverseOrder)
+  {
+    //test reverse even (6 elements)
+    {
+      ra::strings::StringVector names;
+      names.push_back("Paul Atreides"           );
+      names.push_back("Duke Leto Atreides"      );
+      names.push_back("Lady Jessica"            );
+      names.push_back("Stilgar"                 );
+      names.push_back("Baron Vladimir Harkonnen");
+      names.push_back("Feyd Rautha"             );
+
+      ra::strings::StringVector reverse_names;
+      ra::generics::reverse_vector(names, reverse_names);
+
+      ASSERT_EQ( std::string("Feyd Rautha"             ), reverse_names[0] );
+      ASSERT_EQ( std::string("Baron Vladimir Harkonnen"), reverse_names[1] );
+      ASSERT_EQ( std::string("Stilgar"                 ), reverse_names[2] );
+      ASSERT_EQ( std::string("Lady Jessica"            ), reverse_names[3] );
+      ASSERT_EQ( std::string("Duke Leto Atreides"      ), reverse_names[4] );
+      ASSERT_EQ( std::string("Paul Atreides"           ), reverse_names[5] );
+    }
+
+    //test reverse odd (5 elements)
+    {
+      ra::strings::StringVector names;
+      names.push_back("Marty McFly"         );
+      names.push_back("Doctor Emmett Brown" );
+      names.push_back("Biff Tannen"         );
+      names.push_back("George McFly"        );
+      names.push_back("Jennifer"            );
+
+      ra::strings::StringVector reverse_names;
+      ra::generics::reverse_vector(names, reverse_names);
+
+      ASSERT_EQ( std::string("Jennifer"            ), reverse_names[0] );
+      ASSERT_EQ( std::string("George McFly"        ), reverse_names[1] );
+      ASSERT_EQ( std::string("Biff Tannen"         ), reverse_names[2] );
+      ASSERT_EQ( std::string("Doctor Emmett Brown" ), reverse_names[3] );
+      ASSERT_EQ( std::string("Marty McFly"         ), reverse_names[4] );
+    }
+
+    //test empty list
+    {
+      ra::strings::StringVector names;
+      ra::strings::StringVector reverse_names;
+      ra::generics::reverse_vector(names, reverse_names);
+    }
+
+    //test single element list
+    {
+      ra::strings::StringVector names;
+      names.push_back("HAL 9000");
+
+      ra::strings::StringVector reverse_names;
+      ra::generics::reverse_vector(names, reverse_names);
+
+      ASSERT_EQ( std::string("HAL 9000"), reverse_names[0] );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindMaxIndex)
+  {
+    //test default behavior
+    {
+      std::vector<int> values;
+      values.push_back(1);
+      values.push_back(22);
+      values.push_back(42);
+      values.push_back(-10);
+      values.push_back(0);
+      
+      size_t index = ra::generics::findMaxIndex(values);
+      ASSERT_EQ( 2, index );
+    }
+
+    //test empty list
+    {
+      std::vector<int> values;
+      size_t index = ra::generics::findMaxIndex(values);
+      ASSERT_EQ( ra::generics::INVALID_INDEX, index );
+    }
+
+    //test single element list
+    {
+      std::vector<int> values;
+      values.push_back(42);
+
+      size_t index = ra::generics::findMaxIndex(values);
+      ASSERT_EQ( 0, index );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindMinIndex)
+  {
+    //test default behavior
+    {
+      std::vector<int> values;
+      values.push_back(1);
+      values.push_back(22);
+      values.push_back(42);
+      values.push_back(-10);
+      values.push_back(0);
+      
+      size_t index = ra::generics::findMinIndex(values);
+      ASSERT_EQ( 3, index );
+    }
+
+    //test empty list
+    {
+      std::vector<int> values;
+      size_t index = ra::generics::findMinIndex(values);
+      ASSERT_EQ( ra::generics::INVALID_INDEX, index );
+    }
+
+    //test single element list
+    {
+      std::vector<int> values;
+      values.push_back(42);
+
+      size_t index = ra::generics::findMinIndex(values);
+      ASSERT_EQ( 0, index );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testCopyUnique)
+  {
+    //test default behavior
+    {
+      ra::strings::StringVector values;
+      values.push_back("red"    );
+      values.push_back("green"  );
+      values.push_back("blue"   );
+      values.push_back("white"  );
+      values.push_back("white"  );
+      values.push_back("red"    );
+      values.push_back("green"  );
+      values.push_back("white"  );
+      values.push_back("yellow" );
+      values.push_back("blue"   );
+      
+      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ASSERT_EQ( 5, unique_values.size() );
+
+      //assert order is preserved
+      ASSERT_EQ( std::string("red"    ), unique_values[0] );
+      ASSERT_EQ( std::string("green"  ), unique_values[1] );
+      ASSERT_EQ( std::string("blue"   ), unique_values[2] );
+      ASSERT_EQ( std::string("white"  ), unique_values[3] );
+      ASSERT_EQ( std::string("yellow" ), unique_values[4] );
+    }
+
+    //test empty list
+    {
+      ra::strings::StringVector values;
+      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ASSERT_EQ( 0, unique_values.size() );
+    }
+
+    //test single element list
+    {
+      ra::strings::StringVector values;
+      values.push_back("pink");
+      
+      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ASSERT_EQ( 1, unique_values.size() );
+
+      //assert order is preserved
+      ASSERT_EQ( std::string("pink"), unique_values[0] );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testMakeUnique)
+  {
+    //test default behavior
+    {
+      ra::strings::StringVector values;
+      values.push_back("Mercury");
+      values.push_back("Venus"  );
+      values.push_back("Earth"  );
+      values.push_back("Mars"   );
+      values.push_back("Mars"   );
+      values.push_back("Mars"   );
+      values.push_back("Venus"  );
+      values.push_back("Jupiter");
+      values.push_back("Saturn" );
+      values.push_back("Uranus" );
+      values.push_back("Earth"  );
+      values.push_back("Neptune");
+      values.push_back("Pluto"  );
+      values.push_back("Neptune");
+      values.push_back("Uranus" );
+      
+      size_t num_duplicates = ra::generics::makeUnique(values);
+      ASSERT_EQ( 9, values.size() );
+      ASSERT_EQ( 6, num_duplicates );
+
+      //assert order is preserved
+      ASSERT_EQ( std::string("Mercury"), values[0] );
+      ASSERT_EQ( std::string("Venus"  ), values[1] );
+      ASSERT_EQ( std::string("Earth"  ), values[2] );
+      ASSERT_EQ( std::string("Mars"   ), values[3] );
+      ASSERT_EQ( std::string("Jupiter"), values[4] );
+      ASSERT_EQ( std::string("Saturn" ), values[5] );
+      ASSERT_EQ( std::string("Uranus" ), values[6] );
+      ASSERT_EQ( std::string("Neptune"), values[7] );
+      ASSERT_EQ( std::string("Pluto"  ), values[8] );
+    }
+
+    //test empty list
+    {
+      ra::strings::StringVector values;
+      size_t num_duplicates = ra::generics::makeUnique(values);
+      ASSERT_EQ( 0, values.size() );
+      ASSERT_EQ( 0, num_duplicates );
+    }
+
+    //test single element list
+    {
+      ra::strings::StringVector values;
+      values.push_back("Earth");
+      
+      size_t num_duplicates = ra::generics::makeUnique(values);
+      ASSERT_EQ( 1, values.size() );
+      ASSERT_EQ( 0, num_duplicates );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindMaxValue)
+  {
+    //test default behavior
+    {
+      std::vector<int> values;
+      values.push_back(1);
+      values.push_back(22);
+      values.push_back(42);
+      values.push_back(-10);
+      values.push_back(0);
+      
+      const int * max_value = ra::generics::findMaxValue(values);
+      ASSERT_TRUE( max_value != NULL );
+      ASSERT_EQ( 42, (*max_value) );
+    }
+
+    //test empty list
+    {
+      std::vector<int> values;
+      const int * max_value = ra::generics::findMaxValue(values);
+      ASSERT_TRUE( max_value == NULL );
+    }
+
+    //test single element list
+    {
+      std::vector<int> values;
+      values.push_back(42);
+
+      const int * max_value = ra::generics::findMaxValue(values);
+      ASSERT_TRUE( max_value != NULL );
+      ASSERT_EQ( 42, (*max_value) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindMinValue)
+  {
+    //test default behavior
+    {
+      std::vector<int> values;
+      values.push_back(1);
+      values.push_back(22);
+      values.push_back(42);
+      values.push_back(-10);
+      values.push_back(0);
+      
+      const int * min_value = ra::generics::findMinValue(values);
+      ASSERT_TRUE( min_value != NULL );
+      ASSERT_EQ( -10, (*min_value) );
+    }
+
+    //test empty list
+    {
+      std::vector<int> values;
+      const int * min_value = ra::generics::findMinValue(values);
+      ASSERT_TRUE( min_value == NULL );
+    }
+
+    //test single element list
+    {
+      std::vector<int> values;
+      values.push_back(42);
+
+      const int * min_value = ra::generics::findMinValue(values);
+      ASSERT_TRUE( min_value != NULL );
+      ASSERT_EQ( 42, (*min_value) );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindIndexOf)
+  {
+    //test default behavior
+    {
+      static const std::string gods[] = {
+        "Ymir",
+        "Odin",
+        "Frigg",
+        "Thor",
+        "Balder",
+        "Tyr",
+        "Bragi",
+        "Loki",
+        "Hel",
+        "Heimdall",
+        "Freyr",
+        "Freya",
+      };
+      static const size_t num_gods = sizeof(gods)/sizeof(gods[0]);
+      
+      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("Thor", gods, num_gods);
+      ASSERT_EQ( 1, locations.size() );
+      ASSERT_EQ( 3, locations[0] );
+    }
+
+    //test no results
+    {
+      static const std::string gods[] = {
+        "Ymir",
+        "Odin",
+        "Frigg",
+        "Thor",
+        "Balder",
+        "Tyr",
+        "Bragi",
+        "Loki",
+        "Hel",
+        "Heimdall",
+        "Freyr",
+        "Freya",
+      };
+      static const size_t num_gods = sizeof(gods)/sizeof(gods[0]);
+      
+      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("The strongest god", gods, num_gods);
+      ASSERT_EQ( 0, locations.size() );
+    }
+
+    //test empty list
+    {
+      static const std::string gods[] = {"temp"};
+      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("Thor", gods, 0);
+      ASSERT_EQ( 0, locations.size() );
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestGenerics, testFindFirst)
+  {
+    static const std::string gods[] = {
+      "Anubis",
+      "Horus",
+      "Osiris",
+      "Ra",
+      "Set",
+    };
+    static const size_t num_gods = sizeof(gods)/sizeof(gods[0]);
+
+    //test default behavior
+    {
+      size_t index = ra::generics::findFirst<std::string>("Osiris", gods, num_gods);
+      ASSERT_EQ( 2, index );
+    }
+
+    //test not found
+    {
+      size_t index = ra::generics::findFirst<std::string>("Bast", gods, num_gods);
+      ASSERT_EQ( ra::generics::INVALID_INDEX, index );
     }
   }
   //--------------------------------------------------------------------------------------------------
