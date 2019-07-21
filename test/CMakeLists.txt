@@ -18,6 +18,8 @@ add_executable(rapidassist_unittest
   TestDemo.h
   TestEnvironment.cpp
   TestEnvironment.h
+  TestErrors.cpp
+  TestErrors.h
   TestFilesystem.cpp
   TestFilesystem.h
   TestGenerics.cpp
