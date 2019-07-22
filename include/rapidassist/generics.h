@@ -158,7 +158,7 @@ namespace ra
     /// <returns>Returns true if the value was found. Returns false otherwise.</returns>
     template <typename T> inline bool hasElement(const std::vector<T> & values, const T & value)
     {
-      std::vector<T>::const_iterator it = std::find(values.begin(), values.end(), value);
+      typename std::vector<T>::const_iterator it = std::find(values.begin(), values.end(), value);
       if (it != values.end())
 	      return true;
       return false;
@@ -172,7 +172,7 @@ namespace ra
     /// <returns>Returns true if the value was found. Returns false otherwise.</returns>
     template <typename T> inline bool hasElement(const std::list<T> & values, const T & value)
     {
-      std::vector<T>::iterator it = std::find(values.begin(), values.end(), value);
+      typename std::vector<T>::iterator it = std::find(values.begin(), values.end(), value);
       if (it != values.end())
 	      return true;
       return false;
