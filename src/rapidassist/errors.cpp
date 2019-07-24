@@ -28,6 +28,9 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
+#include <errno.h>    // for errno
+#include <cerrno>     // for errno
+#include <string.h>   // for strerror()
 #endif
 
 namespace ra
@@ -41,6 +44,7 @@ namespace ra
       static DWORD dwLastError = 0;
       SetLastError(dwLastError);
       #else
+      errno = 0;
       #endif
     }
 
@@ -51,7 +55,9 @@ namespace ra
       int32_t errcode = static_cast<int32_t>(dwLastError);
       return errcode;
       #else
-      return 0;
+      int errnum = errno;
+      int32_t errcode = static_cast<int32_t>(errnum);
+      return errcode;
       #endif
     }
 
@@ -79,7 +85,9 @@ namespace ra
       std::string strError = lpErrorBuffer;
       return strError;
       #else
-      return "";
+      int errnum = static_cast<int>(errcode);
+      std::string desc = strerror(errnum);
+      return desc;
       #endif
     }
 

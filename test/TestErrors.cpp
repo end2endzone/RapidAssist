@@ -28,6 +28,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
+#include <cmath>    //for std::log
 #endif
 
 namespace ra { namespace errors { namespace test
@@ -69,6 +70,7 @@ namespace ra { namespace errors { namespace test
           NULL);                  // no attr. template
     }
     #else
+    double not_a_number = std::log(-1.0);
     #endif
 
     int32_t error_code = ra::errors::getLastErrorCode();
