@@ -45,7 +45,7 @@ namespace ra { namespace errors { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestErrors, testErrorsDescriptions)
   {
-    for(int32_t i=0; i<10; i++)
+    for(errorcode_t i=0; i<10; i++)
     {
       std::string desc = ra::errors::getErrorCodeDescription(i);
       ASSERT_TRUE( !desc.empty() );
@@ -73,7 +73,7 @@ namespace ra { namespace errors { namespace test
     double not_a_number = std::log(-1.0);
     #endif
 
-    int32_t error_code = ra::errors::getLastErrorCode();
+    errorcode_t error_code = ra::errors::getLastErrorCode();
     std::string desc = ra::errors::getErrorCodeDescription(error_code);
     ASSERT_NE( 0, error_code ) << "Failed. The function is expecting a non-zero error code. Received error_code " << error_code << ", '" << desc << "'.";
   }

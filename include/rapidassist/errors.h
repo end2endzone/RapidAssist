@@ -32,6 +32,14 @@ namespace ra
 {
   namespace errors
   {
+    /// <summary>
+    /// Cross-platform system error code type.
+    /// </summary>
+    #ifdef _WIN32
+      typedef uint32_t errorcode_t; //GetLastError() returns a DWORD which is unsigned 32 bit
+    #else
+      typedef int errorcode_t; //errno is a macro that evaluates to int
+    #endif
 
     /// <summary>
     /// Reset the system's last error code.
@@ -42,7 +50,7 @@ namespace ra
     /// Returns the system's last error code that occured in a function.
     /// </summary>
     /// <returns>Returns the last error code that occured in a function.</returns>
-    int32_t getLastErrorCode();
+    errorcode_t getLastErrorCode();
 
     /// <summary>
     /// Returns the description of the last error.
@@ -54,7 +62,7 @@ namespace ra
     /// Returns the description of the given error code.
     /// </summary>
     /// <returns>Returns the description of the given error code.</returns>
-    std::string getErrorCodeDescription(int32_t errcode);
+    std::string getErrorCodeDescription(errorcode_t code);
 
   } //namespace errors
 } //namespace ra

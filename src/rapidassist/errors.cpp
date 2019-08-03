@@ -48,30 +48,30 @@ namespace ra
       #endif
     }
 
-    int32_t getLastErrorCode()
+    errorcode_t getLastErrorCode()
     {
       #ifdef _WIN32
       DWORD dwLastError = ::GetLastError();
-      int32_t errcode = static_cast<int32_t>(dwLastError);
+      errorcode_t errcode = static_cast<errorcode_t>(dwLastError);
       return errcode;
       #else
       int errnum = errno;
-      int32_t errcode = static_cast<int32_t>(errnum);
+      errorcode_t errcode = static_cast<errorcode_t>(errnum);
       return errcode;
       #endif
     }
 
     std::string getLastErrorDescription()
     {
-      int32_t errcode = getLastErrorCode();
-      std::string desc = getErrorCodeDescription(errcode);
+      errorcode_t code = getLastErrorCode();
+      std::string desc = getErrorCodeDescription(code);
       return desc;
     }
 
-    std::string getErrorCodeDescription(int32_t errcode)
+    std::string getErrorCodeDescription(errorcode_t code)
     {
       #ifdef _WIN32
-      DWORD dwLastError = static_cast<DWORD>(errcode);
+      DWORD dwLastError = static_cast<DWORD>(code);
       const DWORD dwErrorBufferSize = 10240;
       char lpErrorBuffer[dwErrorBufferSize] = {0};
       ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
@@ -85,7 +85,7 @@ namespace ra
       std::string strError = lpErrorBuffer;
       return strError;
       #else
-      int errnum = static_cast<int>(errcode);
+      int errnum = static_cast<int>(code);
       std::string desc = strerror(errnum);
       return desc;
       #endif
