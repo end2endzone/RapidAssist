@@ -387,6 +387,8 @@ namespace ra
         return true;
       else if (ra::strings::uppercase(str) == "YES")
         return true;
+      else if (ra::strings::uppercase(str) == "Y")
+        return true;
       else if (ra::strings::uppercase(str) == "ON")
         return true;
       return false;
@@ -408,9 +410,11 @@ namespace ra
       std::string upper_str = ra::strings::uppercase(str);
       if (upper_str ==  "TRUE") { oValue =  true; return true; }
       if (upper_str ==   "YES") { oValue =  true; return true; }
+      if (upper_str ==     "Y") { oValue =  true; return true; }
       if (upper_str ==    "ON") { oValue =  true; return true; }
       if (upper_str == "FALSE") { oValue = false; return true; }
       if (upper_str ==    "NO") { oValue = false; return true; }
+      if (upper_str ==     "N") { oValue = false; return true; }
       if (upper_str ==   "OFF") { oValue = false; return true; }
 
       //then try to parse the value as a signed integer

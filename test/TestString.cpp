@@ -1056,6 +1056,8 @@ namespace ra { namespace strings { namespace test
     ASSERT_TRUE ( ra::strings::parseBoolean("tRuE" ));
     ASSERT_TRUE ( ra::strings::parseBoolean("yes"  ));
     ASSERT_TRUE ( ra::strings::parseBoolean("yEs"  ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("y"    ));
+    ASSERT_TRUE ( ra::strings::parseBoolean("Y"    ));
     ASSERT_TRUE ( ra::strings::parseBoolean("on"   ));
     ASSERT_TRUE ( ra::strings::parseBoolean("oN"   ));
 
@@ -1063,6 +1065,8 @@ namespace ra { namespace strings { namespace test
     ASSERT_FALSE( ra::strings::parseBoolean("fALsE"));
     ASSERT_FALSE( ra::strings::parseBoolean("no"   ));
     ASSERT_FALSE( ra::strings::parseBoolean("nO"   ));
+    ASSERT_FALSE( ra::strings::parseBoolean("n"    ));
+    ASSERT_FALSE( ra::strings::parseBoolean("N"    ));
     ASSERT_FALSE( ra::strings::parseBoolean("off"  ));
     ASSERT_FALSE( ra::strings::parseBoolean("oFF"  ));
 
@@ -1073,6 +1077,8 @@ namespace ra { namespace strings { namespace test
     ASSERT_TRUE( ra::strings::parse("tRuE" , b)); ASSERT_TRUE( b );
     ASSERT_TRUE( ra::strings::parse("yes"  , b)); ASSERT_TRUE( b );
     ASSERT_TRUE( ra::strings::parse("yEs"  , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("y"    , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE( ra::strings::parse("Y"    , b)); ASSERT_TRUE( b );
     ASSERT_TRUE( ra::strings::parse("on"   , b)); ASSERT_TRUE( b );
     ASSERT_TRUE( ra::strings::parse("oN"   , b)); ASSERT_TRUE( b );
 
@@ -1080,6 +1086,8 @@ namespace ra { namespace strings { namespace test
     ASSERT_TRUE( ra::strings::parse("fALsE", b)); ASSERT_FALSE( b );
     ASSERT_TRUE( ra::strings::parse("no"   , b)); ASSERT_FALSE( b );
     ASSERT_TRUE( ra::strings::parse("nO"   , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("n"    , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE( ra::strings::parse("N"    , b)); ASSERT_FALSE( b );
     ASSERT_TRUE( ra::strings::parse("off"  , b)); ASSERT_FALSE( b );
     ASSERT_TRUE( ra::strings::parse("oFF"  , b)); ASSERT_FALSE( b );
 

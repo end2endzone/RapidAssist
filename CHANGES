@@ -17,6 +17,7 @@ Changes for 0.6.0:
 * Fixed issue #31: ra::environment::expand().
 * Fixed issue #34: ra::filesystem::writeTextFile().
 * Fixed issue #37: Move ra:gtesthelp::getTextFileContent() to ra::filesystem::readTextFileContent().
+* Fixed issue #40: parseBoolean() and parse(bool) should properly parse 'Y' or 'N' values.
 
 Changes for 0.5.0:
 
