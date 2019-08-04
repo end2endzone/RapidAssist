@@ -8,7 +8,6 @@ if "%APPVEYOR_BUILD_FOLDER%"=="" (
 
 set GTEST_ROOT=%APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install
 set rapidassist_DIR=%APPVEYOR_BUILD_FOLDER%\install
-echo rapidassist_DIR=%rapidassist_DIR%
 
 echo ============================================================================
 echo Generating...

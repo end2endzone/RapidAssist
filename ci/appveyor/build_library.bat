@@ -7,7 +7,7 @@ if "%APPVEYOR_BUILD_FOLDER%"=="" (
 )
 
 set GTEST_ROOT=%APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install
-set rapidassist_DIR=%APPVEYOR_BUILD_FOLDER%\third_parties\RapidAssist\install
+set rapidassist_DIR=%APPVEYOR_BUILD_FOLDER%\install
 
 echo ============================================================================
 echo Generating...
@@ -15,7 +15,7 @@ echo ===========================================================================
 cd /d %APPVEYOR_BUILD_FOLDER%
 mkdir build >NUL 2>NUL
 cd build
-cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DCMAKE_INSTALL_PREFIX=%rapidassist_DIR -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DCMAKE_INSTALL_PREFIX=%rapidassist_DIR% -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ============================================================================
