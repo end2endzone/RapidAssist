@@ -16,13 +16,13 @@ echo ===========================================================================
 cd /d %APPVEYOR_BUILD_FOLDER%\client
 mkdir build >NUL 2>NUL
 cd build
-cmake ..
+cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ============================================================================
 echo Compiling...
 echo ============================================================================
-cmake --build . --config Release
+cmake --build . --config %Configuration%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
 

@@ -7,7 +7,7 @@ if "%APPVEYOR_BUILD_FOLDER%"=="" (
 )
 
 set GTEST_ROOT=%APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install
-set INSTALL_LOCATION=%APPVEYOR_BUILD_FOLDER%\install
+set rapidassist_DIR=%APPVEYOR_BUILD_FOLDER%\third_parties\RapidAssist\install
 
 echo ============================================================================
 echo Generating...
@@ -15,26 +15,26 @@ echo ===========================================================================
 cd /d %APPVEYOR_BUILD_FOLDER%
 mkdir build >NUL 2>NUL
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=%INSTALL_LOCATION% -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DCMAKE_INSTALL_PREFIX=%rapidassist_DIR -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ============================================================================
 echo Compiling...
 echo ============================================================================
-cmake --build . --config Release
+cmake --build . --config %Configuration%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
 
 echo ============================================================================
 echo Installing into %INSTALL_LOCATION%
 echo ============================================================================
-cmake --build . --config Release --target INSTALL
+cmake --build . --config %Configuration% --target INSTALL
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
 
 ::Delete all temporary environment variable created
 set GTEST_ROOT=
-set INSTALL_LOCATION=
+set rapidassist_DIR=
 
 ::Return to launch folder
 cd /d %~dp0
