@@ -45,6 +45,9 @@ install:
 #       build configuration       #
 #---------------------------------#
 
+environment:
+  PlatformToolset: v140
+  
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: Win32
 
@@ -77,5 +80,4 @@ test_script:
 #---------------------------------#
 
 artifacts:
-- path: .\build\bin\Release\rapidassist_unittest.x86.release.xml
-  name: rapidassistTest.x86.release.xml
+- path: .\build\bin\Release\rapidassist_unittest.*.release.xml
