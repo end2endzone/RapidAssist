@@ -10,12 +10,21 @@ set(UNITTEST_TEST_FILES ""
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFileKeyStore.testSave.expected.txt
 )
 
+# Defines the test files that tests for implementation that are only available on WIN32 platforms.
+if(WIN32)
+  set(WIN32_ONLY_FILES ""
+    TestWin32RegistryKeyStore.cpp
+    TestWin32RegistryKeyStore.h
+  )
+endif()
+
 add_executable(rapidassist_unittest
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
   ${RAPIDASSIST_GTESTHELP_TEST_FILES}
   ${UNITTEST_TEST_FILES}
+  ${WIN32_ONLY_FILES}
   main.cpp
   TestCli.cpp
   TestCli.h
@@ -45,8 +54,6 @@ add_executable(rapidassist_unittest
   TestTime.h
   TestUser.cpp
   TestUser.h
-  TestWin32RegistryKeyStore.cpp
-  TestWin32RegistryKeyStore.h
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest

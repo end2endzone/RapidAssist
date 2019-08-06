@@ -30,6 +30,7 @@
 
 #include <stdint.h>
 #include <algorithm>    // std::min
+#include <string.h>
 
 #ifdef _WIN32
 #  ifndef WIN32_LEAN_AND_MEAN
