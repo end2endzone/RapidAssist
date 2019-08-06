@@ -142,8 +142,8 @@ namespace ra
           #define MAX_KEY_LENGTH 255
           #define MAX_VALUE_NAME 16383
 
-          TCHAR    achKey[MAX_KEY_LENGTH];    // buffer for subkey name
-          DWORD    cbName;                    // size of name string 
+          //TCHAR    achKey[MAX_KEY_LENGTH];  // buffer for subkey name
+          //DWORD    cbName;                  // size of name string 
           TCHAR    achClass[MAX_PATH] = {0};  // buffer for class name 
           DWORD    cchClassName = MAX_PATH;   // size of class string 
           DWORD    cSubKeys=0;                // number of subkeys 
@@ -636,7 +636,7 @@ namespace ra
 
     bool PropertiesFileKeyStore::deleteKey(const std::string & key)
     {
-      PropertyMap::const_iterator propertyIt = mProperties.find(key);
+      PropertyMap::iterator propertyIt = mProperties.find(key);
       bool found = (propertyIt != mProperties.end());
       if (!found)
         return true; //nothing to do
