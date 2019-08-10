@@ -1134,11 +1134,15 @@ namespace ra
       //static const std::string EMPTY;
       data.clear();
 
+      //validate if file exists
+      if (ra::filesystem::fileExists(path.c_str()))
+        return false;
+
       //allocate a buffer which can hold the data of the file
       size_t file_size = ra::filesystem::getFileSize(path.c_str());
       size_t max_read_size = (file_size < size ? file_size : size);
 
-      //protects against invalid memory access.
+      //validates empty files 
       if (max_read_size == 0)
         return true;
 
@@ -1174,7 +1178,16 @@ namespace ra
 
     bool readFile(const std::string & path, std::string & data)
     {
+      //validate if file exists
+      if (ra::filesystem::fileExists(path.c_str()))
+        return false;
+
       uint32_t file_size = ra::filesystem::getFileSize(path.c_str());
+
+      //validates empty files 
+      if (file_size == 0)
+        return true;
+
       bool readed = peekFile(path, file_size, data);
       return readed;
     }
