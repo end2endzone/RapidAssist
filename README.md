@@ -15,8 +15,8 @@ Build:
 
 | Service | Build | Tests |
 |----|-------|-------|
-| AppVeyor | [![Build status](https://img.shields.io/appveyor/ci/end2endzone/RapidAssist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg?logo=appveyor)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
-| Travis CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=travis&style=flat)](https://travis-ci.org/end2endzone/RapidAssist) |  |
+| AppVeyor | [![Build status](https://img.shields.io/appveyor/ci/end2endzone/RapidAssist/master.svg?logo=AppVeyor&logoColor=white)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg?logo=AppVeyor&logoColor=white)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
+| Travis CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=Travis-CI-CI-CI&style=flat&logoColor=white)](https://travis-ci.org/end2endzone/RapidAssist) |  |
 
 Statistics:
 
