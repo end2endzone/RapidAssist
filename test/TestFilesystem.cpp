@@ -1718,7 +1718,7 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testWriteTextFileBuffer)
+  TEST_F(TestFilesystem, testWriteTextFileFromString)
   {
     const std::string newline = ra::environment::getLineSeparator();
     const std::string content = 
@@ -1748,7 +1748,7 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testWriteTextFileLines)
+  TEST_F(TestFilesystem, testWriteTextFileFromLines)
   {
     const std::string newline = ra::environment::getLineSeparator();
 

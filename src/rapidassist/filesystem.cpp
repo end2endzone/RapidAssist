@@ -1132,40 +1132,41 @@ namespace ra
     bool peekFile(const std::string & path, size_t size, std::string & data)
     {
       //static const std::string EMPTY;
-      data = "";
+      data.clear();
 
       //allocate a buffer which can hold the data of the file
       size_t file_size = ra::filesystem::getFileSize(path.c_str());
       size_t max_read_size = (file_size < size ? file_size : size);
 
+      //protects against invalid memory access.
+      if (max_read_size == 0)
+        return true;
+
       FILE * f = fopen(path.c_str(), "rb");
       if (!f)
         return false;
 
-      char * buffer = new char[max_read_size]; 
-      if (!buffer)
+      //allocate a buffer to hold the content
+      data.resize(max_read_size, 0);
+      char * buffer = &data[0];
+      char * last = &data[data.size()-1];
+      bool isBufferSizeOK = (data.size() == max_read_size);
+      bool isContiguous = ((last - buffer + 1) == max_read_size);
+      if (!isBufferSizeOK || !isContiguous)
       {
         fclose(f);
         return false;
       }
-      memset(buffer, 0, max_read_size);
 
       //read the data
       size_t read_size = fread(buffer, 1, max_read_size, f);
       if (read_size != max_read_size)
       {
-        delete[] buffer;
         fclose(f);
         return false;
       }
 
       fclose(f);
-
-      //copy the data of the buffer to the output string
-      data.assign(buffer, max_read_size);
-
-      //we do not need the buffer anymore
-      delete[] buffer;
 
       bool success = (data.size() == max_read_size);
       return success;
