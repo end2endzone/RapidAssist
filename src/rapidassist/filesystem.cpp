@@ -1135,7 +1135,7 @@ namespace ra
       data.clear();
 
       //validate if file exists
-      if (ra::filesystem::fileExists(path.c_str()))
+      if (!ra::filesystem::fileExists(path.c_str()))
         return false;
 
       //allocate a buffer which can hold the data of the file
@@ -1179,7 +1179,7 @@ namespace ra
     bool readFile(const std::string & path, std::string & data)
     {
       //validate if file exists
-      if (ra::filesystem::fileExists(path.c_str()))
+      if (!ra::filesystem::fileExists(path.c_str()))
         return false;
 
       uint32_t file_size = ra::filesystem::getFileSize(path.c_str());
