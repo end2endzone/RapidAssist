@@ -22,40 +22,26 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_KEYSTORE_H
-#define RA_KEYSTORE_H
+#ifndef RA_PROPERTIESFILE_H
+#define RA_PROPERTIESFILE_H
 
 #include <string>
 #include <map>
 
 namespace ra
 {
-  namespace keystore
+  namespace filesystem
   {
 
-    class IKeyStore
+    class PropertiesFile
     {
     public:
+      PropertiesFile();
+      virtual ~PropertiesFile();
 
-      virtual bool load(const std::string & path) = 0;
-      virtual bool save(const std::string & path) = 0;
-      virtual bool clear() = 0;
-
-      virtual bool hasKey(const std::string & key) const = 0;
-      virtual bool deleteKey(const std::string & key) = 0;
-      virtual bool getValue(const std::string & key, std::string & value) const = 0;
-      virtual bool setValue(const std::string & key, const std::string & value) = 0;
-    };
-    
-    class PropertiesFileKeyStore : public virtual IKeyStore
-    {
-    public:
-      PropertiesFileKeyStore();
-      virtual ~PropertiesFileKeyStore();
-
-      //IKeyStore interface
       virtual bool load(const std::string & file_path);
       virtual bool save(const std::string & file_path);
+
       virtual bool clear();
       virtual bool hasKey(const std::string & key) const;
       virtual bool deleteKey(const std::string & key);
@@ -67,28 +53,7 @@ namespace ra
       PropertyMap mProperties;
     };
 
-#ifdef _WIN32    
-    class Win32RegistryKeyStore : public virtual IKeyStore
-    {
-    public:
-      Win32RegistryKeyStore();
-      virtual ~Win32RegistryKeyStore();
-
-      //IKeyStore interface
-      virtual bool load(const std::string & registry_path);
-      virtual bool save(const std::string & registry_path);
-      virtual bool clear();
-      virtual bool hasKey(const std::string & key) const;
-      virtual bool deleteKey(const std::string & key);
-      virtual bool getValue(const std::string & key, std::string & value) const;
-      virtual bool setValue(const std::string & key, const std::string & value);
-
-    private:
-      std::string mBaseRegistryPath;
-    };
-#endif //_WIN32
-
-  } //namespace keystore
+  } //namespace filesystem
 } //namespace ra
 
-#endif //RA_KEYSTORE_H
+#endif //RA_PROPERTIESFILE_H

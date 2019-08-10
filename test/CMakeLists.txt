@@ -6,17 +6,9 @@ endif()
 
 set(UNITTEST_TEST_FILES ""
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/tests.xml
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFileKeyStore.testLoad.txt
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFileKeyStore.testSave.expected.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testLoad.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testSave.expected.txt
 )
-
-# Defines the test files that tests for implementation that are only available on WIN32 platforms.
-if(WIN32)
-  set(WIN32_ONLY_FILES ""
-    TestWin32RegistryKeyStore.cpp
-    TestWin32RegistryKeyStore.h
-  )
-endif()
 
 add_executable(rapidassist_unittest
   ${RAPIDASSIST_EXPORT_HEADER}
@@ -24,7 +16,6 @@ add_executable(rapidassist_unittest
   ${RAPIDASSIST_CONFIG_HEADER}
   ${RAPIDASSIST_GTESTHELP_TEST_FILES}
   ${UNITTEST_TEST_FILES}
-  ${WIN32_ONLY_FILES}
   main.cpp
   TestCli.cpp
   TestCli.h
@@ -44,8 +35,8 @@ add_executable(rapidassist_unittest
   TestLogger.h
   TestProcess.cpp
   TestProcess.h
-  TestPropertiesFileKeyStore.cpp
-  TestPropertiesFileKeyStore.h
+  TestPropertiesFile.cpp
+  TestPropertiesFile.h
   TestRandom.cpp
   TestRandom.h
   TestString.cpp

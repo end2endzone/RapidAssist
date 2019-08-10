@@ -22,18 +22,14 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_WIN32REGISTRYKEYSTORE_H
-#define TEST_WIN32REGISTRYKEYSTORE_H
+#ifndef TEST_PROPERTIESFILE_H
+#define TEST_PROPERTIESFILE_H
 
 #include <gtest/gtest.h>
 
-namespace ra
+namespace ra { namespace filesystem { namespace test
 {
-namespace keystore
-{
-namespace test
-{
-  class TestWin32RegistryKeyStore : public ::testing::Test
+  class TestPropertiesFile : public ::testing::Test
   {
   public:
     virtual void SetUp();
@@ -41,7 +37,7 @@ namespace test
   };
 
 } //namespace test
-} //namespace keystore
+} //namespace filesystem
 } //namespace ra
 
-#endif //TEST_WIN32REGISTRYKEYSTORE_H
+#endif //TEST_PROPERTIESFILE_H

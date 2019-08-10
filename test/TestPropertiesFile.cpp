@@ -22,31 +22,28 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "TestPropertiesFileKeyStore.h"
+#include "TestPropertiesFile.h"
 
-#include "rapidassist/keystore.h"
+#include "rapidassist/propertiesfile.h"
 
 #include "rapidassist/filesystem.h"
 #include "rapidassist/gtesthelp.h"
 
-namespace ra
+namespace ra { namespace filesystem { namespace test
 {
-namespace keystore
-{
-namespace test
-{
+
   //--------------------------------------------------------------------------------------------------
-  void TestPropertiesFileKeyStore::SetUp()
+  void TestPropertiesFile::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestPropertiesFileKeyStore::TearDown()
+  void TestPropertiesFile::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testHasKey)
+  TEST_F(TestPropertiesFile, testHasKey)
   {
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
 
     static const std::string KEY = "mykey";
 
@@ -55,9 +52,9 @@ namespace test
     ASSERT_TRUE( s.hasKey(KEY) );
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testClear)
+  TEST_F(TestPropertiesFile, testClear)
   {
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
 
     static const std::string KEY = "mykey";
 
@@ -66,9 +63,9 @@ namespace test
     ASSERT_FALSE( s.hasKey(KEY) );
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testDeleteKey)
+  TEST_F(TestPropertiesFile, testDeleteKey)
   {
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
 
     static const std::string KEY = "mykey";
 
@@ -78,9 +75,9 @@ namespace test
     ASSERT_TRUE( s.deleteKey(KEY) ); //return true when the key is not found
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testGetSetValue)
+  TEST_F(TestPropertiesFile, testGetSetValue)
   {
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
 
     static const std::string KEY    = "mykey";
     static const std::string VALUE  = "myvalue";
@@ -97,13 +94,13 @@ namespace test
     ASSERT_NE(VALUE, tmp);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testLoad)
+  TEST_F(TestPropertiesFile, testLoad)
   {
     static const std::string path_separator = ra::filesystem::getPathSeparatorStr();
     std::string test_name = ra::gtesthelp::getTestQualifiedName();
     std::string file_source_path = std::string("test_files") + path_separator + test_name + ".txt";
 
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
     ASSERT_TRUE( s.load(file_source_path) );
 
     //assert expected values
@@ -117,7 +114,7 @@ namespace test
     const std::string expected02 = "English";
     const std::string expected03 = "Welcome to Wikipedia!";
     const std::string expected04 = "This is the value that could be looked up with the key \"key with spaces\".";
-    const std::string expected05 = "\\u0009"; //unicode characters not supported by PropertiesFileKeyStore class. 
+    const std::string expected05 = "\\u0009"; //unicode characters not supported by PropertiesFile class. 
     const std::string expected06 = "c:\\wiki\\templates";
     std::string actual01;
     std::string actual02;
@@ -140,14 +137,14 @@ namespace test
     ASSERT_EQ( expected06, actual06 );
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestPropertiesFileKeyStore, testSave)
+  TEST_F(TestPropertiesFile, testSave)
   {
     static const std::string path_separator = ra::filesystem::getPathSeparatorStr();
     std::string test_name = ra::gtesthelp::getTestQualifiedName();
     std::string file_expected_path  = std::string("test_files") + path_separator + test_name + ".expected.txt";
     std::string file_actual_path    = std::string("test_files") + path_separator + test_name + ".actual.txt";
 
-    PropertiesFileKeyStore s;
+    PropertiesFile s;
 
     const std::string key01 = "website";
     const std::string key02 = "language";
@@ -169,7 +166,7 @@ namespace test
     ASSERT_TRUE( s.save(file_actual_path) ) << "Failed saving properties to file '" << file_actual_path << "'.";
 
     //assert that loading the saved file results in the same properties
-    PropertiesFileKeyStore s2;
+    PropertiesFile s2;
     ASSERT_TRUE( s2.load(file_actual_path) ) << "Failed loading property file '" << file_actual_path << "'.";
     std::string read01;
     std::string read02;
@@ -190,5 +187,5 @@ namespace test
   //--------------------------------------------------------------------------------------------------
 
 } //namespace test
-} //namespace keystore
+} //namespace filesystem
 } //namespace ra
