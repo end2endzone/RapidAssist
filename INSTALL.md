@@ -53,25 +53,74 @@ The RapidAssist library uses the CMake build system to generate a platform-speci
 
 To build the software, execute the following steps:
 
-1) Download the source code from an existing [tags](http://github.com/end2endzone/RapidAssist/tags) and extract the content to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
+1) Get a copy of the source code by using one of the following methods:
+   * Download the source code of the project from an existing [tags](http://github.com/end2endzone/ShellAnything) and extract the downloaded zip file to a local directory (for example `c:\projects\ShellAnything` or `~/dev/ShellAnything`).
+   * Clone the github repository by running `git clone "https://github.com/end2endzone/RapidAssist"`.
 
-2) Generate the project files for your build system using the following commands:
+2) Generate the project files for your build system. From your source code directory, enter the following commands:
 ```
 mkdir build
 cd build
 cmake ..
 ```
 
-If you do want to specify a specific location, where rapidassist should be installed, you can provide an extra option to cmake at this step `-DCMAKE_INSTALL_PREFIX=c:\projects\install\rapidassist`.
+Note:
+See [CMake Quick Tips](#cmake-quick-tips) section for more details on building the library.
 
-If you do not specify this, cmake will install that library into its default location, which differs from system to system. On Windows it is `C:\Program Files (x86)\${PROJECT_NAME}` which expands to `C:\Program Files (x86)\RapidAssist` and for this admin rights are needed. The same applies for Linux. CMake default installation folder is `/usr/local` which requires admin rights (sudo).
 
-If you choose to install your libraries into a separate folder, cmake doen't know where to search for rapidassist, when you try to build another project, [win32Arduino](https://github.com/end2endzone/win32Arduino) for example.
-So do not forget, to tell cmake where to search for this with the environment variable on windows for example `set CMAKE_PREFIX_PATH=c:\projects\install`. CMake will then look at this location for already installed libraries.
+3) Build the source code. Run `cmake --build . --config Release` or open the generated `.sln` file with Visual Studio.
 
-3) Build the source code:
-   1) On Windows, run `cmake --build . --config Release` or open `RapidAssist.sln` with Visual Studio.
-   2) On Linux, run `make` command.
+
+
+## CMake Quick Tips ##
+
+The following section explains typical issues that you might run into when trying to build the project.
+
+### CMake default install directory requires administrator rights ###
+
+If you do want to specify a custom directory where this project should be installed, you can provide an extra option to CMake using the property `CMAKE_INSTALL_PREFIX`. The property must be specified at CMake configuration time. For example, the command `cmake -DCMAKE_INSTALL_PREFIX=c:\projects\install ..` will install the project binaries into directory `c:\projects\install\[NAME OF THE PROJECT]`.
+
+If you do not specify a custom install directory, CMake will install the binary files into its default location, which differs from system to system.
+
+**On Windows**, the default CMake installation directory is `C:\Program Files (x86)\[NAME OF THE PROJECT]` which requires administrator privileges.
+
+**On Linux**, the default CMake installation directory is `/usr/local/[NAME OF THE PROJECT` and also requires administrator privileges (sudo).
+
+
+
+### Tell CMake where to find depdendencies ###
+
+If you installed your library dependencies into a directory other than CMake's default installation directory, CMake will not be able to find your dependencies automatically.
+
+For example, on Windows, the CMake default installation directory is `C:\Program Files (x86)\${PROJECT_NAME}`. This makes the installation directory different for each dependency and create unnecessary complication when using CMake.
+
+There are 2 different ways to tell CMake where to look for when searching for libraries:
+
+1) **Using environment variables.**
+
+The installation path of specific dependency can be specified manually by defining the environment variable `[NAME OF DEPENDENCY]_DIR` to the right installation directory. For instance, to specify the installation directory of [rapidassist](https://github.com/end2endzone/RapidAssist) dependency, one can define the `rapidassist_DIR` environment variable which will instruct CMake to look at this location for already installed libraries. By specifying the install directory manually, the `find_package()` command will be able to resolve the path of the dependency and locate the include directory and library files.
+
+A different environment variable must be specified for all required dependencies.
+
+
+2) **Define the `CMAKE_PREFIX_PATH` property.**
+
+The installation path of all dependencies can be specified manually by defining the [CMAKE_PREFIX_PATH](https://cmake.org/cmake/help/v3.0/variable/CMAKE_PREFIX_PATH.html) property. This property must be set at configuration time. For example, the command `cmake -DCMAKE_PREFIX_PATH=c:\dependencies\install ..` will instruct CMake to use `c:\dependencies\install` directory (and subdirectories) while searching for installed dependency binaries.
+
+You can provide multiple path in `CMAKE_PREFIX_PATH` property by delimiting each individual path using `;` (semicolon). See [this Stack Overflow article](https://stackoverflow.com/questions/32302289/how-to-put-several-paths-in-cmake-prefix-path/32302398) for details.
+
+
+
+### Install project binaries and dependencies in same directory ###
+
+For some project, it may be a better option to install the project and all its dependencies into the same directory. This is a convenient option when one wants to deploy an application without relying on the system's pre-installed binaries. The runtime environment stays the same even if the user update system libraries. For instance, [Portable Apps](https://portableapps.com/) deploys application using this method: all required binaries are included in the deployed package.
+
+To use such a configuration, all dependencies must be reinstalled to a common directory. To follow best practices, it is suggested to re-download all dependencies, extract the sources to a new temporary directory and recompile all of them to make sure that no system library is used while compiling.
+
+Users should define the property `CMAKE_INSTALL_PREFIX` of each dependency to the common installation directory (identical across all dependencies) and recompile all dependencies. The property must be specified at CMake configuration time. For example, the command `cmake -DCMAKE_INSTALL_PREFIX=c:\projects\install ..`.
+ 
+With this method, users *do not* have to define environment variable such as `[NAME OF DEPENDENCY]_DIR` or [CMAKE_PREFIX_PATH](https://cmake.org/cmake/help/v3.0/variable/CMAKE_PREFIX_PATH.html) property. CMake will be able to locate all library files since the property `CMAKE_INSTALL_PREFIX` is one of the directories that is searched when CMake is looking for a dependency.
+
 
 
 ## Build options ##
