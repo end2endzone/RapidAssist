@@ -7,16 +7,13 @@ if [ "$TRAVIS_BUILD_DIR" = "" ]; then
   exit 1;
 fi
 
-export GTEST_ROOT=$TRAVIS_BUILD_DIR/third_parties/googletest/install
-export INSTALL_LOCATION=$TRAVIS_BUILD_DIR/install
-
 echo ============================================================================
 echo Generating...
 echo ============================================================================
 cd $TRAVIS_BUILD_DIR
 mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR\install -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR\third_parties\googletest\install -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
 
 echo ============================================================================
 echo Compiling...
@@ -29,7 +26,3 @@ echo Installing into $INSTALL_LOCATION
 echo ============================================================================
 make install
 echo
-
-# Delete all temporary environment variable created
-unset GTEST_ROOT
-unset INSTALL_LOCATION
