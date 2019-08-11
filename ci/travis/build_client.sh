@@ -13,7 +13,7 @@ echo ===========================================================================
 cd $TRAVIS_BUILD_DIR/client
 mkdir -p build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR\third_parties\googletest\install;$TRAVIS_BUILD_DIR\install ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR/third_parties/googletest/install;$TRAVIS_BUILD_DIR/install ..
 
 echo ============================================================================
 echo Compiling...

@@ -13,7 +13,7 @@ echo ===========================================================================
 cd $TRAVIS_BUILD_DIR
 mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR\install -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR\third_parties\googletest\install -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/install -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR/third_parties/googletest/install -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
 
 echo ============================================================================
 echo Compiling...

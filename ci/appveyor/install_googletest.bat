@@ -6,6 +6,7 @@ if "%APPVEYOR_BUILD_FOLDER%"=="" (
   exit /B 1
 )
 
+
 echo ============================================================================
 echo Cloning googletest into %APPVEYOR_BUILD_FOLDER%\third_parties\googletest
 echo ============================================================================
@@ -31,7 +32,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
 
 echo ============================================================================
-echo Installing into %GTEST_ROOT%
+echo Installing into %APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install
 echo ============================================================================
 cmake --build . --config %Configuration% --target INSTALL
 if %errorlevel% neq 0 exit /b %errorlevel%
