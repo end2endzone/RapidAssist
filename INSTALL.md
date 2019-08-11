@@ -54,7 +54,7 @@ The RapidAssist library uses the CMake build system to generate a platform-speci
 To build the software, execute the following steps:
 
 1) Get a copy of the source code by using one of the following methods:
-   * Download the source code of the project from an existing [tags](http://github.com/end2endzone/ShellAnything) and extract the downloaded zip file to a local directory (for example `c:\projects\ShellAnything` or `~/dev/ShellAnything`).
+   * Download the source code of the project from an existing [tags](http://github.com/end2endzone/RapidAssist) and extract the downloaded zip file to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
    * Clone the github repository by running `git clone "https://github.com/end2endzone/RapidAssist"`.
 
 2) Generate the project files for your build system. From your source code directory, enter the following commands:
@@ -64,11 +64,11 @@ cd build
 cmake ..
 ```
 
-Note:
-See [CMake Quick Tips](#cmake-quick-tips) section for more details on building the library.
+Note: See [CMake Quick Tips](#cmake-quick-tips) section for more details on building the library.
 
-
-3) Build the source code. Run `cmake --build . --config Release` or open the generated `.sln` file with Visual Studio.
+3) Build the source code:
+   1) On Windows, run `cmake --build . --config Release` or open the generated `.sln` file with Visual Studio.
+   2) On Linux, run `make` command.
 
 
 
