@@ -22,7 +22,7 @@ cmake --build .
 echo
 
 echo ============================================================================
-echo Installing into $INSTALL_LOCATION
+echo Installing into $TRAVIS_BUILD_DIR/install
 echo ============================================================================
 make install
 echo
