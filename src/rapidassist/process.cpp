@@ -28,10 +28,12 @@
 #include <string>
 
 #ifdef WIN32
-#   ifndef WIN32_LEAN_AND_MEAN
-#   define WIN32_LEAN_AND_MEAN 1
-#   endif
+//#   ifndef WIN32_LEAN_AND_MEAN
+//#   define WIN32_LEAN_AND_MEAN 1
+//#   endif
 #   include <windows.h> // for GetModuleHandleEx()
+#   include <psapi.h>
+#   pragma comment( lib, "psapi.lib" )
 #elif __linux__
 #   include <unistd.h>
 #   include <limits.h>
@@ -41,6 +43,19 @@ namespace ra
 {
   namespace process
   {
+
+    /// <summary>
+    /// Define invalid process id.
+    /// Note:
+    ///   On win32 platform, an invalid process id is defined as 0. See the following reference for details:
+    ///     - https://stackoverflow.com/questions/3232401/windows-pid-0-valid
+    ///     - https://stackoverflow.com/questions/26993596/getprocessid-returning-zero/26993697
+    ///     - https://devblogs.microsoft.com/oldnewthing/20040223-00/?p=40503
+    ///   On linux plarform, an invalid process id is defined as 0. See the following reference for details:
+    ///     - https://serverfault.com/questions/279178/what-is-the-range-of-a-pid-on-linux-and-solaris
+    ///     - https://serverfault.com/a/279180
+    /// </summary>
+    static const processid_t INVALID_PROCESS_ID = (processid_t)-1;
 
     std::string getCurrentProcessPath()
     {
@@ -92,6 +107,100 @@ namespace ra
         return dir; //failure
       dir = ra::filesystem::getParentPath(execPath);
       return dir;
+    }
+
+    processid_t startProcess(const std::string & iCommand, const std::string & iDefaultDirectory)
+    {
+    #ifdef _WIN32
+      PROCESS_INFORMATION processInfo = {0};
+    
+      STARTUPINFO startupInfo = {0};
+      startupInfo.cb = sizeof(STARTUPINFO);
+      startupInfo.dwFlags = STARTF_USESHOWWINDOW;
+      startupInfo.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
+
+      DWORD creationFlags = 0; //EXTENDED_STARTUPINFO_PRESENT
+
+      bool success = (CreateProcess(NULL, (char*)iCommand.c_str(), NULL, NULL, FALSE, creationFlags, NULL, iDefaultDirectory.c_str(), &startupInfo, &processInfo) != 0);
+      if (success)
+      {
+        //Wait for the application to initialize properly
+        WaitForInputIdle(processInfo.hProcess, INFINITE);
+
+        //Extract the program id
+        DWORD dwProcessId = processInfo.dwProcessId;
+        processid_t pId = static_cast<processid_t>(dwProcessId);
+        return pId;
+      }
+      return INVALID_PROCESS_ID;
+    #else
+      //Not implemented yet
+      return INVALID_PROCESS_ID;
+    #endif
+    }
+
+    processid_t startProcess(const std::string & iExecPath, const std::string & iArguments, const std::string & iDefaultDirectory)
+    {
+      //merge iExecPath with iArguments
+      std::string command;
+
+      //handle iExecPath
+      if (!iExecPath.empty())
+      {
+        if (iExecPath.find(" ") != std::string::npos)
+        {
+          command += "\"";
+          command += iExecPath;
+          command += "\"";
+        }
+        else
+          command += iExecPath;
+      }
+
+      if (!iArguments.empty())
+      {
+        command += " ";
+        command += iArguments;
+      }
+
+      if (command.size() > 0)
+      {
+        return startProcess(command, iDefaultDirectory);
+      }
+
+      return INVALID_PROCESS_ID;
+    }
+
+    bool openDocument(const std::string & iPath)
+    {
+    #ifdef _WIN32
+      SHELLEXECUTEINFO info = {0};
+
+      info.cbSize = sizeof(SHELLEXECUTEINFO);
+    
+      info.fMask |= SEE_MASK_NOCLOSEPROCESS;
+      info.fMask |= SEE_MASK_NOASYNC;
+      info.fMask |= SEE_MASK_FLAG_DDEWAIT;
+
+      info.hwnd = HWND_DESKTOP;
+      info.nShow = SW_SHOWDEFAULT;
+      info.lpVerb = "open";
+      info.lpFile = iPath.c_str();
+      info.lpParameters = NULL; //arguments
+      info.lpDirectory = NULL; // default directory
+
+      BOOL success = ShellExecuteEx(&info);
+      if (success)
+      {
+        HANDLE hProcess = info.hProcess;
+        DWORD wPid = GetProcessId(hProcess);
+        return true;
+      }
+      return false;
+    #else
+      //Not implemented yet
+      return false;
+    #endif
     }
 
   } //namespace process

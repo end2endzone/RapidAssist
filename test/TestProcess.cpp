@@ -24,6 +24,8 @@
 
 #include "TestProcess.h"
 #include "rapidassist/process.h"
+#include "rapidassist/environment.h"
+#include "rapidassist/gtesthelp.h"
 #include "rapidassist/filesystem.h"
 
 namespace ra { namespace process { namespace test
@@ -52,6 +54,69 @@ namespace ra { namespace process { namespace test
     printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());
     ASSERT_TRUE( ra::filesystem::folderExists(dir.c_str()) );
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testStartProcess)
+  {
+    //create a text file
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = 
+      "The"   + newline +
+      "quick" + newline +
+      "brown" + newline +
+      "fox"   + newline +
+      "jumps" + newline +
+      "over"  + newline +
+      "the"   + newline +
+      "lazy"  + newline +
+      "dog." ;
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+#ifdef _WIN32
+    const std::string arguments = "\"" + file_path + "\"";
+    const std::string exec_path  = "c:\\windows\\notepad.exe";
+    const std::string test_dir = ra::process::getCurrentProcessDir();
+    ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, arguments, test_dir);
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+#else
+    // N/A
+#endif
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testOpenDocument)
+  {
+    //create a text file
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = 
+      "The"   + newline +
+      "quick" + newline +
+      "brown" + newline +
+      "fox"   + newline +
+      "jumps" + newline +
+      "over"  + newline +
+      "the"   + newline +
+      "lazy"  + newline +
+      "dog." ;
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+#ifdef _WIN32
+    success = ra::process::openDocument(file_path);
+    ASSERT_TRUE( success );
+#else
+    // N/A
+#endif
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
