@@ -26,6 +26,7 @@
 #define RA_PROCESS_H
 
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #include <stdint.h>
@@ -47,7 +48,17 @@ namespace ra
     typedef pid_t processid_t;
     #endif
 
+    /// <summary>Defines a list of processes id.</summary>
+    typedef std::vector<processid_t> ProcessIdList;
+
+    /// <summary>Defines an invalid processes id.</summary>
     extern const processid_t INVALID_PROCESS_ID;
+
+    /// <summary>
+    /// Converts a list of process id to a string.
+    /// </summary>
+    /// <returns>Returns a list of process id as a string.</returns>
+    std::string toString(const ProcessIdList & processes);
 
     /// <summary>
     /// Provides the file path of the current executing process.
@@ -60,6 +71,18 @@ namespace ra
     /// </summary>
     /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
     std::string getCurrentProcessDir();
+
+    /// <summary>
+    /// Get the list of all the processes of the system.
+    /// </summary>
+    /// <returns>Returns the list of all the processes of the system.</returns>
+    ProcessIdList getProcesses();
+
+    /// <summary>
+    /// Get the current process id.
+    /// </summary>
+    /// <returns>Returns the current process id.</returns>
+    processid_t getCurrentProcessId();
 
     /// <summary>
     /// Start the given process from the given directory.
@@ -85,6 +108,26 @@ namespace ra
     /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
     bool openDocument(const std::string & iPath);
 
+    /// <summary>
+    /// Kill an existing process using the process id.
+    /// </summary>
+    /// <param name="pid">The process id of the target process to kill.</param>
+    /// <returns>Returns true if the process was successfully killed. Returns false otherwise.</returns>
+    bool kill(const processid_t & pid);
+
+    /// <summary>
+    /// Terminate gracefully an existing process using the process id.
+    /// </summary>
+    /// <param name="pid">The process id of the target process to terminate.</param>
+    /// <returns>Returns true if the process was successfully terminated. Returns false otherwise.</returns>
+    bool terminate(const processid_t & pid);
+
+    /// <summary>
+    /// Verify the given process id is valid.
+    /// </summary>
+    /// <param name="pid">The process id to verify.</param>
+    /// <returns>Returns true if the process is alive. Returns false otherwise.</returns>
+    bool isRunning(const processid_t & pid);
 
   } //namespace process
 } //namespace ra

@@ -34,6 +34,7 @@
 #   include <windows.h> // for GetModuleHandleEx()
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
+#   include <Tlhelp32.h>
 #elif __linux__
 #   include <unistd.h>
 #   include <limits.h>
@@ -56,6 +57,19 @@ namespace ra
     ///     - https://serverfault.com/a/279180
     /// </summary>
     static const processid_t INVALID_PROCESS_ID = (processid_t)-1;
+
+    std::string toString(const ProcessIdList & processes)
+    {
+      std::string s;
+      for(size_t i=0; i<processes.size(); i++)
+      {
+        processid_t pid = processes[i];
+        if (!s.empty())
+          s.append(", ");
+        s += ra::strings::toString(pid);
+      }
+      return s;
+    }
 
     std::string getCurrentProcessPath()
     {
@@ -97,6 +111,42 @@ namespace ra
       }
 #endif
       return path;
+    }
+
+    ProcessIdList getProcesses()
+    {
+      ProcessIdList processes;
+
+#ifdef _WIN32
+      //Get process ids
+      const int MAX_PROCESSES = 10000;
+      DWORD wProcessIds[MAX_PROCESSES];
+      DWORD wProcessIdsSize = 0; //in bytes
+      EnumProcesses(wProcessIds, MAX_PROCESSES, &wProcessIdsSize);
+      DWORD wNumProcesses = wProcessIdsSize / sizeof(DWORD);
+
+      //for each process
+      for (unsigned int i=0; i<wNumProcesses; i++)
+      {
+        DWORD wPid = wProcessIds[i];
+
+        processes.push_back(wPid);
+      }
+#else
+      //Not implemented
+#endif
+
+      return processes;
+    }
+
+    processid_t getCurrentProcessId()
+    {
+#ifdef _WIN32
+      processid_t pid = GetCurrentProcessId();
+#else
+      processid_t pid = getpid();
+#endif
+      return pid;
     }
 
     std::string getCurrentProcessDir()
@@ -197,6 +247,309 @@ namespace ra
         return true;
       }
       return false;
+    #else
+      //Not implemented yet
+      return false;
+    #endif
+    }
+
+    bool kill(const processid_t & pid)
+    {
+      bool success = false;
+    #ifdef _WIN32
+      //Get a handle
+      HANDLE hProcess = OpenProcess( PROCESS_TERMINATE, FALSE, pid );
+      if (hProcess)
+      {
+        success = (TerminateProcess(hProcess, 255) != 0);
+        CloseHandle(hProcess);
+      }
+    #else
+      //Not implemented yet
+    #endif
+      return success;
+    }
+
+#ifdef _WIN32
+    /// <summary>
+    /// Get the list of threads of a process.
+    /// </summary>
+    /// <param name="pid">The process id of the process.</param>
+    /// <param name="tids">The list of thread ids of the process.</param>
+    /// <returns>Returns true if the list of thread is returned. Returns false otherwise.</returns>
+    bool getThreadIds(const processid_t & pid, ProcessIdList & tids)
+    {
+      tids.clear();
+
+      //Getting threads id of the process
+      HANDLE hThreadSnap = INVALID_HANDLE_VALUE;
+      THREADENTRY32 threadEntry;
+   
+      // Take a snapshot of all running threads
+      hThreadSnap = CreateToolhelp32Snapshot( TH32CS_SNAPTHREAD, 0 );
+      if( hThreadSnap == INVALID_HANDLE_VALUE )
+        return false;
+   
+      // Fill in the size of the structure before using it.
+      threadEntry.dwSize = sizeof(THREADENTRY32);
+   
+      // Retrieve information about the first thread,
+      // and exit if unsuccessful
+      if( !Thread32First( hThreadSnap, &threadEntry ) )
+      {
+        CloseHandle( hThreadSnap ); // clean the snapshot object
+        return false;
+      }
+
+      // Now walk the thread list of the system,
+      // and display information about each thread
+      // associated with the specified process
+      do
+      {
+        if( threadEntry.th32OwnerProcessID == pid )
+        {
+          //printf( "\n\n     THREAD ID      = 0x%08X", threadEntry.th32ThreadID );
+          //printf( "\n     Base priority  = %d", threadEntry.tpBasePri );
+          //printf( "\n     Delta priority = %d", threadEntry.tpDeltaPri );
+          tids.push_back(threadEntry.th32ThreadID);
+        }
+      } while( Thread32Next(hThreadSnap, &threadEntry ) );
+
+      return true;
+    }
+
+    enum ExitCodeResult
+    {
+      EXIT_CODE_SUCCESS,
+      EXIT_CODE_STILLRUNNING,
+      EXIT_CODE_FAILED
+    };
+
+    ExitCodeResult getExitCode(const processid_t & pid, DWORD & code)
+    {
+      ExitCodeResult result = EXIT_CODE_FAILED;
+
+      //Get a handle
+      HANDLE hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid );
+      if (hProcess)
+      {
+        DWORD dwExitCode = 0;
+        if(::GetExitCodeProcess(hProcess, &dwExitCode))
+        {
+          if(dwExitCode != STILL_ACTIVE)
+          {
+            result = EXIT_CODE_SUCCESS;
+          }
+          else
+          {
+            //Check if process is still alive
+            DWORD dwR = ::WaitForSingleObject(hProcess, 0);
+            if(dwR == WAIT_OBJECT_0)
+            {
+              result = EXIT_CODE_SUCCESS;
+            }
+            else if(dwR == WAIT_TIMEOUT)
+            {
+              result = EXIT_CODE_STILLRUNNING;
+            }
+            else
+            {
+              //Error
+              result = EXIT_CODE_FAILED;
+            }
+          }
+        }
+
+        CloseHandle(hProcess);
+
+        bool success = (result == EXIT_CODE_SUCCESS);
+        if (success)
+          code = dwExitCode;
+      }
+      return result;
+    }
+
+    typedef std::vector<HWND> HwndList;
+
+    struct FindProcessWindowsStruct
+    {
+      HwndList * windowsPtr;
+      processid_t pid;
+    };
+
+    BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
+    {
+      DWORD dwProcessId = 0;
+
+      if (!hWnd)
+        return TRUE;		// Not a window
+      if (lParam == NULL)
+        return TRUE;    // No FindProcessWindowsStruct pointer provided
+
+      FindProcessWindowsStruct & s = (*((FindProcessWindowsStruct*)lParam));
+
+      HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+      if (hInstance)
+      {
+        DWORD dwThreadId = GetWindowThreadProcessId(hWnd, &dwProcessId);
+        if (dwThreadId)
+        {
+          HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+          if (hProcess)
+          {
+            //is this the process we are looking for ?
+            if (dwProcessId == s.pid)
+            {
+              //add found window handle to list
+              s.windowsPtr->push_back(hWnd);
+            }
+          }
+          CloseHandle(hProcess);
+        }
+      }
+      return TRUE;
+    }
+
+    bool findProcessWindows(const processid_t & pid, HwndList & oWindows)
+    {
+      oWindows.clear();
+
+      FindProcessWindowsStruct s;
+      s.windowsPtr = &oWindows;
+      s.pid = pid;
+
+      bool success = (EnumWindows(EnumWindowsProc, (LPARAM)&s) == TRUE);
+      return success;
+    }
+
+    bool closeWindows(const processid_t & pid)
+    {
+      HwndList hWnds;
+      bool success = findProcessWindows(pid, hWnds);
+      if (success)
+      {
+        for(size_t i=0; i<hWnds.size(); i++)
+        {
+          HWND hWnd = hWnds[i];
+          //#define KEYPRESS_MACRO_FUNCTION PostMessage
+          #define KEYPRESS_MACRO_FUNCTION SendMessage
+          //success = success & (KEYPRESS_MACRO_FUNCTION(hWnd, WM_SYSKEYDOWN, VK_MENU, 0) == TRUE);
+          //success = success & (KEYPRESS_MACRO_FUNCTION(hWnd, WM_SYSKEYDOWN, VK_F4, 0) == TRUE);
+          //success = success && (KEYPRESS_MACRO_FUNCTION(hWnd, WM_SYSCOMMAND, SC_CLOSE, 0) == TRUE);
+          KEYPRESS_MACRO_FUNCTION(hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
+        }
+        success = true;
+      }
+      return success;
+    }
+
+    bool terminate(const processid_t & pid, DWORD iTimeoutMS)
+    {
+      bool success = false;
+
+      //Get a handle
+      HANDLE hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, pid );
+      if (hProcess)
+      {
+        ProcessIdList threadIds;
+        if (getThreadIds(pid, threadIds))
+        {
+          size_t numThreads = threadIds.size();
+          if (numThreads >= 1)
+          {
+            if (iTimeoutMS != INFINITE)
+            {
+
+              //Call WM_CLOSE & WM_QUIT on all the threads
+              size_t threadTimeoutMS = iTimeoutMS/numThreads;
+              for(size_t threadIndex = 0; threadIndex<numThreads && !success; threadIndex++)
+              {
+                DWORD threadId = threadIds[threadIndex];
+                bool postSuccess = (PostThreadMessage(threadId, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
+                postSuccess = postSuccess && (PostThreadMessage(threadId, WM_QUIT, 0, 0) != 0);
+                if (postSuccess)
+                {
+                  DWORD waitReturnCode = WaitForSingleObject(hProcess, threadTimeoutMS);
+                  success = (waitReturnCode == WAIT_OBJECT_0);
+                
+                  //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
+                  if (!success)
+                    success = !isRunning(pid);
+
+                  //Some app needs to have their windows closed
+                  closeWindows(pid);
+                }
+              }
+            }
+            else
+            {
+              //Call WM_CLOSE & WM_QUIT on all the threads
+              while(!success)
+              {
+                for(size_t threadIndex = 0; threadIndex<numThreads && !success; threadIndex++)
+                {
+                  DWORD threadId = threadIds[threadIndex];
+                  bool postSuccess = (PostThreadMessage(threadId, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
+                  postSuccess = postSuccess && (PostThreadMessage(threadId, WM_QUIT, 0, 0) != 0);
+                  if (postSuccess)
+                  {
+                    DWORD waitReturnCode = WaitForSingleObject(hProcess, 200);
+                    success = (waitReturnCode == WAIT_OBJECT_0);
+                  
+                    //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
+                    if (!success)
+                      success = !isRunning(pid);
+
+                    //Some app needs to have their windows closed
+                    closeWindows(pid);
+                  }
+                }
+              }
+            }
+          }
+        }
+        CloseHandle(hProcess);
+      }
+    
+      return success;
+    }
+
+#endif
+
+    bool isRunning(const processid_t & pid)
+    {
+#ifdef _WIN32
+      DWORD code;
+      ExitCodeResult result = getExitCode(pid, code);
+      bool alive = false;
+      switch(result)
+      {
+      case EXIT_CODE_SUCCESS:
+        alive = false;
+        break;
+      case EXIT_CODE_STILLRUNNING:
+        alive = true;
+        break;
+      case EXIT_CODE_FAILED:
+        {
+          //Process p = findProcessByPid(pid);
+          //alive = (p != Process::InvalidProcess);
+          alive = true;
+        }
+        break;
+      };
+      return alive;
+#else
+      //Not Implemented
+      return false;
+#endif
+    }
+
+    bool terminate(const processid_t & pid)
+    {
+    #ifdef _WIN32
+      bool terminated = terminate(pid, 30000); //allow 30 seconds to close
+      return terminated;
     #else
       //Not implemented yet
       return false;
