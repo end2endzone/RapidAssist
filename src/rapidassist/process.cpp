@@ -56,7 +56,7 @@ namespace ra
     ///     - https://serverfault.com/questions/279178/what-is-the-range-of-a-pid-on-linux-and-solaris
     ///     - https://serverfault.com/a/279180
     /// </summary>
-    static const processid_t INVALID_PROCESS_ID = (processid_t)-1;
+    const processid_t INVALID_PROCESS_ID = (processid_t)-1;
 
     std::string toString(const ProcessIdList & processes)
     {
