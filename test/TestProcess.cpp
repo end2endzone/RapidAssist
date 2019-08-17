@@ -122,6 +122,8 @@ namespace ra { namespace process { namespace test
   TEST_F(TestProcess, testGetProcesses)
   {
     ProcessIdList processes = getProcesses();
+    size_t num_process = processes.size();
+    printf("Found %s running processes\n", ra::strings::toString(num_process).c_str());
     ASSERT_NE(0, processes.size());
   }
   //--------------------------------------------------------------------------------------------------
@@ -131,14 +133,19 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testProcessIds)
+  {
+    printf("ra::process::INVALID_PROCESS_ID defined as %s\n", ra::strings::toString(ra::process::INVALID_PROCESS_ID).c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testIsRunning)
   {
     processid_t curr_pid = ra::process::getCurrentProcessId();
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
 
-    ASSERT_TRUE( ra::process::isRunning(curr_pid) );
-    ASSERT_FALSE( ra::process::INVALID_PROCESS_ID );
-    ASSERT_TRUE( ra::process::isRunning(curr_pid) );
+    ASSERT_TRUE ( ra::process::isRunning(curr_pid) );
+    ASSERT_FALSE( ra::process::isRunning(ra::process::INVALID_PROCESS_ID) );
+    ASSERT_TRUE ( ra::process::isRunning(curr_pid) );
 
     //test with a random process id
     processid_t fake_pid = 12345678;
@@ -178,7 +185,8 @@ namespace ra { namespace process { namespace test
     const std::string arguments = "\"" + file_path + "\"";
     const std::string exec_path  = "c:\\windows\\notepad.exe";
 #else
-    // N/A
+    const std::string arguments = "'" + file_path + "'";
+    const std::string exec_path  = "/bin/nano";
 #endif
 
     //run the process from the current directory

@@ -38,6 +38,11 @@
 #elif __linux__
 #   include <unistd.h>
 #   include <limits.h>
+#   include <sys/types.h>
+#   include <signal.h>
+#   include <spawn.h>
+#   include <sys/wait.h>
+extern char **environ;
 #endif
 
 namespace ra
@@ -133,7 +138,30 @@ namespace ra
         processes.push_back(wPid);
       }
 #else
-      //Not implemented
+      ra::strings::StringVector files;
+      bool found = ra::filesystem::findFiles(files, "/proc", 0);
+      if (!found)
+        return processes; //failed
+      for(size_t i=0; i<files.size(); i++)
+      {
+        const std::string & file = files[i];
+        bool isDirectory = ra::filesystem::folderExists(file.c_str());
+        if (!isDirectory)
+          continue;
+        
+        const std::string name = ra::filesystem::getFilename(file.c_str());
+        bool numeric = ra::strings::isNumeric(name.c_str());
+        if (!numeric)
+          continue;
+        
+        //that's a process id. Parse it
+        processid_t pid = INVALID_PROCESS_ID;
+        bool parsed_ok = ra::strings::parse(name.c_str(), pid);
+        if (!parsed_ok)
+          continue;
+        
+        processes.push_back(pid);
+      }
 #endif
 
       return processes;
@@ -184,8 +212,25 @@ namespace ra
       }
       return INVALID_PROCESS_ID;
     #else
-      //Not implemented yet
-      return INVALID_PROCESS_ID;
+      pid_t child_pid = INVALID_PROCESS_ID;
+      char *argv[] = {(char*)iCommand.c_str(), (char *) 0};
+      fflush(NULL);
+      int status = posix_spawn(&child_pid, iCommand.c_str(), NULL, NULL, argv, environ);
+      if (status == 0)
+      {
+        fflush(NULL);
+        
+        //wait for the child process to exit
+        //if (waitpid(child_pid, &status, 0) != -1)
+        //{
+        //  printf("Child exited with status %i\n", status);
+        //}
+        //else
+        //{
+        //  perror("waitpid");
+        //}
+      }
+      return child_pid;
     #endif
     }
 
@@ -223,6 +268,9 @@ namespace ra
 
     bool openDocument(const std::string & iPath)
     {
+      if (!ra::filesystem::fileExists(iPath.c_str()))
+        return false; //file not found
+      
     #ifdef _WIN32
       SHELLEXECUTEINFO info = {0};
 
@@ -248,8 +296,14 @@ namespace ra
       }
       return false;
     #else
-      //Not implemented yet
-      return false;
+      const char * xdgopen_path = "/usr/bin/xdg-open";
+      if (!ra::filesystem::fileExists(xdgopen_path))
+        return false; //xdg-open not found
+      
+      std::string curr_dir = ra::filesystem::getCurrentFolder();
+      processid_t pid = startProcess(xdgopen_path, iPath, curr_dir);
+      bool success = (pid != INVALID_PROCESS_ID);
+      return success;
     #endif
     }
 
@@ -265,7 +319,8 @@ namespace ra
         CloseHandle(hProcess);
       }
     #else
-      //Not implemented yet
+      int kill_error = ::kill(pid, SIGKILL);
+      success = (kill_error == 0);
     #endif
       return success;
     }
@@ -540,8 +595,9 @@ namespace ra
       };
       return alive;
 #else
-      //Not Implemented
-      return false;
+      std::string cmdline_path = std::string("/proc/") + ra::strings::toString(pid) + "/cmdline";
+      bool exists = ra::filesystem::fileExists(cmdline_path.c_str());
+      return exists;
 #endif
     }
 
@@ -551,8 +607,9 @@ namespace ra
       bool terminated = terminate(pid, 30000); //allow 30 seconds to close
       return terminated;
     #else
-      //Not implemented yet
-      return false;
+      int kill_error = ::kill(pid, SIGQUIT);
+      bool success = (kill_error == 0);
+      return success;
     #endif
     }
 
