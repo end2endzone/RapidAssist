@@ -35,6 +35,8 @@
 #include <unistd.h>
 #endif
 
+#include "rapidassist/strings.h"
+
 namespace ra
 {
   namespace process

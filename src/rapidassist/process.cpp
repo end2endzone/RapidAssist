@@ -189,9 +189,10 @@ namespace ra
 
     processid_t startProcess(const std::string & iExecPath)
     {
+      std::string curr_dir = ra::filesystem::getCurrentFolder();
+
 #ifdef _WIN32
       //CreateProcess() API requires to have a default starting directory
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
       processid_t pid = startProcess(iExecPath, curr_dir);
       return pid;
 #else
