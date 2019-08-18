@@ -28,6 +28,7 @@
 #include "rapidassist/gtesthelp.h"
 #include "rapidassist/time_.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/user.h"
 
 namespace ra { namespace process { namespace test
 {
@@ -135,7 +136,7 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testProcessIds)
   {
-    printf("ra::process::INVALID_PROCESS_ID defined as %s\n", ra::strings::toString(ra::process::INVALID_PROCESS_ID).c_str());
+    printf("ra::process::INVALID_PROCESS_ID defined as 0x%X or %s\n", ra::process::INVALID_PROCESS_ID, ra::strings::toString(ra::process::INVALID_PROCESS_ID).c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testIsRunning)
@@ -159,6 +160,38 @@ namespace ra { namespace process { namespace test
       processid_t pid = processes[i];
       ASSERT_TRUE( ra::process::isRunning(pid) );
     }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testStartProcessWithDirectory)
+  {
+    //create a text file in user's home directory
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = ra::gtesthelp::getTestQualifiedName();
+    const std::string file_path = ra::user::getHomeDirectory() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+    //define a command that lists the files in user's home directory
+#ifdef _WIN32
+    const std::string exec_path  = ra::environment::getEnvironmentVariable("ComSpec");
+    const std::string arguments = "/c dir /ad";
+#else
+    ra::strings::StringVector arguments;
+    const std::string exec_path  = "/bin/ls";
+#endif
+
+    //run the process from user's home directory
+    const std::string home_dir = ra::user::getHomeDirectory();
+    ASSERT_TRUE(ra::filesystem::folderExists(home_dir.c_str()));
+
+    //start the process
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, home_dir, false, arguments);
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+
+    ra::time::millisleep(5000); //allow time for the process to terminate.
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testProcesses)
@@ -185,7 +218,8 @@ namespace ra { namespace process { namespace test
     const std::string arguments = "\"" + file_path + "\"";
     const std::string exec_path  = "c:\\windows\\notepad.exe";
 #else
-    const std::string arguments = "'" + file_path + "'";
+    ra::strings::StringVector arguments;
+    arguments.push_back(file_path);
     const std::string exec_path  = "/bin/nano";
 #endif
 
@@ -194,7 +228,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
 
     //start the process
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, arguments, test_dir);
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
     ra::time::millisleep(5000); //allow time for the process to start properly.
@@ -208,7 +242,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(killed);
 
     //start the process (again)
-    pid = ra::process::startProcess(exec_path, arguments, test_dir);
+    pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
     ra::time::millisleep(5000); //allow time for the process to start properly (again).
@@ -259,7 +293,7 @@ namespace ra { namespace process { namespace test
     //try to identify the new process
     ProcessIdList process_after = ra::process::getProcesses();
     ProcessIdList new_pids = getNewProcesses(process_before, process_after);
-    if (new_pids.size() == 10000)
+    if (new_pids.size() == 1)
     {
       //found the new process that opened the document
 

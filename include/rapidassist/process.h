@@ -85,21 +85,43 @@ namespace ra
     processid_t getCurrentProcessId();
 
     /// <summary>
-    /// Start the given process from the given directory.
-    /// </summary>
-    /// <param name="iCommand">The command to start. Can include a process path and/or arguments.</param>
-    /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-    /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-    processid_t startProcess(const std::string & iCommand, const std::string & iDefaultDirectory);
-
-    /// <summary>
-    /// Start the given process with the given arguments from the given directory.
+    /// Start the given process.
     /// </summary>
     /// <param name="iExecPath">The path to the executable to start.</param>
-    /// <param name="iArguments">The arguments to send to the process.</param>
+    /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
+    processid_t startProcess(const std::string & iExecPath);
+
+    /// <summary>
+    /// Start the given process from the given directory.
+    /// </summary>
+    /// <param name="iExecPath">The path to the executable to start.</param>
     /// <param name="iDefaultDirectory">The directory to run the command from.</param>
     /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-    processid_t startProcess(const std::string & iExecPath, const std::string & iArguments, const std::string & iDefaultDirectory);
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory);
+
+#ifdef _WIN32
+    /// <summary>
+    /// Start the given process with the given arguments from the given directory.
+    /// Note: this api is only available on Windows.
+    /// </summary>
+    /// <param name="iExecPath">The path to the executable to start.</param>
+    /// <param name="iDefaultDirectory">The directory to run the command from.</param>
+    /// <param name="iWaitProcessExit">Wait for the process to exit before returning control to the user. If set to true, the call is blocking.</param>
+    /// <param name="iCommandLine">The command line to send to the new process.</param>
+    /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const std::string & iCommandLine);
+#else
+    /// <summary>
+    /// Start the given process with the given arguments from the given directory.
+    /// Note: this api is only available on linux.
+    /// </summary>
+    /// <param name="iExecPath">The path to the executable to start.</param>
+    /// <param name="iDefaultDirectory">The directory to run the command from.</param>
+    /// <param name="iWaitProcessExit">Wait for the process to exit before returning control to the user. If set to true, the call is blocking.</param>
+    /// <param name="iArguments">The list of arguments for the new process.</param>
+    /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const ra::strings::StringVector & iArguments);
+#endif
 
     /// <summary>
     /// Open a document with the default system application.
