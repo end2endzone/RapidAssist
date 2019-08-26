@@ -144,21 +144,20 @@ namespace ra { namespace process { namespace test
     processid_t curr_pid = ra::process::getCurrentProcessId();
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
 
-    ASSERT_TRUE ( ra::process::isRunning(curr_pid) );
     ASSERT_FALSE( ra::process::isRunning(ra::process::INVALID_PROCESS_ID) );
     ASSERT_TRUE ( ra::process::isRunning(curr_pid) );
 
     //test with a random process id
     processid_t fake_pid = 12345678;
     ASSERT_FALSE( ra::process::isRunning(fake_pid) );
-
+    
     //expect all existing processes are running
     ProcessIdList processes = getProcesses();
     ASSERT_NE(0, processes.size());
     for(size_t i=0; i<processes.size(); i++)
     {
       processid_t pid = processes[i];
-      ASSERT_TRUE( ra::process::isRunning(pid) );
+      EXPECT_TRUE( ra::process::isRunning(pid) ) << "The process with pid " << pid << " does not appears to be running.";
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -232,31 +231,56 @@ namespace ra { namespace process { namespace test
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
     ra::time::millisleep(5000); //allow time for the process to start properly.
-
+    
     //assert the process is started
     bool started = ra::process::isRunning(pid);
     ASSERT_TRUE(started);
-
+    
     //try to kill the process
     bool killed = ra::process::kill(pid);
     ASSERT_TRUE(killed);
-
-    //start the process (again)
-    pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
-    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
-
-    ra::time::millisleep(5000); //allow time for the process to start properly (again).
-
-    //assert the process is started (again)
-    started = ra::process::isRunning(pid);
-    ASSERT_TRUE(started);
-
-    //try to terimnate the process
-    bool terminated = ra::process::terminate(pid);
-    ASSERT_TRUE(terminated);
+    
+#ifndef _WIN32
+    //after killing nano, the console may be in a weird configuration.
+    //reset the console in a "sane" configuration.
+    //https://unix.stackexchange.com/questions/492809/my-bash-shell-doesnt-start-a-new-line-upon-return-and-doesnt-show-typed-comma
+    //https://unix.stackexchange.com/questions/58951/accidental-nano-somefile-uniq-renders-the-shell-unresponsive
+    //Note:
+    //  use '/bin/stty' instead of '/usr/bin/reset' because reset will actually erase the content of the console
+    //  and we do not want to loose the the previous test results and details.
+    {
+      ra::strings::StringVector reset_args;
+      reset_args.push_back("sane");
+      ra::process::processid_t reset_pid = ra::process::startProcess("/bin/stty", test_dir, false, reset_args);
+      
+      //wait for the process to exit
+      while (ra::process::isRunning(reset_pid))
+      {
+        //wait a little more
+        ra::time::millisleep(1000);
+      }
+      
+      printf("\n");
+      fflush(NULL);
+    }
+#endif
+    
+    //  //start the process (again)
+    //  pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
+    //  ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+    //  
+    //  ra::time::millisleep(5000); //allow time for the process to start properly (again).
+    //  
+    //  //assert the process is started (again)
+    //  started = ra::process::isRunning(pid);
+    //  ASSERT_TRUE(started);
+    //  
+    //  //try to terimnate the process
+    //  bool terminated = ra::process::terminate(pid);
+    //  ASSERT_TRUE(terminated);
 
     //cleanup
-    ra::filesystem::deleteFile(file_path.c_str());
+    //ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument)

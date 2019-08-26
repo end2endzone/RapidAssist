@@ -76,6 +76,55 @@ namespace ra
       return s;
     }
 
+#ifndef _WIN32
+    bool getProcessState(const processid_t & pid, char & state)
+    {
+      std::string stat_path = std::string("/proc/") + ra::strings::toString(pid) + "/stat";
+      bool exists = ra::filesystem::fileExists(stat_path.c_str());
+      if (!exists)
+        return false;
+      
+      FILE * f = fopen(stat_path.c_str(), "r");
+      if (!f)
+        return false;
+      
+      //read first 1024 bytes
+      static const int BUFFER_SIZE = 1024;
+      char buffer[BUFFER_SIZE];
+      fgets(buffer, BUFFER_SIZE, f);
+      buffer[BUFFER_SIZE-1] = '\0';
+      fclose(f);
+      
+      //split each token into a list
+      ra::strings::StringVector tokens;
+      ra::strings::split(tokens, buffer, ' ');
+
+      //assert the minimum number of tokens
+      if (tokens.size() < 3)
+        return false; //not enough tokens
+
+      const std::string & pid_s   = tokens[0];
+      const std::string & name_s  = tokens[1];
+      const std::string & state_s = tokens[2];
+
+      if (state_s.size() != 1)
+        return false; //not a state
+
+      //read the process state expecting one of the following characters:
+      // D Uninterruptible sleep (usually IO)
+      // R Running or runnable (on run queue)
+      // S Interruptible sleep (waiting for an event to complete)
+      // T Stopped, either by a job control signal or because it is being traced.
+      // W paging (not valid since the 2.6.xx kernel)
+      // X dead (should never be seen)
+      // Z Defunct ("zombie") process, terminated but not reaped by its parent.
+      // I ?????
+      state = state_s[0];
+       
+      return true;
+    }
+#endif
+
     std::string getCurrentProcessPath()
     {
       std::string path;
@@ -158,6 +207,13 @@ namespace ra
         processid_t pid = INVALID_PROCESS_ID;
         bool parsed_ok = ra::strings::parse(name.c_str(), pid);
         if (!parsed_ok)
+          continue;
+        
+        //filter out process id that are in I state (unknown meaning) or Zombie state.
+        char state = '\0';
+        if (!getProcessState(pid, state))
+          continue;
+        if (state == 'I' || state == 'Z')
           continue;
         
         processes.push_back(pid);
@@ -288,12 +344,20 @@ namespace ra
         argv[i+1] = arg_value;
       }
       pid_t child_pid = INVALID_PROCESS_ID;
-      fflush(NULL);
+      
+      //Print arguments.
+      //printf("posix_spawn():\n");
+      //fflush(NULL);
+      //int i=0;
+      //while(argv[i])
+      //{
+      //  printf("arg[%d]=%s\n", i, argv[i]);
+      //  i++;
+      //}
+      
       int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
       if (status == 0)
       {
-        fflush(NULL);
-        
         //wait for the child process to exit?
         if (iWaitProcessExit)
         {
@@ -650,9 +714,25 @@ namespace ra
       };
       return alive;
 #else
-      std::string cmdline_path = std::string("/proc/") + ra::strings::toString(pid) + "/cmdline";
-      bool exists = ra::filesystem::fileExists(cmdline_path.c_str());
-      return exists;
+      char state = '\0';
+      if (!getProcessState(pid, state))
+        return false; //unable to find process state
+
+      // D Uninterruptible sleep (usually IO)
+      // R Running or runnable (on run queue)
+      // S Interruptible sleep (waiting for an event to complete)
+      // T Stopped, either by a job control signal or because it is being traced.
+      // W paging (not valid since the 2.6.xx kernel)
+      // X dead (should never be seen)
+      // Z Defunct ("zombie") process, terminated but not reaped by its parent.
+      // I ?????
+      
+      if (state == 'D' ||
+          state == 'R' ||
+          state == 'S' )
+        return true;
+      else
+        return false;
 #endif
     }
 
