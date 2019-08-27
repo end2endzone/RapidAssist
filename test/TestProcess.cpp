@@ -167,6 +167,7 @@ namespace ra { namespace process { namespace test
             "The test runs the same executable twice but from a different directories.\n"
             "The output from the executable should be different since it is run from different locations.\n");
     printf("\n");
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //keep the current directory to verify if it has not changed
     const std::string curr_dir1 = ra::filesystem::getCurrentFolder();
@@ -212,13 +213,16 @@ namespace ra { namespace process { namespace test
       const std::string & mydir = dirs[i];
       printf("Launching process '%s' from directory '%s':\n", exec_path.c_str(), mydir.c_str());
       printf("{\n");
+      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
       //start the process
       ra::process::processid_t pid = ra::process::startProcess(exec_path, mydir, true, arguments);
       ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
+      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
       printf("}\n");
       printf("\n");
+      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
     }
 
     //assert that current directory is not affected by the launched processes 

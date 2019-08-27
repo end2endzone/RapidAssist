@@ -326,6 +326,12 @@ namespace ra
 #else
     processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const ra::strings::StringVector & iArguments)
     {
+      //temporary change the current directory for the child process
+      std::string curr_dir = ra::filesystem::getCurrentFolder();
+      if (!ra::filesystem::folderExists(iDefaultDirectory.c_str()))
+        return INVALID_PROCESS_ID;
+      chdir(iDefaultDirectory.c_str());
+
       //prepare argv
       //the first element of argv must be the executable path itself.
       //the last element of argv must be am empty argument
@@ -349,9 +355,6 @@ namespace ra
       //  i++;
       //}
       
-      //temporary change the current directory for the child process
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
-
       int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
 
       //restore the directory back to the previous state
