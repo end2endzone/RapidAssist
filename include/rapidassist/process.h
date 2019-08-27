@@ -75,9 +75,9 @@ namespace ra
     std::string getCurrentProcessDir();
 
     /// <summary>
-    /// Get the list of all the processes of the system.
+    /// Get the list of all running processes of the system.
     /// </summary>
-    /// <returns>Returns the list of all the processes of the system.</returns>
+    /// <returns>Returns the list of all running processes of the system.</returns>
     ProcessIdList getProcesses();
 
     /// <summary>

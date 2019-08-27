@@ -194,10 +194,13 @@ namespace ra
       for(size_t i=0; i<files.size(); i++)
       {
         const std::string & file = files[i];
+        
+        //filter out files
         bool isDirectory = ra::filesystem::folderExists(file.c_str());
         if (!isDirectory)
           continue;
-        
+
+        //filter out directories that are not numeric.
         const std::string name = ra::filesystem::getFilename(file.c_str());
         bool numeric = ra::strings::isNumeric(name.c_str());
         if (!numeric)
@@ -209,11 +212,12 @@ namespace ra
         if (!parsed_ok)
           continue;
         
-        //filter out process id that are in I state (unknown meaning) or Zombie state.
+        //filter out process id that are not running
         char state = '\0';
         if (!getProcessState(pid, state))
           continue;
-        if (state == 'I' || state == 'Z')
+        bool running = (state == 'D' || state == 'R' || state == 'S');
+        if (!running)
           continue;
         
         processes.push_back(pid);

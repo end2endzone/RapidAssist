@@ -163,9 +163,10 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testStartProcessWithDirectory)
   {
-    printf( "Note: this test must be manually validated.\n"
-            "The test runs the same executable twice but from a different directories.\n"
-            "The output from the executable should be different since it is run from different locations.\n");
+    printf( "Note:\n"
+            "This test must be manually validated.\n"
+            "The test runs the same executable twice but from different directories.\n"
+            "The output from the executable is expected to be different since it is run from different locations.\n");
     printf("\n");
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
