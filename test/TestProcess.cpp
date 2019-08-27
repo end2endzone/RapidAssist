@@ -163,34 +163,71 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testStartProcessWithDirectory)
   {
+    printf( "Note: this test must be manually validated.\n"
+            "The test runs the same excutable twice but from a different directories.\n"
+            "The output from the executable should be different since it is run from different locations.\n");
+    printf("\n");
+
+    //keep the current directory to verify if it has not changed
+    const std::string curr_dir1 = ra::filesystem::getCurrentFolder();
+
+    //will run the process from user's home directory
+    const std::string home_dir = ra::user::getHomeDirectory();
+    ASSERT_TRUE(ra::filesystem::folderExists(home_dir.c_str()));
+
+    //will also run the process from a custom directory
+    const std::string custom_dir = curr_dir1 + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".dir";
+    bool created = ra::filesystem::createFolder(custom_dir.c_str());
+    ASSERT_TRUE(created);
+
     //create a text file in user's home directory
     const std::string newline = ra::environment::getLineSeparator();
     const std::string content = ra::gtesthelp::getTestQualifiedName();
-    const std::string file_path = ra::user::getHomeDirectory() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(home_file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
-    //define a command that lists the files in user's home directory
+    //create a text file in custom directory
+    const std::string custom_file_path = custom_dir + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    success = ra::filesystem::writeFile(custom_file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+    //define a command that lists the files in the current directory
 #ifdef _WIN32
     const std::string exec_path  = ra::environment::getEnvironmentVariable("ComSpec");
-    const std::string arguments = "/c dir /ad";
+    const std::string arguments = "/c dir /w";
 #else
     ra::strings::StringVector arguments;
     const std::string exec_path  = "/bin/ls";
 #endif
 
-    //run the process from user's home directory
-    const std::string home_dir = ra::user::getHomeDirectory();
-    ASSERT_TRUE(ra::filesystem::folderExists(home_dir.c_str()));
+    //build a list of directory to launch exec_path
+    ra::strings::StringVector dirs;
+    dirs.push_back(home_dir);
+    dirs.push_back(custom_dir);
+    
+    //for each directory
+    for(size_t i=0; i<dirs.size(); i++)
+    {
+      const std::string & mydir = dirs[i];
+      printf("Launching process '%s' from directory '%s':\n", exec_path.c_str(), mydir.c_str());
+      printf("{\n");
 
-    //start the process
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, home_dir, false, arguments);
-    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+      //start the process
+      ra::process::processid_t pid = ra::process::startProcess(exec_path, mydir, true, arguments);
+      ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
-    ra::time::millisleep(5000); //allow time for the process to terminate.
+      printf("}\n");
+      printf("\n");
+    }
+
+    //assert that current directory is not affected by the launched processes 
+    const std::string curr_dir2 = ra::filesystem::getCurrentFolder();
+    ASSERT_EQ( curr_dir1, curr_dir2 );
 
     //cleanup
-    ra::filesystem::deleteFile(file_path.c_str());
+    ra::filesystem::deleteFile(home_file_path.c_str());
+    ra::filesystem::deleteFolder(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testProcesses)
@@ -225,6 +262,11 @@ namespace ra { namespace process { namespace test
     //run the process from the current directory
     const std::string test_dir = ra::process::getCurrentProcessDir();
     ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+
+    //delete nano's cache file first
+    //nano's cache file is named ".TestProcess.testProcesses.txt.swp"
+    const std::string cache_path = test_dir + ra::filesystem::getPathSeparatorStr() + "." + ra::gtesthelp::getTestQualifiedName() + ".txt.swp";
+    ra::filesystem::deleteFile(cache_path.c_str());
 
     //start the process
     ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
