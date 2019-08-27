@@ -264,14 +264,8 @@ namespace ra
       processid_t pid = startProcess(iExecPath, iDefaultDirectory, false, "");
       return pid;
     #else
-      //temporary change the current directory for the child process
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
-      
-      processid_t pid = startProcess(iExecPath, curr_dir);
-
-      //restore the directory back to the previous state
-      chdir(curr_dir.c_str());
-
+      ra::strings::StringVector args;
+      processid_t pid = startProcess(iExecPath, iDefaultDirectory, false, args);
       return pid;
     #endif
     }
@@ -355,9 +349,17 @@ namespace ra
       //  i++;
       //}
       
+      //temporary change the current directory for the child process
+      std::string curr_dir = ra::filesystem::getCurrentFolder();
+
       int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
+
+      //restore the directory back to the previous state
+      chdir(curr_dir.c_str());
+
       if (status == 0)
       {
+
         //wait for the child process to exit?
         if (iWaitProcessExit)
         {

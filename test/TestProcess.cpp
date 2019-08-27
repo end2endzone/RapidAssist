@@ -164,7 +164,7 @@ namespace ra { namespace process { namespace test
   TEST_F(TestProcess, testStartProcessWithDirectory)
   {
     printf( "Note: this test must be manually validated.\n"
-            "The test runs the same excutable twice but from a different directories.\n"
+            "The test runs the same executable twice but from a different directories.\n"
             "The output from the executable should be different since it is run from different locations.\n");
     printf("\n");
 
@@ -183,19 +183,19 @@ namespace ra { namespace process { namespace test
     //create a text file in user's home directory
     const std::string newline = ra::environment::getLineSeparator();
     const std::string content = ra::gtesthelp::getTestQualifiedName();
-    const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_home_directory.txt";
     bool success = ra::filesystem::writeFile(home_file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
     //create a text file in custom directory
-    const std::string custom_file_path = custom_dir + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string custom_file_path = custom_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_a_custom_directory.txt";
     success = ra::filesystem::writeFile(custom_file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
     //define a command that lists the files in the current directory
 #ifdef _WIN32
     const std::string exec_path  = ra::environment::getEnvironmentVariable("ComSpec");
-    const std::string arguments = "/c dir /w";
+    const std::string arguments = "/c dir";
 #else
     ra::strings::StringVector arguments;
     const std::string exec_path  = "/bin/ls";
