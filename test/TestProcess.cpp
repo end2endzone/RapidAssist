@@ -196,7 +196,7 @@ namespace ra { namespace process { namespace test
 
     //define a command that lists the files in the current directory
 #ifdef _WIN32
-    const std::string exec_path  = ra::environment::getEnvironmentVariable("ComSpec");
+    const std::string exec_path = ra::environment::getEnvironmentVariable("ComSpec");
     const std::string arguments = "/c dir";
 #else
     ra::strings::StringVector arguments;
@@ -295,11 +295,11 @@ namespace ra { namespace process { namespace test
     //define the command 
 #ifdef _WIN32
     const std::string arguments = "\"" + file_path + "\"";
-    const std::string exec_path  = "c:\\windows\\notepad.exe";
+    const std::string exec_path = "c:\\windows\\notepad.exe";
 #else
     ra::strings::StringVector arguments;
     arguments.push_back(file_path);
-    const std::string exec_path  = "/bin/nano";
+    const std::string exec_path = "/bin/nano";
 #endif
 
     //run the process from the current directory
@@ -422,6 +422,115 @@ namespace ra { namespace process { namespace test
 
     //cleanup
     ra::filesystem::deleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testGetExitCode)
+  {
+    //define the sleep x seconds command
+    const std::string sleep_time = "2";
+#ifdef _WIN32
+    const std::string exec_path = ra::filesystem::findFileFromPaths("sleep.exe");
+    const std::string arguments = sleep_time;
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(sleep_time);
+    const std::string exec_path  = "/bin/sleep";
+#endif
+    
+    //assert that given process exists
+    ASSERT_TRUE( ra::filesystem::fileExists(exec_path.c_str()) );
+
+    //start the process
+    const std::string curr_dir = ra::process::getCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, false, arguments);
+
+    //assert that process is started
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+
+    //wait a little to be in the middle of execution of the process
+    ra::time::millisleep(500);
+
+    printf("calling ra::process::getExitCode() while process is running...\n");
+    int code = 0;
+    bool success = ra::process::getExitCode(pid, code);
+    
+    //assert getExitCode fails while the process is running
+    ASSERT_FALSE( success );
+
+    //wait for the program to exit
+    success = ra::process::waitExit(pid);
+    ASSERT_TRUE(success);
+
+    //try again
+    printf("calling ra::process::getExitCode() again...\n");
+    success = ra::process::getExitCode(pid, code);
+    ASSERT_TRUE( success );
+    ASSERT_EQ( 0, code ); //assert application exit code is SUCCESS.
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testGetExitCodeSpecific)
+  {
+    //define the process exit with error code command
+#ifdef _WIN32
+    const int expected_error_code = 123456;
+    const std::string expected_error_code_str = ra::strings::toString(expected_error_code);
+    const std::string exec_path = ra::environment::getEnvironmentVariable("ComSpec");
+    const std::string arguments = "/c exit " + expected_error_code_str;
+#else
+    const int expected_error_code = 234;
+    const std::string expected_error_code_str = ra::strings::toString(expected_error_code);
+    ra::strings::StringVector arguments;
+    arguments.push_back("-c");
+    std::string exit_arg = "exit ";
+    exit_arg.append(expected_error_code_str);
+    arguments.push_back(exit_arg);
+    const std::string exec_path  = "/bin/bash";
+#endif
+    
+    //assert that given process exists
+    ASSERT_TRUE( ra::filesystem::fileExists(exec_path.c_str()) );
+
+    //start the process
+    const std::string curr_dir = ra::process::getCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, false, arguments);
+
+    //wait for the program to exit
+    bool success = ra::process::waitExit(pid);
+    ASSERT_TRUE(success);
+
+    //get the exit code
+    int actual_exit_code = 0;
+    success = ra::process::getExitCode(pid, actual_exit_code);
+    ASSERT_TRUE( success );
+    ASSERT_EQ( expected_error_code, actual_exit_code );
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testWaitExit)
+  {
+    //define the sleep x seconds command
+    const std::string sleep_time = "2";
+#ifdef _WIN32
+    const std::string exec_path = ra::filesystem::findFileFromPaths("sleep.exe");
+    const std::string arguments = sleep_time;
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(sleep_time);
+    const std::string exec_path  = "/bin/sleep";
+#endif
+    
+    //assert that given process exists
+    ASSERT_TRUE( ra::filesystem::fileExists(exec_path.c_str()) );
+
+    //start the process
+    const std::string curr_dir = ra::process::getCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, false, arguments);
+
+    //assert that process is started
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+
+    //wait for the program to exit
+    bool success = ra::process::waitExit(pid);
+    ASSERT_TRUE(success);
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

@@ -500,7 +500,7 @@ namespace ra
       EXIT_CODE_FAILED
     };
 
-    ExitCodeResult getExitCode(const processid_t & pid, DWORD & code)
+    ExitCodeResult getExitCodeInternal(const processid_t & pid, DWORD & code)
     {
       ExitCodeResult result = EXIT_CODE_FAILED;
 
@@ -694,34 +694,36 @@ namespace ra
     bool isRunning(const processid_t & pid)
     {
 #ifdef _WIN32
-      DWORD code;
-      ExitCodeResult result = getExitCode(pid, code);
-      bool alive = false;
+      DWORD dwExitCode = 0;
+      ExitCodeResult result = getExitCodeInternal(pid, dwExitCode);
+      bool running = false;
       switch(result)
       {
       case EXIT_CODE_SUCCESS:
-        alive = false;
+        running = false;
         break;
       case EXIT_CODE_STILLRUNNING:
-        alive = true;
+        running = true;
         break;
       case EXIT_CODE_FAILED:
         {
           //set the process as not running by default
-          alive = false;
+          running = false;
 
           //search within existing processes
           ProcessIdList processes = getProcesses();
-          for(size_t i=0; i<processes.size() && alive==false; i++)
+          for(size_t i=0; i<processes.size() && running==false; i++)
           {
             DWORD tmp_pid = processes[i];
             if (tmp_pid == pid)
-              alive = true;
+              running = true;
           }
         }
         break;
+      default:
+        running = false; //should not append unless getExitCodeInternal is modified without notice.
       };
-      return alive;
+      return running;
 #else
       char state = '\0';
       if (!getProcessState(pid, state))
@@ -754,6 +756,56 @@ namespace ra
       int kill_error = ::kill(pid, SIGTERM);
       bool success = (kill_error == 0);
       return success;
+    #endif
+    }
+    
+    bool getExitCode(const processid_t & pid, int & exitcode)
+    {
+    #ifdef _WIN32
+      DWORD dwExitCode;
+      ExitCodeResult result = getExitCodeInternal(pid, dwExitCode);
+      if (result == EXIT_CODE_SUCCESS)
+      {
+        exitcode = static_cast<int>(dwExitCode);
+        return true;
+      }
+      return false;
+    #else
+      int status = 0;
+      if (waitpid(pid, &status, WNOHANG | WUNTRACED | WCONTINUED) == pid)
+      {
+        //waitpid success
+        bool process_exited = WIFEXITED( status );
+        exitcode = WEXITSTATUS( status );
+        return true;
+      }
+      return false;
+    #endif
+    }
+
+    bool waitExit(const processid_t & pid)
+    {
+    #ifdef _WIN32
+      //Get a handle on the process
+      HANDLE hProcess = OpenProcess( SYNCHRONIZE, TRUE, pid );
+      if (hProcess)
+      {
+        //now wait for the process termination
+        WaitForSingleObject( hProcess, INFINITE );
+        CloseHandle(hProcess);
+        return true;
+      }
+      return false;
+    #else
+      int status = 0;
+      if (waitpid(pid, &status, 0) == pid)
+      {
+        //waitpid success
+        bool process_exited = WIFEXITED( status );
+        int exitcode = WEXITSTATUS( status );
+        return true;
+      }
+      return false;
     #endif
     }
 

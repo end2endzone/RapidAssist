@@ -153,6 +153,22 @@ namespace ra
     /// <returns>Returns true if the process is alive. Returns false otherwise.</returns>
     bool isRunning(const processid_t & pid);
 
+    /// <summary>
+    /// Returns the exit code of the given process id.
+    /// Note: the process must be terminated to the function to be successful.
+    /// </summary>
+    /// <param name="pid">The process id to verify.</param>
+    /// <param name="exitcode">The process exit code.</param>
+    /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
+    bool getExitCode(const processid_t & pid, int & exitcode);
+
+    /// <summary>
+    /// Wait for the given process termination.
+    /// </summary>
+    /// <param name="pid">The process id to wait for.</param>
+    /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
+    bool waitExit(const processid_t & pid);
+
   } //namespace process
 } //namespace ra
 
