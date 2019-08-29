@@ -24,6 +24,7 @@
 
 #include "rapidassist/process.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/time_.h"
 
 #include <string>
 
@@ -792,20 +793,44 @@ namespace ra
       {
         //now wait for the process termination
         WaitForSingleObject( hProcess, INFINITE );
+        
+        //Get the exit code
+        bool exit_ok = getExitCode(pid, exitcode);
+        
         CloseHandle(hProcess);
         return true;
       }
       return false;
     #else
-      int status = 0;
-      if (waitpid(pid, &status, 0) == pid)
+      //DISABLED THE FOLLOWING IMPLEMENTATION:
+      // waitpid() function consumes the process exit code which disables the implementation of getExitCode().
+      // In other words, calling getExitCode() will always fails after calling the waitpid() function.
+      // This is why this function would have to also return the exit code.
+      //
+      // int status = 0;
+      // if (waitpid(pid, &status, 0) == pid)
+      // {
+      //   //waitpid success
+      //   bool process_exited = WIFEXITED( status );
+      //   int exitcode = WEXITSTATUS( status );
+      //   return true;
+      // }
+      // return false;
+      
+      //validate if pid is valid
+      int res = ::kill(pid, 0);
+      bool valid_pid = (res == 0 || (res < 0 && errno == EPERM));
+      if (!valid_pid)
+        return false;
+      
+      //the following implementation is waitpid() proof
+      while( isRunning(pid) )
       {
-        //waitpid success
-        bool process_exited = WIFEXITED( status );
-        int exitcode = WEXITSTATUS( status );
-        return true;
+        //wait a little more before verifying again
+        ra::time::millisleep(1000);
       }
-      return false;
+      
+      return true;
     #endif
     }
 

@@ -457,6 +457,9 @@ namespace ra { namespace process { namespace test
     //assert getExitCode fails while the process is running
     ASSERT_FALSE( success );
 
+    printf("call failed which is expected.\n");
+    printf("waiting for the process to exit gracefully...\n");
+    
     //wait for the program to exit
     success = ra::process::waitExit(pid);
     ASSERT_TRUE(success);
@@ -464,8 +467,11 @@ namespace ra { namespace process { namespace test
     //try again
     printf("calling ra::process::getExitCode() again...\n");
     success = ra::process::getExitCode(pid, code);
+    
     ASSERT_TRUE( success );
     ASSERT_EQ( 0, code ); //assert application exit code is SUCCESS.
+    
+    printf("received expected exit code\n");
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCodeSpecific)
