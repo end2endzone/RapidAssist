@@ -43,6 +43,7 @@
 #   include <signal.h>
 #   include <spawn.h>
 #   include <sys/wait.h>
+#   include <errno.h>
 extern char **environ;
 #endif
 
@@ -92,7 +93,7 @@ namespace ra
       //read first 1024 bytes
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
-      fgets(buffer, BUFFER_SIZE, f);
+      char * tmp = fgets(buffer, BUFFER_SIZE, f);
       buffer[BUFFER_SIZE-1] = '\0';
       fclose(f);
       
@@ -335,7 +336,7 @@ namespace ra
       std::string curr_dir = ra::filesystem::getCurrentFolder();
       if (!ra::filesystem::folderExists(iDefaultDirectory.c_str()))
         return INVALID_PROCESS_ID;
-      chdir(iDefaultDirectory.c_str());
+      int chdir_result = chdir(iDefaultDirectory.c_str());
 
       //prepare argv
       //the first element of argv must be the executable path itself.
