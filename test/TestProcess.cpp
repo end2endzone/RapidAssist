@@ -235,6 +235,44 @@ namespace ra { namespace process { namespace test
     ra::filesystem::deleteFolder(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+#ifndef _WIN32
+  void resetconsolestate()
+  {
+    //after killing nano, the console may be in a weird configuration.
+    //reset the console in a "sane" configuration.
+    //https://unix.stackexchange.com/questions/492809/my-bash-shell-doesnt-start-a-new-line-upon-return-and-doesnt-show-typed-comma
+    //https://unix.stackexchange.com/questions/58951/accidental-nano-somefile-uniq-renders-the-shell-unresponsive
+    //Note:
+    //  use '/bin/stty' instead of '/usr/bin/reset' because reset will actually erase the content of the console
+    //  and we do not want to loose the the previous test results and details.
+    
+    ra::strings::StringVector args;
+    args.push_back("sane");
+    const std::string curr_dir = ra::filesystem::getCurrentFolder();
+    ra::process::processid_t pid = ra::process::startProcess("/bin/stty", curr_dir, false, args);
+    
+    //wait for the process to exit
+    while (ra::process::isRunning(pid))
+    {
+      //wait a little more
+      ra::time::millisleep(1000);
+    }
+    
+    printf("\n");
+    fflush(NULL);
+  }
+  void deletenanocache(const std::string & file_path)
+  {
+    //for a filename named        "TestProcess.testProcesses.txt",
+    //nano's cache file is named ".TestProcess.testProcesses.txt.swp".
+
+    std::string parent_dir, filename;
+    ra::filesystem::splitPath(file_path, parent_dir, filename);
+
+    const std::string cache_path = parent_dir + ra::filesystem::getPathSeparatorStr() + "." + filename + ".swp";
+    ra::filesystem::deleteFile(cache_path.c_str());
+  }
+#endif
   TEST_F(TestProcess, testProcesses)
   {
     //create a text file
@@ -268,10 +306,10 @@ namespace ra { namespace process { namespace test
     const std::string test_dir = ra::process::getCurrentProcessDir();
     ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
 
-    //delete nano's cache file first
-    //nano's cache file is named ".TestProcess.testProcesses.txt.swp"
-    const std::string cache_path = test_dir + ra::filesystem::getPathSeparatorStr() + "." + ra::gtesthelp::getTestQualifiedName() + ".txt.swp";
-    ra::filesystem::deleteFile(cache_path.c_str());
+#ifndef _WIN32
+    //delete nano's cache before launching nano
+    deletenanocache(file_path);
+#endif
 
     //start the process
     ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
@@ -288,46 +326,39 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(killed);
     
 #ifndef _WIN32
-    //after killing nano, the console may be in a weird configuration.
-    //reset the console in a "sane" configuration.
-    //https://unix.stackexchange.com/questions/492809/my-bash-shell-doesnt-start-a-new-line-upon-return-and-doesnt-show-typed-comma
-    //https://unix.stackexchange.com/questions/58951/accidental-nano-somefile-uniq-renders-the-shell-unresponsive
-    //Note:
-    //  use '/bin/stty' instead of '/usr/bin/reset' because reset will actually erase the content of the console
-    //  and we do not want to loose the the previous test results and details.
-    {
-      ra::strings::StringVector reset_args;
-      reset_args.push_back("sane");
-      ra::process::processid_t reset_pid = ra::process::startProcess("/bin/stty", test_dir, false, reset_args);
-      
-      //wait for the process to exit
-      while (ra::process::isRunning(reset_pid))
-      {
-        //wait a little more
-        ra::time::millisleep(1000);
-      }
-      
-      printf("\n");
-      fflush(NULL);
-    }
+    resetconsolestate();
 #endif
     
-    //  //start the process (again)
-    //  pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
-    //  ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
-    //  
-    //  ra::time::millisleep(5000); //allow time for the process to start properly (again).
-    //  
-    //  //assert the process is started (again)
-    //  started = ra::process::isRunning(pid);
-    //  ASSERT_TRUE(started);
-    //  
-    //  //try to terimnate the process
-    //  bool terminated = ra::process::terminate(pid);
-    //  ASSERT_TRUE(terminated);
+#ifndef _WIN32
+    //delete nano's cache before launching nano (cleanup)
+    deletenanocache(file_path);
+#endif
+    
+    //start the process (again)
+    pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+    
+    ra::time::millisleep(5000); //allow time for the process to start properly (again).
+    
+    //assert the process is started (again)
+    started = ra::process::isRunning(pid);
+    ASSERT_TRUE(started);
+    
+    //try to terimnate the process
+    bool terminated = ra::process::terminate(pid);
+    ASSERT_TRUE(terminated);
 
+#ifndef _WIN32
+    resetconsolestate();
+#endif
+    
+#ifndef _WIN32
+    //delete nano's cache before launching nano (cleanup)
+    deletenanocache(file_path);
+#endif
+    
     //cleanup
-    //ra::filesystem::deleteFile(file_path.c_str());
+    ra::filesystem::deleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument)

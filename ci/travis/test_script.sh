@@ -12,3 +12,6 @@ echo Testing project
 echo ============================================================================
 cd $TRAVIS_BUILD_DIR/build/bin;
 ./rapidassist_unittest || true; #do not fail build even if a test fails.
+
+#Debug TestProcess filter:
+#./rapidassist_unittest --gtest_filter=TestFilesystem.testNormalizePath:*TestProcess.testIsRunning*:*TestProcess.testProcesses*:TestString.testIsNumeric
