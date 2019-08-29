@@ -751,7 +751,7 @@ namespace ra
       bool terminated = terminate(pid, 30000); //allow 30 seconds to close
       return terminated;
     #else
-      int kill_error = ::kill(pid, SIGQUIT);
+      int kill_error = ::kill(pid, SIGTERM);
       bool success = (kill_error == 0);
       return success;
     #endif

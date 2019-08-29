@@ -311,6 +311,8 @@ namespace ra { namespace process { namespace test
     deletenanocache(file_path);
 #endif
 
+    printf("Launching '%s'...\n", exec_path.c_str());
+    
     //start the process
     ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
@@ -320,6 +322,8 @@ namespace ra { namespace process { namespace test
     //assert the process is started
     bool started = ra::process::isRunning(pid);
     ASSERT_TRUE(started);
+
+    printf("Killing '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
     
     //try to kill the process
     bool killed = ra::process::kill(pid);
@@ -329,11 +333,15 @@ namespace ra { namespace process { namespace test
     resetconsolestate();
 #endif
     
+    printf("Killed...\n");
+    
 #ifndef _WIN32
-    //delete nano's cache before launching nano (cleanup)
+    //delete nano's cache before launching nano (again)
     deletenanocache(file_path);
 #endif
     
+    printf("Launching '%s' (again)...\n", exec_path.c_str());
+
     //start the process (again)
     pid = ra::process::startProcess(exec_path, test_dir, false, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
@@ -344,18 +352,18 @@ namespace ra { namespace process { namespace test
     started = ra::process::isRunning(pid);
     ASSERT_TRUE(started);
     
+    printf("Terminating '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
+    
     //try to terimnate the process
     bool terminated = ra::process::terminate(pid);
     ASSERT_TRUE(terminated);
 
 #ifndef _WIN32
-    resetconsolestate();
-#endif
-    
-#ifndef _WIN32
-    //delete nano's cache before launching nano (cleanup)
+    //delete nano's cache (cleanup)
     deletenanocache(file_path);
 #endif
+        
+    printf("Terminated...\n");
     
     //cleanup
     ra::filesystem::deleteFile(file_path.c_str());
