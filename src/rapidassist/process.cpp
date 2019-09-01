@@ -795,9 +795,6 @@ namespace ra
         //now wait for the process termination
         WaitForSingleObject( hProcess, INFINITE );
         
-        //Get the exit code
-        bool exit_ok = getExitCode(pid, exitcode);
-        
         CloseHandle(hProcess);
         return true;
       }
