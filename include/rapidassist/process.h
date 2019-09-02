@@ -171,6 +171,15 @@ namespace ra
     /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
     bool waitExit(const processid_t & pid);
 
+    /// <summary>
+    /// Wait for the given process termination and return the process exit code.
+    /// The process must be a child process of the current process for the function to be successful.
+    /// </summary>
+    /// <param name="pid">The process id to wait for.</param>
+    /// <param name="exitcode">The process exit code if the function is successful.</param>
+    /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
+    bool waitExit(const processid_t & pid, int & exitcode);
+
   } //namespace process
 } //namespace ra
 

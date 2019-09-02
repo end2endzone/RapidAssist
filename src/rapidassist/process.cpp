@@ -443,6 +443,12 @@ namespace ra
     #else
       int kill_error = ::kill(pid, SIGKILL);
       success = (kill_error == 0);
+      
+      if (success)
+      {
+        int status = 0;
+        processid_t result_pid = waitpid(pid, &status, 0);
+      }
     #endif
       return success;
     }
@@ -831,6 +837,21 @@ namespace ra
       return true;
     #endif
     }
+    
+    bool waitExit(const processid_t & pid, int & exitcode)
+    {
+      bool success = waitExit(pid);
+      if (!success)
+        return false;
+      
+#ifndef _WIN32
+      //also read the process exit code to remove the zombie process
+      success = getExitCode(pid, exitcode);
+#endif
+      
+      return success;
+    }
+    
 
   } //namespace process
 } //namespace ra
