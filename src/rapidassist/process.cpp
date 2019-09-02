@@ -364,11 +364,10 @@ namespace ra
       int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
 
       //restore the directory back to the previous state
-      chdir(curr_dir.c_str());
+      chdir_result = chdir(curr_dir.c_str());
 
       if (status == 0)
       {
-
         //wait for the child process to exit?
         if (iWaitProcessExit)
         {
