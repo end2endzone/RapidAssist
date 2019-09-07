@@ -125,7 +125,7 @@ namespace ra
       EXIT_CODE_FAILED
     };
 
-    ExitCodeResult getExitCodeInternal(const processid_t & pid, DWORD & code)
+    ExitCodeResult getWin32ExitCodeResult(const processid_t & pid, DWORD & code)
     {
       ExitCodeResult result = EXIT_CODE_FAILED;
 
@@ -735,9 +735,11 @@ namespace ra
       
       if (success)
       {
+        // call waitpid() on Linux to prevent having zombie processes.
         int status = 0;
         processid_t result_pid = waitpid(pid, &status, 0);
       }
+
     #endif
       return success;
     }
@@ -746,7 +748,7 @@ namespace ra
     {
 #ifdef _WIN32
       DWORD dwExitCode = 0;
-      ExitCodeResult result = getExitCodeInternal(pid, dwExitCode);
+      ExitCodeResult result = getWin32ExitCodeResult(pid, dwExitCode);
       bool running = false;
       switch(result)
       {
@@ -772,7 +774,7 @@ namespace ra
         }
         break;
       default:
-        running = false; //should not append unless getExitCodeInternal is modified without notice.
+        running = false; //should not append unless getWin32ExitCodeResult is modified without notice.
       };
       return running;
 #else
@@ -789,11 +791,21 @@ namespace ra
     bool terminate(const processid_t & pid)
     {
     #ifdef _WIN32
-      bool terminated = terminate(pid, 30000); //allow 30 seconds to close
+      //ask the process to exit gracefully allowing a maximum of 60 seconds to close
+      bool terminated = terminate(pid, 60000);
       return terminated;
     #else
+      //ask the process to exit gracefully
       int kill_error = ::kill(pid, SIGTERM);
       bool success = (kill_error == 0);
+
+      if (success)
+      {
+        // call waitpid() on Linux to prevent having zombie processes.
+        int status = 0;
+        processid_t result_pid = waitpid(pid, &status, 0);
+      }
+
       return success;
     #endif
     }
@@ -802,7 +814,7 @@ namespace ra
     {
     #ifdef _WIN32
       DWORD dwExitCode;
-      ExitCodeResult result = getExitCodeInternal(pid, dwExitCode);
+      ExitCodeResult result = getWin32ExitCodeResult(pid, dwExitCode);
       if (result == EXIT_CODE_SUCCESS)
       {
         exitcode = static_cast<int>(dwExitCode);
