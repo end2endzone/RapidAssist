@@ -320,6 +320,25 @@ namespace ra { namespace console { namespace test
     printf("hasConsoleOwnership()=%d\n", ra::console::hasConsoleOwnership());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testWaitKeyPress)
+  {
+    printf("Press 10 keys to continue. Pressing 2+ bytes keys will only register the first key.\n");
+    
+    int line = 0;
+    for(int i=0; i<10; i++)
+    {
+      int keycode = ra::console::waitKeyPress();
+      char c = (char)keycode;
+      line++;
+      line = line%256;
+      
+      if (c != 0x1B)
+        printf("line=%03d, key=0x%x(hex) %d(dec) '%c'\n", line, keycode, keycode, c);
+      else
+        printf("line=%03d, key=0x%x(hex) %d(dec)\n", line, keycode, keycode);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace console
 } //namespace ra

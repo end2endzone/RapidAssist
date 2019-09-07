@@ -29,6 +29,7 @@
 
 #ifdef _WIN32
 
+#include <conio.h>
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #endif /* WIN32_LEAN_AND_MEAN */
@@ -37,15 +38,15 @@
 #elif __linux__
 
 #include <cstdio>       // fileno()
-#include <unistd.h>     // isatty()
-#include <sys/ioctl.h>  // ioctl()
-#include <unistd.h>
+#include <unistd.h>     // isatty(), read() and STDIN_FILENO
+#include <sys/ioctl.h>  //for ioctl() and FIONREAD
+#include <termios.h>    //for tcgetattr() and tcsetattr() 
+#include <fstream>      //for exit()
+#include <fcntl.h>      //for fcntl(), F_GETFL and F_SETFL
 
 //for getCursorPos()
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <termios.h>
 
 #endif
 
@@ -207,6 +208,145 @@ namespace ra
 #endif
     }
 
+#ifdef _WIN32
+    char my_getch()
+    {
+      char c = (char)_getch();
+      return c;
+    }
+    
+    int my_kbhit()
+    {
+      int hits = _kbhit();
+      return hits;
+    }
+    
+#else
+    /** 
+     * Set a file descriptor to blocking or non-blocking mode.
+     * http://code.activestate.com/recipes/577384-setting-a-file-descriptor-to-blocking-or-non-block/
+     *
+     * @param fd The file descriptor
+     * @param blocking 0:non-blocking mode, 1:blocking mode
+     *
+     * @return 1:success, 0:failure.
+     **/
+    int fd_set_blocking(int fd, int blocking)
+    {
+      /* Save the current flags */
+      int flags = fcntl(fd, F_GETFL, 0);
+      if (flags == -1)
+        return 0;
+
+      if (blocking)
+        flags &= ~O_NONBLOCK;
+      else
+        flags |= O_NONBLOCK;
+      return fcntl(fd, F_SETFL, flags) != -1;
+    }
+
+    //https://stackoverflow.com/questions/9429138/non-blocking-keyboard-read-c-c/28222851
+    char my_getch()
+    {
+      int kfd = STDIN_FILENO;
+      struct termios cooked, raw;
+      char c;
+      
+      // remember console settings to get back to a 'sane' configuration
+      if (tcgetattr(kfd, &cooked) < 0)
+      {
+        perror("tcgetattr()");
+        return '\0';
+      }
+      
+      // set the console in raw mode
+      memcpy(&raw, &cooked, sizeof(struct termios));
+      raw.c_lflag &= ~(ICANON | ECHO);
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
+      {
+        perror("tcsetattr()");
+
+        // reset console to its original mode before leaving the function
+        tcsetattr(kfd, TCSANOW, &cooked);
+        
+        return '\0';
+      }
+
+      // get the next event from the keyboard
+      if (read(kfd, &c, 1) < 0)
+      {
+        perror("read():");
+
+        // reset console to its original mode before leaving the function
+        tcsetattr(kfd, TCSANOW, &cooked);
+        
+        return '\0';
+      }
+      
+      // reset console to its original mode before leaving the function
+      if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
+        perror("tcsetattr()");
+
+      return c;
+    }
+
+    int my_kbhit()
+    {
+      int kfd = STDIN_FILENO;
+      struct termios cooked, raw;
+      char c;
+      
+      // remember console settings to get back to previous configuration
+      if (tcgetattr(kfd, &cooked) < 0)
+        perror("tcgetattr()");
+      
+      // turn off line buffering
+      memcpy(&raw, &cooked, sizeof(struct termios));
+      raw.c_lflag &= ~(ICANON);
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
+      {
+        perror("tcsetattr()");
+        
+        // reset console to its original mode before leaving the function
+        tcsetattr(kfd, TCSANOW, &cooked);
+        
+        return 0;
+      }
+
+      // get the number of bytes waiting to be readed
+      int bytes_waiting = 0;
+      if (ioctl(kfd, FIONREAD, &bytes_waiting) < 0)
+      {
+        perror("tcsetattr()");
+        
+        // reset console to its original mode before leaving the function
+        tcsetattr(kfd, TCSANOW, &cooked);
+        
+        return 0;
+      }
+      
+      // reset console to its original mode before leaving the function
+      if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
+        perror("tcsetattr()");
+
+      return bytes_waiting;
+    }
+#endif
+
+    int waitKeyPress()
+    {
+      //empty input buffer first
+      int key = 0;
+      while(my_kbhit())
+      {
+        key = my_getch();
+      }
+
+      //wait for a new keypress
+      key = my_getch();
+      return key;
+    }
+    
     void clearScreen()
     {
       //system("cls");

@@ -56,11 +56,20 @@ namespace ra
     /// <param name="width">The width of the console.</param>
     /// <param name="height">The height of the console.</param>
     void getDimension(int & width, int & height);
-
+    
     /// <summary>
     /// Clears the screen.
     /// </summary>
     void clearScreen();
+
+    /// <summary>
+    /// Wait for the user to press a key.
+    /// </summary>
+    /// <remarks>
+    /// This function only works with console application.
+    /// </remarks>
+    /// <returns>Returns the code of the key pressed.</returns>
+    int waitKeyPress();
 
     /// <summary>
     /// Saves the current cursor position on a stack.
