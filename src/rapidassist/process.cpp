@@ -372,6 +372,36 @@ namespace ra
       return true;
     }
 
+    /// <summary>
+    /// Define if a process is running or not.
+    /// A zombie process is not considered running.
+    /// </summary>
+    /// <param name="state">The process state process.</param>
+    /// <returns>Returns true if the process is running. Returns false otherwise.</returns>
+    bool isRunningState(const char state)
+    {
+      // See getProcessState() for known process states.
+      bool running = (state == 'D' || state == 'R' || state == 'S');
+      return running;
+    }
+
+    /// <summary>
+    /// Verify if the given process id is a zombie process.
+    /// </summary>
+    /// <param name="pid">The process id of the process.</param>
+    /// <returns>Returns true if the process id is a zombie process. Returns false otherwise.</returns>
+    bool isZombieProcess(const processid_t & pid)
+    {
+      //read the state of the given process
+      char state = '\0';
+      if (!getProcessState(pid, state))
+        return false; //failure to get process state
+
+      // See getProcessState() for known process states.
+      bool zombie = (state == 'Z');
+      return zombie;
+    }
+
 #endif
 
 
@@ -479,10 +509,11 @@ namespace ra
           continue;
         
         //filter out process id that are not running
+        //(i.e. zombie processes)
         char state = '\0';
         if (!getProcessState(pid, state))
           continue;
-        bool running = (state == 'D' || state == 'R' || state == 'S');
+        bool running = isRunningState(state);
         if (!running)
           continue;
         
@@ -517,19 +548,14 @@ namespace ra
     {
       std::string curr_dir = ra::filesystem::getCurrentFolder();
 
-#ifdef _WIN32
-      //CreateProcess() API requires to have a default starting directory
+      // Launch the process from the current process current directory
       processid_t pid = startProcess(iExecPath, curr_dir);
       return pid;
-#else
-      const ra::strings::StringVector args;
-      processid_t pid = startProcess(iExecPath, curr_dir, false, args);
-      return pid;
-#endif
     }
 
     processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory)
     {
+      // Launch the process with no arguments
     #ifdef _WIN32
       processid_t pid = startProcess(iExecPath, iDefaultDirectory, false, "");
       return pid;
@@ -754,21 +780,9 @@ namespace ra
       if (!getProcessState(pid, state))
         return false; //unable to find process state
 
-      // D Uninterruptible sleep (usually IO)
-      // R Running or runnable (on run queue)
-      // S Interruptible sleep (waiting for an event to complete)
-      // T Stopped, either by a job control signal or because it is being traced.
-      // W paging (not valid since the 2.6.xx kernel)
-      // X dead (should never be seen)
-      // Z Defunct ("zombie") process, terminated but not reaped by its parent.
-      // I ?????
-      
-      if (state == 'D' ||
-          state == 'R' ||
-          state == 'S' )
-        return true;
-      else
-        return false;
+      // See getProcessState() for known process states.
+      bool running = isRunningState(state);
+      return running;
 #endif
     }
 
