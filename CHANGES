@@ -21,6 +21,7 @@ Changes for 0.6.0:
 * Fixed issue #37: Move ra:gtesthelp::getTextFileContent() to ra::filesystem::readTextFileContent().
 * Fixed issue #40: parseBoolean() and parse(bool) should properly parse 'Y' or 'N' values.
 * Fixed issue #41: ra::process::getExitCode(pid) and ra::process::waitExit(pid).
+* Fixed issue #42: ra::console::waitKeyPress().
 
 Changes for 0.5.0:
 
