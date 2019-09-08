@@ -850,19 +850,31 @@ namespace ra
       return false;
     #else
       //DISABLED THE FOLLOWING IMPLEMENTATION:
-      // waitpid() function consumes the process exit code which disables the implementation of getExitCode().
-      // In other words, calling getExitCode() will always fails after calling the waitpid() function.
-      // This is why this function would have to also return the exit code.
+      //  waitpid() function consumes the process exit code which disables the implementation of getExitCode().
+      //  In other words, calling getExitCode() will always fails after calling the waitpid() function.
+      //  This is why this function would have to also return the exit code.
+      //  
+      //  int status = 0;
+      //  if (waitpid(pid, &status, 0) == pid)
+      //  {
+      //    //waitpid success
+      //    bool process_exited = WIFEXITED( status );
+      //    int exitcode = WEXITSTATUS( status );
+      //    return true;
+      //  }
+      //  return false;
+
+      //DISABLED THE FOLLOWING IMPLEMENTATION:
+      //  Using kill() function to detect if a process is alive works great but it does not detect
+      //  when a process is done executing and enters zombie state waiting for the user to call waitpid()
+      //  to get the process exit code.
       //
-      // int status = 0;
-      // if (waitpid(pid, &status, 0) == pid)
-      // {
-      //   //waitpid success
-      //   bool process_exited = WIFEXITED( status );
-      //   int exitcode = WEXITSTATUS( status );
-      //   return true;
-      // }
-      // return false;
+      //  int res = ::kill(pid, 0);
+      //  while (res == 0 || (res < 0 && errno == EPERM))
+      //  {
+      //    ra::time::millisleep(100);
+      //    res = ::kill(pid, 0);
+      //  }
       
       //validate if pid is valid
       int res = ::kill(pid, 0);
@@ -870,10 +882,12 @@ namespace ra
       if (!valid_pid)
         return false;
       
-      //the following implementation is waitpid() proof
+      //wait for the process state to change
+      //this implementation is slow but does not rely on waitpid()
+      //to detect the end of the process
       while( isRunning(pid) )
       {
-        //wait a little more before verifying again
+        //wait a little more and verify again
         ra::time::millisleep(1000);
       }
       

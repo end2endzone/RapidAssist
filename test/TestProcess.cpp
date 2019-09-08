@@ -134,7 +134,7 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestProcess, testProcessIds)
+  TEST_F(TestProcess, testInvalidProcessId)
   {
     printf("ra::process::INVALID_PROCESS_ID defined as 0x%X or %s\n", ra::process::INVALID_PROCESS_ID, ra::strings::toString(ra::process::INVALID_PROCESS_ID).c_str());
   }
@@ -152,8 +152,15 @@ namespace ra { namespace process { namespace test
     ASSERT_FALSE( ra::process::isRunning(fake_pid) );
     
     //expect all existing processes are running
+    printf("Getting the list of active processes...\n");
     ProcessIdList processes = getProcesses();
     ASSERT_NE(0, processes.size());
+
+    printf( "Note:\n"
+            "Asserting that received processes are running...\n"
+            "Some process might be terminated by the time we validate the returned list of process ids.\n"
+            "This is normal but it should not happend often.\n");
+
     for(size_t i=0; i<processes.size(); i++)
     {
       processid_t pid = processes[i];
@@ -235,6 +242,41 @@ namespace ra { namespace process { namespace test
     ra::filesystem::deleteFolder(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testStartProcessBlockingWithArgument)
+  {
+    //define the sleep x seconds command
+    const std::string sleep_time = "10";
+#ifdef _WIN32
+    const std::string exec_path = ra::filesystem::findFileFromPaths("sleep.exe");
+    const std::string arguments = sleep_time;
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(sleep_time);
+    const std::string exec_path  = "/bin/sleep";
+#endif
+    
+    //assert that given process exists
+    ASSERT_TRUE( ra::filesystem::fileExists(exec_path.c_str()) );
+
+    //remember which time it is
+    double time_start = ra::time::getMillisecondsTimer();
+
+    //start the process
+    const std::string curr_dir = ra::process::getCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, true, arguments);
+
+    //assert that process was launched
+    ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
+
+    //compute elapsed time
+    double time_end = ra::time::getMillisecondsTimer();
+    double elapsed_seconds = time_end - time_start;
+    
+    //assert elapsed time matches expected time based on the argument
+    //test runtime should be bigger than sleep time
+    ASSERT_GE(elapsed_seconds, 9.9);
+  }
+  //--------------------------------------------------------------------------------------------------
 #ifndef _WIN32
   void resetconsolestate()
   {
@@ -273,7 +315,7 @@ namespace ra { namespace process { namespace test
     ra::filesystem::deleteFile(cache_path.c_str());
   }
 #endif
-  TEST_F(TestProcess, testProcesses)
+  TEST_F(TestProcess, testKillAndTerminate)
   {
     //create a text file
     const std::string newline = ra::environment::getLineSeparator();
@@ -335,6 +377,10 @@ namespace ra { namespace process { namespace test
     
     printf("Killed...\n");
     
+    //assert the process is not found
+    started = ra::process::isRunning(pid);
+    ASSERT_FALSE(started);
+    
 #ifndef _WIN32
     //delete nano's cache before launching nano (again)
     deletenanocache(file_path);
@@ -362,9 +408,13 @@ namespace ra { namespace process { namespace test
     //delete nano's cache (cleanup)
     deletenanocache(file_path);
 #endif
-        
-    printf("Terminated...\n");
     
+    printf("Terminated...\n");
+        
+    //assert the process is not found
+    started = ra::process::isRunning(pid);
+    ASSERT_FALSE(started);
+
     //cleanup
     ra::filesystem::deleteFile(file_path.c_str());
   }
