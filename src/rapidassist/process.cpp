@@ -557,17 +557,17 @@ namespace ra
     {
       // Launch the process with no arguments
     #ifdef _WIN32
-      processid_t pid = startProcess(iExecPath, iDefaultDirectory, false, "");
+      processid_t pid = startProcess(iExecPath, iDefaultDirectory, "");
       return pid;
     #else
       ra::strings::StringVector args;
-      processid_t pid = startProcess(iExecPath, iDefaultDirectory, false, args);
+      processid_t pid = startProcess(iExecPath, iDefaultDirectory, args);
       return pid;
     #endif
     }
 
 #ifdef _WIN32
-    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const std::string & iCommandLine)
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine)
     {
       //build the full command line
       std::string command;
@@ -607,12 +607,6 @@ namespace ra
         //Extract the program id
         DWORD dwProcessId = processInfo.dwProcessId;
 
-        //Should wait for the process to finish.
-        if (iWaitProcessExit)
-        {
-          WaitForSingleObject( processInfo.hProcess, INFINITE );
-        }
-
         //return the process id
         processid_t pId = static_cast<processid_t>(dwProcessId);
         return pId;
@@ -620,7 +614,7 @@ namespace ra
       return INVALID_PROCESS_ID;
     }
 #else
-    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const ra::strings::StringVector & iArguments)
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments)
     {
       //temporary change the current directory for the child process
       std::string curr_dir = ra::filesystem::getCurrentFolder();
@@ -639,7 +633,6 @@ namespace ra
         char * arg_value = (char*)iArguments[i].c_str();
         argv[i+1] = arg_value;
       }
-      pid_t child_pid = INVALID_PROCESS_ID;
       
       //Print arguments.
       //printf("posix_spawn():\n");
@@ -651,27 +644,14 @@ namespace ra
       //  i++;
       //}
       
+      pid_t child_pid = INVALID_PROCESS_ID;
       int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
+      if (status != 0)
+        child_pid = INVALID_PROCESS_ID;
 
-      //restore the directory back to the previous state
+      //restore current directory back to the previous location
       chdir_result = chdir(curr_dir.c_str());
 
-      if (status == 0)
-      {
-        //wait for the child process to exit?
-        if (iWaitProcessExit)
-        {
-          if (waitpid(child_pid, &status, 0) != -1)
-          {
-            //Child process exited with return code "status".
-          }
-          else
-          {
-            //something wrong happend...
-            perror("waitpid");
-          }
-        }
-      }
       return child_pid;
     }
 #endif
@@ -712,7 +692,7 @@ namespace ra
       
       const ra::strings::StringVector args;
       std::string curr_dir = ra::filesystem::getCurrentFolder();
-      processid_t pid = startProcess(xdgopen_path, curr_dir, false, args);
+      processid_t pid = startProcess(xdgopen_path, curr_dir, args);
       bool success = (pid != INVALID_PROCESS_ID);
       return success;
     #endif

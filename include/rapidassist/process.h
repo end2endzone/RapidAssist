@@ -108,10 +108,9 @@ namespace ra
     /// </summary>
     /// <param name="iExecPath">The path to the executable to start.</param>
     /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-    /// <param name="iWaitProcessExit">Wait for the process to exit before returning control to the user. If set to true, the call is blocking.</param>
     /// <param name="iCommandLine">The command line to send to the new process.</param>
     /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const std::string & iCommandLine);
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine);
 #else
     /// <summary>
     /// Start the given process with the given arguments from the given directory.
@@ -119,10 +118,9 @@ namespace ra
     /// </summary>
     /// <param name="iExecPath">The path to the executable to start.</param>
     /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-    /// <param name="iWaitProcessExit">Wait for the process to exit before returning control to the user. If set to true, the call is blocking.</param>
     /// <param name="iArguments">The list of arguments for the new process.</param>
     /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, bool iWaitProcessExit, const ra::strings::StringVector & iArguments);
+    processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments);
 #endif
 
     /// <summary>
