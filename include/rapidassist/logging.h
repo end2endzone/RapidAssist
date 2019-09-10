@@ -22,18 +22,18 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_LOGGER_H
-#define RA_LOGGER_H
+#ifndef RA_LOGGING_H
+#define RA_LOGGING_H
 
 #include <string>
 
 namespace ra
 {
-  namespace logger
+  namespace logging
   {
 
     /// <summary>
-    /// Different logger levels
+    /// Different logging levels
     /// </summary>
     enum LOGGER_LEVEL
     {
@@ -66,4 +66,4 @@ namespace ra
   } //namespace environment
 } //namespace ra
 
-#endif //RA_LOGGER_H
+#endif //RA_LOGGING_H

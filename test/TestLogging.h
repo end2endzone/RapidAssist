@@ -22,14 +22,14 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_RA_LOGGER_H
-#define TEST_RA_LOGGER_H
+#ifndef TEST_RA_LOGGING_H
+#define TEST_RA_LOGGING_H
 
 #include <gtest/gtest.h>
 
-namespace ra { namespace logger { namespace test
+namespace ra { namespace logging { namespace test
 {
-  class TestLogger : public ::testing::Test
+  class TestLogging : public ::testing::Test
   {
   public:
     virtual void SetUp();
@@ -37,7 +37,7 @@ namespace ra { namespace logger { namespace test
   };
 
 } //namespace test
-} //namespace logger
+} //namespace logging
 } //namespace ra
 
-#endif //TEST_RA_LOGGER_H
+#endif //TEST_RA_LOGGING_H

@@ -22,7 +22,7 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/logger.h"
+#include "rapidassist/logging.h"
 
 #include <sstream>
 #include <stdarg.h> //for functions with "..." arguments
@@ -31,7 +31,7 @@
 
 namespace ra
 {
-  namespace logger
+  namespace logging
   {
 
     bool gQuietMode = false;

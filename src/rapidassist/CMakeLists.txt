@@ -7,7 +7,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/generics.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/propertiesfile.h
-  ${CMAKE_SOURCE_DIR}/include/rapidassist/logger.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/logging.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/macros.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/process.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
@@ -38,7 +38,7 @@ add_library(rapidassist STATIC
   errors.cpp
   filesystem.cpp
   propertiesfile.cpp
-  logger.cpp
+  logging.cpp
   process.cpp
   random.cpp
   strings.cpp

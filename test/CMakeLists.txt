@@ -31,8 +31,8 @@ add_executable(rapidassist_unittest
   TestFilesystem.h
   TestGenerics.cpp
   TestGenerics.h
-  TestLogger.cpp
-  TestLogger.h
+  TestLogging.cpp
+  TestLogging.h
   TestProcess.cpp
   TestProcess.h
   TestPropertiesFile.cpp

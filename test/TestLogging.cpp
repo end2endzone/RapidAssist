@@ -22,35 +22,35 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "TestLogger.h"
-#include "rapidassist/logger.h"
+#include "TestLogging.h"
+#include "rapidassist/logging.h"
 
-namespace ra { namespace logger { namespace test
+namespace ra { namespace logging { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestLogger::SetUp()
+  void TestLogging::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestLogger::TearDown()
+  void TestLogging::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestLogger, testLoggerLevels)
+  TEST_F(TestLogging, testLoggerLevels)
   {
-    logger::setQuietMode(false);
-    logger::log(logger::LOG_INFO,     "This is information at line=%d.", __LINE__);
-    logger::log(logger::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
-    logger::log(logger::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
+    logging::setQuietMode(false);
+    logging::log(logging::LOG_INFO,     "This is information at line=%d.", __LINE__);
+    logging::log(logging::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
+    logging::log(logging::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestLogger, testQuietMode)
+  TEST_F(TestLogging, testQuietMode)
   {
-    logger::setQuietMode(true);
-    logger::log(logger::LOG_INFO,     "This is information at line=%d.", __LINE__);
-    logger::log(logger::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
-    logger::log(logger::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
+    logging::setQuietMode(true);
+    logging::log(logging::LOG_INFO,     "This is information at line=%d.", __LINE__);
+    logging::log(logging::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
+    logging::log(logging::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
