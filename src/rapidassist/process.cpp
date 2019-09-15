@@ -24,7 +24,7 @@
 
 #include "rapidassist/process.h"
 #include "rapidassist/filesystem.h"
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 
 #include <string>
 
@@ -852,7 +852,7 @@ namespace ra
       //  int res = ::kill(pid, 0);
       //  while (res == 0 || (res < 0 && errno == EPERM))
       //  {
-      //    ra::time::millisleep(100);
+      //    ra::timing::millisleep(100);
       //    res = ::kill(pid, 0);
       //  }
       
@@ -868,7 +868,7 @@ namespace ra
       while( isRunning(pid) )
       {
         //wait a little more and verify again
-        ra::time::millisleep(1000);
+        ra::timing::millisleep(1000);
       }
       
       return true;

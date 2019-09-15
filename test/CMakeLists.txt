@@ -41,8 +41,8 @@ add_executable(rapidassist_unittest
   TestRandom.h
   TestString.cpp
   TestString.h
-  TestTime.cpp
-  TestTime.h
+  TestTiming.cpp
+  TestTiming.h
   TestUser.cpp
   TestUser.h
 )

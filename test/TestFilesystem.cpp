@@ -24,7 +24,7 @@
 
 #include "TestFilesystem.h"
 #include "rapidassist/filesystem.h"
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 #include "rapidassist/gtesthelp.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/process.h"
@@ -1104,7 +1104,7 @@ namespace ra { namespace filesystem { namespace test
     //assert that unit of return value is seconds
     {
       //synchronize to the beginning of a new second on wall-clock.
-      ra::time::waitNextSecond();
+      ra::timing::waitNextSecond();
 
       static const uint64_t EXPECTED = 3;
       const std::string filename1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
@@ -1113,7 +1113,7 @@ namespace ra { namespace filesystem { namespace test
       //allow 3 seconds between the files
       for(uint64_t i=0; i<EXPECTED; i++)
       {
-        ra::time::waitNextSecond();
+        ra::timing::waitNextSecond();
       }
       ASSERT_TRUE( ra::gtesthelp::createFile(filename2.c_str()) );
 

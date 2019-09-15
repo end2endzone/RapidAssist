@@ -44,13 +44,13 @@ int main(int argc, char **argv)
   ::testing::GTEST_FLAG(filter) = "*";
   ::testing::InitGoogleTest(&argc, argv);
 
-  //Disable TestTime.testGetUtcTime() on AppVeyor or Travis CI
+  //Disable TestTiming.testGetUtcTime() on AppVeyor or Travis CI
   if (ra::gtesthelp::isAppVeyor() || ra::gtesthelp::isTravis())
   {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
     //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
-    std::string newFilter = ra::gtesthelp::mergeFilter("", "TestTime.testGetUtcTime", basefilter.c_str());
+    std::string newFilter = ra::gtesthelp::mergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
     //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::getCursorPos', line 79.

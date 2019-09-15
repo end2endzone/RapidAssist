@@ -22,15 +22,15 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_TIME_H
-#define RA_TIME_H
+#ifndef RA_TIMING_H
+#define RA_TIMING_H
 
 #include <stdint.h>
 #include <ctime> //for struct tm
 
 namespace ra
 {
-  namespace time
+  namespace timing
   {
 
     /// <summary>
@@ -109,7 +109,7 @@ namespace ra
     /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
     double getMillisecondsTimer();
 
-  }; //namespace time
+  }; //namespace timing
 } //namespace ra
 
-#endif //RA_TIME_H
+#endif //RA_TIMING_H

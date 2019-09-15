@@ -34,7 +34,7 @@ The intention of RapidAssist is to be used as a library companion by providing a
 
 To get the code easy to understand, all functions are grouped by category and each category is defined by a namespace which helps increase cohesion between the code of each platform. The namespaces also help reduce coupling between categories.
 
-The categories are `cli` (command line interface), `console`, `environment`, `filesystem`, `generics`, `gtesthelp`, `logger`, `process`, `random`, `strings` and `time`.
+The categories are `cli` (command line interface), `console`, `environment`, `filesystem`, `generics`, `gtesthelp`, `logging`, `process`, `random`, `strings` and `timing`.
 
 The library does not intent to replace [Boost](https://www.boost.org/) or other full-featured cross-platform libraries.
 

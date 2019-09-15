@@ -25,7 +25,7 @@
 #include "TestConsole.h"
 #include "rapidassist/console.h"
 #include "rapidassist/gtesthelp.h"
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 
 namespace ra { namespace console { namespace test
 {
@@ -101,11 +101,11 @@ namespace ra { namespace console { namespace test
   {
     //loop for 3 seconds
     static const double time_length = 3.0; //seconds
-    double time_start = ra::time::getMicrosecondsTimer();
+    double time_start = ra::timing::getMicrosecondsTimer();
     double time_end = time_start + time_length;
 
     int loop_count = 0;
-    while( ra::time::getMicrosecondsTimer() < time_end )
+    while( ra::timing::getMicrosecondsTimer() < time_end )
     {
       int before_x = 0;
       int before_y = 0;
@@ -180,13 +180,13 @@ namespace ra { namespace console { namespace test
   {
     static const double MAX_TIME_SECONDS = 3.0; //maximum running time of the test in seconds
 
-    double time_start = ra::time::getMillisecondsTimer();
+    double time_start = ra::timing::getMillisecondsTimer();
     double time_end = time_start + MAX_TIME_SECONDS;
 
-    while(ra::time::getMillisecondsTimer() < time_end)
+    while(ra::timing::getMillisecondsTimer() < time_end)
     {
       ra::console::printAnimationCursor();
-      ra::time::millisleep(80);
+      ra::timing::millisleep(80);
     }
     printf("\n");
   }

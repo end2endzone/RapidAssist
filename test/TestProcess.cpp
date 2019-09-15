@@ -26,7 +26,7 @@
 #include "rapidassist/process.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/gtesthelp.h"
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/user.h"
 
@@ -326,7 +326,7 @@ namespace ra { namespace process { namespace test
     ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
-    ra::time::millisleep(5000); //allow time for the process to start properly.
+    ra::timing::millisleep(5000); //allow time for the process to start properly.
     
     //assert the process is started
     bool started = ra::process::isRunning(pid);
@@ -359,7 +359,7 @@ namespace ra { namespace process { namespace test
     pid = ra::process::startProcess(exec_path, test_dir, arguments);
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
     
-    ra::time::millisleep(5000); //allow time for the process to start properly (again).
+    ra::timing::millisleep(5000); //allow time for the process to start properly (again).
     
     //assert the process is started (again)
     started = ra::process::isRunning(pid);
@@ -415,7 +415,7 @@ namespace ra { namespace process { namespace test
     // N/A
 #endif
 
-    ra::time::millisleep(5000); //allow time for the process to start properly (again).
+    ra::timing::millisleep(5000); //allow time for the process to start properly (again).
 
     //try to identify the new process
     ProcessIdList process_after = ra::process::getProcesses();
@@ -465,7 +465,7 @@ namespace ra { namespace process { namespace test
     ASSERT_NE( pid, ra::process::INVALID_PROCESS_ID );
 
     //wait a little to be in the middle of execution of the process
-    ra::time::millisleep(500);
+    ra::timing::millisleep(500);
 
     printf("calling ra::process::getExitCode() while process is running...\n");
     int code = 0;
@@ -545,7 +545,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE( ra::filesystem::fileExists(exec_path.c_str()) );
 
     //remember which time it is
-    double time_start = ra::time::getMillisecondsTimer();
+    double time_start = ra::timing::getMillisecondsTimer();
 
     //start the process
     const std::string curr_dir = ra::process::getCurrentProcessDir();
@@ -560,7 +560,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(wait_ok);
 
     //compute elapsed time
-    double time_end = ra::time::getMillisecondsTimer();
+    double time_end = ra::timing::getMillisecondsTimer();
     double elapsed_seconds = time_end - time_start;
     
     //assert elapsed time matches expected time based on the argument

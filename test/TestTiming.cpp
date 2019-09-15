@@ -22,28 +22,28 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "TestTime.h"
-#include "rapidassist/time_.h"
+#include "TestTiming.h"
+#include "rapidassist/timing.h"
 
-namespace ra { namespace time { namespace test
+namespace ra { namespace timing { namespace test
 {
   //--------------------------------------------------------------------------------------------------
-  void TestTime::SetUp()
+  void TestTiming::SetUp()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestTime::TearDown()
+  void TestTiming::TearDown()
   {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testMillisleep)
+  TEST_F(TestTiming, testMillisleep)
   {
     //synchronize time to a new seconds
     waitNextSecond();
 
     //assert that millisleep() is actually sleeping
     std::tm time1 = getLocalTime();
-    ASSERT_EQ(0, time::millisleep(3000 + 50)); //at least 3 seconds
+    ASSERT_EQ(0, ra::timing::millisleep(3000 + 50)); //at least 3 seconds
     std::tm time2 = getLocalTime();
 
     //convert hour, minute and seconds to absolute seconds
@@ -58,7 +58,7 @@ namespace ra { namespace time { namespace test
     ASSERT_LT(diff, EXPECTED+1); //allow 1 seconds of difference
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetCopyrightYear)
+  TEST_F(TestTiming, testGetCopyrightYear)
   {
     int year = getCopyrightYear();
     DATETIME now = toDateTime(getLocalTime());
@@ -66,7 +66,7 @@ namespace ra { namespace time { namespace test
     ASSERT_LE(year, now.year);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testDateTimeConvert)
+  TEST_F(TestTiming, testDateTimeConvert)
   {
     std::tm now = getLocalTime();
     DATETIME dt = toDateTime(now);
@@ -83,7 +83,7 @@ namespace ra { namespace time { namespace test
     ASSERT_EQ(now.tm_isdst, actual.tm_isdst);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetUtcTime)
+  TEST_F(TestTiming, testGetUtcTime)
   {
     std::tm local = getLocalTime();
     std::tm utc = getUtcTime();
@@ -91,7 +91,7 @@ namespace ra { namespace time { namespace test
     ASSERT_NE(local.tm_hour, utc.tm_hour);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetMicrosecondsTimerPerformance)
+  TEST_F(TestTiming, testGetMicrosecondsTimerPerformance)
   {
     //find the resolution of the getMicrosecondsTimer() function
     for (size_t i=0; i<10; i++)
@@ -112,17 +112,17 @@ namespace ra { namespace time { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetMicrosecondsTimerAgaintsSleep)
+  TEST_F(TestTiming, testGetMicrosecondsTimerAgaintsSleep)
   {
     double time1 = getMicrosecondsTimer();
-    time::millisleep(800);
+    ra::timing::millisleep(800);
     double time2 = getMicrosecondsTimer();
  
     double milliseconds = (time2 - time1)*1000.0;
     ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetMillisecondsTimerPerformance)
+  TEST_F(TestTiming, testGetMillisecondsTimerPerformance)
   {
     //find the resolution of the getMillisecondsTimer() function
     for (size_t i=0; i<10; i++)
@@ -144,10 +144,10 @@ namespace ra { namespace time { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestTime, testGetMillisecondsTimerAgaintsSleep)
+  TEST_F(TestTiming, testGetMillisecondsTimerAgaintsSleep)
   {
     double time1 = getMillisecondsTimer();
-    time::millisleep(800);
+    ra::timing::millisleep(800);
     double time2 = getMillisecondsTimer();
  
     double milliseconds = (time2 - time1)*1000.0;
@@ -155,5 +155,5 @@ namespace ra { namespace time { namespace test
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
-} //namespace time
+} //namespace timing
 } //namespace ra

@@ -23,7 +23,7 @@
  *********************************************************************************/
 
 #include "rapidassist/console.h"
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 #include "rapidassist/environment.h"
 #include <vector>
 
@@ -419,7 +419,7 @@ namespace ra
     {
       static const char gAnimationSprites[] = {'-', '\\', '|', '/'};
       static const int gNumAnimationSprites = sizeof(gAnimationSprites)/sizeof(gAnimationSprites[0]);
-      double seconds = ra::time::getMillisecondsTimer(); //already seconds
+      double seconds = ra::timing::getMillisecondsTimer(); //already seconds
       int spriteIndex = (int)(seconds/iRefreshRate);
       spriteIndex = spriteIndex % gNumAnimationSprites;
       char sprite = gAnimationSprites[spriteIndex];

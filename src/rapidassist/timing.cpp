@@ -22,7 +22,7 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/time_.h"
+#include "rapidassist/timing.h"
 
 #include <cstdlib> //for atoi()
 
@@ -52,7 +52,7 @@
 namespace ra
 {
 
-  namespace time
+  namespace timing
   {
 
 #ifdef __linux__
@@ -390,5 +390,5 @@ namespace ra
     }
 
 
-  }; //namespace time
+  }; //namespace timing
 } //namespace ra

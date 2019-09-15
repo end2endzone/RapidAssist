@@ -22,14 +22,14 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_RA_TIME_H
-#define TEST_RA_TIME_H
+#ifndef TEST_RA_TIMING_H
+#define TEST_RA_TIMING_H
 
 #include <gtest/gtest.h>
 
-namespace ra { namespace time { namespace test
+namespace ra { namespace timing { namespace test
 {
-  class TestTime : public ::testing::Test
+  class TestTiming : public ::testing::Test
   {
   public:
     virtual void SetUp();
@@ -37,7 +37,7 @@ namespace ra { namespace time { namespace test
   };
 
 } //namespace test
-} //namespace time
+} //namespace timing
 } //namespace ra
 
-#endif //TEST_RA_TIME_H
+#endif //TEST_RA_TIMING_H
