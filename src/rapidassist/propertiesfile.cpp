@@ -26,7 +26,7 @@
 
 #include "rapidassist/strings.h"
 #include "rapidassist/filesystem.h"
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 
 #include <stdint.h>
 #include <algorithm>    // std::min
@@ -137,7 +137,7 @@ namespace ra
 
       // TODO: process file open here
       ra::strings::StringVector lines;
-      bool loaded = ra::gtesthelp::getTextFileContent(file_path.c_str(), lines);
+      bool loaded = ra::testing::getTextFileContent(file_path.c_str(), lines);
       if (!loaded)
         return false;
 

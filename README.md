@@ -34,7 +34,7 @@ The intention of RapidAssist is to be used as a library companion by providing a
 
 To get the code easy to understand, all functions are grouped by category and each category is defined by a namespace which helps increase cohesion between the code of each platform. The namespaces also help reduce coupling between categories.
 
-The categories are `cli` (command line interface), `console`, `environment`, `filesystem`, `generics`, `gtesthelp`, `logging`, `process`, `random`, `strings` and `timing`.
+The categories are `cli` (command line interface), `console`, `environment`, `filesystem`, `generics`, `testing`, `logging`, `process`, `random`, `strings` and `timing`.
 
 The library does not intent to replace [Boost](https://www.boost.org/) or other full-featured cross-platform libraries.
 
@@ -76,13 +76,13 @@ TEST_F(TestDemo, testCodeSample)
 {
   //create a dummy file based on current gtest name
   static const int FILE_SIZE = 1000; //bytes
-  const std::string path = ra::gtesthelp::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
-  ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str(), FILE_SIZE) );
+  const std::string path = ra::testing::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
+  ASSERT_TRUE( ra::testing::createFile(path.c_str(), FILE_SIZE) );
   
   //test that a generated file is equals to the expected file
   std::string generatedFile = generateTestFile();
   std::string expectedFile = getExpectedTestFilePath();
-  ASSERT_TRUE ( ra::gtesthelp::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
+  ASSERT_TRUE ( ra::testing::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
 
   //split a string into multiple parts
   StringVector words = ra::strings::split("The quick brown fox jumps over the lazy dog", " ");

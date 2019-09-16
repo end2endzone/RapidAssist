@@ -27,7 +27,7 @@
 #include "rapidassist/propertiesfile.h"
 
 #include "rapidassist/filesystem.h"
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 
 namespace ra { namespace filesystem { namespace test
 {
@@ -97,7 +97,7 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestPropertiesFile, testLoad)
   {
     static const std::string path_separator = ra::filesystem::getPathSeparatorStr();
-    std::string test_name = ra::gtesthelp::getTestQualifiedName();
+    std::string test_name = ra::testing::getTestQualifiedName();
     std::string file_source_path = std::string("test_files") + path_separator + test_name + ".txt";
 
     PropertiesFile s;
@@ -140,7 +140,7 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestPropertiesFile, testSave)
   {
     static const std::string path_separator = ra::filesystem::getPathSeparatorStr();
-    std::string test_name = ra::gtesthelp::getTestQualifiedName();
+    std::string test_name = ra::testing::getTestQualifiedName();
     std::string file_expected_path  = std::string("test_files") + path_separator + test_name + ".expected.txt";
     std::string file_actual_path    = std::string("test_files") + path_separator + test_name + ".actual.txt";
 

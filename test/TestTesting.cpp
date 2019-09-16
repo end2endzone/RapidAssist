@@ -22,106 +22,106 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "TestGTestHelp.h"
-#include "rapidassist/gtesthelp.h"
+#include "TestTesting.h"
+#include "rapidassist/testing.h"
 
 namespace ra { namespace test {
 
-  void TestGTestHelp::SetUp()
+  void TestTesting::SetUp()
   {
-    ASSERT_TRUE( ra::gtesthelp::createFile("text1.tmp") );
-    ASSERT_TRUE( ra::gtesthelp::createFile("text2.tmp") );
-    ASSERT_TRUE( ra::gtesthelp::createFile("binary1.tmp", 1024) );
+    ASSERT_TRUE( ra::testing::createFile("text1.tmp") );
+    ASSERT_TRUE( ra::testing::createFile("text2.tmp") );
+    ASSERT_TRUE( ra::testing::createFile("binary1.tmp", 1024) );
   }
 
-  void TestGTestHelp::TearDown()
+  void TestTesting::TearDown()
   {
   }
 
-  TEST_F(TestGTestHelp, testFile1NotFound)
+  TEST_F(TestTesting, testFile1NotFound)
   {
     std::string msg;
     const char * file1 = "notfound.tmp";
     const char * file2 = "text1.tmp";
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is not found."), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testFile2NotFound)
+  TEST_F(TestTesting, testFile2NotFound)
   {
     std::string msg;
     const char * file1 = "text1.tmp";
     const char * file2 = "notfound.tmp";
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg);
     ASSERT_FALSE(equals) << msg.c_str();
     SCOPED_TRACE(msg);
     ASSERT_NE(msg.find("Second file is not found."), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testFile1Smaller)
+  TEST_F(TestTesting, testFile1Smaller)
   {
     std::string msg;
-    const std::string file1 = ra::gtesthelp::getTestQualifiedName() + ".1.tmp";
-    const std::string file2 = ra::gtesthelp::getTestQualifiedName() + ".2.tmp";
+    const std::string file1 = ra::testing::getTestQualifiedName() + ".1.tmp";
+    const std::string file2 = ra::testing::getTestQualifiedName() + ".2.tmp";
 
-    ASSERT_TRUE( ra::gtesthelp::createFile(file1.c_str(), 1000) );
-    ASSERT_TRUE( ra::gtesthelp::createFile(file2.c_str(), 1200) );
+    ASSERT_TRUE( ra::testing::createFile(file1.c_str(), 1000) );
+    ASSERT_TRUE( ra::testing::createFile(file2.c_str(), 1200) );
 
-    bool equals = ra::gtesthelp::isFileEquals(file1.c_str(), file2.c_str(), msg);
+    bool equals = ra::testing::isFileEquals(file1.c_str(), file2.c_str(), msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is smaller than Second file"), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testFile1Bigger)
+  TEST_F(TestTesting, testFile1Bigger)
   {
     std::string msg;
-    const std::string file1 = ra::gtesthelp::getTestQualifiedName() + ".1.tmp";
-    const std::string file2 = ra::gtesthelp::getTestQualifiedName() + ".2.tmp";
+    const std::string file1 = ra::testing::getTestQualifiedName() + ".1.tmp";
+    const std::string file2 = ra::testing::getTestQualifiedName() + ".2.tmp";
 
-    ASSERT_TRUE( ra::gtesthelp::createFile(file1.c_str(), 1200) );
-    ASSERT_TRUE( ra::gtesthelp::createFile(file2.c_str(), 1000) );
+    ASSERT_TRUE( ra::testing::createFile(file1.c_str(), 1200) );
+    ASSERT_TRUE( ra::testing::createFile(file2.c_str(), 1000) );
 
-    bool equals = ra::gtesthelp::isFileEquals(file1.c_str(), file2.c_str(), msg);
+    bool equals = ra::testing::isFileEquals(file1.c_str(), file2.c_str(), msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is bigger than Second file"), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testBigFileEquals)
+  TEST_F(TestTesting, testBigFileEquals)
   {
     std::string msg;
     const char * file1 = "test1.bin";
     const char * file2 = "test2.bin";
-    ra::gtesthelp::createFile(file1, 103000);
-    ra::gtesthelp::createFile(file2, 103000);
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
+    ra::testing::createFile(file1, 103000);
+    ra::testing::createFile(file2, 103000);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg);
     ASSERT_TRUE(equals) << msg.c_str();
     ASSERT_EQ(msg, "") << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testSmallFileEquals)
+  TEST_F(TestTesting, testSmallFileEquals)
   {
     std::string msg;
     const char * file1 = "text1.tmp";
     const char * file2 = "text2.tmp";
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg);
     SCOPED_TRACE(msg);
     ASSERT_TRUE(equals) << msg.c_str();
     ASSERT_EQ(msg, "") << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testFileDiff3)
+  TEST_F(TestTesting, testFileDiff3)
   {
     std::string msg;
     const char * file1 = "test1.bin";
     const char * file2 = "test2.bin";
-    ra::gtesthelp::createFile(file1, 10300);
-    ra::gtesthelp::createFile(file2, 10300);
-    ra::gtesthelp::changeFileContent(file1, 10, 0x01);
-    ra::gtesthelp::changeFileContent(file1, 100, 0x10);
-    ra::gtesthelp::changeFileContent(file1, 1027, 0xaa);
-    ra::gtesthelp::changeFileContent(file1, 10270, 0xaa);
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg, 3);
+    ra::testing::createFile(file1, 10300);
+    ra::testing::createFile(file2, 10300);
+    ra::testing::changeFileContent(file1, 10, 0x01);
+    ra::testing::changeFileContent(file1, 100, 0x10);
+    ra::testing::changeFileContent(file1, 1027, 0xaa);
+    ra::testing::changeFileContent(file1, 10270, 0xaa);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg, 3);
     ASSERT_FALSE(equals) << msg.c_str();
 
     static const int BUFFER_SIZE = 1024;
@@ -141,18 +141,18 @@ namespace ra { namespace test {
     ASSERT_NE(msg.find("..."), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testFileDiffAll)
+  TEST_F(TestTesting, testFileDiffAll)
   {
     std::string msg;
     const char * file1 = "test1.bin";
     const char * file2 = "test2.bin";
-    ra::gtesthelp::createFile(file1, 10300);
-    ra::gtesthelp::createFile(file2, 10300);
-    ra::gtesthelp::changeFileContent(file1, 10, 0x01);
-    ra::gtesthelp::changeFileContent(file1, 100, 0x10);
-    ra::gtesthelp::changeFileContent(file1, 1027, 0xaa);
-    ra::gtesthelp::changeFileContent(file1, 10270, 0xaa);
-    bool equals = ra::gtesthelp::isFileEquals(file1, file2, msg, 999);
+    ra::testing::createFile(file1, 10300);
+    ra::testing::createFile(file2, 10300);
+    ra::testing::changeFileContent(file1, 10, 0x01);
+    ra::testing::changeFileContent(file1, 100, 0x10);
+    ra::testing::changeFileContent(file1, 1027, 0xaa);
+    ra::testing::changeFileContent(file1, 10270, 0xaa);
+    bool equals = ra::testing::isFileEquals(file1, file2, msg, 999);
     ASSERT_FALSE(equals) << msg.c_str();
 
     static const int BUFFER_SIZE = 1024;
@@ -170,10 +170,10 @@ namespace ra { namespace test {
     ASSERT_EQ(msg.find("..."), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestGTestHelp, testGetTextFileContent)
+  TEST_F(TestTesting, testGetTextFileContent)
   {
     ra::strings::StringVector lines;
-    bool success = ra::gtesthelp::getTextFileContent( __FILE__, lines );
+    bool success = ra::testing::getTextFileContent( __FILE__, lines );
     ASSERT_TRUE(success);
 
     //assert a randomString found at line lineNumber

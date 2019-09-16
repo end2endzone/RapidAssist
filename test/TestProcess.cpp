@@ -25,7 +25,7 @@
 #include "TestProcess.h"
 #include "rapidassist/process.h"
 #include "rapidassist/environment.h"
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/user.h"
@@ -185,13 +185,13 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::filesystem::folderExists(home_dir.c_str()));
 
     //will also run the process from a custom directory
-    const std::string custom_dir = curr_dir1 + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".dir";
+    const std::string custom_dir = curr_dir1 + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".dir";
     bool created = ra::filesystem::createFolder(custom_dir.c_str());
     ASSERT_TRUE(created);
 
     //create a text file in user's home directory
     const std::string newline = ra::environment::getLineSeparator();
-    const std::string content = ra::gtesthelp::getTestQualifiedName();
+    const std::string content = ra::testing::getTestQualifiedName();
     const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_home_directory.txt";
     bool success = ra::filesystem::writeFile(home_file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
@@ -287,7 +287,7 @@ namespace ra { namespace process { namespace test
     //create a text file
     const std::string newline = ra::environment::getLineSeparator();
     const std::string content = 
-      ra::gtesthelp::getTestQualifiedName() + newline +
+      ra::testing::getTestQualifiedName() + newline +
       "The"   + newline +
       "quick" + newline +
       "brown" + newline +
@@ -297,7 +297,7 @@ namespace ra { namespace process { namespace test
       "the"   + newline +
       "lazy"  + newline +
       "dog." ;
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
@@ -391,7 +391,7 @@ namespace ra { namespace process { namespace test
     //create a text file
     const std::string newline = ra::environment::getLineSeparator();
     const std::string content = 
-      ra::gtesthelp::getTestQualifiedName() + newline +
+      ra::testing::getTestQualifiedName() + newline +
       "The"   + newline +
       "quick" + newline +
       "brown" + newline +
@@ -401,7 +401,7 @@ namespace ra { namespace process { namespace test
       "the"   + newline +
       "lazy"  + newline +
       "dog." ;
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 

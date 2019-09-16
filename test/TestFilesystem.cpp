@@ -25,7 +25,7 @@
 #include "TestFilesystem.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/timing.h"
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/process.h"
 #include "rapidassist/random.h"
@@ -98,7 +98,7 @@ namespace ra { namespace filesystem { namespace test
       std::string & file = files[i];
       filesystem::normalizePath(file);
 
-      bool success = ra::gtesthelp::createFile( file.c_str() );
+      bool success = ra::testing::createFile( file.c_str() );
       if (!success)
         return false;
     }
@@ -164,8 +164,8 @@ namespace ra { namespace filesystem { namespace test
     //test actual value
     {
       //create dummy file
-      std::string filename = ra::gtesthelp::getTestQualifiedName();
-      ASSERT_TRUE( ra::gtesthelp::createFile(filename.c_str()) );
+      std::string filename = ra::testing::getTestQualifiedName();
+      ASSERT_TRUE( ra::testing::createFile(filename.c_str()) );
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
@@ -267,8 +267,8 @@ namespace ra { namespace filesystem { namespace test
     //test found
     {
       //create dummy file
-      std::string filename = ra::gtesthelp::getTestQualifiedName();
-      ASSERT_TRUE( ra::gtesthelp::createFile(filename.c_str()) );
+      std::string filename = ra::testing::getTestQualifiedName();
+      ASSERT_TRUE( ra::testing::createFile(filename.c_str()) );
 
       bool exists = filesystem::fileExists(filename.c_str());
       ASSERT_TRUE(exists);
@@ -293,7 +293,7 @@ namespace ra { namespace filesystem { namespace test
     }
 
     //create cars directory tree
-    std::string basePath = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
     {
       bool carsOK = createCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
@@ -485,7 +485,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test folder already exits (call twice)
     {
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       bool success = false;
       success = filesystem::createFolder(path.c_str());
       ASSERT_TRUE(success);
@@ -502,7 +502,7 @@ namespace ra { namespace filesystem { namespace test
     {
       //build path with subfolders
       char separator[] = {getPathSeparator(), '\0'};
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
@@ -519,7 +519,7 @@ namespace ra { namespace filesystem { namespace test
 
       //build path with subfolders
       const char * separator = getPathSeparatorStr();
-      std::string path = temp_dir + separator + ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = temp_dir + separator + ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
@@ -541,8 +541,8 @@ namespace ra { namespace filesystem { namespace test
 
     //test success
     {
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
-      bool success = ra::gtesthelp::createFile(path.c_str());
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      bool success = ra::testing::createFile(path.c_str());
       ASSERT_TRUE(success);
 
       success = filesystem::deleteFile(path.c_str());
@@ -559,8 +559,8 @@ namespace ra { namespace filesystem { namespace test
       return; //test failure unsupported. See below.
 #endif
       
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
-      bool success = ra::gtesthelp::createFile(path.c_str());
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      bool success = ra::testing::createFile(path.c_str());
       ASSERT_TRUE(success);
 
       //open the file so it cannot be deleted
@@ -607,7 +607,7 @@ namespace ra { namespace filesystem { namespace test
     }
 
     //create cars directory tree
-    std::string basePath = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
     {
       bool carsOK = createCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
@@ -1107,15 +1107,15 @@ namespace ra { namespace filesystem { namespace test
       ra::timing::waitNextSecond();
 
       static const uint64_t EXPECTED = 3;
-      const std::string filename1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
-      const std::string filename2 = ra::gtesthelp::getTestQualifiedName() + ".2.txt";
-      ASSERT_TRUE( ra::gtesthelp::createFile(filename1.c_str()) );
+      const std::string filename1 = ra::testing::getTestQualifiedName() + ".1.txt";
+      const std::string filename2 = ra::testing::getTestQualifiedName() + ".2.txt";
+      ASSERT_TRUE( ra::testing::createFile(filename1.c_str()) );
       //allow 3 seconds between the files
       for(uint64_t i=0; i<EXPECTED; i++)
       {
         ra::timing::waitNextSecond();
       }
-      ASSERT_TRUE( ra::gtesthelp::createFile(filename2.c_str()) );
+      ASSERT_TRUE( ra::testing::createFile(filename2.c_str()) );
 
       uint64_t time1 = filesystem::getFileModifiedDate(filename1);
       uint64_t time2 = filesystem::getFileModifiedDate(filename2);
@@ -1134,8 +1134,8 @@ namespace ra { namespace filesystem { namespace test
 
     //test read access
     {
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
-      ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str()) );
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      ASSERT_TRUE( ra::testing::createFile(path.c_str()) );
 
       bool hasRead = filesystem::hasReadAccess(path.c_str());
       ASSERT_TRUE(hasRead);
@@ -1169,8 +1169,8 @@ namespace ra { namespace filesystem { namespace test
 
     //test write access
     {
-      std::string path = ra::gtesthelp::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
-      ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str()) );
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      ASSERT_TRUE( ra::testing::createFile(path.c_str()) );
 
       bool hasWrite = filesystem::hasWriteAccess(path.c_str());
       ASSERT_TRUE(hasWrite);
@@ -1487,7 +1487,7 @@ namespace ra { namespace filesystem { namespace test
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
     const std::string temp_dir = filesystem::getTemporaryFolder();
-    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
@@ -1520,7 +1520,7 @@ namespace ra { namespace filesystem { namespace test
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
     const std::string temp_dir = filesystem::getTemporaryFolder();
-    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
@@ -1568,7 +1568,7 @@ namespace ra { namespace filesystem { namespace test
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
     const std::string temp_dir = filesystem::getTemporaryFolder();
-    const std::string output_filename = ra::gtesthelp::getTestQualifiedName() + "." + process_filename + ".tmp";
+    const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
@@ -1614,7 +1614,7 @@ namespace ra { namespace filesystem { namespace test
       const std::string file_path = ra::filesystem::getCurrentFolder() +
                                     ra::filesystem::getPathSeparatorStr() + "foo" +
                                     ra::filesystem::getPathSeparatorStr() + "bar" +
-                                    ra::filesystem::getPathSeparatorStr() + ra::gtesthelp::getTestQualifiedName() + ".bin"; //folder 'foo\bar' does not exists.
+                                    ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".bin"; //folder 'foo\bar' does not exists.
       const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
       const std::string content = ra::random::getRandomString(content_size);
       bool success = ra::filesystem::writeFile(file_path, content);
@@ -1623,7 +1623,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test random content write
     {
-      const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".bin";
+      const std::string file_path = ra::testing::getTestQualifiedName() + ".bin";
       const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
       const std::string content = ra::random::getRandomString(content_size);
       bool success = ra::filesystem::writeFile(file_path, content);
@@ -1641,7 +1641,7 @@ namespace ra { namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testReadWriteFileDataLoss)
   {
-    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".bin";
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".bin";
     const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
     const std::string content_write = ra::random::getRandomString(content_size);
     bool success = ra::filesystem::writeFile(file_path, content_write);
@@ -1676,7 +1676,7 @@ namespace ra { namespace filesystem { namespace test
       "the"   + newline +
       "lazy"  + newline +
       "dog." ;
-    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
@@ -1731,7 +1731,7 @@ namespace ra { namespace filesystem { namespace test
       "the"   + newline +
       "lazy"  + newline +
       "dog." ;
-    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE( success );
 
@@ -1758,7 +1758,7 @@ namespace ra { namespace filesystem { namespace test
     ra::strings::split(word_list, sentence, " ");
 
     //assert writing without adding new line between words
-    const std::string file_path1 = ra::gtesthelp::getTestQualifiedName() + ".1.txt";
+    const std::string file_path1 = ra::testing::getTestQualifiedName() + ".1.txt";
     bool success = ra::filesystem::writeTextFile(file_path1, word_list, false);
     ASSERT_TRUE( success );
 
@@ -1779,7 +1779,7 @@ namespace ra { namespace filesystem { namespace test
     }
 
     //assert writing with new line between words
-    const std::string file_path2 = ra::gtesthelp::getTestQualifiedName() + ".2.txt";
+    const std::string file_path2 = ra::testing::getTestQualifiedName() + ".2.txt";
     success = ra::filesystem::writeTextFile(file_path2, word_list, true);
     ASSERT_TRUE( success );
 
@@ -1807,7 +1807,7 @@ namespace ra { namespace filesystem { namespace test
     static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
 
     //create a test file
-    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
 
     //create a huge file
     std::string buffer;
@@ -1874,7 +1874,7 @@ namespace ra { namespace filesystem { namespace test
   {
     //create a test file
     static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
-    const std::string file_path = ra::gtesthelp::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
     bool write_ok = ra::filesystem::writeTextFile(file_path, sentence);
     ASSERT_TRUE( write_ok );
 

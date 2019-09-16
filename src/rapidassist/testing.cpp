@@ -22,7 +22,7 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 
 #include <sstream> //for stringstream
 #include <iostream> //for std::hex
@@ -40,7 +40,7 @@ using namespace ra::strings;
 
 namespace ra
 {
-  namespace gtesthelp
+  namespace testing
   {
 
     //
@@ -579,5 +579,5 @@ namespace ra
       return name;
     }
 
-  } //namespace gtesthelp
+  } //namespace testing
 } //namespace ra

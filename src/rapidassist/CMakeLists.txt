@@ -16,13 +16,13 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
 )
 
-if(RAPIDASSIST_BUILD_GTESTHELP)
+if(RAPIDASSIST_BUILD_TESTING)
   # add another header file
-  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES} ${CMAKE_SOURCE_DIR}/include/rapidassist/gtesthelp.h)
+  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES} ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h)
 
   find_package(GTest)
 
-  set(RAPIDASSIST_GTESTHELP_SOURCE_FILES gtesthelp.cpp)
+  set(RAPIDASSIST_TESTING_SOURCE_FILES testing.cpp)
 endif()
 
 add_library(rapidassist STATIC
@@ -30,7 +30,7 @@ add_library(rapidassist STATIC
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
-  ${RAPIDASSIST_GTESTHELP_SOURCE_FILES}
+  ${RAPIDASSIST_TESTING_SOURCE_FILES}
   console.cpp
   cli.cpp
   cppencoder.cpp
@@ -47,7 +47,7 @@ add_library(rapidassist STATIC
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest
-if(RAPIDASSIST_BUILD_GTESTHELP)
+if(RAPIDASSIST_BUILD_TESTING)
   if(NOT WIN32)
     set(PTHREAD_LIBRARIES -pthread)
   endif()

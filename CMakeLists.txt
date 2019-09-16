@@ -96,7 +96,7 @@ set(RAPIDASSIST_INSTALL_CMAKE_DIR    ${RAPIDASSIST_INSTALL_LIB_DIR}) # CMake fil
 ##############################################################################################################################################
 
 # Build options
-option(RAPIDASSIST_BUILD_GTESTHELP "Build the Google Test helper functions." ON)
+option(RAPIDASSIST_BUILD_TESTING "Build the Google Test helper functions." ON)
 option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
 
 # Force a debug postfix if none specified.
@@ -120,10 +120,10 @@ include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header fi
 
 # unit tests
 if(RAPIDASSIST_BUILD_TEST)
-  if(NOT RAPIDASSIST_BUILD_GTESTHELP)
-    # force RAPIDASSIST_BUILD_GTESTHELP=ON
-    message(WARNING "Forcing RAPIDASSIST_BUILD_GTESTHELP to ON because RAPIDASSIST_BUILD_TEST is enabled.")
-    set(RAPIDASSIST_BUILD_GTESTHELP ON)
+  if(NOT RAPIDASSIST_BUILD_TESTING)
+    # force RAPIDASSIST_BUILD_TESTING=ON
+    message(WARNING "Forcing RAPIDASSIST_BUILD_TESTING to ON because RAPIDASSIST_BUILD_TEST is enabled.")
+    set(RAPIDASSIST_BUILD_TESTING ON)
   endif()
 endif()
 

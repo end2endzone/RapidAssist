@@ -23,15 +23,15 @@
  *********************************************************************************/
 
 #include "TestDemo.h"
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 #include "rapidassist/strings.h"
 
 namespace ra { namespace test {
 
   void TestDemo::SetUp()
   {
-    ASSERT_TRUE( ra::gtesthelp::createFile("demo1.tmp") );
-    ASSERT_TRUE( ra::gtesthelp::createFile("demo2.tmp") );
+    ASSERT_TRUE( ra::testing::createFile("demo1.tmp") );
+    ASSERT_TRUE( ra::testing::createFile("demo2.tmp") );
   }
 
   void TestDemo::TearDown()
@@ -53,13 +53,13 @@ namespace ra { namespace test {
   {
     //create a dummy file based on current gtest name
     static const int FILE_SIZE = 1000; //bytes
-    const std::string path = ra::gtesthelp::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
-    ASSERT_TRUE( ra::gtesthelp::createFile(path.c_str(), FILE_SIZE) );
+    const std::string path = ra::testing::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
+    ASSERT_TRUE( ra::testing::createFile(path.c_str(), FILE_SIZE) );
   
     //test that a generated file is equals to the expected file
     std::string generatedFile = generateTestFile();
     std::string expectedFile = getExpectedTestFilePath();
-    ASSERT_TRUE ( ra::gtesthelp::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
+    ASSERT_TRUE ( ra::testing::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
 
     //split a string into multiple parts
     StringVector words = ra::strings::split("The quick brown fox jumps over the lazy dog", " ");

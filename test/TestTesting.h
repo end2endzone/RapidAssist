@@ -22,14 +22,14 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_RA_GTESTHELP_H
-#define TEST_RA_GTESTHELP_H
+#ifndef TEST_RA_TESTING_H
+#define TEST_RA_TESTING_H
 
 #include <gtest/gtest.h>
 
 namespace ra { namespace test {
 
-  class TestGTestHelp : public ::testing::Test
+  class TestTesting : public ::testing::Test
   {
   public:
     virtual void SetUp();
@@ -39,4 +39,4 @@ namespace ra { namespace test {
 } //namespace test
 } //namespace ra
 
-#endif //TEST_RA_GTESTHELP_H
+#endif //TEST_RA_TESTING_H

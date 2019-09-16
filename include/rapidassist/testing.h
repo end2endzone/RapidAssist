@@ -22,8 +22,8 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_GTESTHELP_H
-#define RA_GTESTHELP_H
+#ifndef RA_TESTING_H
+#define RA_TESTING_H
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ using ra::strings::StringVector;
 
 namespace ra
 {
-  namespace gtesthelp
+  namespace testing
   {
     struct FILE_DIFF
     {
@@ -151,7 +151,7 @@ namespace ra
     //  Returns a list of all runnable test cases in a gTest compatible test.
     //  Each test case is listed in the following format: testsuite.testcase
     // Example:
-    //  TestGTestHelp.testFilters
+    //  TestTesting.testFilters
     // Arguments:
     //  iTestCasePath:    Path to the GTest compatible executable file
     //
@@ -192,7 +192,7 @@ namespace ra
     //
     std::string getTestQualifiedName();
 
-  } //namespace gtesthelp
+  } //namespace testing
 } //namespace ra
 
-#endif //RA_GTESTHELP_H
+#endif //RA_TESTING_H

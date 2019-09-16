@@ -28,7 +28,7 @@
 
 #include <gtest/gtest.h>
 
-#include "rapidassist/gtesthelp.h"
+#include "rapidassist/testing.h"
 
 using namespace ra;
 
@@ -36,8 +36,8 @@ int main(int argc, char **argv)
 {
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
-  outputXml += (ra::gtesthelp::isProcessorX86() ? ".x86" : ".x64");
-  outputXml += (ra::gtesthelp::isDebugCode() ? ".debug" : ".release");
+  outputXml += (ra::testing::isProcessorX86() ? ".x86" : ".x64");
+  outputXml += (ra::testing::isDebugCode() ? ".debug" : ".release");
   outputXml += ".xml";
   ::testing::GTEST_FLAG(output) = outputXml;
 
@@ -45,12 +45,12 @@ int main(int argc, char **argv)
   ::testing::InitGoogleTest(&argc, argv);
 
   //Disable TestTiming.testGetUtcTime() on AppVeyor or Travis CI
-  if (ra::gtesthelp::isAppVeyor() || ra::gtesthelp::isTravis())
+  if (ra::testing::isAppVeyor() || ra::testing::isTravis())
   {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
     //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
-    std::string newFilter = ra::gtesthelp::mergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
+    std::string newFilter = ra::testing::mergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
     //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::getCursorPos', line 79.
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     //Disabling all console tests.
     printf("*** Running unit test on AppVeyor/Travis CI ***\n");
     printf("*** Disabling TestConsole.* unit tests ***\n");
-    newFilter = ra::gtesthelp::mergeFilter("", "TestConsole.*", newFilter.c_str());
+    newFilter = ra::testing::mergeFilter("", "TestConsole.*", newFilter.c_str());
 
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
