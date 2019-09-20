@@ -1,8 +1,11 @@
 Changes for 0.7.0:
 
 **This version of RapidAssist contains breaking changes!**
-**Many library cathegories (including their associated namespaces) are renamed for clarity and better compatibility with other libraries.**
+**Many library categories (including their associated namespaces) are renamed for clarity and better compatibility with other libraries.**
 
+* Fixed issue #35: Rename time namespace to timing.
+* Fixed issue #36: Rename gtesthelp namespace to testing.
+* Fixed issue #38: Rename cppencoder namespace to code::cpp.
 * Fixed issue #39: Rename logger namespace to logging.
 
 Changes for 0.6.0:
