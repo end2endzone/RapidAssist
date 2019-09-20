@@ -22,7 +22,7 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/cppencoder.h"
+#include "rapidassist/code_cpp.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +35,9 @@
 
 namespace ra
 {
-  namespace cppencoder
+  namespace code
+  {
+  namespace cpp
   {
     struct CONTROL_CHARACTER
     {
@@ -285,5 +287,6 @@ namespace ra
       return oss.str();
     }
 
-  }; //cppencoder
+  }; //cpp
+  }; //code
 } //namespace ra

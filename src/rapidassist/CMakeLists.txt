@@ -1,7 +1,7 @@
 set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/cli.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/console.h
-  ${CMAKE_SOURCE_DIR}/include/rapidassist/cppencoder.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/code_cpp.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/environment.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/errors.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
@@ -33,7 +33,7 @@ add_library(rapidassist STATIC
   ${RAPIDASSIST_TESTING_SOURCE_FILES}
   console.cpp
   cli.cpp
-  cppencoder.cpp
+  code_cpp.cpp
   environment.cpp
   errors.cpp
   filesystem.cpp

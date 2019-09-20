@@ -22,14 +22,16 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_CPPENCODER_H
-#define RA_CPPENCODER_H
+#ifndef RA_CODE_CPP_H
+#define RA_CODE_CPP_H
 
 #include <string>
 
 namespace ra
 {
-  namespace cppencoder
+  namespace code
+  {
+  namespace cpp
   {
     /// <summary>
     /// Returns true if the given character is printable to a console.
@@ -136,7 +138,8 @@ namespace ra
     /// <returns>Returns a string representating an array of bytes which matches the given buffer</returns>
     std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
 
-  } //namespace cppencoder
+  } //namespace cpp
+  } //namespace code
 } //namespace ra
 
-#endif //RA_CPPENCODER_H
+#endif //RA_CODE_CPP_H
