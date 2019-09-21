@@ -39,7 +39,7 @@ namespace ra
     /// <summary>
     /// Normalizes a path.
     /// </summary>
-    /// <param name="path">An valid file/folder path.</param>
+    /// <param name="path">An valid file or directory path.</param>
     void normalizePath(std::string & path);
 
     /// <summary>
@@ -95,9 +95,9 @@ namespace ra
     /// Find files in a directory / subdirectory.
     /// </summary>
     /// <param name="oFiles">The list of files found.</param>
-    /// <param name="iPath">An valid folder path.</param>
-    /// <param name="iDepth">The search depth. Use 0 for finding files in folder iPath (without subfolders). Use -1 for find all files in folder iPath (including subfolders). </param>
-    /// <returns>Returns true when oFiles contains the list of files from folder iPath. Returns false otherwise.</returns>
+    /// <param name="iPath">An valid directory path.</param>
+    /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories). </param>
+    /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
     bool findFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
     inline bool findFiles(ra::strings::StringVector & oFiles, const char * iPath) { return findFiles(oFiles, iPath, -1); }
 
@@ -117,24 +117,24 @@ namespace ra
     std::string findFileFromPaths(const std::string & filename);
 
     /// <summary>
-    /// Determine if a folder exists.
+    /// Determine if a directory exists.
     /// </summary>
-    /// <param name="iPath">An valid folder path.</param>
-    /// <returns>Returns true when the folder exists. Returns false otherwise.</returns>
+    /// <param name="iPath">An valid directory path.</param>
+    /// <returns>Returns true when the directory exists. Returns false otherwise.</returns>
     bool folderExists(const char * iPath);
 
     /// <summary>
     /// Creates the specified directory.
     /// </summary>
-    /// <param name="iPath">An valid folder path.</param>
-    /// <returns>Returns true when the folder was created (or already exists). Returns false otherwise.</returns>
+    /// <param name="iPath">An valid directory path.</param>
+    /// <returns>Returns true when the directory was created (or already exists). Returns false otherwise.</returns>
     bool createFolder(const char * iPath);
 
     /// <summary>
     /// Deletes the specified directory.
     /// </summary>
-    /// <param name="iPath">An valid folder path.</param>
-    /// <returns>Returns true when the folder was deleted (or does not exist). Returns false otherwise.</returns>
+    /// <param name="iPath">An valid directory path.</param>
+    /// <returns>Returns true when the directory was deleted (or does not exist). Returns false otherwise.</returns>
     bool deleteFolder(const char * iPath);
 
     /// <summary>
@@ -157,16 +157,16 @@ namespace ra
     std::string getTemporaryFilePath();
 
     /// <summary>
-    /// Returns the path of the tempporary folder.
+    /// Returns the path of the temporary directory.
     /// </summary>
-    /// <returns>Returns the path of the tempporary folder.</returns>
+    /// <returns>Returns the path of the temporary directory.</returns>
     std::string getTemporaryFolder();
 
     /// <summary>
-    /// Returns the parent element of a path. For files, returns the file's directory. For folders, returns the parent path
+    /// Returns the parent element of a path. For files, it returns the file's directory. For directories, it returns the parent path.
     /// </summary>
-    /// <param name="iPath">The input path to split.</param>
-    /// <returns>Returns the parent element of a path.</returns>
+    /// <param name="iPath">The input path to get the parent.</param>
+    /// <returns>Returns the parent element of the given path.</returns>
     std::string getParentPath(const std::string & iPath);
 
     /// <summary>
@@ -179,10 +179,10 @@ namespace ra
     std::string getShortPathForm(const std::string & iPath);
 
     /// <summary>
-    /// Splits a path into a folder and a filename.
+    /// Splits a path into a directory and a filename.
     /// </summary>
     /// <param name="iPath">The input path to split.</param>
-    /// <param name="oFolder">The output folder of the given path.</param>
+    /// <param name="oFolder">The output directory of the given path.</param>
     /// <param name="oFilename">The output file of the given path.</param>
     void splitPath(const std::string & iPath, std::string & oFolder, std::string & oFilename);
 
@@ -209,9 +209,9 @@ namespace ra
     const char * getPathSeparatorStr();
 
     /// <summary>
-    /// Returns the current folder
+    /// Returns the current directory.
     /// </summary>
-    /// <returns>Returns the current folder</returns>
+    /// <returns>Returns the current directory</returns>
     std::string getCurrentFolder();
 
     /// <summary>

@@ -114,9 +114,9 @@ namespace ra
       if (iPath == NULL || iPath[0] == '\0')
         return "";
 
-      std::string folder;
+      std::string directory;
       std::string filename;
-      splitPath(iPath, folder, filename);
+      splitPath(iPath, directory, filename);
 
       return filename;
     }
@@ -180,12 +180,12 @@ namespace ra
       return false;
     }
 
-    inline bool isCurrentFolder(const std::string & iPath)
+    inline bool _isCurrentFolder(const std::string & iPath)
     {
       return iPath == ".";
     }
 
-    inline bool isParentFolder(const std::string & iPath)
+    inline bool _isParentFolder(const std::string & iPath)
     {
       return iPath == "..";
     }
@@ -194,7 +194,7 @@ namespace ra
     bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iFolderPath, const std::string & iFilename, bool isFolder, int iDepth)
     {
       //is it a valid item ?
-      if (!isCurrentFolder(iFilename) && !isParentFolder(iFilename))
+      if (!_isCurrentFolder(iFilename) && !_isParentFolder(iFilename))
       {
         //build full path
         std::string fullFilename = iFolderPath;
@@ -202,7 +202,7 @@ namespace ra
         fullFilename << getPathSeparatorStr() << iFilename;
         oFiles.push_back(fullFilename);
  
-        //should we recurse on folder ?
+        //should we recurse on directory ?
         if (isFolder && iDepth != 0)
         {
           //compute new depth
@@ -259,7 +259,7 @@ namespace ra
         //  File Not Found
       }
  
-      //next files in folder
+      //next files in directory
       while (FindNextFile(hFind, &findDataStruct))
       {
         filename = findDataStruct.cFileName;
@@ -381,7 +381,7 @@ namespace ra
       if (folderExists(iPath))
         return true;
 
-      //folder does not already exists and must be created
+      //directory does not already exists and must be created
 
       //inspired from https://stackoverflow.com/a/675193
       char *pp;
@@ -415,7 +415,7 @@ namespace ra
 #endif
           if (status != 0)
           {
-            //folder already exists?
+            //directory already exists?
             if (folderExists(copypath))
             {
               status = 0;
@@ -445,19 +445,19 @@ namespace ra
       if (!folderExists(iPath))
         return true;
 
-      //folder exists and must be deleted
+      //directory exists and must be deleted
 
-      //find all files and folders in specified directory
+      //find all files and directories in specified directory
       ra::strings::StringVector files;
       bool foundFiles = findFiles(files, iPath);
       if (!foundFiles)
         return false;
 
       //soft files in reverse order
-      //this allows deleting sub-folders and sub-files first
+      //this allows deleting sub-directories and sub-files first
       std::sort(files.begin(), files.end(), greater());
 
-      //process files and folders
+      //process files and directories
       for(size_t i=0; i<files.size(); i++)
       {
         const std::string & direntry = files[i];
@@ -469,14 +469,14 @@ namespace ra
         }
         else
         {
-          //assume direntry is a folder
+          //assume direntry is a directory
           int result = __rmdir(direntry.c_str());
           if (result != 0)
-            return false; //failed deleting folder.
+            return false; //failed deleting directory.
         }
       }
 
-      //delete the specified folder
+      //delete the specified directory
       int result = __rmdir(iPath);
       return (result == 0);
     }
@@ -742,7 +742,7 @@ namespace ra
     std::string getFileExtention(const std::string & iPath)
     {
       //extract filename from path to prevent
-      //reading a folder's extension
+      //reading a directory's extension
       std::string folder;
       std::string filename;
       splitPath(iPath, folder, filename);

@@ -68,7 +68,7 @@ namespace ra { namespace filesystem { namespace test
     //     |-Golf.txt
     //     |-Jetta.txt
 
-    //create folders
+    //create directories
     ra::strings::StringVector folders;
     folders.push_back(iBasePath + "/cars/Mazda");
     folders.push_back(iBasePath + "/cars/Honda");

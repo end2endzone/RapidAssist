@@ -28,7 +28,7 @@ if (BUILD_SHARED_LIBS)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden) 
 endif()
 
-# Set the output folder where your program will be created
+# Set the output directory where your program will be created
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(   LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
