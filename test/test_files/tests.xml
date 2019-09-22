@@ -2,7 +2,7 @@
 <root>
   <shell>
     <menu name="option #01 (always)">
-      <validity maxfiles="999" maxfolders="999" />
+      <validity maxfiles="999" maxdirectories="999" />
       <icon path="C:\Windows\System32\shell32.dll" index="68" />
       <actions>
         <clipboard value=""/>
@@ -10,7 +10,7 @@
     </menu>
     
     <menu name="option #02 (never)">
-      <validity maxfiles="0" maxfolders="0" />
+      <validity maxfiles="0" maxdirectories="0" />
       <icon path="C:\Windows\System32\shell32.dll" index="69" />
       <actions>
         <clipboard value=""/>
@@ -18,23 +18,23 @@
     </menu>
     
     <menu name="option #03 (single file)">
-      <validity maxfiles="1" maxfolders="0" />
+      <validity maxfiles="1" maxdirectories="0" />
       <icon path="C:\Windows\System32\shell32.dll" index="70" />
       <actions>
         <clipboard value=""/>
       </actions>
     </menu>
 
-    <menu name="option #04 (single folder)">
-      <validity maxfiles="0" maxfolders="1" />
+    <menu name="option #04 (single directory)">
+      <validity maxfiles="0" maxdirectories="1" />
       <icon path="C:\Windows\System32\shell32.dll" index="71" />
       <actions>
         <clipboard value=""/>
       </actions>
     </menu>
 
-    <menu name="option #05 (single file OR folder)">
-      <validity maxfiles="1" maxfolders="1" />
+    <menu name="option #05 (single file OR directory)">
+      <validity maxfiles="1" maxdirectories="1" />
       <icon path="C:\Windows\System32\shell32.dll" index="72" />
       <actions>
         <clipboard value=""/>

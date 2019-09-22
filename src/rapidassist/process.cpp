@@ -492,7 +492,7 @@ namespace ra
         const std::string & file = files[i];
         
         //filter out files
-        bool isDirectory = ra::filesystem::folderExists(file.c_str());
+        bool isDirectory = ra::filesystem::directoryExists(file.c_str());
         if (!isDirectory)
           continue;
 
@@ -546,7 +546,7 @@ namespace ra
 
     processid_t startProcess(const std::string & iExecPath)
     {
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
+      std::string curr_dir = ra::filesystem::getCurrentDirectory();
 
       // Launch the process from the current process current directory
       processid_t pid = startProcess(iExecPath, curr_dir);
@@ -617,8 +617,8 @@ namespace ra
     processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments)
     {
       //temporary change the current directory for the child process
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
-      if (!ra::filesystem::folderExists(iDefaultDirectory.c_str()))
+      std::string curr_dir = ra::filesystem::getCurrentDirectory();
+      if (!ra::filesystem::directoryExists(iDefaultDirectory.c_str()))
         return INVALID_PROCESS_ID;
       int chdir_result = chdir(iDefaultDirectory.c_str());
 
@@ -691,7 +691,7 @@ namespace ra
         return false; //xdg-open not found
       
       const ra::strings::StringVector args;
-      std::string curr_dir = ra::filesystem::getCurrentFolder();
+      std::string curr_dir = ra::filesystem::getCurrentDirectory();
       processid_t pid = startProcess(xdgopen_path, curr_dir, args);
       bool success = (pid != INVALID_PROCESS_ID);
       return success;

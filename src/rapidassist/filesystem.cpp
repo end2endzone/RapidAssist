@@ -180,30 +180,30 @@ namespace ra
       return false;
     }
 
-    inline bool _isCurrentFolder(const std::string & iPath)
+    inline bool _isCurrentDirectory(const std::string & iPath)
     {
       return iPath == ".";
     }
 
-    inline bool _isParentFolder(const std::string & iPath)
+    inline bool _isParentDirectory(const std::string & iPath)
     {
       return iPath == "..";
     }
 
     //shared cross-platform code for findFiles().
-    bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iFolderPath, const std::string & iFilename, bool isFolder, int iDepth)
+    bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool isDirectory, int iDepth)
     {
       //is it a valid item ?
-      if (!_isCurrentFolder(iFilename) && !_isParentFolder(iFilename))
+      if (!_isCurrentDirectory(iFilename) && !_isParentDirectory(iFilename))
       {
         //build full path
-        std::string fullFilename = iFolderPath;
+        std::string fullFilename = iDirectoryPath;
         normalizePath(fullFilename);
         fullFilename << getPathSeparatorStr() << iFilename;
         oFiles.push_back(fullFilename);
  
         //should we recurse on directory ?
-        if (isFolder && iDepth != 0)
+        if (isDirectory && iDepth != 0)
         {
           //compute new depth
           int subDepth = iDepth-1;
@@ -242,9 +242,9 @@ namespace ra
  
       //process directory entry
       std::string filename = findDataStruct.cFileName;
-      bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      bool isDirectory = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
       bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
       if (!result)
       {
         //Warning: Current user is not able to browse this directory.
@@ -263,9 +263,9 @@ namespace ra
       while (FindNextFile(hFind, &findDataStruct))
       {
         filename = findDataStruct.cFileName;
-        bool isFolder = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        bool isDirectory = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
         bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-        bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+        bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
         if (!result)
         {
           //Warning: Current user is not able to browse this directory.
@@ -285,8 +285,8 @@ namespace ra
     {
       std::string filename = dirp->d_name;
  
-      bool isFolder = (dirp->d_type == DT_DIR);
-      bool result = processDirectoryEntry(oFiles, iPath, filename, isFolder, iDepth);
+      bool isDirectory = (dirp->d_type == DT_DIR);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
       if (!result)
       {
         //Warning: Current user is not able to browse this directory.
@@ -354,13 +354,13 @@ namespace ra
       return first;
     }
 
-    bool folderExists(const char * iPath)
+    bool directoryExists(const char * iPath)
     {
       if (iPath == NULL || iPath[0] == '\0')
         return false;
 
 #ifdef _WIN32
-      //Note that the current windows implementation of folderExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
+      //Note that the current windows implementation of directoryExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
       //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
 #endif
 
@@ -373,12 +373,12 @@ namespace ra
       return false;
     }
 
-    bool createFolder(const char * iPath)
+    bool createDirectory(const char * iPath)
     {
       if (iPath == NULL)
         return false;
 
-      if (folderExists(iPath))
+      if (directoryExists(iPath))
         return true;
 
       //directory does not already exists and must be created
@@ -416,7 +416,7 @@ namespace ra
           if (status != 0)
           {
             //directory already exists?
-            if (folderExists(copypath))
+            if (directoryExists(copypath))
             {
               status = 0;
             }
@@ -437,12 +437,12 @@ namespace ra
       return (status == 0);      
     }
 
-    bool deleteFolder(const char * iPath)
+    bool deleteDirectory(const char * iPath)
     {
       if (iPath == NULL)
         return false;
 
-      if (!folderExists(iPath))
+      if (!directoryExists(iPath))
         return true;
 
       //directory exists and must be deleted
@@ -508,12 +508,12 @@ namespace ra
 
     std::string getTemporaryFilePath()
     {
-      std::string temp_dir = getTemporaryFolder();
+      std::string temp_dir = getTemporaryDirectory();
       std::string rndpath = temp_dir + getPathSeparator() + getTemporaryFileName();
       return rndpath;
     }
 
-    std::string getTemporaryFolder()
+    std::string getTemporaryDirectory()
     {
 #ifdef _WIN32
       std::string temp = environment::getEnvironmentVariable("TEMP");
@@ -611,7 +611,7 @@ namespace ra
     std::string getShortPathForm(const std::string & iPath)
     {
 #ifdef WIN32
-      if (fileExists(iPath.c_str()) || folderExists(iPath.c_str()))
+      if (fileExists(iPath.c_str()) || directoryExists(iPath.c_str()))
       {
         //file must exist to use WIN32 api
         return getShortPathFormWin32(iPath);
@@ -626,16 +626,16 @@ namespace ra
 #endif
     }
 
-    void splitPath(const std::string & iPath, std::string & oFolder, std::string & oFilename)
+    void splitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename)
     {
-      oFolder = "";
+      oDirectory = "";
       oFilename = "";
 
       std::size_t offset = iPath.find_last_of("/\\");
       if (offset != std::string::npos)
       {
         //found
-        oFolder = iPath.substr(0,offset);
+        oDirectory = iPath.substr(0,offset);
         oFilename = iPath.substr(offset+1);
       }
       else
@@ -734,7 +734,7 @@ namespace ra
 #endif
     }
 
-    std::string getCurrentFolder()
+    std::string getCurrentDirectory()
     {
       return std::string(__getcwd(NULL, 0));
     }
@@ -743,9 +743,9 @@ namespace ra
     {
       //extract filename from path to prevent
       //reading a directory's extension
-      std::string folder;
+      std::string directory;
       std::string filename;
-      splitPath(iPath, folder, filename);
+      splitPath(iPath, directory, filename);
 
       std::string extension;
       std::size_t offset = filename.find_last_of(".");
@@ -1039,7 +1039,7 @@ namespace ra
       if (isAbsolutePath(iPath))
         return iPath;
  
-      std::string dir = ra::filesystem::getCurrentFolder();
+      std::string dir = ra::filesystem::getCurrentDirectory();
       ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
      
       std::string tmpPath;

@@ -121,21 +121,21 @@ namespace ra
     /// </summary>
     /// <param name="iPath">An valid directory path.</param>
     /// <returns>Returns true when the directory exists. Returns false otherwise.</returns>
-    bool folderExists(const char * iPath);
+    bool directoryExists(const char * iPath);
 
     /// <summary>
     /// Creates the specified directory.
     /// </summary>
     /// <param name="iPath">An valid directory path.</param>
     /// <returns>Returns true when the directory was created (or already exists). Returns false otherwise.</returns>
-    bool createFolder(const char * iPath);
+    bool createDirectory(const char * iPath);
 
     /// <summary>
     /// Deletes the specified directory.
     /// </summary>
     /// <param name="iPath">An valid directory path.</param>
     /// <returns>Returns true when the directory was deleted (or does not exist). Returns false otherwise.</returns>
-    bool deleteFolder(const char * iPath);
+    bool deleteDirectory(const char * iPath);
 
     /// <summary>
     /// Deletes the specified file.
@@ -160,7 +160,7 @@ namespace ra
     /// Returns the path of the temporary directory.
     /// </summary>
     /// <returns>Returns the path of the temporary directory.</returns>
-    std::string getTemporaryFolder();
+    std::string getTemporaryDirectory();
 
     /// <summary>
     /// Returns the parent element of a path. For files, it returns the file's directory. For directories, it returns the parent path.
@@ -182,9 +182,9 @@ namespace ra
     /// Splits a path into a directory and a filename.
     /// </summary>
     /// <param name="iPath">The input path to split.</param>
-    /// <param name="oFolder">The output directory of the given path.</param>
+    /// <param name="oDirectory">The output directory of the given path.</param>
     /// <param name="oFilename">The output file of the given path.</param>
-    void splitPath(const std::string & iPath, std::string & oFolder, std::string & oFilename);
+    void splitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename);
 
     /// <summary>
     /// Splits a path into each element.
@@ -212,7 +212,7 @@ namespace ra
     /// Returns the current directory.
     /// </summary>
     /// <returns>Returns the current directory</returns>
-    std::string getCurrentFolder();
+    std::string getCurrentDirectory();
 
     /// <summary>
     /// Returns the extension of a file.

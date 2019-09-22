@@ -52,7 +52,7 @@ namespace ra { namespace user { namespace test
     printf("username: %s\n", username.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestUser, testFoldersExisting)
+  TEST_F(TestUser, testDirectoriesExisting)
   {
     std::string home_dir = ra::user::getHomeDirectory();
     std::string  app_dir = ra::user::getApplicationsDataDirectory();
@@ -64,10 +64,10 @@ namespace ra { namespace user { namespace test
     ASSERT_FALSE( docs_dir.empty() );
     ASSERT_FALSE( desk_dir.empty() );
 
-    ASSERT_TRUE( ra::filesystem::folderExists(home_dir.c_str()) ) << "Failed. Folder '" << home_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::folderExists( app_dir.c_str()) ) << "Failed. Folder '" <<  app_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::folderExists(docs_dir.c_str()) ) << "Failed. Folder '" << docs_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::folderExists(desk_dir.c_str()) ) << "Failed. Folder '" << desk_dir << "' does not exists!";
+    ASSERT_TRUE( ra::filesystem::directoryExists(home_dir.c_str()) ) << "Failed. Directory '" << home_dir << "' does not exists!";
+    ASSERT_TRUE( ra::filesystem::directoryExists( app_dir.c_str()) ) << "Failed. Directory '" <<  app_dir << "' does not exists!";
+    ASSERT_TRUE( ra::filesystem::directoryExists(docs_dir.c_str()) ) << "Failed. Directory '" << docs_dir << "' does not exists!";
+    ASSERT_TRUE( ra::filesystem::directoryExists(desk_dir.c_str()) ) << "Failed. Directory '" << desk_dir << "' does not exists!";
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

@@ -81,7 +81,7 @@ namespace ra { namespace process { namespace test
     std::string dir = ra::process::getCurrentProcessDir();
     printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());
-    ASSERT_TRUE( ra::filesystem::folderExists(dir.c_str()) );
+    ASSERT_TRUE( ra::filesystem::directoryExists(dir.c_str()) );
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testToString)
@@ -178,15 +178,15 @@ namespace ra { namespace process { namespace test
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //keep the current directory to verify if it has not changed
-    const std::string curr_dir1 = ra::filesystem::getCurrentFolder();
+    const std::string curr_dir1 = ra::filesystem::getCurrentDirectory();
 
     //will run the process from user's home directory
     const std::string home_dir = ra::user::getHomeDirectory();
-    ASSERT_TRUE(ra::filesystem::folderExists(home_dir.c_str()));
+    ASSERT_TRUE(ra::filesystem::directoryExists(home_dir.c_str()));
 
     //will also run the process from a custom directory
     const std::string custom_dir = curr_dir1 + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".dir";
-    bool created = ra::filesystem::createFolder(custom_dir.c_str());
+    bool created = ra::filesystem::createDirectory(custom_dir.c_str());
     ASSERT_TRUE(created);
 
     //create a text file in user's home directory
@@ -239,12 +239,12 @@ namespace ra { namespace process { namespace test
     }
 
     //assert that current directory is not affected by the launched processes 
-    const std::string curr_dir2 = ra::filesystem::getCurrentFolder();
+    const std::string curr_dir2 = ra::filesystem::getCurrentDirectory();
     ASSERT_EQ( curr_dir1, curr_dir2 );
 
     //cleanup
     ra::filesystem::deleteFile(home_file_path.c_str());
-    ra::filesystem::deleteFolder(custom_dir.c_str());
+    ra::filesystem::deleteDirectory(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 #ifndef _WIN32
@@ -260,7 +260,7 @@ namespace ra { namespace process { namespace test
     
     ra::strings::StringVector args;
     args.push_back("sane");
-    const std::string curr_dir = ra::filesystem::getCurrentFolder();
+    const std::string curr_dir = ra::filesystem::getCurrentDirectory();
     ra::process::processid_t pid = ra::process::startProcess("/bin/stty", curr_dir, args);
     
     //wait for the process to complete
