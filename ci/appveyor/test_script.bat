@@ -5,7 +5,7 @@ echo Testing project
 echo =======================================================================
 cd /d %~dp0
 cd ..\..
-cd build\bin\Release
+cd build\bin\%Configuration%
 rapidassist_unittest.exe
 
 ::reset error in case of test case fail

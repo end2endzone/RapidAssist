@@ -5,7 +5,6 @@ if(RAPIDASSIST_BUILD_TESTING)
 endif()
 
 set(UNITTEST_TEST_FILES ""
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/tests.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testLoad.txt
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testSave.expected.txt
 )

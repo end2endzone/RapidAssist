@@ -24,6 +24,8 @@
 
 #include "TestTesting.h"
 #include "rapidassist/testing.h"
+#include "rapidassist/environment.h"
+#include "rapidassist/filesystem.h"
 
 namespace ra { namespace test {
 
@@ -172,21 +174,41 @@ namespace ra { namespace test {
 
   TEST_F(TestTesting, testGetTextFileContent)
   {
+    //create a sample text file 
+    const std::string newline = ra::environment::getLineSeparator();
+    const std::string content = 
+      "The"   + newline +
+      "quick" + newline +
+      "brown" + newline +
+      "fox"   + newline +
+      "jumps" + newline +
+      "over"  + newline +
+      "the"   + newline +
+      "lazy"  + newline +
+      "dog." ;
+    const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    ASSERT_TRUE( success );
+
+    //read the file as a text file
     ra::strings::StringVector lines;
-    bool success = ra::testing::getTextFileContent( __FILE__, lines );
+    success = ra::testing::getTextFileContent( file_path.c_str(), lines );
     ASSERT_TRUE(success);
 
-    //assert a randomString found at line lineNumber
-    static const char * randomString = "saldjsaldkj35knlkjxzlfnvskdnckzjshkaefhdkazjncslkirf"; int actualLineNumber = __LINE__; /* from 1 to n */
-    int foundLineNumber = -1;
-    for(size_t i=0; i<lines.size(); i++)
-    {
-      const std::string & line = lines[i];
-      bool found = (line.find(randomString) != std::string::npos);
-      if (found)
-        foundLineNumber = (int)i + 1; //for 1 to n instead of 0 to n-1
-    }
-    ASSERT_EQ(foundLineNumber, actualLineNumber);
+    //assert the expected words at the specified lines.
+    ASSERT_GE(lines.size(), 9);
+    ASSERT_EQ(std::string("The"  ), lines[0]);
+    ASSERT_EQ(std::string("quick"), lines[1]);
+    ASSERT_EQ(std::string("brown"), lines[2]);
+    ASSERT_EQ(std::string("fox"  ), lines[3]);
+    ASSERT_EQ(std::string("jumps"), lines[4]);
+    ASSERT_EQ(std::string("over" ), lines[5]);
+    ASSERT_EQ(std::string("the"  ), lines[6]);
+    ASSERT_EQ(std::string("lazy" ), lines[7]);
+    ASSERT_EQ(std::string("dog." ), lines[8]);
+
+    //cleanup
+    ra::filesystem::deleteFile(file_path.c_str());
   }
 
 } //namespace test

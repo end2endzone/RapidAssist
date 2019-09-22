@@ -54,7 +54,7 @@ namespace ra { namespace filesystem { namespace test
     // iBasePath
     // |-cars
     //   |-prices.txt
-    //   |-Mazda (empty folder)
+    //   |-Mazda (empty directory)
     //   |
     //   |-Honda
     //   | |-Civic.txt
@@ -68,18 +68,18 @@ namespace ra { namespace filesystem { namespace test
     //     |-Golf.txt
     //     |-Jetta.txt
 
-    //create folders
-    ra::strings::StringVector folders;
-    folders.push_back(iBasePath + "/cars/Mazda");
-    folders.push_back(iBasePath + "/cars/Honda");
-    folders.push_back(iBasePath + "/cars/Toyota");
-    folders.push_back(iBasePath + "/cars/Volkswagen");
-    for(size_t i=0; i<folders.size(); i++)
+    //create directories
+    ra::strings::StringVector directories;
+    directories.push_back(iBasePath + "/cars/Mazda");
+    directories.push_back(iBasePath + "/cars/Honda");
+    directories.push_back(iBasePath + "/cars/Toyota");
+    directories.push_back(iBasePath + "/cars/Volkswagen");
+    for(size_t i=0; i<directories.size(); i++)
     {
-      std::string & folder = folders[i];
-      filesystem::normalizePath(folder);
+      std::string & directory = directories[i];
+      filesystem::normalizePath(directory);
 
-      bool success = filesystem::createFolder(folder.c_str());
+      bool success = filesystem::createDirectory(directory.c_str());
       if (!success)
         return false;
     }
@@ -207,14 +207,14 @@ namespace ra { namespace filesystem { namespace test
     //test full path (unix style)
     {
       static const std::string EXPECTED = "foo.bar";
-      std::string filename = filesystem::getFilename("/home/myFolder/foo.bar");
+      std::string filename = filesystem::getFilename("/home/myDirectory/foo.bar");
       ASSERT_EQ(EXPECTED, filename);
     }
 
     //test full path (windows style)
     {
       static const std::string EXPECTED = "foo.bar";
-      std::string filename = filesystem::getFilename("C:\\Users\\Antoine\\Desktop\\myFolder\\foo.bar");
+      std::string filename = filesystem::getFilename("C:\\Users\\Antoine\\Desktop\\myDirectory\\foo.bar");
       ASSERT_EQ(EXPECTED, filename);
     }
   }
@@ -238,14 +238,14 @@ namespace ra { namespace filesystem { namespace test
     //test full path (unix style)
     {
       static const std::string EXPECTED = "foo";
-      std::string filename = filesystem::getFilenameWithoutExtension("/home/myFolder/foo.bar");
+      std::string filename = filesystem::getFilenameWithoutExtension("/home/myDirectory/foo.bar");
       ASSERT_EQ(EXPECTED, filename);
     }
 
     //test full path (windows style)
     {
       static const std::string EXPECTED = "foo";
-      std::string filename = filesystem::getFilenameWithoutExtension("C:\\Users\\Antoine\\Desktop\\myFolder\\foo.bar");
+      std::string filename = filesystem::getFilenameWithoutExtension("C:\\Users\\Antoine\\Desktop\\myDirectory\\foo.bar");
       ASSERT_EQ(EXPECTED, filename);
     }
   }
@@ -307,8 +307,8 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_GT(files.size(), (size_t)0 );
 
       //search for known values
-      bool hasMazdaFolder = false; //test finding empty folders
-      bool hasHondaFolder = false; //test non-empty folder
+      bool hasMazdaDirectory = false; //test finding empty directories
+      bool hasHondaDirectory = false; //test non-empty directory
       bool hasPricesFile = false; //test for non-leaf files
       bool hasJettaFile = false; //test last filename
       for(size_t i=0; i<files.size(); i++)
@@ -316,11 +316,11 @@ namespace ra { namespace filesystem { namespace test
         const std::string & entry = files[i];
         if (entry.find("Mazda") != std::string::npos)
         {
-          hasMazdaFolder = true;
+          hasMazdaDirectory = true;
         }
         else if (entry.find("Honda") != std::string::npos)
         {
-          hasHondaFolder = true;
+          hasHondaDirectory = true;
         }
         else if (entry.find("prices.txt") != std::string::npos)
         {
@@ -331,8 +331,8 @@ namespace ra { namespace filesystem { namespace test
           hasJettaFile = true;
         }
       }
-      ASSERT_TRUE(hasMazdaFolder);
-      ASSERT_TRUE(hasHondaFolder);
+      ASSERT_TRUE(hasMazdaDirectory);
+      ASSERT_TRUE(hasHondaDirectory);
       ASSERT_TRUE(hasPricesFile);
       ASSERT_TRUE(hasJettaFile);
     }
@@ -340,13 +340,13 @@ namespace ra { namespace filesystem { namespace test
     //test depth
     {
       ra::strings::StringVector files;
-      bool success = filesystem::findFiles(files, basePath.c_str(), 1); //cars folders is found at level 1, cars direct subfolder and files are found at level 0.
+      bool success = filesystem::findFiles(files, basePath.c_str(), 1); //cars directories is found at level 1, cars direct subdirectory and files are found at level 0.
       ASSERT_TRUE(success);
       ASSERT_GT(files.size(), (size_t)0 );
 
       //search for known values
-      bool hasMazdaFolder = false; //test finding empty folders
-      bool hasHondaFolder = false; //test non-empty folder
+      bool hasMazdaDirectory = false; //test finding empty directories
+      bool hasHondaDirectory = false; //test non-empty directory
       bool hasPricesFile = false; //test for non-leaf files, leafs at level 1
       bool hasJettaFile = false; //test for filenames at depth 2
       for(size_t i=0; i<files.size(); i++)
@@ -354,11 +354,11 @@ namespace ra { namespace filesystem { namespace test
         const std::string & entry = files[i];
         if (entry.find("Mazda") != std::string::npos)
         {
-          hasMazdaFolder = true;
+          hasMazdaDirectory = true;
         }
         else if (entry.find("Honda") != std::string::npos)
         {
-          hasHondaFolder = true;
+          hasHondaDirectory = true;
         }
         else if (entry.find("prices.txt") != std::string::npos)
         {
@@ -369,8 +369,8 @@ namespace ra { namespace filesystem { namespace test
           hasJettaFile = true;
         }
       }
-      ASSERT_TRUE (hasMazdaFolder);
-      ASSERT_TRUE (hasHondaFolder);
+      ASSERT_TRUE (hasMazdaDirectory);
+      ASSERT_TRUE (hasHondaDirectory);
       ASSERT_TRUE(hasPricesFile);
       ASSERT_FALSE(hasJettaFile);
     }
@@ -394,7 +394,7 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ( files[0].find("//"), std::string::npos ); //assert that // (double slashes) is not found
 #endif
 
-      //search for the last (almost) folder of the root file system.
+      //search for the last (almost) directory of the root file system.
 #ifdef _WIN32
       const std::string pattern = environment::getEnvironmentVariable("windir"); //returns C:\Windows or C:\windows
 #else
@@ -415,7 +415,7 @@ namespace ra { namespace filesystem { namespace test
         }
 #endif
       }
-      ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in folder '" << path << "'.\n"
+      ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in directory '" << path << "'.\n"
         "Found the following elements: \n" << 
         strings::join(files, "\n").c_str();
     }
@@ -444,90 +444,90 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testFolderExists)
+  TEST_F(TestFilesystem, testDirectoryExists)
   {
     //test NULL
     {
-      bool exists = filesystem::folderExists(NULL);
+      bool exists = filesystem::directoryExists(NULL);
       ASSERT_FALSE(exists);
     }
 
     //test not found
     {
-      bool exists = filesystem::folderExists("/home/fooBAR");
+      bool exists = filesystem::directoryExists("/home/fooBAR");
       ASSERT_FALSE(exists);
     }
 
     //test found
     {
-      //get dummy folder
-      std::string currentFolder = filesystem::getCurrentFolder();
-      ASSERT_TRUE( !currentFolder.empty() );
+      //get dummy directory
+      std::string currentDirectory = filesystem::getCurrentDirectory();
+      ASSERT_TRUE( !currentDirectory.empty() );
 
-      bool exists = filesystem::folderExists(currentFolder.c_str());
+      bool exists = filesystem::directoryExists(currentDirectory.c_str());
       ASSERT_TRUE(exists);
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testCreateFolder)
+  TEST_F(TestFilesystem, testCreateDirectory)
   {
     //test NULL
     {
-      bool success = filesystem::createFolder(NULL);
+      bool success = filesystem::createDirectory(NULL);
       ASSERT_FALSE(success);
     }
 
-    //test current folder
+    //test current directory
     {
-      bool success = filesystem::createFolder("."); //should return true as the folder already exists
+      bool success = filesystem::createDirectory("."); //should return true as the directory already exists
       ASSERT_TRUE(success);
     }
 
-    //test folder already exits (call twice)
+    //test directory already exits (call twice)
     {
       std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       bool success = false;
-      success = filesystem::createFolder(path.c_str());
+      success = filesystem::createDirectory(path.c_str());
       ASSERT_TRUE(success);
 
-      //call createFolder() twice should still be a success
-      success = filesystem::createFolder(path.c_str());
+      //call createDirectory() twice should still be a success
+      success = filesystem::createDirectory(path.c_str());
       ASSERT_TRUE(success);
 
       //cleanup
-      deleteFolder(path.c_str());
+      deleteDirectory(path.c_str());
     }
 
-    //test subfolders
+    //test subdirectories
     {
-      //build path with subfolders
+      //build path with subdirectories
       char separator[] = {getPathSeparator(), '\0'};
       std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
-      success = filesystem::createFolder(path.c_str());
+      success = filesystem::createDirectory(path.c_str());
       ASSERT_TRUE(success);
 
       //cleanup
-      deleteFolder(path.c_str());
+      deleteDirectory(path.c_str());
     }
 
     //test issue #27
     {
-      std::string temp_dir = ra::filesystem::getTemporaryFolder();
+      std::string temp_dir = ra::filesystem::getTemporaryDirectory();
 
-      //build path with subfolders
+      //build path with subdirectories
       const char * separator = getPathSeparatorStr();
       std::string path = temp_dir + separator + ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
-      success = filesystem::createFolder(path.c_str());
+      success = filesystem::createDirectory(path.c_str());
       ASSERT_TRUE(success);
 
       //cleanup
-      deleteFolder(path.c_str());
+      deleteDirectory(path.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -598,11 +598,11 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testDeleteFolder)
+  TEST_F(TestFilesystem, testDeleteDirectory)
   {
     //test NULL
     {
-      bool success = filesystem::deleteFolder(NULL);
+      bool success = filesystem::deleteDirectory(NULL);
       ASSERT_FALSE(success);
     }
 
@@ -615,11 +615,11 @@ namespace ra { namespace filesystem { namespace test
 
     //test success
     {
-      bool success = filesystem::deleteFolder(basePath.c_str());
+      bool success = filesystem::deleteDirectory(basePath.c_str());
       ASSERT_TRUE(success);
 
-      //assert folder is actually deleted
-      ASSERT_FALSE( filesystem::folderExists(basePath.c_str()) );
+      //assert directory is actually deleted
+      ASSERT_FALSE( filesystem::directoryExists(basePath.c_str()) );
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -679,16 +679,16 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testGetTemporaryFolder)
+  TEST_F(TestFilesystem, testGetTemporaryDirectory)
   {
-    std::string temp_dir = filesystem::getTemporaryFolder();
+    std::string temp_dir = filesystem::getTemporaryDirectory();
     ASSERT_TRUE( !temp_dir.empty() );
-    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    ASSERT_TRUE( ra::filesystem::directoryExists(temp_dir.c_str()) );
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetParentPath)
   {
-    //test no folder
+    //test no directory
     {
       static const std::string EXPECTED = "";
       std::string parent = filesystem::getParentPath("filename.bar");
@@ -697,15 +697,15 @@ namespace ra { namespace filesystem { namespace test
 
     //test unix style
     {
-      static const std::string EXPECTED = "/home/myFolder";
-      std::string parent = filesystem::getParentPath("/home/myFolder/foo.bar");
+      static const std::string EXPECTED = "/home/myDirectory";
+      std::string parent = filesystem::getParentPath("/home/myDirectory/foo.bar");
       ASSERT_EQ(EXPECTED, parent);
     }
 
     //test windows style
     {
-      static const std::string EXPECTED = "C:\\Users\\Antoine\\Desktop\\myFolder";
-      std::string parent = filesystem::getParentPath("C:\\Users\\Antoine\\Desktop\\myFolder\\foo.bar");
+      static const std::string EXPECTED = "C:\\Users\\Antoine\\Desktop\\myDirectory";
+      std::string parent = filesystem::getParentPath("C:\\Users\\Antoine\\Desktop\\myDirectory\\foo.bar");
       ASSERT_EQ(EXPECTED, parent);
     }
   }
@@ -752,10 +752,10 @@ namespace ra { namespace filesystem { namespace test
   {
     //test baseline
     {
-      static const std::string EXPECTED_PARENT = "/home/myFolder";
+      static const std::string EXPECTED_PARENT = "/home/myDirectory";
       static const std::string EXPECTED_FILENAME = "myFile.txt";
       std::string parent, filename;
-      filesystem::splitPath("/home/myFolder/myFile.txt", parent, filename);
+      filesystem::splitPath("/home/myDirectory/myFile.txt", parent, filename);
       ASSERT_EQ(EXPECTED_PARENT, parent);
       ASSERT_EQ(EXPECTED_FILENAME, filename);
     }
@@ -780,67 +780,67 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ(EXPECTED_FILENAME, filename);
     }
 
-    //test spaces in folder
+    //test spaces in directory
     {
-      static const std::string EXPECTED_PARENT = "/home/my Folder";
+      static const std::string EXPECTED_PARENT = "/home/my Directory";
       static const std::string EXPECTED_FILENAME = "myFile.txt";
       std::string parent, filename;
-      filesystem::splitPath("/home/my Folder/myFile.txt", parent, filename);
+      filesystem::splitPath("/home/my Directory/myFile.txt", parent, filename);
       ASSERT_EQ(EXPECTED_PARENT, parent);
       ASSERT_EQ(EXPECTED_FILENAME, filename);
     }
 
-    //test filename without extension / folder name
+    //test filename without extension / directory name
     {
-      static const std::string EXPECTED_PARENT = "/home/myFolder";
+      static const std::string EXPECTED_PARENT = "/home/myDirectory";
       static const std::string EXPECTED_FILENAME = "myFile";
       std::string parent, filename;
-      filesystem::splitPath("/home/myFolder/myFile", parent, filename);
+      filesystem::splitPath("/home/myDirectory/myFile", parent, filename);
       ASSERT_EQ(EXPECTED_PARENT, parent);
       ASSERT_EQ(EXPECTED_FILENAME, filename);
     }
 
-    std::string folder;
+    std::string directory;
     std::string filename;
   
     //from full path
     {
-      splitPath("C:\\foo\\bar\\file.txt", folder, filename);
-      ASSERT_EQ(folder, "C:\\foo\\bar");
+      splitPath("C:\\foo\\bar\\file.txt", directory, filename);
+      ASSERT_EQ(directory, "C:\\foo\\bar");
       ASSERT_EQ(filename, "file.txt");
     }
     {
-      splitPath("C:\\foo\\bar\\file", folder, filename);
-      ASSERT_EQ(folder, "C:\\foo\\bar");
+      splitPath("C:\\foo\\bar\\file", directory, filename);
+      ASSERT_EQ(directory, "C:\\foo\\bar");
       ASSERT_EQ(filename, "file");
     }
     {
-      splitPath("C:\\foo\\bar\\file.", folder, filename);
-      ASSERT_EQ(folder, "C:\\foo\\bar");
+      splitPath("C:\\foo\\bar\\file.", directory, filename);
+      ASSERT_EQ(directory, "C:\\foo\\bar");
       ASSERT_EQ(filename, "file.");
     }
 
     //from filename only
     {
-      splitPath("file.txt", folder, filename);
-      ASSERT_EQ(folder, "");
+      splitPath("file.txt", directory, filename);
+      ASSERT_EQ(directory, "");
       ASSERT_EQ(filename, "file.txt");
     }
     {
-      splitPath("file.", folder, filename);
-      ASSERT_EQ(folder, "");
+      splitPath("file.", directory, filename);
+      ASSERT_EQ(directory, "");
       ASSERT_EQ(filename, "file.");
     }
     {
-      splitPath("file", folder, filename);
-      ASSERT_EQ(folder, "");
+      splitPath("file", directory, filename);
+      ASSERT_EQ(directory, "");
       ASSERT_EQ(filename, "file");
     }
 
     //empty strings
     {
-      splitPath("", folder, filename);
-      ASSERT_EQ(folder, "");
+      splitPath("", directory, filename);
+      ASSERT_EQ(directory, "");
       ASSERT_EQ(filename, "");
     }
   }
@@ -850,10 +850,10 @@ namespace ra { namespace filesystem { namespace test
     //test baseline
     {
       std::vector<std::string> elements;
-      filesystem::splitPath("/home/myFolder/myFile.txt", elements);
+      filesystem::splitPath("/home/myDirectory/myFile.txt", elements);
       ASSERT_EQ(3, elements.size());
       ASSERT_EQ("home", elements[0]);
-      ASSERT_EQ("myFolder", elements[1]);
+      ASSERT_EQ("myDirectory", elements[1]);
       ASSERT_EQ("myFile.txt", elements[2]);
     }
 
@@ -872,23 +872,23 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_EQ("myfile.txt", elements[0]);
     }
 
-    //test spaces in folder
+    //test spaces in directory
     {
       std::vector<std::string> elements;
-      filesystem::splitPath("/home/my Folder/myFile.txt", elements);
+      filesystem::splitPath("/home/my Directory/myFile.txt", elements);
       ASSERT_EQ(3, elements.size());
       ASSERT_EQ("home", elements[0]);
-      ASSERT_EQ("my Folder", elements[1]);
+      ASSERT_EQ("my Directory", elements[1]);
       ASSERT_EQ("myFile.txt", elements[2]);
     }
 
-    //test filename without extension / folder name
+    //test filename without extension / directory name
     {
       std::vector<std::string> elements;
-      filesystem::splitPath("/home/myFolder/myFile", elements);
+      filesystem::splitPath("/home/myDirectory/myFile", elements);
       ASSERT_EQ(3, elements.size());
       ASSERT_EQ("home", elements[0]);
-      ASSERT_EQ("myFolder", elements[1]);
+      ASSERT_EQ("myDirectory", elements[1]);
       ASSERT_EQ("myFile", elements[2]);
     }
   }
@@ -960,12 +960,12 @@ namespace ra { namespace filesystem { namespace test
 #endif
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testGetCurrentFolder)
+  TEST_F(TestFilesystem, testGetCurrentDirectory)
   {
-    std::string curdir = getCurrentFolder();
+    std::string curdir = getCurrentDirectory();
     ASSERT_NE("", curdir);
 
-    ASSERT_TRUE(filesystem::folderExists(curdir.c_str()));
+    ASSERT_TRUE(filesystem::directoryExists(curdir.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetFileExtention)
@@ -987,21 +987,21 @@ namespace ra { namespace filesystem { namespace test
     //test spaces in extension
     {
       static const std::string EXPECTED = "foo bar";
-      std::string ext = filesystem::getFileExtention("/home/my Folder/myFile.foo bar");
+      std::string ext = filesystem::getFileExtention("/home/my Directory/myFile.foo bar");
       ASSERT_EQ(EXPECTED, ext);
     }
 
-    //test filename without extension / folder name
+    //test filename without extension / directory name
     {
       static const std::string EXPECTED = "";
-      std::string ext = filesystem::getFileExtention("/home/myFolder/myFile");
+      std::string ext = filesystem::getFileExtention("/home/myDirectory/myFile");
       ASSERT_EQ(EXPECTED, ext);
     }
 
-    //test folder with an extension and file without extension
+    //test directory with an extension and file without extension
     {
       static const std::string EXPECTED = "";
-      std::string ext = filesystem::getFileExtention("/home/my.Folder/myFile");
+      std::string ext = filesystem::getFileExtention("/home/my.Directory/myFile");
       ASSERT_EQ(EXPECTED, ext);
     }
 
@@ -1486,12 +1486,12 @@ namespace ra { namespace filesystem { namespace test
     //copy this process executable to another file
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
-    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string temp_dir = filesystem::getTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
-    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    ASSERT_TRUE( ra::filesystem::directoryExists(temp_dir.c_str()) );
     
     bool copied = ra::filesystem::copyFile(process_path, output_path);
     ASSERT_TRUE( copied ) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
@@ -1519,12 +1519,12 @@ namespace ra { namespace filesystem { namespace test
     //copy this process executable to another file
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
-    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string temp_dir = filesystem::getTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
-    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    ASSERT_TRUE( ra::filesystem::directoryExists(temp_dir.c_str()) );
     
     gProgressBegin = false;
     gProgressEnd   = false;
@@ -1567,12 +1567,12 @@ namespace ra { namespace filesystem { namespace test
     //copy this process executable to another file
     const std::string process_path = ra::process::getCurrentProcessPath();
     const std::string process_filename = ra::filesystem::getFilename(process_path.c_str());
-    const std::string temp_dir = filesystem::getTemporaryFolder();
+    const std::string temp_dir = filesystem::getTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::getPathSeparator() + output_filename;
 
     ASSERT_TRUE( ra::filesystem::fileExists(process_path.c_str()) );
-    ASSERT_TRUE( ra::filesystem::folderExists(temp_dir.c_str()) );
+    ASSERT_TRUE( ra::filesystem::directoryExists(temp_dir.c_str()) );
     
     CopyFileCallbackFunctor functor;
     bool copied = ra::filesystem::copyFile(process_path, output_path, &functor);
@@ -1611,10 +1611,10 @@ namespace ra { namespace filesystem { namespace test
   {
     //test write fail
     {
-      const std::string file_path = ra::filesystem::getCurrentFolder() +
+      const std::string file_path = ra::filesystem::getCurrentDirectory() +
                                     ra::filesystem::getPathSeparatorStr() + "foo" +
                                     ra::filesystem::getPathSeparatorStr() + "bar" +
-                                    ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".bin"; //folder 'foo\bar' does not exists.
+                                    ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".bin"; //directory 'foo\bar' does not exists.
       const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
       const std::string content = ra::random::getRandomString(content_size);
       bool success = ra::filesystem::writeFile(file_path, content);
