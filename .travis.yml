@@ -5,7 +5,7 @@ os:
 - linux
 branches:
   only:
-  - master
+  - issue43
 
 script:
 - cd $TRAVIS_BUILD_DIR/ci/travis;
