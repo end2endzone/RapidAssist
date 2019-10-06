@@ -35,9 +35,6 @@
 #include "rapidassist/environment.h"
 #include "rapidassist/cli.h"
 
-using namespace ra::filesystem;
-using namespace ra::strings;
-
 namespace ra
 {
   namespace testing
@@ -171,7 +168,7 @@ namespace ra
         return;
 
       StringVector filters;
-      split(filters, iFilter, "-");
+      ra::strings::split(filters, iFilter, "-");
 
       if (filters.size() > 2)
       {
@@ -201,7 +198,7 @@ namespace ra
     StringVector getTestList(const char * iTestCasePath)
     {
       //check that file exists
-      if (!fileExists(iTestCasePath))
+      if (!ra::filesystem::fileExists(iTestCasePath))
         return StringVector();
 
       static const std::string logFilename = "gTestHelper.tmp";
@@ -223,7 +220,7 @@ namespace ra
       if (returnCode != 0)
         return StringVector();
 
-      if (!fileExists(logFilename.c_str()))
+      if (!ra::filesystem::fileExists(logFilename.c_str()))
         return StringVector();
 
       //load test case list from log filename
@@ -314,8 +311,8 @@ namespace ra
       }
 
       //Compare by size
-      long size1 = getFileSize(f1.mPointer);
-      long size2 = getFileSize(f2.mPointer);
+      long size1 = ra::filesystem::getFileSize(f1.mPointer);
+      long size2 = ra::filesystem::getFileSize(f2.mPointer);
       if (size1 != size2)
       {
         if (size1 < size2)
@@ -377,8 +374,8 @@ namespace ra
         return false;
 
       //Check by size
-      long size1 = getFileSize(f1.mPointer);
-      long size2 = getFileSize(f2.mPointer);
+      long size1 = ra::filesystem::getFileSize(f1.mPointer);
+      long size2 = ra::filesystem::getFileSize(f2.mPointer);
       if (size1 != size2)
       {
         return false; //unsupported
@@ -431,7 +428,7 @@ namespace ra
 
     bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter)
     {
-      if (!fileExists(iFilename))
+      if (!ra::filesystem::fileExists(iFilename))
         return false;
 
       oLine = -1;
@@ -500,7 +497,7 @@ namespace ra
       FILE * f = fopen(iFilePath, "rb");
       if (!f)
         return;
-      long size = getFileSize(f);
+      long size = ra::filesystem::getFileSize(f);
       unsigned char * buffer = new unsigned char[size];
       if (!buffer)
         return;

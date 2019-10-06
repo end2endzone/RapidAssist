@@ -30,8 +30,6 @@
 
 #include "rapidassist/testing.h"
 
-using namespace ra;
-
 int main(int argc, char **argv)
 {
   //define default values for xml output report
