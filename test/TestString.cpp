@@ -140,12 +140,12 @@ namespace ra { namespace strings { namespace test
   TEST_F(TestString, testToStringParseValue)
   {
     //uint64_t
-    struct uint64_test
+    struct UIint64Test
     {
       const char * EXPECTED_STR;
       uint64_t EXPECTED_VALUE;
     };
-    static const uint64_test tests[] = {
+    static const UIint64Test tests[] = {
       {"0", 0ull},
       {"54321", 54321ull},
       {"1234567890123456789", 1234567890123456789ull},

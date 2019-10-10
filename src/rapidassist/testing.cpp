@@ -326,7 +326,7 @@ namespace ra
       //Compare content
       f1.close();
       f2.close();
-      std::vector<FILE_DIFF> differences;
+      std::vector<FileDiff> differences;
       bool success = getFileDifferences(iFile1, iFile2, differences, iMaxDifferences+1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
       if (!success)
       {
@@ -345,7 +345,7 @@ namespace ra
       ss << "Content is different: ";
       for(size_t i=0; i<differences.size() && i<iMaxDifferences; i++)
       {
-        const FILE_DIFF & d = differences[i];
+        const FileDiff & d = differences[i];
         if (i >= 1)
           ss << ", ";
         static const int BUFFER_SIZE = 1024;
@@ -364,7 +364,7 @@ namespace ra
       return false;
     }
 
-    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FILE_DIFF> & oDifferences, size_t iMaxDifferences)
+    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences)
     {
       FileWrapper f1(iFile1, "rb");
       if (f1.mPointer == NULL)
@@ -409,7 +409,7 @@ namespace ra
             unsigned char c2 = (unsigned char)buffer2[i];
             if (c1 != c2)
             {
-              FILE_DIFF d;
+              FileDiff d;
               d.offset = offsetRead+i;
               d.c1 = c1;
               d.c2 = c2;

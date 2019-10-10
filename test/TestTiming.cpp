@@ -61,7 +61,7 @@ namespace ra { namespace timing { namespace test
   TEST_F(TestTiming, testGetCopyrightYear)
   {
     int year = getCopyrightYear();
-    DATETIME now = toDateTime(getLocalTime());
+    DateTime now = toDateTime(getLocalTime());
     ASSERT_GT(year, 2016); //assert value is not default value
     ASSERT_LE(year, now.year);
   }
@@ -69,7 +69,7 @@ namespace ra { namespace timing { namespace test
   TEST_F(TestTiming, testDateTimeConvert)
   {
     std::tm now = getLocalTime();
-    DATETIME dt = toDateTime(now);
+    DateTime dt = toDateTime(now);
     std::tm actual = toTimeInfo(dt);
 
     ASSERT_EQ(now.tm_year , actual.tm_year );

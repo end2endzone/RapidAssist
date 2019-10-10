@@ -36,7 +36,7 @@ namespace ra
 {
   namespace testing
   {
-    struct FILE_DIFF
+    struct FileDiff
     {
       size_t offset;    //offset in files where a difference is located
       unsigned char c1; //character of first  file
@@ -65,7 +65,7 @@ namespace ra
     //   oDifferences:    The list of all differences within both files. Empty if files are identical.
     //   iMaxDifferences: The maximum number of differences.
     // 
-    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FILE_DIFF> & oDifferences, size_t iMaxDifferences);
+    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
 
     //
     // Description:

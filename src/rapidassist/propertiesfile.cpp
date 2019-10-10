@@ -41,12 +41,12 @@ namespace ra
     {
       //https://en.cppreference.com/w/cpp/language/escape
       //https://en.wikipedia.org/wiki/Escape_sequences_in_C
-      struct ESPACESEQUENCE
+      struct EscapeSequence
       {
         const char * value;
         char replacement;
       };
-      static const ESPACESEQUENCE sequences[] = {
+      static const EscapeSequence sequences[] = {
         {"\\a", '\a'},  //beep
         {"\\b", '\b'},  //backspace
         {"\\e", 0x1b},  //esc
@@ -77,7 +77,7 @@ namespace ra
         bool isEscapedCharacter = false;
         for(size_t j=0; isEscapedCharacter == false && j<num_escape_sequences; j++)
         {
-          const ESPACESEQUENCE & seq = sequences[j];
+          const EscapeSequence & seq = sequences[j];
           size_t seq_value_length = strlen(seq.value);
           if ( strncmp(c, seq.value, seq_value_length) == 0 )
           {

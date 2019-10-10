@@ -234,16 +234,16 @@ namespace ra
       normalizePath(query);
       query << "\\*";
  
-      WIN32_FIND_DATA findDataStruct;
-      HANDLE hFind = FindFirstFile(query.c_str(), &findDataStruct);
+      WIN32_FIND_DATA find_data;
+      HANDLE hFind = FindFirstFile(query.c_str(), &find_data);
  
       if(hFind == INVALID_HANDLE_VALUE)
         return false;
  
       //process directory entry
-      std::string filename = findDataStruct.cFileName;
-      bool isDirectory = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-      bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
+      std::string filename = find_data.cFileName;
+      bool isDirectory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      bool isJunction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
       bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
       if (!result)
       {
@@ -260,11 +260,11 @@ namespace ra
       }
  
       //next files in directory
-      while (FindNextFile(hFind, &findDataStruct))
+      while (FindNextFile(hFind, &find_data))
       {
-        filename = findDataStruct.cFileName;
-        bool isDirectory = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-        bool isJunction = ((findDataStruct.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
+        filename = find_data.cFileName;
+        bool isDirectory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        bool isJunction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
         bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
         if (!result)
         {

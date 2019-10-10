@@ -34,9 +34,9 @@ namespace ra
   {
 
     /// <summary>
-    /// DATETIME stucture with human readable values
+    /// DateTime stucture with human readable values
     /// </summary>
-    struct DATETIME
+    struct DateTime
     {
       uint16_t year;  // year - [0, 65000]
       uint16_t month; // month of the year - [1,12]
@@ -50,18 +50,18 @@ namespace ra
     };
 
     /// <summary>
-    /// Converts a std::tm structure to a DATETIME structure.
+    /// Converts a std::tm structure to a DateTime structure.
     /// </summary>
     /// <param name="timeinfo">The given std::tm value.</param>
-    /// <returns>Returns a DATETIME structure matching the given std::tm info.</returns>
-    DATETIME toDateTime(const std::tm & timeinfo);
+    /// <returns>Returns a DateTime structure matching the given std::tm info.</returns>
+    DateTime toDateTime(const std::tm & timeinfo);
 
     /// <summary>
-    /// Converts a DATETIME structure to a std::tm structure.
+    /// Converts a DateTime structure to a std::tm structure.
     /// </summary>
-    /// <param name="iDateTime">The given DATETIME value.</param>
-    /// <returns>Returns a std::tm structure matching the given DATETIME info.</returns>
-    std::tm toTimeInfo(const DATETIME & iDateTime);
+    /// <param name="iDateTime">The given DateTime value.</param>
+    /// <returns>Returns a std::tm structure matching the given DateTime info.</returns>
+    std::tm toTimeInfo(const DateTime & iDateTime);
 
     /// <summary>
     /// Wait for the clock to jump to the next second. Synchronize the time clock to a new second.

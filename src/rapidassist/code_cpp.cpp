@@ -39,13 +39,13 @@ namespace ra
   {
   namespace cpp
   {
-    struct CONTROL_CHARACTER
+    struct ControlCharacter
     {
       char c;
       const char * escapeStr;
     };
     //https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
-    static const CONTROL_CHARACTER gCtrlChars[] = {
+    static const ControlCharacter gCtrlChars[] = {
       {'\0',"\\0"},   //0x00, null
       {'\a',"\\a"},   //0x07, alert (bell)
       {'\b',"\\b"},   //0x08, backspace
@@ -77,7 +77,7 @@ namespace ra
     {
       for(size_t i=0; i<gNumCtrlChars; i++)
       {
-        const CONTROL_CHARACTER & ctrl = gCtrlChars[i];
+        const ControlCharacter & ctrl = gCtrlChars[i];
         if (ctrl.c == c)
           return true;
       }
@@ -106,7 +106,7 @@ namespace ra
     {
       for(size_t i=0; i<gNumCtrlChars; i++)
       {
-        const CONTROL_CHARACTER & ctrl = gCtrlChars[i];
+        const ControlCharacter & ctrl = gCtrlChars[i];
         if (ctrl.c == c)
           return ctrl.escapeStr;
       }

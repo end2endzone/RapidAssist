@@ -289,9 +289,9 @@ namespace ra
     }
 
 
-    DATETIME toDateTime(const std::tm & timeinfo)
+    DateTime toDateTime(const std::tm & timeinfo)
     {
-      DATETIME dt;
+      DateTime dt;
 
       dt.year  = timeinfo.tm_year + 1900;
       dt.month = timeinfo.tm_mon + 1;
@@ -306,7 +306,7 @@ namespace ra
       return dt;
     }
 
-    std::tm toTimeInfo(const DATETIME & iDateTime)
+    std::tm toTimeInfo(const DateTime & iDateTime)
     {
       std::tm timeinfo;
 
