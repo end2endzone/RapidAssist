@@ -46,7 +46,7 @@ namespace ra
       return gQuietMode;
     }
 
-    void log(LOGGER_LEVEL iLevel, const char * iFormat, ...)
+    void log(LoggerLevel iLevel, const char * iFormat, ...)
     {
       if (iFormat == NULL)
         return;

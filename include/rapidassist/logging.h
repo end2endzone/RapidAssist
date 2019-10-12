@@ -35,7 +35,7 @@ namespace ra
     /// <summary>
     /// Different logging levels
     /// </summary>
-    enum LOGGER_LEVEL
+    enum LoggerLevel
     {
       LOG_INFO,
       LOG_WARNING,
@@ -60,7 +60,7 @@ namespace ra
     /// </summary>
     /// <param name="iLevel">The level of the given arguments</param>
     /// <param name="iFormat">The format of the given argument. Same as printf's format.</param>
-    void log(LOGGER_LEVEL iLevel, const char * iFormat, ...);
+    void log(LoggerLevel iLevel, const char * iFormat, ...);
 
 
   } //namespace environment
