@@ -766,7 +766,7 @@ namespace ra
       static const uint64_t gbLimit = 1024*mbLimit;
       static const uint64_t tbLimit = 1024*gbLimit;
 
-      FileSizeEnum preferedUnit = Bytes;
+      FileSizeEnum preferedUnit = BYTES;
 
       if (iBytesSize < kbLimit)
       {
@@ -774,19 +774,19 @@ namespace ra
       }
       else if (iBytesSize < mbLimit)
       {
-        preferedUnit = Kilobytes;
+        preferedUnit = KILOBYTES;
       }
       else if (iBytesSize < gbLimit)
       {
-        preferedUnit = Megabytes;
+        preferedUnit = MEGABYTES;
       }
       else if (iBytesSize < tbLimit)
       {
-        preferedUnit = Gigabytes;
+        preferedUnit = GIGABYTES;
       }
       else
       {
-        preferedUnit = Terabytes;
+        preferedUnit = TERABYTES;
       }
 
       return getUserFriendlySize(iBytesSize, preferedUnit);
@@ -807,19 +807,19 @@ namespace ra
       double formattedSize = 0.0;
       switch(iUnit)
       {
-      case Bytes:
+      case BYTES:
         formattedSize = double( iBytesSize );
         break;
-      case Kilobytes:
+      case KILOBYTES:
         formattedSize = double( ((iBytesSize*digitsPrecision)/factor)/kbPrecision )/double(digitsPrecision);
         break;
-      case Megabytes:
+      case MEGABYTES:
         formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/mbPrecision )/double(digitsPrecision);
         break;
-      case Gigabytes:
+      case GIGABYTES:
         formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/gbPrecision )/double(digitsPrecision);
         break;
-      case Terabytes:
+      case TERABYTES:
         formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/tbPrecision )/double(digitsPrecision);
         break;
       };
@@ -833,28 +833,28 @@ namespace ra
       //Append unit descrition to friendlySize
       switch(iUnit)
       {
-      case Bytes:
+      case BYTES:
         {
           friendlySize = strings::toString(iBytesSize);
           friendlySize += " bytes";
         };
         break;
-      case Kilobytes:
+      case KILOBYTES:
         {
           friendlySize += " KB";
         };
         break;
-      case Megabytes:
+      case MEGABYTES:
         {
           friendlySize += " MB";
         };
         break;
-      case Gigabytes:
+      case GIGABYTES:
         {
           friendlySize += " GB";
         };
         break;
-      case Terabytes:
+      case TERABYTES:
         {
           friendlySize += " TB";
         };

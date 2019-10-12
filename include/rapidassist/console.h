@@ -100,22 +100,22 @@ namespace ra
     /// <summary>Enumaration for all console text colors.</summary>
     enum TextColor
     {
-      Black = 0,
-      White,
-      Blue,
-      Green,
-      Cyan,
-      Red,
-      Magenta,
-      Yellow,
-      Gray,
-      DarkBlue,
-      DarkGreen,
-      DarkCyan,
-      DarkRed,
-      DarkMagenta,
-      DarkYellow,
-      DarkGray,
+      BLACK = 0,
+      WHITE,
+      BLUE,
+      GREEN,
+      CYAN,
+      RED,
+      MAGENTA,
+      YELLOW,
+      GRAY,
+      DARK_BLUE,
+      DARK_GREEN,
+      DARK_CYAN,
+      DARK_RED,
+      DARK_MAGENTA,
+      DARK_YELLOW,
+      DARK_GRAY,
     };
 
     static const int NUM_TEXT_COLOR = 16;
@@ -182,13 +182,13 @@ namespace ra
       {
         enum Attr
         {
-          Default = 0,
-          Bold = 1,
-          Dim = 2,
-          Underlined = 3,
-          Blink = 5,
-          Reverse = 7,
-          Hidden = 8
+          DEFAULT = 0,
+          BOLD = 1,
+          DIM = 2,
+          UNDERLINED = 3,
+          BLINK = 5,
+          REVERSE = 7,
+          HIDDEN = 8
         };
         const char * toString(const Attr & attr);
         static const int NUM_COLOR_ATTR = 7;
@@ -198,23 +198,23 @@ namespace ra
       {
         enum Color
         {
-          Default = 39,
-          Black = 30,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          LightGray,
-          DarkGray = 90,
-          LightRed,
-          LightGreen,
-          LightYellow,
-          LightBlue,
-          LightMagenta,
-          LightCyan,
-          White,
+          DEFAULT = 39,
+          BLACK = 30,
+          RED,
+          GREEN,
+          YELLOW,
+          BLUE,
+          MAGENTA,
+          CYAN,
+          LIGHT_GRAY,
+          DARK_GRAY = 90,
+          LIGHT_RED,
+          LIGHT_GREEN,
+          LIGHT_YELLOW,
+          LIGHT_BLUE,
+          LIGHT_MAGENTA,
+          LIGHT_CYAN,
+          WHITE,
         };
         const char * toString(const Color & color);
         static const int NUM_FOREGROUND_COLOR = 17;
@@ -224,23 +224,23 @@ namespace ra
       {
         enum Color
         {
-          Default = 49,
-          Black = 40,
-          Red,
-          Green,
-          Yellow,
-          Blue,
-          Magenta,
-          Cyan,
-          LightGray,
-          DarkGray = 100,
-          LightRed,
-          LightGreen,
-          LightYellow,
-          LightBlue,
-          LightMagenta,
-          LightCyan,
-          White,
+          DEFAULT = 49,
+          BLACK = 40,
+          RED,
+          GREEN,
+          YELLOW,
+          BLUE,
+          MAGENTA,
+          CYAN,
+          LIGHT_GRAY,
+          DARK_GRAY = 100,
+          LIGHT_RED,
+          LIGHT_GREEN,
+          LIGHT_YELLOW,
+          LIGHT_BLUE,
+          LIGHT_MAGENTA,
+          LIGHT_CYAN,
+          WHITE,
         };
         const char * toString(const Color & color);
         static const int NUM_BACKGROUND_COLOR = 17;

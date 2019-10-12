@@ -437,52 +437,52 @@ namespace ra
     {
       switch(color)
       {
-      case Black:
+      case BLACK:
         return "Black";
         break;
-      case White:
+      case WHITE:
         return "White";
         break;
-      case DarkBlue:
+      case DARK_BLUE:
         return "DarkBlue";
         break;
-      case DarkGreen:
+      case DARK_GREEN:
         return "DarkGreen";
         break;
-      case DarkCyan:
+      case DARK_CYAN:
         return "DarkCyan";
         break;
-      case DarkRed:
+      case DARK_RED:
         return "DarkRed";
         break;
-      case DarkMagenta:
+      case DARK_MAGENTA:
         return "DarkMagenta";
         break;
-      case DarkYellow:
+      case DARK_YELLOW:
         return "DarkYellow";
         break;
-      case DarkGray:
+      case DARK_GRAY:
         return "DarkGray";
         break;
-      case Blue:
+      case BLUE:
         return "Blue";
         break;
-      case Green:
+      case GREEN:
         return "Green";
         break;
-      case Cyan:
+      case CYAN:
         return "Cyan";
         break;
-      case Red:
+      case RED:
         return "Red";
         break;
-      case Magenta:
+      case MAGENTA:
         return "Magenta";
         break;
-      case Yellow:
+      case YELLOW:
         return "Yellow";
         break;
-      case Gray:
+      case GRAY:
         return "Gray";
         break;
       default:
@@ -494,13 +494,13 @@ namespace ra
     {
       switch(attr)
       {
-      case ansi::FormatAttribute::Default    : return "Default"   ; break;
-      case ansi::FormatAttribute::Bold       : return "Bold"      ; break;
-      case ansi::FormatAttribute::Dim        : return "Dim"       ; break;
-      case ansi::FormatAttribute::Underlined : return "Underlined"; break;
-      case ansi::FormatAttribute::Blink      : return "Blink"     ; break;
-      case ansi::FormatAttribute::Reverse    : return "Reverse"   ; break;
-      case ansi::FormatAttribute::Hidden     : return "Hidden"    ; break;
+      case ansi::FormatAttribute::DEFAULT    : return "Default"   ; break;
+      case ansi::FormatAttribute::BOLD       : return "Bold"      ; break;
+      case ansi::FormatAttribute::DIM        : return "Dim"       ; break;
+      case ansi::FormatAttribute::UNDERLINED : return "Underlined"; break;
+      case ansi::FormatAttribute::BLINK      : return "Blink"     ; break;
+      case ansi::FormatAttribute::REVERSE    : return "Reverse"   ; break;
+      case ansi::FormatAttribute::HIDDEN     : return "Hidden"    ; break;
       };
       return "Unknown";
     }
@@ -509,23 +509,23 @@ namespace ra
     {
       switch(color)
       {
-      case ansi::ForegroundColor::Default      : return "Default"      ; break;
-      case ansi::ForegroundColor::Black        : return "Black"        ; break;
-      case ansi::ForegroundColor::Red          : return "Red"          ; break;
-      case ansi::ForegroundColor::Green        : return "Green"        ; break;
-      case ansi::ForegroundColor::Yellow       : return "Yellow"       ; break;
-      case ansi::ForegroundColor::Blue         : return "Blue"         ; break;
-      case ansi::ForegroundColor::Magenta      : return "Magenta"      ; break;
-      case ansi::ForegroundColor::Cyan         : return "Cyan"         ; break;
-      case ansi::ForegroundColor::LightGray    : return "LightGray"    ; break;
-      case ansi::ForegroundColor::DarkGray     : return "DarkGray"     ; break;
-      case ansi::ForegroundColor::LightRed     : return "LightRed"     ; break;
-      case ansi::ForegroundColor::LightGreen   : return "LightGreen"   ; break;
-      case ansi::ForegroundColor::LightYellow  : return "LightYellow"  ; break;
-      case ansi::ForegroundColor::LightBlue    : return "LightBlue"    ; break;
-      case ansi::ForegroundColor::LightMagenta : return "LightMagenta" ; break;
-      case ansi::ForegroundColor::LightCyan    : return "LightCyan"    ; break;
-      case ansi::ForegroundColor::White        : return "White"        ; break;
+      case ansi::ForegroundColor::DEFAULT      : return "Default"      ; break;
+      case ansi::ForegroundColor::BLACK        : return "Black"        ; break;
+      case ansi::ForegroundColor::RED          : return "Red"          ; break;
+      case ansi::ForegroundColor::GREEN        : return "Green"        ; break;
+      case ansi::ForegroundColor::YELLOW       : return "Yellow"       ; break;
+      case ansi::ForegroundColor::BLUE         : return "Blue"         ; break;
+      case ansi::ForegroundColor::MAGENTA      : return "Magenta"      ; break;
+      case ansi::ForegroundColor::CYAN         : return "Cyan"         ; break;
+      case ansi::ForegroundColor::LIGHT_GRAY   : return "Light_Gray"   ; break;
+      case ansi::ForegroundColor::DARK_GRAY    : return "Dark_Gray"    ; break;
+      case ansi::ForegroundColor::LIGHT_RED    : return "Light_Red"    ; break;
+      case ansi::ForegroundColor::LIGHT_GREEN  : return "Light_Green"  ; break;
+      case ansi::ForegroundColor::LIGHT_YELLOW : return "Light_Yellow" ; break;
+      case ansi::ForegroundColor::LIGHT_BLUE   : return "Light_Blue"   ; break;
+      case ansi::ForegroundColor::LIGHT_MAGENTA: return "Light_Magenta"; break;
+      case ansi::ForegroundColor::LIGHT_CYAN   : return "Light_Cyan"   ; break;
+      case ansi::ForegroundColor::WHITE        : return "White"        ; break;
       };
       return "Unknown";
     }
@@ -534,23 +534,23 @@ namespace ra
     {
       switch(color)
       {
-      case ansi::BackgroundColor::Default      : return "Default"      ; break;
-      case ansi::BackgroundColor::Black        : return "Black"        ; break;
-      case ansi::BackgroundColor::Red          : return "Red"          ; break;
-      case ansi::BackgroundColor::Green        : return "Green"        ; break;
-      case ansi::BackgroundColor::Yellow       : return "Yellow"       ; break;
-      case ansi::BackgroundColor::Blue         : return "Blue"         ; break;
-      case ansi::BackgroundColor::Magenta      : return "Magenta"      ; break;
-      case ansi::BackgroundColor::Cyan         : return "Cyan"         ; break;
-      case ansi::BackgroundColor::LightGray    : return "LightGray"    ; break;
-      case ansi::BackgroundColor::DarkGray     : return "DarkGray"     ; break;
-      case ansi::BackgroundColor::LightRed     : return "LightRed"     ; break;
-      case ansi::BackgroundColor::LightGreen   : return "LightGreen"   ; break;
-      case ansi::BackgroundColor::LightYellow  : return "LightYellow"  ; break;
-      case ansi::BackgroundColor::LightBlue    : return "LightBlue"    ; break;
-      case ansi::BackgroundColor::LightMagenta : return "LightMagenta" ; break;
-      case ansi::BackgroundColor::LightCyan    : return "LightCyan"    ; break;
-      case ansi::BackgroundColor::White        : return "White"        ; break;
+      case ansi::BackgroundColor::DEFAULT      : return "Default"      ; break;
+      case ansi::BackgroundColor::BLACK        : return "Black"        ; break;
+      case ansi::BackgroundColor::RED          : return "Red"          ; break;
+      case ansi::BackgroundColor::GREEN        : return "Green"        ; break;
+      case ansi::BackgroundColor::YELLOW       : return "Yellow"       ; break;
+      case ansi::BackgroundColor::BLUE         : return "Blue"         ; break;
+      case ansi::BackgroundColor::MAGENTA      : return "Magenta"      ; break;
+      case ansi::BackgroundColor::CYAN         : return "Cyan"         ; break;
+      case ansi::BackgroundColor::LIGHT_GRAY   : return "Light_Gray"   ; break;
+      case ansi::BackgroundColor::DARK_GRAY    : return "Dark_Gray"    ; break;
+      case ansi::BackgroundColor::LIGHT_RED    : return "Light_Red"    ; break;
+      case ansi::BackgroundColor::LIGHT_GREEN  : return "Light_Green"  ; break;
+      case ansi::BackgroundColor::LIGHT_YELLOW : return "Light_Yellow" ; break;
+      case ansi::BackgroundColor::LIGHT_BLUE   : return "Light_Blue"   ; break;
+      case ansi::BackgroundColor::LIGHT_MAGENTA: return "Light_Magenta"; break;
+      case ansi::BackgroundColor::LIGHT_CYAN   : return "Light_Cyan"   ; break;
+      case ansi::BackgroundColor::WHITE        : return "White"        ; break;
       };
       return "Unknown";
     }
@@ -561,52 +561,52 @@ namespace ra
       WORD foregroundAttribute = 0;
       switch(iForeground)
       {
-      case Black:
+      case BLACK:
         foregroundAttribute = 0;
         break;
-      case White:
+      case WHITE:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
-      case DarkBlue:
+      case DARK_BLUE:
         foregroundAttribute = FOREGROUND_BLUE;
         break;
-      case DarkGreen:
+      case DARK_GREEN:
         foregroundAttribute = FOREGROUND_GREEN;
         break;
-      case DarkCyan:
+      case DARK_CYAN:
         foregroundAttribute = FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
-      case DarkRed:
+      case DARK_RED:
         foregroundAttribute = FOREGROUND_RED;
         break;
-      case DarkMagenta:
+      case DARK_MAGENTA:
         foregroundAttribute = FOREGROUND_RED | FOREGROUND_BLUE;
         break;
-      case DarkYellow:
+      case DARK_YELLOW:
         foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN;
         break;
-      case DarkGray:
+      case DARK_GRAY:
         foregroundAttribute = FOREGROUND_INTENSITY;
         break;
-      case Blue:
+      case BLUE:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_BLUE;
         break;
-      case Green:
+      case GREEN:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
         break;
-      case Cyan:
+      case CYAN:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
-      case Red:
+      case RED:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED;
         break;
-      case Magenta:
+      case MAGENTA:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE;
         break;
-      case Yellow:
+      case YELLOW:
         foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
         break;
-      case Gray:
+      case GRAY:
         foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
       };
@@ -614,52 +614,52 @@ namespace ra
       WORD backgroundAttribute = 0;
       switch(iBackground)
       {
-      case Black:
+      case BLACK:
         backgroundAttribute = 0;
         break;
-      case White:
+      case WHITE:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
-      case DarkBlue:
+      case DARK_BLUE:
         backgroundAttribute = BACKGROUND_BLUE;
         break;
-      case DarkGreen:
+      case DARK_GREEN:
         backgroundAttribute = BACKGROUND_GREEN;
         break;
-      case DarkCyan:
+      case DARK_CYAN:
         backgroundAttribute = BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
-      case DarkRed:
+      case DARK_RED:
         backgroundAttribute = BACKGROUND_RED;
         break;
-      case DarkMagenta:
+      case DARK_MAGENTA:
         backgroundAttribute = BACKGROUND_RED | BACKGROUND_BLUE;
         break;
-      case DarkYellow:
+      case DARK_YELLOW:
         backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN;
         break;
-      case DarkGray:
+      case DARK_GRAY:
         backgroundAttribute = BACKGROUND_INTENSITY;
         break;
-      case Blue:
+      case BLUE:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
         break;
-      case Green:
+      case GREEN:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
         break;
-      case Cyan:
+      case CYAN:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
-      case Red:
+      case RED:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED;
         break;
-      case Magenta:
+      case MAGENTA:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
         break;
-      case Yellow:
+      case YELLOW:
         backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
         break;
-      case Gray:
+      case GRAY:
         backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
       };
@@ -677,60 +677,60 @@ namespace ra
         return;
       }
 #elif __linux__
-      ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::Default;
-      ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::Default;
-      ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::Default;
+      ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::DEFAULT;
+      ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::DEFAULT;
+      ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::DEFAULT;
 
       //foreground
       switch(iForeground)
       {
       case Black:
-        ansi_foreground = ansi::ForegroundColor::Black;
+        ansi_foreground = ansi::ForegroundColor::BLACK;
         break;
       case White:
-        ansi_foreground = ansi::ForegroundColor::White;
+        ansi_foreground = ansi::ForegroundColor::WHITE;
         break;
       case DarkBlue:
-        ansi_foreground = ansi::ForegroundColor::Blue;
+        ansi_foreground = ansi::ForegroundColor::BLUE;
         break;
       case DarkGreen:
-        ansi_foreground = ansi::ForegroundColor::Green;
+        ansi_foreground = ansi::ForegroundColor::GREEN;
         break;
       case DarkCyan:
-        ansi_foreground = ansi::ForegroundColor::Cyan;
+        ansi_foreground = ansi::ForegroundColor::CYAN;
         break;
       case DarkRed:
-        ansi_foreground = ansi::ForegroundColor::Red;
+        ansi_foreground = ansi::ForegroundColor::RED;
         break;
       case DarkMagenta:
-        ansi_foreground = ansi::ForegroundColor::Magenta;
+        ansi_foreground = ansi::ForegroundColor::MAGENTA;
         break;
       case DarkYellow:
-        ansi_foreground = ansi::ForegroundColor::Yellow;
+        ansi_foreground = ansi::ForegroundColor::YELLOW;
         break;
       case DarkGray:
-        ansi_foreground = ansi::ForegroundColor::DarkGray;
+        ansi_foreground = ansi::ForegroundColor::DARK_GRAY;
         break;
       case Blue:
-        ansi_foreground = ansi::ForegroundColor::LightBlue;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_BLUE;
         break;
       case Green:
-        ansi_foreground = ansi::ForegroundColor::LightGreen;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_GREEN;
         break;
       case Cyan:
-        ansi_foreground = ansi::ForegroundColor::LightCyan;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_CYAN;
         break;
       case Red:
-        ansi_foreground = ansi::ForegroundColor::LightRed;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_RED;
         break;
       case Magenta:
-        ansi_foreground = ansi::ForegroundColor::LightMagenta;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_MAGENTA;
         break;
       case Yellow:
-        ansi_foreground = ansi::ForegroundColor::LightYellow;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_YELLOW;
         break;
       case Gray:
-        ansi_foreground = ansi::ForegroundColor::LightGray;
+        ansi_foreground = ansi::ForegroundColor::LIGHT_GRAY;
         break;
       };
 
@@ -738,52 +738,52 @@ namespace ra
       switch(iBackground)
       {
       case Black:
-        ansi_background = ansi::BackgroundColor::Black;
+        ansi_background = ansi::BackgroundColor::BLACK;
         break;
       case White:
-        ansi_background = ansi::BackgroundColor::White;
+        ansi_background = ansi::BackgroundColor::WHITE;
         break;
       case DarkBlue:
-        ansi_background = ansi::BackgroundColor::Blue;
+        ansi_background = ansi::BackgroundColor::BLUE;
         break;
       case DarkGreen:
-        ansi_background = ansi::BackgroundColor::Green;
+        ansi_background = ansi::BackgroundColor::GREEN;
         break;
       case DarkCyan:
-        ansi_background = ansi::BackgroundColor::Cyan;
+        ansi_background = ansi::BackgroundColor::CYAN;
         break;
       case DarkRed:
-        ansi_background = ansi::BackgroundColor::Red;
+        ansi_background = ansi::BackgroundColor::RED;
         break;
       case DarkMagenta:
-        ansi_background = ansi::BackgroundColor::Magenta;
+        ansi_background = ansi::BackgroundColor::MAGENTA;
         break;
       case DarkYellow:
-        ansi_background = ansi::BackgroundColor::Yellow;
+        ansi_background = ansi::BackgroundColor::YELLOW;
         break;
       case DarkGray:
-        ansi_background = ansi::BackgroundColor::DarkGray;
+        ansi_background = ansi::BackgroundColor::DARK_GRAY;
         break;
       case Blue:
-        ansi_background = ansi::BackgroundColor::LightBlue;
+        ansi_background = ansi::BackgroundColor::LIGHT_BLUE;
         break;
       case Green:
-        ansi_background = ansi::BackgroundColor::LightGreen;
+        ansi_background = ansi::BackgroundColor::LIGHT_GREEN;
         break;
       case Cyan:
-        ansi_background = ansi::BackgroundColor::LightCyan;
+        ansi_background = ansi::BackgroundColor::LIGHT_CYAN;
         break;
       case Red:
-        ansi_background = ansi::BackgroundColor::LightRed;
+        ansi_background = ansi::BackgroundColor::LIGHT_RED;
         break;
       case Magenta:
-        ansi_background = ansi::BackgroundColor::LightMagenta;
+        ansi_background = ansi::BackgroundColor::LIGHT_MAGENTA;
         break;
       case Yellow:
-        ansi_background = ansi::BackgroundColor::LightYellow;
+        ansi_background = ansi::BackgroundColor::LIGHT_YELLOW;
         break;
       case Gray:
-        ansi_background = ansi::BackgroundColor::LightGray;
+        ansi_background = ansi::BackgroundColor::LIGHT_GRAY;
         break;
       };
 
@@ -794,8 +794,8 @@ namespace ra
 
     void getTextColor(TextColor & oForeground, TextColor & oBackground)
     {
-      oForeground = Gray;
-      oBackground = Black;
+      oForeground = GRAY;
+      oBackground = BLACK;
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -818,52 +818,52 @@ namespace ra
       switch(foregroundInfo)
       {
       case 0:
-        oForeground = Black;
+        oForeground = BLACK;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
-        oForeground = White;
+        oForeground = WHITE;
         break;
       case FOREGROUND_BLUE:
-        oForeground = DarkBlue;
+        oForeground = DARK_BLUE;
         break;
       case FOREGROUND_GREEN:
-        oForeground = DarkGreen;
+        oForeground = DARK_GREEN;
         break;
       case FOREGROUND_GREEN | FOREGROUND_BLUE:
-        oForeground = DarkCyan;
+        oForeground = DARK_CYAN;
         break;
       case FOREGROUND_RED:
-        oForeground = DarkRed;
+        oForeground = DARK_RED;
         break;
       case FOREGROUND_RED | FOREGROUND_BLUE:
-        oForeground = DarkMagenta;
+        oForeground = DARK_MAGENTA;
         break;
       case FOREGROUND_RED | FOREGROUND_GREEN:
-        oForeground = DarkYellow;
+        oForeground = DARK_YELLOW;
         break;
       case FOREGROUND_INTENSITY:
-        oForeground = DarkGray;
+        oForeground = DARK_GRAY;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_BLUE:
-        oForeground = Blue;
+        oForeground = BLUE;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_GREEN:
-        oForeground = Green;
+        oForeground = GREEN;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE:
-        oForeground = Cyan;
+        oForeground = CYAN;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_RED:
-        oForeground = Red;
+        oForeground = RED;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE:
-        oForeground = Magenta;
+        oForeground = MAGENTA;
         break;
       case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN:
-        oForeground = Yellow;
+        oForeground = YELLOW;
         break;
       case FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
-        oForeground = Gray;
+        oForeground = GRAY;
         break;
       };
 
@@ -871,52 +871,52 @@ namespace ra
       switch(backgroundInfo)
       {
       case 0:
-        oBackground = Black;
+        oBackground = BLACK;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-        oBackground = White;
+        oBackground = WHITE;
         break;
       case BACKGROUND_BLUE:
-        oBackground = DarkBlue;
+        oBackground = DARK_BLUE;
         break;
       case BACKGROUND_GREEN:
-        oBackground = DarkGreen;
+        oBackground = DARK_GREEN;
         break;
       case BACKGROUND_GREEN | BACKGROUND_BLUE:
-        oBackground = DarkCyan;
+        oBackground = DARK_CYAN;
         break;
       case BACKGROUND_RED:
-        oBackground = DarkRed;
+        oBackground = DARK_RED;
         break;
       case BACKGROUND_RED | BACKGROUND_BLUE:
-        oBackground = DarkMagenta;
+        oBackground = DARK_MAGENTA;
         break;
       case BACKGROUND_RED | BACKGROUND_GREEN:
-        oBackground = DarkYellow;
+        oBackground = DARK_YELLOW;
         break;
       case BACKGROUND_INTENSITY:
-        oBackground = DarkGray;
+        oBackground = DARK_GRAY;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_BLUE:
-        oBackground = Blue;
+        oBackground = BLUE;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_GREEN:
-        oBackground = Green;
+        oBackground = GREEN;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE:
-        oBackground = Cyan;
+        oBackground = CYAN;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_RED:
-        oBackground = Red;
+        oBackground = RED;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE:
-        oBackground = Magenta;
+        oBackground = MAGENTA;
         break;
       case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN:
-        oBackground = Yellow;
+        oBackground = YELLOW;
         break;
       case BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-        oBackground = Gray;
+        oBackground = GRAY;
         break;
       };
 #elif __linux__
@@ -929,7 +929,7 @@ namespace ra
     void setDefaultTextColor()
     {
 #ifdef _WIN32
-      ra::console::setTextColor(ra::console::Gray, ra::console::Black);
+      ra::console::setTextColor(ra::console::GRAY, ra::console::BLACK);
 #elif __linux__
       printf("\033[0m");
 #endif

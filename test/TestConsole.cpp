@@ -194,55 +194,55 @@ namespace ra { namespace console { namespace test
   TEST_F(TestConsole, DISABLED_testAllAnsiColors)
   {
     int format_attributes[] = {
-      ansi::FormatAttribute::Default,
-      ansi::FormatAttribute::Bold,
-      ansi::FormatAttribute::Dim,
-      ansi::FormatAttribute::Underlined,
-      //ansi::FormatAttribute::Blink,
-      //ansi::FormatAttribute::Reverse,
-      //ansi::FormatAttribute::Hidden,
+      ansi::FormatAttribute::DEFAULT,
+      ansi::FormatAttribute::BOLD,
+      ansi::FormatAttribute::DIM,
+      ansi::FormatAttribute::UNDERLINED,
+      //ansi::FormatAttribute::BLINK,
+      //ansi::FormatAttribute::REVERSE,
+      //ansi::FormatAttribute::HIDDEN,
     };
     int format_attributes_count = sizeof(format_attributes)/sizeof(format_attributes[0]);
 
     int foreground_colors[] = {
-      //ansi::ForegroundColor::Default,
-      ansi::ForegroundColor::Black,
-      ansi::ForegroundColor::Red,
-      ansi::ForegroundColor::Green,
-      ansi::ForegroundColor::Yellow,
-      ansi::ForegroundColor::Blue,
-      ansi::ForegroundColor::Magenta,
-      ansi::ForegroundColor::Cyan,
-      ansi::ForegroundColor::LightGray,
-      ansi::ForegroundColor::DarkGray,
-      ansi::ForegroundColor::LightRed,
-      ansi::ForegroundColor::LightGreen,
-      ansi::ForegroundColor::LightYellow,
-      ansi::ForegroundColor::LightBlue,
-      ansi::ForegroundColor::LightMagenta,
-      ansi::ForegroundColor::LightCyan,
-      ansi::ForegroundColor::White,
+      //ansi::ForegroundColor::DEFAULT,
+      ansi::ForegroundColor::BLACK,
+      ansi::ForegroundColor::RED,
+      ansi::ForegroundColor::GREEN,
+      ansi::ForegroundColor::YELLOW,
+      ansi::ForegroundColor::BLUE,
+      ansi::ForegroundColor::MAGENTA,
+      ansi::ForegroundColor::CYAN,
+      ansi::ForegroundColor::LIGHT_GRAY,
+      ansi::ForegroundColor::DARK_GRAY,
+      ansi::ForegroundColor::LIGHT_RED,
+      ansi::ForegroundColor::LIGHT_GREEN,
+      ansi::ForegroundColor::LIGHT_YELLOW,
+      ansi::ForegroundColor::LIGHT_BLUE,
+      ansi::ForegroundColor::LIGHT_MAGENTA,
+      ansi::ForegroundColor::LIGHT_CYAN,
+      ansi::ForegroundColor::WHITE,
     };
     int foreground_colors_count = sizeof(foreground_colors)/sizeof(foreground_colors[0]);
 
     int background_colors[] = {
-      //ansi::BackgroundColor::Default,
-      ansi::BackgroundColor::Black,
-      ansi::BackgroundColor::Red,
-      ansi::BackgroundColor::Green,
-      ansi::BackgroundColor::Yellow,
-      ansi::BackgroundColor::Blue,
-      ansi::BackgroundColor::Magenta,
-      ansi::BackgroundColor::Cyan,
-      ansi::BackgroundColor::LightGray,
-      ansi::BackgroundColor::DarkGray,
-      ansi::BackgroundColor::LightRed,
-      ansi::BackgroundColor::LightGreen,
-      ansi::BackgroundColor::LightYellow,
-      ansi::BackgroundColor::LightBlue,
-      ansi::BackgroundColor::LightMagenta,
-      ansi::BackgroundColor::LightCyan,
-      ansi::BackgroundColor::White,
+      //ansi::BackgroundColor::DEFAULT,
+      ansi::BackgroundColor::BLACK,
+      ansi::BackgroundColor::RED,
+      ansi::BackgroundColor::GREEN,
+      ansi::BackgroundColor::YELLOW,
+      ansi::BackgroundColor::BLUE,
+      ansi::BackgroundColor::MAGENTA,
+      ansi::BackgroundColor::CYAN,
+      ansi::BackgroundColor::LIGHT_GRAY,
+      ansi::BackgroundColor::DARK_GRAY,
+      ansi::BackgroundColor::LIGHT_RED,
+      ansi::BackgroundColor::LIGHT_GREEN,
+      ansi::BackgroundColor::LIGHT_YELLOW,
+      ansi::BackgroundColor::LIGHT_BLUE,
+      ansi::BackgroundColor::LIGHT_MAGENTA,
+      ansi::BackgroundColor::LIGHT_CYAN,
+      ansi::BackgroundColor::WHITE,
     };
     int background_colors_count = sizeof(background_colors)/sizeof(background_colors[0]);
 
@@ -267,7 +267,7 @@ namespace ra { namespace console { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testTextGroundColor)
   {
-    int color_first = (int)ra::console::Black;
+    int color_first = (int)ra::console::BLACK;
     int color_last = NUM_TEXT_COLOR - 1;
 
     //show all colors possibilities
@@ -286,9 +286,9 @@ namespace ra { namespace console { namespace test
     for(int i=color_first; i <= color_last; i++)
     {
       ra::console::TextColor foreground = (ra::console::TextColor)i;
-      ra::console::TextColor background = ra::console::Black;
-      if (foreground == ra::console::Black)
-        background = ra::console::White;
+      ra::console::TextColor background = ra::console::BLACK;
+      if (foreground == ra::console::BLACK)
+        background = ra::console::WHITE;
       ra::console::setTextColor(foreground, background);
       printf("%s ", ra::console::getTextColorName(foreground)); 
     }
@@ -298,10 +298,10 @@ namespace ra { namespace console { namespace test
     //all background colors
     for(int i=color_first; i <= color_last; i++)
     {
-      ra::console::TextColor foreground = ra::console::Black;
+      ra::console::TextColor foreground = ra::console::BLACK;
       ra::console::TextColor background = (ra::console::TextColor)i;
-      if (background == ra::console::Black)
-        foreground = ra::console::White;
+      if (background == ra::console::BLACK)
+        foreground = ra::console::WHITE;
       ra::console::setTextColor(foreground, background);
       printf("%s ", ra::console::getTextColorName(background)); 
     }
