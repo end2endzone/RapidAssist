@@ -33,7 +33,7 @@ namespace ra
   {
     //Force initializing random number provider each time the application starts
     bool initRandomProvider();
-    static bool randInitialized = initRandomProvider();
+    static bool rand_initialized = initRandomProvider();
 
     bool initRandomProvider()
     {
@@ -64,13 +64,13 @@ namespace ra
       }
 
       //get a random value within [0, max]
-      int randValue = rand();
-      while(randValue > max)
+      int rand_value = rand();
+      while(rand_value > max)
       {
-        randValue = rand();
+        rand_value = rand();
       }
 
-      int value = randValue % modulo; //within [0, iMax-iMin]
+      int value = rand_value % modulo; //within [0, iMax-iMin]
       value += iMin;                  //within [iMin, iMax]
 
       return value;
@@ -150,10 +150,10 @@ namespace ra
       {
         //generate a random character from iSymbols
         int index = getRandomInt(0, numSymbols-1);
-        char tmpStr[] = { iSymbols[index], 0 };
+        const char & c = iSymbols[index];
 
         //add
-        oValue.append(tmpStr);
+        oValue.append(1, c);
       }
     }
 
@@ -163,7 +163,6 @@ namespace ra
       getRandomString(tmp, iMaxLen, iSymbols);
       return tmp;
     }
-
 
   } //namespace random
 } //namespace ra

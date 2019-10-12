@@ -105,50 +105,50 @@ namespace ra
     {
       std::string filter;
 
-      std::string positiveFilter = iPositiveFilter;
-      std::string negativeFilter = iNegativeFilter;
+      std::string positive_filter = iPositiveFilter;
+      std::string negative_filter = iNegativeFilter;
 
       if (iExistingFilter)
       {
-        std::string argPositiveFilter;
-        std::string argNegativeFilter;
-        splitFilter(iExistingFilter, argPositiveFilter, argNegativeFilter);
+        std::string arg_positive_filter;
+        std::string arg_negative_filter;
+        splitFilter(iExistingFilter, arg_positive_filter, arg_negative_filter);
 
-        //append argument filters to positiveFilter and negativeFilter filters
-        if (positiveFilter == "")
-          positiveFilter = argPositiveFilter;
-        else if (argPositiveFilter == "" || argPositiveFilter == "*")
+        //append argument filters to positive_filter and negative_filter filters
+        if (positive_filter == "")
+          positive_filter = arg_positive_filter;
+        else if (arg_positive_filter == "" || arg_positive_filter == "*")
         {
-          //nothing to add since argPositiveFilter does not specify test cases
+          //nothing to add since arg_positive_filter does not specify test cases
         }
         else
         {
-          positiveFilter.append(":");
-          positiveFilter.append(argPositiveFilter);
+          positive_filter.append(":");
+          positive_filter.append(arg_positive_filter);
         }
-        if (negativeFilter == "")
-          negativeFilter = argNegativeFilter;
-        else if (argNegativeFilter == "" || argNegativeFilter == "*")
+        if (negative_filter == "")
+          negative_filter = arg_negative_filter;
+        else if (arg_negative_filter == "" || arg_negative_filter == "*")
         {
-          //nothing to add since argNegativeFilter does not specify test cases
+          //nothing to add since arg_negative_filter does not specify test cases
         }
         else 
         {
-          negativeFilter.append(":");
-          negativeFilter.append(argNegativeFilter);
+          negative_filter.append(":");
+          negative_filter.append(arg_negative_filter);
         }
       }
 
-      if (positiveFilter != "" || negativeFilter != "")
+      if (positive_filter != "" || negative_filter != "")
       {
-        if (positiveFilter == "")
+        if (positive_filter == "")
           filter.append("*");
         else
-          filter.append(positiveFilter);
-        if (negativeFilter != "")
+          filter.append(positive_filter);
+        if (negative_filter != "")
         {
           filter.append("-");
-          filter.append(negativeFilter);
+          filter.append(negative_filter);
         }
       }
 
@@ -163,8 +163,8 @@ namespace ra
       if (iFilter == NULL)
         return;
 
-      std::string filterString = iFilter;
-      if (filterString == "")
+      std::string filter_string = iFilter;
+      if (filter_string == "")
         return;
 
       StringVector filters;
@@ -201,35 +201,35 @@ namespace ra
       if (!ra::filesystem::fileExists(iTestCasePath))
         return StringVector();
 
-      static const std::string logFilename = "gTestHelper.tmp";
+      static const std::string log_filename = "gTestHelper.tmp";
 
-      std::string commandLine;
-      commandLine.append("cmd /c \"");
-      commandLine.append("\"");
-      commandLine.append(iTestCasePath);
-      commandLine.append("\"");
-      commandLine.append(" --gtest_list_tests");
-      commandLine.append(" 2>NUL");
-      commandLine.append(" 1>");
-      commandLine.append("\"");
-      commandLine.append(logFilename);
-      commandLine.append("\"");
+      std::string command_line;
+      command_line.append("cmd /c \"");
+      command_line.append("\"");
+      command_line.append(iTestCasePath);
+      command_line.append("\"");
+      command_line.append(" --gtest_list_tests");
+      command_line.append(" 2>NUL");
+      command_line.append(" 1>");
+      command_line.append("\"");
+      command_line.append(log_filename);
+      command_line.append("\"");
 
       //exec
-      int returnCode = system(commandLine.c_str());
-      if (returnCode != 0)
+      int return_code = system(command_line.c_str());
+      if (return_code != 0)
         return StringVector();
 
-      if (!ra::filesystem::fileExists(logFilename.c_str()))
+      if (!ra::filesystem::fileExists(log_filename.c_str()))
         return StringVector();
 
       //load test case list from log filename
-      StringVector testlist;
-      static const std::string disabledTestCaseHeader = "  DISABLED_";
-      static const std::string disabledTestSuiteHeader = "DISABLED_";
-      std::string testSuiteName;
-      std::string testCaseName;
-      FILE * f = fopen(logFilename.c_str(), "r");
+      StringVector test_list;
+      static const std::string disabled_test_case_header = "  DISABLED_";
+      static const std::string disabled_test_suite_header = "DISABLED_";
+      std::string test_suite_name;
+      std::string test_case_name;
+      FILE * f = fopen(log_filename.c_str(), "r");
       if (!f)
         return StringVector();
 
@@ -239,29 +239,29 @@ namespace ra
       {
         std::string line = buffer;
         line.substr(0, line.size()-1); //remove CRLF at the end of the 
-        if (subString2(line, 0, disabledTestCaseHeader.size()) == disabledTestCaseHeader)
+        if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header)
         {
           //do nothing
         }
         else if (subString2(line, 0, 2) == "  ")
         {
           //test case
-          std::string fullTestCaseName;
-          fullTestCaseName.append(testSuiteName);
-          fullTestCaseName.append(subString2(line, 2, 999));
-          testlist.push_back(fullTestCaseName);
+          std::string full_test_case_name;
+          full_test_case_name.append(test_suite_name);
+          full_test_case_name.append(subString2(line, 2, 999));
+          test_list.push_back(full_test_case_name);
         }
         else
         {
           //test suite name
-          testSuiteName = "";
-          if (subString2(line, 0, disabledTestSuiteHeader.size()) == disabledTestSuiteHeader)
+          test_suite_name = "";
+          if (subString2(line, 0, disabled_test_suite_header.size()) == disabled_test_suite_header)
           {
             //disabled test suite
           }
           else
           {
-            testSuiteName = line;
+            test_suite_name = line;
           }
         }
       }
@@ -269,12 +269,12 @@ namespace ra
       fclose(f);
 
       //delete log file
-      int removeResult = remove(logFilename.c_str());
+      int remove_result = remove(log_filename.c_str());
 
       //exec
-      returnCode = system(commandLine.c_str());
+      return_code = system(command_line.c_str());
 
-      return testlist;
+      return test_list;
     }
 
     bool isFileEquals(const char* iFile1, const char* iFile2)
@@ -565,13 +565,13 @@ namespace ra
 
     std::string getTestQualifiedName()
     {
-      const char * testSuiteName = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
-      const char * testCaseName = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+      const char * test_suite_name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
+      const char * test_case_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
 
       std::string name;
-      name.append(testSuiteName);
+      name.append(test_suite_name);
       name.append(".");
-      name.append(testCaseName);
+      name.append(test_case_name);
 
       return name;
     }

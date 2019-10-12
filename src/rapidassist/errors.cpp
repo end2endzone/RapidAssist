@@ -41,8 +41,8 @@ namespace ra
     void resetLastErrorCode()
     {
       #ifdef _WIN32
-      static DWORD dwLastError = 0;
-      SetLastError(dwLastError);
+      static DWORD last_error = 0;
+      SetLastError(last_error);
       #else
       errno = 0;
       #endif
@@ -51,12 +51,12 @@ namespace ra
     errorcode_t getLastErrorCode()
     {
       #ifdef _WIN32
-      DWORD dwLastError = ::GetLastError();
-      errorcode_t errcode = static_cast<errorcode_t>(dwLastError);
+      DWORD last_error = ::GetLastError();
+      errorcode_t errcode = static_cast<errorcode_t>(last_error);
       return errcode;
       #else
-      int errnum = errno;
-      errorcode_t errcode = static_cast<errorcode_t>(errnum);
+      int error_number = errno;
+      errorcode_t errcode = static_cast<errorcode_t>(error_number);
       return errcode;
       #endif
     }
@@ -71,22 +71,22 @@ namespace ra
     std::string getErrorCodeDescription(errorcode_t code)
     {
       #ifdef _WIN32
-      DWORD dwLastError = static_cast<DWORD>(code);
-      const DWORD dwErrorBufferSize = 10240;
-      char lpErrorBuffer[dwErrorBufferSize] = {0};
+      DWORD last_error = static_cast<DWORD>(code);
+      const DWORD error_buffer_size = 10240;
+      char error_buffer[error_buffer_size] = {0};
       ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
                       NULL,
-                      dwLastError,
+                      last_error,
                       MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-                      lpErrorBuffer,
-                      dwErrorBufferSize-1,
+                      error_buffer,
+                      error_buffer_size-1,
                       NULL);
-      ra::strings::removeEOL(lpErrorBuffer); //error message have a CRLF at the end.
-      std::string strError = lpErrorBuffer;
-      return strError;
+      ra::strings::removeEOL(error_buffer); //error message have a CRLF at the end.
+      std::string error_desc = error_buffer;
+      return error_desc;
       #else
-      int errnum = static_cast<int>(code);
-      std::string desc = strerror(errnum);
+      int error_number = static_cast<int>(code);
+      std::string desc = strerror(error_number);
       return desc;
       #endif
     }

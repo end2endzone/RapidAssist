@@ -60,7 +60,8 @@ namespace ra
       int y;
     };
 
-    std::vector<CursorCoordinate> gCursorPositionStack;
+    // Keep track of the cursor position for pushCursorPos() and popCursorPos()
+    std::vector<CursorCoordinate> cursor_position_stack;
 
     void getCursorPos(int & col, int & row)
     {
@@ -95,59 +96,59 @@ namespace ra
       tcsetattr(0, TCSANOW, &traw);
 
       static const int MAX_LOOP_COUNT = 100; //prevent infinite loops in the program
-      int loopcount = 0;
+      int loop_count = 0;
       bool success = false;
       char buf[32];
-      while(!success && loopcount < MAX_LOOP_COUNT)
+      while(!success && loop_count < MAX_LOOP_COUNT)
       {
-        ssize_t numWrite = write(0, "\033[6n", 4);
+        ssize_t num_write = write(0, "\033[6n", 4);
         fflush(stdout);
 
-        ssize_t numRead = 0;
-        if (numWrite == 4)
-          numRead = read(0, buf, sizeof(buf)-1);
+        ssize_t num_read = 0;
+        if (num_write == 4)
+          num_read = read(0, buf, sizeof(buf)-1);
 
         //validate format \033[63;1R
-        if(numWrite == 4 && numRead >= 6 && buf[0] == '\033' && buf[numRead - 1] == 'R')
+        if(num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R')
         {
           buf[0] = '!'; //in case we want to print buf for debugging
-          buf[numRead] = '\0';
+          buf[num_read] = '\0';
 
           //try to parse the result
-          const char * lastchar = &buf[numRead];
-          const char * nextchar = &buf[1];
+          const char * last_char = &buf[num_read];
+          const char * next_char = &buf[1];
 
-          if (nextchar[0] == '[')
-            nextchar++; //next character
+          if (next_char[0] == '[')
+            next_char++; //next character
           else
-            nextchar = lastchar; //fail parsing. jump to the end of the string
+            next_char = last_char; //fail parsing. jump to the end of the string
 
           //parse row
           row = 0;
-          while (nextchar[0] >= '0' && nextchar[0] <= '9')
+          while (next_char[0] >= '0' && next_char[0] <= '9')
           {
-            row = 10 * row + nextchar[0] - '0';
-            nextchar++; //next character
+            row = 10 * row + next_char[0] - '0';
+            next_char++; //next character
           }
 
-          if (nextchar[0] == ';')
-            nextchar++; //next character
+          if (next_char[0] == ';')
+            next_char++; //next character
           else
-            nextchar = lastchar; //fail parsing. jump to the end of the string
+            next_char = last_char; //fail parsing. jump to the end of the string
 
           //parse col
           col = 0;
-          while (nextchar[0] >= '0' && nextchar[0] <= '9')
+          while (next_char[0] >= '0' && next_char[0] <= '9')
           {
-            col = 10 * col + nextchar[0] - '0';
-            nextchar++; //next character
+            col = 10 * col + next_char[0] - '0';
+            next_char++; //next character
           }
 
-          if (nextchar[0] == 'R')
+          if (next_char[0] == 'R')
             success = true;
         }
 
-        loopcount++;
+        loop_count++;
       }
 
       tcsetattr(0, TCSANOW, &torig);
@@ -365,10 +366,10 @@ namespace ra
         return;
       }
       COORD coord = { 0 , 0 };
-      DWORD dwNumberOfCharsWritten;
-      DWORD dwConSize;
-      dwConSize = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
-      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), dwConSize, coord, &dwNumberOfCharsWritten))
+      DWORD number_of_chars_written;
+      DWORD length;
+      length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), length, coord, &number_of_chars_written))
       {
         printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
@@ -378,7 +379,7 @@ namespace ra
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, dwConSize, coord, &dwNumberOfCharsWritten))
+      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, length, coord, &number_of_chars_written))
       {
         printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
@@ -399,30 +400,30 @@ namespace ra
       CursorCoordinate coord;
       getCursorPos(coord.x, coord.y);
 
-      gCursorPositionStack.push_back(coord);
+      cursor_position_stack.push_back(coord);
     }
 
     void popCursorPos()
     {
-      if (!gCursorPositionStack.empty())
+      if (!cursor_position_stack.empty())
       {
-        size_t offset = gCursorPositionStack.size() - 1;
-        const CursorCoordinate & last = gCursorPositionStack[offset];
+        size_t offset = cursor_position_stack.size() - 1;
+        const CursorCoordinate & last = cursor_position_stack[offset];
         setCursorPos(last.x, last.y);
 
         //remove the last entry
-        gCursorPositionStack.erase(gCursorPositionStack.begin() + offset);
+        cursor_position_stack.erase(cursor_position_stack.begin() + offset);
       }
     }
 
     char getAnimationSprite(double iRefreshRate)
     {
-      static const char gAnimationSprites[] = {'-', '\\', '|', '/'};
-      static const int gNumAnimationSprites = sizeof(gAnimationSprites)/sizeof(gAnimationSprites[0]);
+      static const char animation_sprites[] = {'-', '\\', '|', '/'};
+      static const int num_animation_sprites = sizeof(animation_sprites)/sizeof(animation_sprites[0]);
       double seconds = ra::timing::getMillisecondsTimer(); //already seconds
-      int spriteIndex = (int)(seconds/iRefreshRate);
-      spriteIndex = spriteIndex % gNumAnimationSprites;
-      char sprite = gAnimationSprites[spriteIndex];
+      int sprite_index = (int)(seconds/iRefreshRate);
+      sprite_index = sprite_index % num_animation_sprites;
+      char sprite = animation_sprites[sprite_index];
       return sprite;
     }
 
@@ -558,109 +559,109 @@ namespace ra
     void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
     {
 #ifdef _WIN32
-      WORD foregroundAttribute = 0;
+      WORD foreground_attribute = 0;
       switch(iForeground)
       {
       case BLACK:
-        foregroundAttribute = 0;
+        foreground_attribute = 0;
         break;
       case WHITE:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
       case DARK_BLUE:
-        foregroundAttribute = FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_BLUE;
         break;
       case DARK_GREEN:
-        foregroundAttribute = FOREGROUND_GREEN;
+        foreground_attribute = FOREGROUND_GREEN;
         break;
       case DARK_CYAN:
-        foregroundAttribute = FOREGROUND_GREEN | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
       case DARK_RED:
-        foregroundAttribute = FOREGROUND_RED;
+        foreground_attribute = FOREGROUND_RED;
         break;
       case DARK_MAGENTA:
-        foregroundAttribute = FOREGROUND_RED | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_RED | FOREGROUND_BLUE;
         break;
       case DARK_YELLOW:
-        foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN;
+        foreground_attribute = FOREGROUND_RED | FOREGROUND_GREEN;
         break;
       case DARK_GRAY:
-        foregroundAttribute = FOREGROUND_INTENSITY;
+        foreground_attribute = FOREGROUND_INTENSITY;
         break;
       case BLUE:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_BLUE;
         break;
       case GREEN:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
         break;
       case CYAN:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
       case RED:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_RED;
         break;
       case MAGENTA:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE;
         break;
       case YELLOW:
-        foregroundAttribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
+        foreground_attribute = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
         break;
       case GRAY:
-        foregroundAttribute = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        foreground_attribute = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
         break;
       };
 
-      WORD backgroundAttribute = 0;
+      WORD background_attribute = 0;
       switch(iBackground)
       {
       case BLACK:
-        backgroundAttribute = 0;
+        background_attribute = 0;
         break;
       case WHITE:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
       case DARK_BLUE:
-        backgroundAttribute = BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_BLUE;
         break;
       case DARK_GREEN:
-        backgroundAttribute = BACKGROUND_GREEN;
+        background_attribute = BACKGROUND_GREEN;
         break;
       case DARK_CYAN:
-        backgroundAttribute = BACKGROUND_GREEN | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
       case DARK_RED:
-        backgroundAttribute = BACKGROUND_RED;
+        background_attribute = BACKGROUND_RED;
         break;
       case DARK_MAGENTA:
-        backgroundAttribute = BACKGROUND_RED | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_RED | BACKGROUND_BLUE;
         break;
       case DARK_YELLOW:
-        backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN;
+        background_attribute = BACKGROUND_RED | BACKGROUND_GREEN;
         break;
       case DARK_GRAY:
-        backgroundAttribute = BACKGROUND_INTENSITY;
+        background_attribute = BACKGROUND_INTENSITY;
         break;
       case BLUE:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
         break;
       case GREEN:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
         break;
       case CYAN:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
       case RED:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_RED;
         break;
       case MAGENTA:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
         break;
       case YELLOW:
-        backgroundAttribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
+        background_attribute = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
         break;
       case GRAY:
-        backgroundAttribute = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        background_attribute = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         break;
       };
 
@@ -671,7 +672,7 @@ namespace ra
         return;
       }
 
-      if (!SetConsoleTextAttribute(hStdout, foregroundAttribute | backgroundAttribute))
+      if (!SetConsoleTextAttribute(hStdout, foreground_attribute | background_attribute))
       {
         printf("SetConsoleTextAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
@@ -811,11 +812,11 @@ namespace ra
         return;
       }
 
-      DWORD foregroundInfo = csbiInfo.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-      DWORD backgroundInfo = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+      DWORD foreground_info = csbiInfo.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+      DWORD background_info = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
       //foreground
-      switch(foregroundInfo)
+      switch(foreground_info)
       {
       case 0:
         oForeground = BLACK;
@@ -868,7 +869,7 @@ namespace ra
       };
 
       //background
-      switch(backgroundInfo)
+      switch(background_info)
       {
       case 0:
         oBackground = BLACK;
@@ -941,8 +942,8 @@ namespace ra
       return true;
 #elif __linux__
       std::string display = ra::environment::getEnvironmentVariable("DISPLAY");
-      bool hasDesktopGui = !display.empty();
-      return hasDesktopGui;
+      bool has_desktop_gui = !display.empty();
+      return has_desktop_gui;
 #endif
     }
 
@@ -950,8 +951,8 @@ namespace ra
     {
 #ifdef _WIN32
       std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
-      bool hasNoPrompt = prompt.empty();
-      return hasNoPrompt;
+      bool has_no_prompt = prompt.empty();
+      return has_no_prompt;
 #elif __linux__
       //https://stackoverflow.com/questions/13204177/how-to-find-out-if-running-from-terminal-or-gui
       if (isatty(fileno(stdin)))
@@ -971,14 +972,14 @@ namespace ra
         printf("Failed calling GetConsoleWindow(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
-      DWORD dwConsoleProcessId = 0;
-      if (!GetWindowThreadProcessId(hConsoleWnd, &dwConsoleProcessId))
+      DWORD console_process_id = 0;
+      if (!GetWindowThreadProcessId(hConsoleWnd, &console_process_id))
       {
         printf("Failed calling GetWindowThreadProcessId(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
       DWORD dwCurrentProcessId = GetCurrentProcessId();
-      if (dwCurrentProcessId == dwConsoleProcessId)
+      if (dwCurrentProcessId == console_process_id)
       {
         //the current process is the process that created this console.
         return true;

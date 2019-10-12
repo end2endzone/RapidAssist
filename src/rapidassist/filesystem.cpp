@@ -90,7 +90,7 @@ namespace ra
         return 0;
 
       struct stat sb;
-      if(stat(iPath, &sb)==0)
+      if (stat(iPath, &sb)==0)
       {
         return sb.st_size;
       }
@@ -130,12 +130,12 @@ namespace ra
       std::string extension = ra::filesystem::getFileExtention(iPath);
   
       //extract filename without extension
-      std::string filenameWE = filename.substr(0, filename.size() - extension.size());
+      std::string filename_without_extension = filename.substr(0, filename.size() - extension.size());
   
       //remove last dot of the filename if required
-      filenameWE = ra::strings::trimRight(filenameWE, '.');
+      filename_without_extension = ra::strings::trimRight(filename_without_extension, '.');
 
-      return filenameWE;
+      return filename_without_extension;
     }
 
     bool fileExists(const char * iPath)
@@ -180,38 +180,28 @@ namespace ra
       return false;
     }
 
-    inline bool _isCurrentDirectory(const std::string & iPath)
-    {
-      return iPath == ".";
-    }
-
-    inline bool _isParentDirectory(const std::string & iPath)
-    {
-      return iPath == "..";
-    }
-
     //shared cross-platform code for findFiles().
-    bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool isDirectory, int iDepth)
+    bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth)
     {
       //is it a valid item ?
-      if (!_isCurrentDirectory(iFilename) && !_isParentDirectory(iFilename))
+      if (iFilename != "." && iFilename != "..")
       {
         //build full path
-        std::string fullFilename = iDirectoryPath;
-        normalizePath(fullFilename);
-        fullFilename << getPathSeparatorStr() << iFilename;
-        oFiles.push_back(fullFilename);
+        std::string full_filename = iDirectoryPath;
+        normalizePath(full_filename);
+        full_filename << getPathSeparatorStr() << iFilename;
+        oFiles.push_back(full_filename);
  
         //should we recurse on directory ?
-        if (isDirectory && iDepth != 0)
+        if (is_directory && iDepth != 0)
         {
           //compute new depth
-          int subDepth = iDepth-1;
-          if (subDepth < -1)
-            subDepth = -1;
+          int sub_depth = iDepth-1;
+          if (sub_depth < -1)
+            sub_depth = -1;
 
           //find children
-          bool result = findFiles(oFiles, fullFilename.c_str(), subDepth);
+          bool result = findFiles(oFiles, full_filename.c_str(), sub_depth);
           if (!result)
           {
             return false;
@@ -242,9 +232,9 @@ namespace ra
  
       //process directory entry
       std::string filename = find_data.cFileName;
-      bool isDirectory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-      bool isJunction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
+      bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
+      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
       if (!result)
       {
         //Warning: Current user is not able to browse this directory.
@@ -263,9 +253,9 @@ namespace ra
       while (FindNextFile(hFind, &find_data))
       {
         filename = find_data.cFileName;
-        bool isDirectory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-        bool isJunction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-        bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
+        bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
+        bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
         if (!result)
         {
           //Warning: Current user is not able to browse this directory.
@@ -285,8 +275,8 @@ namespace ra
     {
       std::string filename = dirp->d_name;
  
-      bool isDirectory = (dirp->d_type == DT_DIR);
-      bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
+      bool is_directory = (dirp->d_type == DT_DIR);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
       if (!result)
       {
         //Warning: Current user is not able to browse this directory.
@@ -449,8 +439,8 @@ namespace ra
 
       //find all files and directories in specified directory
       ra::strings::StringVector files;
-      bool foundFiles = findFiles(files, iPath);
-      if (!foundFiles)
+      bool found = findFiles(files, iPath);
+      if (!found)
         return false;
 
       //soft files in reverse order
@@ -509,8 +499,8 @@ namespace ra
     std::string getTemporaryFilePath()
     {
       std::string temp_dir = getTemporaryDirectory();
-      std::string rndpath = temp_dir + getPathSeparator() + getTemporaryFileName();
-      return rndpath;
+      std::string rnd_path = temp_dir + getPathSeparator() + getTemporaryFileName();
+      return rnd_path;
     }
 
     std::string getTemporaryDirectory()
@@ -539,13 +529,13 @@ namespace ra
 
     std::string getShortPathFormEstimation(const std::string & iPath)
     {
-      std::string shortPath;
+      std::string short_path;
 
-      std::vector<std::string> pathElements;
-      splitPath(iPath, pathElements);
-      for(size_t i=0; i<pathElements.size(); i++)
+      std::vector<std::string> path_elements;
+      splitPath(iPath, path_elements);
+      for(size_t i=0; i<path_elements.size(); i++)
       {
-        const std::string & element = pathElements[i];
+        const std::string & element = path_elements[i];
         if (element.size() > 12 || element.find(' ') != std::string::npos)
         {
           std::string element83 = element;
@@ -565,25 +555,25 @@ namespace ra
           //uppercase everything
           std::transform(element83.begin(), element83.end(), element83.begin(), ::toupper);
 
-          //add to shortPath
-          if (!shortPath.empty())
-            shortPath.append("\\");
-          shortPath.append(element83);
+          //add to short_path
+          if (!short_path.empty())
+            short_path.append("\\");
+          short_path.append(element83);
         }
         else
         {
-          if (!shortPath.empty())
-            shortPath.append("\\");
-          shortPath.append(element);
+          if (!short_path.empty())
+            short_path.append("\\");
+          short_path.append(element);
         }
       }
 
-      return shortPath;
+      return short_path;
     }
 
     std::string getShortPathFormWin32(const std::string & iPath)
     {
-      std::string shortPath;
+      std::string short_path;
 
 #ifdef _WIN32
       // First obtain the size needed by passing NULL and 0.
@@ -600,12 +590,12 @@ namespace ra
       if (length == 0)
         return "";
 
-      shortPath = buffer;
+      short_path = buffer;
 
       delete [] buffer;
 #endif
 
-      return shortPath;
+      return short_path;
     }
 
     std::string getShortPathForm(const std::string & iPath)
@@ -761,26 +751,26 @@ namespace ra
 
     std::string getUserFriendlySize(uint64_t iBytesSize)
     {
-      static const uint64_t kbLimit = 1024;
-      static const uint64_t mbLimit = kbLimit*1000;
-      static const uint64_t gbLimit = 1024*mbLimit;
-      static const uint64_t tbLimit = 1024*gbLimit;
+      static const uint64_t kb_limit = 1024;
+      static const uint64_t mb_limit = kb_limit*1000;
+      static const uint64_t gb_limit = 1024*mb_limit;
+      static const uint64_t tb_limit = 1024*gb_limit;
 
       FileSizeEnum preferedUnit = BYTES;
 
-      if (iBytesSize < kbLimit)
+      if (iBytesSize < kb_limit)
       {
         //bytes
       }
-      else if (iBytesSize < mbLimit)
+      else if (iBytesSize < mb_limit)
       {
         preferedUnit = KILOBYTES;
       }
-      else if (iBytesSize < gbLimit)
+      else if (iBytesSize < gb_limit)
       {
         preferedUnit = MEGABYTES;
       }
-      else if (iBytesSize < tbLimit)
+      else if (iBytesSize < tb_limit)
       {
         preferedUnit = GIGABYTES;
       }
@@ -794,74 +784,74 @@ namespace ra
 
     std::string getUserFriendlySize(uint64_t iBytesSize, FileSizeEnum iUnit)
     {
-      static const uint64_t digitsPrecision = 100;
+      static const uint64_t digits_precision = 100;
       static const uint64_t factor = 1024;
-      static const uint64_t kbPrecision = 1;
-      static const uint64_t mbPrecision = 1024*kbPrecision;
-      static const uint64_t gbPrecision = 1024*mbPrecision;
-      static const uint64_t tbPrecision = 1024*gbPrecision;
+      static const uint64_t kb_precision = 1;
+      static const uint64_t mb_precision = 1024*kb_precision;
+      static const uint64_t gb_precision = 1024*mb_precision;
+      static const uint64_t tb_precision = 1024*gb_precision;
 
-      std::string friendlySize;
+      std::string friendly_size;
 
-      //Convert iSize to a formattedSize
-      double formattedSize = 0.0;
+      //Convert iSize to a formatted_size
+      double formatted_size = 0.0;
       switch(iUnit)
       {
       case BYTES:
-        formattedSize = double( iBytesSize );
+        formatted_size = double( iBytesSize );
         break;
       case KILOBYTES:
-        formattedSize = double( ((iBytesSize*digitsPrecision)/factor)/kbPrecision )/double(digitsPrecision);
+        formatted_size = double( ((iBytesSize*digits_precision)/factor)/kb_precision )/double(digits_precision);
         break;
       case MEGABYTES:
-        formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/mbPrecision )/double(digitsPrecision);
+        formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/mb_precision )/double(digits_precision);
         break;
       case GIGABYTES:
-        formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/gbPrecision )/double(digitsPrecision);
+        formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/gb_precision )/double(digits_precision);
         break;
       case TERABYTES:
-        formattedSize = double( uint64_t(uint64_t(iBytesSize/factor)*digitsPrecision)/tbPrecision )/double(digitsPrecision);
+        formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/tb_precision )/double(digits_precision);
         break;
       };
 
-      //Add formattedSize to friendlySize
+      //Add formatted_size to friendly_size
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
-      sprintf(buffer, "%.2f", formattedSize);
-      friendlySize = buffer;
+      sprintf(buffer, "%.2f", formatted_size);
+      friendly_size = buffer;
 
-      //Append unit descrition to friendlySize
+      //Append unit descrition to friendly_size
       switch(iUnit)
       {
       case BYTES:
         {
-          friendlySize = strings::toString(iBytesSize);
-          friendlySize += " bytes";
+          friendly_size = strings::toString(iBytesSize);
+          friendly_size += " bytes";
         };
         break;
       case KILOBYTES:
         {
-          friendlySize += " KB";
+          friendly_size += " KB";
         };
         break;
       case MEGABYTES:
         {
-          friendlySize += " MB";
+          friendly_size += " MB";
         };
         break;
       case GIGABYTES:
         {
-          friendlySize += " GB";
+          friendly_size += " GB";
         };
         break;
       case TERABYTES:
         {
-          friendlySize += " TB";
+          friendly_size += " TB";
         };
         break;
       };
 
-      return friendlySize;
+      return friendly_size;
     }
 
     uint64_t getFileModifiedDate(const std::string & iPath)
@@ -969,9 +959,9 @@ namespace ra
           else
           {
             //get previous element
-            const std::string & previousElement = elements[index-1]; 
+            const std::string & previous_element = elements[index-1]; 
 
-            if (previousElement == PREVIOUS_DIRECTORY)
+            if (previous_element == PREVIOUS_DIRECTORY)
             {
               //there is nothing we can do with this element
               offset = index + 1; //continue resolving from the next element
@@ -984,10 +974,10 @@ namespace ra
               //should we remove the element before?
               //Note:
               //On Windows, the root element is defined by the string "C:" (without the \ character). The \ character must be
-              //added to `previousElement` to be properly detected by `isRootDirectory()`.
+              //added to `previous_element` to be properly detected by `isRootDirectory()`.
               //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
               //separator which creates an empty string element when calling `ra::strings::split()`.
-              if ( isRootDirectory(previousElement + ra::filesystem::getPathSeparatorStr()) )
+              if ( isRootDirectory(previous_element + ra::filesystem::getPathSeparatorStr()) )
               {
                 //one cannot walk down past the root
 
@@ -998,7 +988,7 @@ namespace ra
                 //erase previous element
                 elements.erase(elements.begin() + (index - 1));
 
-                offset = index - 1; //The next search will occurs where `previousElement` was.
+                offset = index - 1; //The next search will occurs where `previous_element` was.
               }
             }
           }
@@ -1024,12 +1014,12 @@ namespace ra
       std::string dir = ra::process::getCurrentProcessDir();
       ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
 
-      std::string tmpPath;
-      tmpPath.append(dir);
-      tmpPath.append(ra::filesystem::getPathSeparatorStr());
-      tmpPath.append(iPath);
+      std::string tmp_path;
+      tmp_path.append(dir);
+      tmp_path.append(ra::filesystem::getPathSeparatorStr());
+      tmp_path.append(iPath);
  
-      std::string resolved = resolvePath(tmpPath);
+      std::string resolved = resolvePath(tmp_path);
  
       return resolved;
     }
@@ -1042,12 +1032,12 @@ namespace ra
       std::string dir = ra::filesystem::getCurrentDirectory();
       ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
      
-      std::string tmpPath;
-      tmpPath.append(dir);
-      tmpPath.append(ra::filesystem::getPathSeparatorStr());
-      tmpPath.append(iPath);
+      std::string tmp_path;
+      tmp_path.append(dir);
+      tmp_path.append(ra::filesystem::getPathSeparatorStr());
+      tmp_path.append(iPath);
  
-      std::string resolved = resolvePath(tmpPath);
+      std::string resolved = resolvePath(tmp_path);
  
       return resolved;
     }
@@ -1074,14 +1064,14 @@ namespace ra
       if (progress_function)
         progress_function(progress);
 
-      const size_t bufferSize = 100*1024; //100k memory buffer
-      uint8_t buffer[bufferSize];
+      const size_t buffer_size = 100*1024; //100k memory buffer
+      uint8_t buffer[buffer_size];
 
       size_t copied_size = 0;
 
       while( !feof(fin) )
       {
-        size_t size_readed = fread(buffer, 1, bufferSize, fin);
+        size_t size_readed = fread(buffer, 1, buffer_size, fin);
         if (size_readed)
         {
           size_t size_writen = fwrite(buffer, 1, size_readed, fout);
@@ -1154,9 +1144,9 @@ namespace ra
       data.resize(max_read_size, 0);
       char * buffer = &data[0];
       char * last = &data[data.size()-1];
-      bool isBufferSizeOK = (data.size() == max_read_size);
-      bool isContiguous = ((last - buffer + 1) == max_read_size);
-      if (!isBufferSizeOK || !isContiguous)
+      bool is_buffer_size_ok = (data.size() == max_read_size);
+      bool is_contiguous = ((last - buffer + 1) == max_read_size);
+      if (!is_buffer_size_ok || !is_contiguous)
       {
         fclose(f);
         return false;

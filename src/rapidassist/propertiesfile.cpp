@@ -74,15 +74,15 @@ namespace ra
         const char * c = &value[i];
 
         //for each escape sequence
-        bool isEscapedCharacter = false;
-        for(size_t j=0; isEscapedCharacter == false && j<num_escape_sequences; j++)
+        bool is_escaped_character = false;
+        for(size_t j=0; is_escaped_character == false && j<num_escape_sequences; j++)
         {
           const EscapeSequence & seq = sequences[j];
           size_t seq_value_length = strlen(seq.value);
           if ( strncmp(c, seq.value, seq_value_length) == 0 )
           {
             //this is an escape sequence
-            isEscapedCharacter = true;
+            is_escaped_character = true;
 
             //add the escaped sequence instead of the character
             text.append(1, seq.replacement);
@@ -90,7 +90,7 @@ namespace ra
           }
         }
 
-        if (!isEscapedCharacter)
+        if (!is_escaped_character)
         {
           text.append(1, *c);
         }
@@ -278,30 +278,30 @@ namespace ra
 
     bool PropertiesFile::hasKey(const std::string & key) const
     {
-      PropertyMap::const_iterator propertyIt = properties_.find(key);
-      bool found = (propertyIt != properties_.end());
+      PropertyMap::const_iterator it = properties_.find(key);
+      bool found = (it != properties_.end());
       return found;
     }
 
     bool PropertiesFile::deleteKey(const std::string & key)
     {
-      PropertyMap::iterator propertyIt = properties_.find(key);
-      bool found = (propertyIt != properties_.end());
+      PropertyMap::iterator it = properties_.find(key);
+      bool found = (it != properties_.end());
       if (!found)
         return true; //nothing to do
 
-      properties_.erase(propertyIt);
+      properties_.erase(it);
       return true;
     }
 
     bool PropertiesFile::getValue(const std::string & key, std::string & value) const
     {
-      PropertyMap::const_iterator propertyIt = properties_.find(key);
-      bool found = (propertyIt != properties_.end());
+      PropertyMap::const_iterator it = properties_.find(key);
+      bool found = (it != properties_.end());
       if (!found)
         return false;
 
-      value = propertyIt->second;
+      value = it->second;
       return true;
     }
 

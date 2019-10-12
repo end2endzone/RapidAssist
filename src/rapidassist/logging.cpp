@@ -33,17 +33,17 @@ namespace ra
 {
   namespace logging
   {
-
-    bool gQuietMode = false;
+    //global flag to silence the logging output
+    bool quiet_mode = false;
 
     void setQuietMode(bool iQuiet)
     {
-      gQuietMode = iQuiet;
+      quiet_mode = iQuiet;
     }
 
     bool isQuietModeEnabled()
     {
-      return gQuietMode;
+      return quiet_mode;
     }
 
     void log(LoggerLevel iLevel, const char * iFormat, ...)
@@ -64,7 +64,7 @@ namespace ra
       va_end (args);
 
       //print the single string to the console
-      if (iLevel == LOG_INFO && gQuietMode)
+      if (iLevel == LOG_INFO && quiet_mode)
         return; //silence the output
 
       if (iLevel == LOG_ERROR)

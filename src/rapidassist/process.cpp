@@ -83,7 +83,7 @@ namespace ra
 
       //Getting threads id of the process
       HANDLE hThreadSnap = INVALID_HANDLE_VALUE;
-      THREADENTRY32 threadEntry;
+      THREADENTRY32 thread_entry;
    
       // Take a snapshot of all running threads
       hThreadSnap = CreateToolhelp32Snapshot( TH32CS_SNAPTHREAD, 0 );
@@ -91,11 +91,11 @@ namespace ra
         return false;
    
       // Fill in the size of the structure before using it.
-      threadEntry.dwSize = sizeof(THREADENTRY32);
+      thread_entry.dwSize = sizeof(THREADENTRY32);
    
       // Retrieve information about the first thread,
       // and exit if unsuccessful
-      if( !Thread32First( hThreadSnap, &threadEntry ) )
+      if( !Thread32First( hThreadSnap, &thread_entry ) )
       {
         CloseHandle( hThreadSnap ); // clean the snapshot object
         return false;
@@ -106,14 +106,14 @@ namespace ra
       // associated with the specified process
       do
       {
-        if( threadEntry.th32OwnerProcessID == pid )
+        if( thread_entry.th32OwnerProcessID == pid )
         {
-          //printf( "\n\n     THREAD ID      = 0x%08X", threadEntry.th32ThreadID );
-          //printf( "\n     Base priority  = %d", threadEntry.tpBasePri );
-          //printf( "\n     Delta priority = %d", threadEntry.tpDeltaPri );
-          tids.push_back(threadEntry.th32ThreadID);
+          //printf( "\n\n     THREAD ID      = 0x%08X", thread_entry.th32ThreadID );
+          //printf( "\n     Base priority  = %d", thread_entry.tpBasePri );
+          //printf( "\n     Delta priority = %d", thread_entry.tpDeltaPri );
+          tids.push_back(thread_entry.th32ThreadID);
         }
-      } while( Thread32Next(hThreadSnap, &threadEntry ) );
+      } while( Thread32Next(hThreadSnap, &thread_entry ) );
 
       return true;
     }
@@ -133,22 +133,22 @@ namespace ra
       HANDLE hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid );
       if (hProcess)
       {
-        DWORD dwExitCode = 0;
-        if(::GetExitCodeProcess(hProcess, &dwExitCode))
+        DWORD exit_code = 0;
+        if(::GetExitCodeProcess(hProcess, &exit_code))
         {
-          if(dwExitCode != STILL_ACTIVE)
+          if(exit_code != STILL_ACTIVE)
           {
             result = EXIT_CODE_SUCCESS;
           }
           else
           {
             //Check if process is still alive
-            DWORD dwR = ::WaitForSingleObject(hProcess, 0);
-            if(dwR == WAIT_OBJECT_0)
+            DWORD wait_result = ::WaitForSingleObject(hProcess, 0);
+            if(wait_result == WAIT_OBJECT_0)
             {
               result = EXIT_CODE_SUCCESS;
             }
-            else if(dwR == WAIT_TIMEOUT)
+            else if(wait_result == WAIT_TIMEOUT)
             {
               result = EXIT_CODE_STILLRUNNING;
             }
@@ -164,7 +164,7 @@ namespace ra
 
         bool success = (result == EXIT_CODE_SUCCESS);
         if (success)
-          code = dwExitCode;
+          code = exit_code;
       }
       return result;
     }
@@ -179,7 +179,7 @@ namespace ra
 
     BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
     {
-      DWORD dwProcessId = 0;
+      DWORD process_id = 0;
 
       if (!hWnd)
         return TRUE;		// Not a window
@@ -191,14 +191,14 @@ namespace ra
       HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
       if (hInstance)
       {
-        DWORD dwThreadId = GetWindowThreadProcessId(hWnd, &dwProcessId);
-        if (dwThreadId)
+        DWORD thread_id = GetWindowThreadProcessId(hWnd, &process_id);
+        if (thread_id)
         {
-          HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+          HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_id);
           if (hProcess)
           {
             //is this the process we are looking for ?
-            if (dwProcessId == s.pid)
+            if (process_id == s.pid)
             {
               //add found window handle to list
               s.windows_ptr->push_back(hWnd);
@@ -251,26 +251,26 @@ namespace ra
       HANDLE hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, pid );
       if (hProcess)
       {
-        ProcessIdList threadIds;
-        if (getThreadIds(pid, threadIds))
+        ProcessIdList thread_ids;
+        if (getThreadIds(pid, thread_ids))
         {
-          size_t numThreads = threadIds.size();
-          if (numThreads >= 1)
+          size_t num_threads = thread_ids.size();
+          if (num_threads >= 1)
           {
             if (iTimeoutMS != INFINITE)
             {
 
               //Call WM_CLOSE & WM_QUIT on all the threads
-              size_t threadTimeoutMS = iTimeoutMS/numThreads;
-              for(size_t threadIndex = 0; threadIndex<numThreads && !success; threadIndex++)
+              size_t thread_timeout_ms = iTimeoutMS/num_threads;
+              for(size_t thread_index = 0; thread_index<num_threads && !success; thread_index++)
               {
-                DWORD threadId = threadIds[threadIndex];
-                bool postSuccess = (PostThreadMessage(threadId, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
-                postSuccess = postSuccess && (PostThreadMessage(threadId, WM_QUIT, 0, 0) != 0);
-                if (postSuccess)
+                DWORD thread_id = thread_ids[thread_index];
+                bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
+                post_success = post_success && (PostThreadMessage(thread_id, WM_QUIT, 0, 0) != 0);
+                if (post_success)
                 {
-                  DWORD waitReturnCode = WaitForSingleObject(hProcess, threadTimeoutMS);
-                  success = (waitReturnCode == WAIT_OBJECT_0);
+                  DWORD wait_result = WaitForSingleObject(hProcess, thread_timeout_ms);
+                  success = (wait_result == WAIT_OBJECT_0);
                 
                   //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
                   if (!success)
@@ -286,15 +286,15 @@ namespace ra
               //Call WM_CLOSE & WM_QUIT on all the threads
               while(!success)
               {
-                for(size_t threadIndex = 0; threadIndex<numThreads && !success; threadIndex++)
+                for(size_t thread_index = 0; thread_index<num_threads && !success; thread_index++)
                 {
-                  DWORD threadId = threadIds[threadIndex];
-                  bool postSuccess = (PostThreadMessage(threadId, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
-                  postSuccess = postSuccess && (PostThreadMessage(threadId, WM_QUIT, 0, 0) != 0);
-                  if (postSuccess)
+                  DWORD thread_id = thread_ids[thread_index];
+                  bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
+                  post_success = post_success && (PostThreadMessage(thread_id, WM_QUIT, 0, 0) != 0);
+                  if (post_success)
                   {
-                    DWORD waitReturnCode = WaitForSingleObject(hProcess, 200);
-                    success = (waitReturnCode == WAIT_OBJECT_0);
+                    DWORD wait_result = WaitForSingleObject(hProcess, 200);
+                    success = (wait_result == WAIT_OBJECT_0);
                   
                     //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
                     if (!success)
@@ -441,23 +441,23 @@ namespace ra
       path = buffer;
 #elif __linux__
       //from https://stackoverflow.com/a/33249023
-      char exePath[PATH_MAX + 1] = {0};
-      ssize_t len = ::readlink("/proc/self/exe", exePath, sizeof(exePath));
-      if (len == -1 || len == sizeof(exePath))
+      char exe_path[PATH_MAX + 1] = {0};
+      ssize_t len = ::readlink("/proc/self/exe", exe_path, sizeof(exe_path));
+      if (len == -1 || len == sizeof(exe_path))
         len = 0;
-      exePath[len] = '\0';
-      path = exePath;
+      exe_path[len] = '\0';
+      path = exe_path;
 
       //fallback from https://stackoverflow.com/a/7052225
       if (path.empty())
       {
         char process_id_path[32];
         sprintf( process_id_path, "/proc/%d/exe", getpid() );
-        len = ::readlink(process_id_path, exePath, sizeof(exePath));
-        if (len == -1 || len == sizeof(exePath))
+        len = ::readlink(process_id_path, exe_path, sizeof(exe_path));
+        if (len == -1 || len == sizeof(exe_path))
           len = 0;
-        exePath[len] = '\0';
-        path = exePath;
+        exe_path[len] = '\0';
+        path = exe_path;
       }
 #endif
       return path;
@@ -470,16 +470,16 @@ namespace ra
 #ifdef _WIN32
       //Get process ids
       const int MAX_PROCESSES = 10000;
-      DWORD wProcessIds[MAX_PROCESSES];
-      DWORD wProcessIdsSize = 0; //in bytes
-      EnumProcesses(wProcessIds, MAX_PROCESSES, &wProcessIdsSize);
-      DWORD wNumProcesses = wProcessIdsSize / sizeof(DWORD);
+      DWORD process_ids[MAX_PROCESSES];
+      DWORD process_ids_size = 0; //in bytes
+      EnumProcesses(process_ids, MAX_PROCESSES, &process_ids_size);
+      DWORD num_processes = process_ids_size / sizeof(DWORD);
 
       //for each process
-      for (unsigned int i=0; i<wNumProcesses; i++)
+      for (unsigned int i=0; i<num_processes; i++)
       {
-        DWORD wPid = wProcessIds[i];
-        processes.push_back(wPid);
+        DWORD pid = process_ids[i];
+        processes.push_back(pid);
       }
 #else
       //list processes from the filesystem
@@ -492,8 +492,8 @@ namespace ra
         const std::string & file = files[i];
         
         //filter out files
-        bool isDirectory = ra::filesystem::directoryExists(file.c_str());
-        if (!isDirectory)
+        bool is_directory = ra::filesystem::directoryExists(file.c_str());
+        if (!is_directory)
           continue;
 
         //filter out directories that are not numeric.
@@ -537,10 +537,10 @@ namespace ra
     std::string getCurrentProcessDir()
     {
       std::string dir;
-      std::string execPath = getCurrentProcessPath();
-      if (execPath.empty())
+      std::string exec_path = getCurrentProcessPath();
+      if (exec_path.empty())
         return dir; //failure
-      dir = ra::filesystem::getParentPath(execPath);
+      dir = ra::filesystem::getParentPath(exec_path);
       return dir;
     }
 
@@ -592,23 +592,23 @@ namespace ra
       }
 
       //launch a new process with the command line
-      PROCESS_INFORMATION processInfo = {0};
-      STARTUPINFO startupInfo = {0};
-      startupInfo.cb = sizeof(STARTUPINFO);
-      startupInfo.dwFlags = STARTF_USESHOWWINDOW;
-      startupInfo.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
-      DWORD creationFlags = 0; //EXTENDED_STARTUPINFO_PRESENT
-      bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creationFlags, NULL, iDefaultDirectory.c_str(), &startupInfo, &processInfo) != 0);
+      PROCESS_INFORMATION process_info = {0};
+      STARTUPINFO startup_info = {0};
+      startup_info.cb = sizeof(STARTUPINFO);
+      startup_info.dwFlags = STARTF_USESHOWWINDOW;
+      startup_info.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
+      static const DWORD creation_flags = 0; //EXTENDED_STARTUPINFO_PRESENT
+      bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creation_flags, NULL, iDefaultDirectory.c_str(), &startup_info, &process_info) != 0);
       if (success)
       {
         //Wait for the application to initialize properly
-        WaitForInputIdle(processInfo.hProcess, INFINITE);
+        WaitForInputIdle(process_info.hProcess, INFINITE);
 
         //Extract the program id
-        DWORD dwProcessId = processInfo.dwProcessId;
+        DWORD process_id = process_info.dwProcessId;
 
         //return the process id
-        processid_t pId = static_cast<processid_t>(dwProcessId);
+        processid_t pId = static_cast<processid_t>(process_id);
         return pId;
       }
       return INVALID_PROCESS_ID;
@@ -681,7 +681,7 @@ namespace ra
       if (success)
       {
         HANDLE hProcess = info.hProcess;
-        DWORD wPid = GetProcessId(hProcess);
+        DWORD pid = GetProcessId(hProcess);
         return true;
       }
       return false;
@@ -727,8 +727,8 @@ namespace ra
     bool isRunning(const processid_t & pid)
     {
 #ifdef _WIN32
-      DWORD dwExitCode = 0;
-      ExitCodeResult result = getWin32ExitCodeResult(pid, dwExitCode);
+      DWORD exit_code = 0;
+      ExitCodeResult result = getWin32ExitCodeResult(pid, exit_code);
       bool running = false;
       switch(result)
       {
@@ -790,14 +790,14 @@ namespace ra
     #endif
     }
     
-    bool getExitCode(const processid_t & pid, int & exitcode)
+    bool getExitCode(const processid_t & pid, int & exit_code)
     {
     #ifdef _WIN32
-      DWORD dwExitCode;
-      ExitCodeResult result = getWin32ExitCodeResult(pid, dwExitCode);
+      DWORD local_exit_code;
+      ExitCodeResult result = getWin32ExitCodeResult(pid, local_exit_code);
       if (result == EXIT_CODE_SUCCESS)
       {
-        exitcode = static_cast<int>(dwExitCode);
+        exit_code = static_cast<int>(local_exit_code);
         return true;
       }
       return false;
@@ -807,7 +807,7 @@ namespace ra
       {
         //waitpid success
         bool process_exited = WIFEXITED( status );
-        exitcode = WEXITSTATUS( status );
+        exit_code = WEXITSTATUS( status );
         return true;
       }
       return false;
@@ -839,7 +839,7 @@ namespace ra
       //  {
       //    //waitpid success
       //    bool process_exited = WIFEXITED( status );
-      //    int exitcode = WEXITSTATUS( status );
+      //    int exit_code = WEXITSTATUS( status );
       //    return true;
       //  }
       //  return false;
@@ -875,7 +875,7 @@ namespace ra
     #endif
     }
     
-    bool waitExit(const processid_t & pid, int & exitcode)
+    bool waitExit(const processid_t & pid, int & exit_code)
     {
       bool success = waitExit(pid);
       if (!success)
@@ -883,7 +883,7 @@ namespace ra
       
 #ifndef _WIN32
       //also read the process exit code to remove the zombie process
-      success = getExitCode(pid, exitcode);
+      success = getExitCode(pid, exit_code);
 #endif
       
       return success;

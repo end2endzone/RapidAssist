@@ -59,8 +59,8 @@ namespace ra
     template <class T>
     inline void parseT (const std::string & iValue, T & t)
     {
-      std::istringstream inputStream(iValue);
-      inputStream >> t;
+      std::istringstream input_stream(iValue);
+      input_stream >> t;
     }
 
     //specializations
@@ -190,51 +190,51 @@ namespace ra
     template<>
     inline void parseT<unsigned char>(const std::string & iValue, unsigned char & t)
     {
-      std::istringstream inputStream(iValue);
+      std::istringstream input_stream(iValue);
       uint16_t tmp = 0;
-      inputStream >> tmp;
+      input_stream >> tmp;
       t = (unsigned char)tmp;
     }
     template<>
     inline void parseT<char>(const std::string & iValue, char & t)
     {
-      std::istringstream inputStream(iValue);
+      std::istringstream input_stream(iValue);
       int16_t tmp = 0;
-      inputStream >> tmp;
+      input_stream >> tmp;
       t = (char)tmp;
     }
     template<>
     inline void parseT<int8_t>(const std::string & iValue, int8_t & t)
     {
-      std::istringstream inputStream(iValue);
+      std::istringstream input_stream(iValue);
       int16_t tmp = 0;
-      inputStream >> tmp;
+      input_stream >> tmp;
       t = (char)tmp;
     }
 
     template <typename T>
-    inline std::string toStringDigits (const T & t, int numDigits)
+    inline std::string toStringDigits (const T & t, int num_digits)
     {
-      if (numDigits < 0)
-        numDigits = 0;
-      if (numDigits > 99)
-        numDigits = 99;
+      if (num_digits < 0)
+        num_digits = 0;
+      if (num_digits > 99)
+        num_digits = 99;
 
       //build format for this type
       static const int FORMAT_SIZE = 8;
       char format[FORMAT_SIZE];
       format[0] = '%';
       format[1] = '.';
-      if (numDigits >= 10)
+      if (num_digits >= 10)
       {
-        format[2] = '0'+(char)(numDigits/10);
-        format[3] = '0'+(char)(numDigits%10);
+        format[2] = '0'+(char)(num_digits/10);
+        format[3] = '0'+(char)(num_digits%10);
         format[4] = 'f';
         format[5] = '\0';
       }
       else
       {
-        format[2] = '0'+(char)(numDigits%10);
+        format[2] = '0'+(char)(num_digits%10);
         format[3] = 'f';
         format[4] = '\0';
       }
@@ -253,17 +253,17 @@ namespace ra
       if (iValue == NULL)
         return false;
 
-      bool foundDot = false;
+      bool found_dot = false;
       size_t length = strlen(iValue);
       for(size_t offset = 0; offset < length; offset++)
       {
         const char & c = iValue[offset];
         if (c >= '0' && c <= '9')
           continue; //valid
-        if (c == '.' && !foundDot)
+        if (c == '.' && !found_dot)
         {
           //only 1 dot character must be found in the string
-          foundDot = true;
+          found_dot = true;
           continue; //valid
         }
         if ((c == '+' || c == '-'))
@@ -282,25 +282,25 @@ namespace ra
 
     int replace(std::string & iString, const std::string & iOldValue, const std::string & iNewValue)
     {
-      int numOccurance = 0;
+      int num_occurance = 0;
 
       if (iOldValue.size() > 0)
       {
-        size_t startPos = 0;    
-        size_t findPos = std::string::npos;
+        size_t start_pos = 0;
+        size_t find_pos = std::string::npos;
         do
         {
-          findPos = iString.find(iOldValue, startPos);
-          if (findPos != std::string::npos)
+          find_pos = iString.find(iOldValue, start_pos);
+          if (find_pos != std::string::npos)
           {
-            iString.replace(findPos, iOldValue.length(), iNewValue);
-            startPos = findPos + iNewValue.length();
-            numOccurance++;
+            iString.replace(find_pos, iOldValue.length(), iNewValue);
+            start_pos = find_pos + iNewValue.length();
+            num_occurance++;
           }
         }
-        while (findPos != -1);
+        while (find_pos != -1);
       }
-      return numOccurance;
+      return num_occurance;
     }
 
     std::string toString(const bool & value)
@@ -563,8 +563,8 @@ namespace ra
         }
         else
         {
-          char tmp[] = { iText[i], '\0' };
-          accumulator.append(tmp);
+          const char & c = iText[i];
+          accumulator.append(1, c);
         }
       }
 
@@ -621,9 +621,9 @@ namespace ra
       size_t size = iStr.size();
       if (size)
       {
-        size_t loopStart = size - 1;
-        size_t loopEnd = 0;
-        for(size_t i = loopStart; i >= loopEnd && i != SIZE_T_MAX; i--)
+        size_t loop_start = size - 1;
+        size_t loop_end = 0;
+        for(size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX; i--)
         {
           if (tmp[i] == iChar)
           {
@@ -664,9 +664,9 @@ namespace ra
       size_t size = iStr.size();
       if (size)
       {
-        size_t loopStart = 0;
-        size_t loopEnd = (size - 1) / 2;
-        for(size_t i = loopStart; i <= loopEnd; i++)
+        size_t loop_start = 0;
+        size_t loop_end = (size - 1) / 2;
+        for(size_t i = loop_start; i <= loop_end; i++)
         {
           if (i != (size - i - 1))
           {
