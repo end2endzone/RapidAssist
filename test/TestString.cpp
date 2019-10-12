@@ -142,8 +142,8 @@ namespace ra { namespace strings { namespace test
     //uint64_t
     struct UIint64Test
     {
-      const char * EXPECTED_STR;
-      uint64_t EXPECTED_VALUE;
+      const char * expected_str;
+      uint64_t expected_value;
     };
     static const UIint64Test tests[] = {
       {"0", 0ull},
@@ -155,18 +155,18 @@ namespace ra { namespace strings { namespace test
     size_t numTests = sizeof(tests)/sizeof(tests[0]);
     for(size_t i=0; i<numTests; i++)
     {
-      const char * EXPECTED_STR = tests[i].EXPECTED_STR;
-      const uint64_t & EXPECTED_VALUE = tests[i].EXPECTED_VALUE;
+      const char * expected_str = tests[i].expected_str;
+      const uint64_t & expected_value = tests[i].expected_value;
 
       //assert toString()
-      std::string actualStr = toString( EXPECTED_VALUE );
-      ASSERT_EQ(EXPECTED_STR, actualStr);
+      std::string actualStr = toString( expected_value );
+      ASSERT_EQ(expected_str, actualStr);
 
       //assert parseValue()
       uint64_t actualValue = 0;
-      bool parsed = parse(EXPECTED_STR, actualValue);
+      bool parsed = parse(expected_str, actualValue);
       ASSERT_TRUE(parsed);
-      ASSERT_EQ(EXPECTED_VALUE, actualValue);
+      ASSERT_EQ(expected_value, actualValue);
     }
   }
   //--------------------------------------------------------------------------------------------------

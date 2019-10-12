@@ -1544,23 +1544,23 @@ namespace ra { namespace filesystem { namespace test
   class CopyFileCallbackFunctor : public virtual ra::filesystem::IProgressReport
   {
   public:
-    CopyFileCallbackFunctor() : mProgressBegin(false), mProgressEnd(false) {};
+    CopyFileCallbackFunctor() : progress_begin_(false), progress_end_(false) {};
     virtual ~CopyFileCallbackFunctor() {};
     virtual void onProgressReport(double progress)
     {
       //remember first and last callbacks
       if (progress == 0.0)
-        mProgressBegin = true;
+        progress_begin_ = true;
       if (progress == 1.0)
-        mProgressEnd = true;
+        progress_end_ = true;
 
       printf("%s(%.2f)\n", __FUNCTION__, progress);
     }
-    bool hasProgressBegin() { return mProgressBegin; }
-    bool hasProgressEnd  () { return mProgressEnd  ; }
+    bool hasProgressBegin() { return progress_begin_; }
+    bool hasProgressEnd  () { return progress_end_  ; }
   private:
-    bool mProgressBegin;
-    bool mProgressEnd  ;
+    bool progress_begin_;
+    bool progress_end_  ;
   };
   TEST_F(TestFilesystem, testCopyFileCallbackFunctor)
   {

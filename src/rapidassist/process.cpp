@@ -173,7 +173,7 @@ namespace ra
 
     struct FindProcessWindowsStruct
     {
-      HwndList * windowsPtr;
+      HwndList * windows_ptr;
       processid_t pid;
     };
 
@@ -201,7 +201,7 @@ namespace ra
             if (dwProcessId == s.pid)
             {
               //add found window handle to list
-              s.windowsPtr->push_back(hWnd);
+              s.windows_ptr->push_back(hWnd);
             }
           }
           CloseHandle(hProcess);
@@ -215,7 +215,7 @@ namespace ra
       oWindows.clear();
 
       FindProcessWindowsStruct s;
-      s.windowsPtr = &oWindows;
+      s.windows_ptr = &oWindows;
       s.pid = pid;
 
       bool success = (EnumWindows(EnumWindowsProc, (LPARAM)&s) == TRUE);

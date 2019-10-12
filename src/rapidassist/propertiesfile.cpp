@@ -253,7 +253,7 @@ namespace ra
         return false;
 
       //for each properties
-      for (PropertyMap::const_iterator propertyIt = mProperties.begin(); propertyIt != mProperties.end(); propertyIt++)
+      for (PropertyMap::const_iterator propertyIt = properties_.begin(); propertyIt != properties_.end(); propertyIt++)
       {
         std::string key   = propertyIt->first;
         const std::string & value = propertyIt->second;
@@ -272,32 +272,32 @@ namespace ra
 
     bool PropertiesFile::clear()
     {
-      mProperties.clear();
+      properties_.clear();
       return true;
     }
 
     bool PropertiesFile::hasKey(const std::string & key) const
     {
-      PropertyMap::const_iterator propertyIt = mProperties.find(key);
-      bool found = (propertyIt != mProperties.end());
+      PropertyMap::const_iterator propertyIt = properties_.find(key);
+      bool found = (propertyIt != properties_.end());
       return found;
     }
 
     bool PropertiesFile::deleteKey(const std::string & key)
     {
-      PropertyMap::iterator propertyIt = mProperties.find(key);
-      bool found = (propertyIt != mProperties.end());
+      PropertyMap::iterator propertyIt = properties_.find(key);
+      bool found = (propertyIt != properties_.end());
       if (!found)
         return true; //nothing to do
 
-      mProperties.erase(propertyIt);
+      properties_.erase(propertyIt);
       return true;
     }
 
     bool PropertiesFile::getValue(const std::string & key, std::string & value) const
     {
-      PropertyMap::const_iterator propertyIt = mProperties.find(key);
-      bool found = (propertyIt != mProperties.end());
+      PropertyMap::const_iterator propertyIt = properties_.find(key);
+      bool found = (propertyIt != properties_.end());
       if (!found)
         return false;
 
@@ -308,7 +308,7 @@ namespace ra
     bool PropertiesFile::setValue(const std::string & key, const std::string & value)
     {
       //overwrite previous property
-      mProperties[key] = value;
+      properties_[key] = value;
 
       return true;
     }

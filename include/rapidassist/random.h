@@ -90,11 +90,11 @@ namespace ra
     public:
       enum Flags
       {
-        Letters=1,            //lowercase letters
-        LETTERS=2,            //uppercase letters
-        Numbers=4,            //numbers from 0 to 9
-        SpecialCharacters=8,  //special characters like @ and !
-        All=15,               //all flags
+        LETTERS_LOWERCASE=1,  //lowercase letters
+        LETTERS_UPPERCASE=2,  //uppercase letters
+        NUMBERS=4,            //numbers from 0 to 9
+        SPECIAL_CHARACTERS=8, //special characters like @ and !
+        ALL=15,               //all flags
       };
     };
 

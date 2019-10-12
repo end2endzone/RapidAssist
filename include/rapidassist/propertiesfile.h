@@ -50,7 +50,7 @@ namespace ra
 
     private:
       typedef std::map<std::string /*keyname*/, std::string /*value*/> PropertyMap;
-      PropertyMap mProperties;
+      PropertyMap properties_;
     };
 
   } //namespace filesystem

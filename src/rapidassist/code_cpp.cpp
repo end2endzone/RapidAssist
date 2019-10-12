@@ -42,7 +42,7 @@ namespace ra
     struct ControlCharacter
     {
       char c;
-      const char * escapeStr;
+      const char * escape_str;
     };
     //https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
     static const ControlCharacter gCtrlChars[] = {
@@ -108,7 +108,7 @@ namespace ra
       {
         const ControlCharacter & ctrl = gCtrlChars[i];
         if (ctrl.c == c)
-          return ctrl.escapeStr;
+          return ctrl.escape_str;
       }
       return NULL;
     }

@@ -50,7 +50,7 @@ namespace ra
     public:
       FileWrapper(const char * iPath, const char * iMode)
       {
-        mPointer = fopen(iPath, iMode);
+        file_pointer_ = fopen(iPath, iMode);
       }
 
       ~FileWrapper()
@@ -60,23 +60,23 @@ namespace ra
 
       bool isEOF()
       {
-        if (mPointer == NULL)
+        if (file_pointer_ == NULL)
           return true;
         //http://www.cplusplus.com/reference/cstdio/feof/
-        return (feof(mPointer) != 0);
+        return (feof(file_pointer_) != 0);
       }
 
       void close()
       {
-        if (mPointer)
+        if (file_pointer_)
         {
-          fclose(mPointer);
-          mPointer = NULL;
+          fclose(file_pointer_);
+          file_pointer_ = NULL;
         }
       }
 
       //members
-      FILE * mPointer;
+      FILE * file_pointer_;
     };
 
     std::string subString2(const std::string & iString, size_t iStart, size_t iCount)
@@ -296,14 +296,14 @@ namespace ra
       ss << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
 
       FileWrapper f1(iFile1, "rb");
-      if (f1.mPointer == NULL)
+      if (f1.file_pointer_ == NULL)
       {
         ss << "First file is not found.";
         oReason = ss.str();
         return false;
       }
       FileWrapper f2(iFile2, "rb");
-      if (f2.mPointer == NULL)
+      if (f2.file_pointer_ == NULL)
       {
         ss << "Second file is not found.";
         oReason = ss.str();
@@ -311,8 +311,8 @@ namespace ra
       }
 
       //Compare by size
-      long size1 = ra::filesystem::getFileSize(f1.mPointer);
-      long size2 = ra::filesystem::getFileSize(f2.mPointer);
+      long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
+      long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
       if (size1 != size2)
       {
         if (size1 < size2)
@@ -367,15 +367,15 @@ namespace ra
     bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences)
     {
       FileWrapper f1(iFile1, "rb");
-      if (f1.mPointer == NULL)
+      if (f1.file_pointer_ == NULL)
         return false;
       FileWrapper f2(iFile2, "rb");
-      if (f2.mPointer == NULL)
+      if (f2.file_pointer_ == NULL)
         return false;
 
       //Check by size
-      long size1 = ra::filesystem::getFileSize(f1.mPointer);
-      long size2 = ra::filesystem::getFileSize(f2.mPointer);
+      long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
+      long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
       if (size1 != size2)
       {
         return false; //unsupported
@@ -390,8 +390,8 @@ namespace ra
       //while there is data to read in files
       while( !f1.isEOF() && !f2.isEOF() )
       {
-        size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, f1.mPointer);
-        size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, f2.mPointer);
+        size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, f1.file_pointer_);
+        size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, f2.file_pointer_);
         if (readSize1 != readSize2)
         {
           //this should not happend since both files are identical in length.

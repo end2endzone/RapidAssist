@@ -114,13 +114,13 @@ namespace ra
     {
       std::string symbols;
 
-      if ((iFlags & SymbolsFlags::Letters) == SymbolsFlags::Letters)
+      if ((iFlags & SymbolsFlags::LETTERS_LOWERCASE) == SymbolsFlags::LETTERS_LOWERCASE)
         symbols.append("abcdefghijklmnopqrstuvwxyz");
-      if ((iFlags & SymbolsFlags::LETTERS) == SymbolsFlags::LETTERS)
+      if ((iFlags & SymbolsFlags::LETTERS_UPPERCASE) == SymbolsFlags::LETTERS_UPPERCASE)
         symbols.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-      if ((iFlags & SymbolsFlags::Numbers) == SymbolsFlags::Numbers)
+      if ((iFlags & SymbolsFlags::NUMBERS) == SymbolsFlags::NUMBERS)
         symbols.append("0123456789");
-      if ((iFlags & SymbolsFlags::SpecialCharacters) == SymbolsFlags::SpecialCharacters)
+      if ((iFlags & SymbolsFlags::SPECIAL_CHARACTERS) == SymbolsFlags::SPECIAL_CHARACTERS)
         symbols.append("!\"/$%?&*()_+-=\\:<>");
 
       if (symbols.size() == 0)
