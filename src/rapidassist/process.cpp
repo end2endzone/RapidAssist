@@ -87,7 +87,7 @@ namespace ra
    
       // Take a snapshot of all running threads
       hThreadSnap = CreateToolhelp32Snapshot( TH32CS_SNAPTHREAD, 0 );
-      if( hThreadSnap == INVALID_HANDLE_VALUE )
+      if ( hThreadSnap == INVALID_HANDLE_VALUE )
         return false;
    
       // Fill in the size of the structure before using it.
@@ -95,7 +95,7 @@ namespace ra
    
       // Retrieve information about the first thread,
       // and exit if unsuccessful
-      if( !Thread32First( hThreadSnap, &thread_entry ) )
+      if ( !Thread32First( hThreadSnap, &thread_entry ) )
       {
         CloseHandle( hThreadSnap ); // clean the snapshot object
         return false;
@@ -106,7 +106,7 @@ namespace ra
       // associated with the specified process
       do
       {
-        if( thread_entry.th32OwnerProcessID == pid )
+        if ( thread_entry.th32OwnerProcessID == pid )
         {
           //printf( "\n\n     THREAD ID      = 0x%08X", thread_entry.th32ThreadID );
           //printf( "\n     Base priority  = %d", thread_entry.tpBasePri );
@@ -134,9 +134,9 @@ namespace ra
       if (hProcess)
       {
         DWORD exit_code = 0;
-        if(::GetExitCodeProcess(hProcess, &exit_code))
+        if (::GetExitCodeProcess(hProcess, &exit_code))
         {
-          if(exit_code != STILL_ACTIVE)
+          if (exit_code != STILL_ACTIVE)
           {
             result = EXIT_CODE_SUCCESS;
           }
@@ -144,11 +144,11 @@ namespace ra
           {
             //Check if process is still alive
             DWORD wait_result = ::WaitForSingleObject(hProcess, 0);
-            if(wait_result == WAIT_OBJECT_0)
+            if (wait_result == WAIT_OBJECT_0)
             {
               result = EXIT_CODE_SUCCESS;
             }
-            else if(wait_result == WAIT_TIMEOUT)
+            else if (wait_result == WAIT_TIMEOUT)
             {
               result = EXIT_CODE_STILLRUNNING;
             }

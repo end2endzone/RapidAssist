@@ -144,7 +144,7 @@ namespace ra
         return false;
 
       struct stat sb;
-      if(stat(iPath, &sb) == 0)
+      if (stat(iPath, &sb) == 0)
       {
         if ((sb.st_mode & S_IFREG) == S_IFREG)
           return true;
@@ -158,7 +158,7 @@ namespace ra
         return false;
 
       struct stat sb;
-      if(stat(iPath, &sb)==0)
+      if (stat(iPath, &sb)==0)
       {
         if ((sb.st_mode & S_IREAD) == S_IREAD)
           return true;
@@ -172,7 +172,7 @@ namespace ra
         return false;
 
       struct stat sb;
-      if(stat(iPath, &sb)==0)
+      if (stat(iPath, &sb)==0)
       {
         if ((sb.st_mode & S_IWRITE) == S_IWRITE)
           return true;
@@ -227,7 +227,7 @@ namespace ra
       WIN32_FIND_DATA find_data;
       HANDLE hFind = FindFirstFile(query.c_str(), &find_data);
  
-      if(hFind == INVALID_HANDLE_VALUE)
+      if (hFind == INVALID_HANDLE_VALUE)
         return false;
  
       //process directory entry
@@ -266,7 +266,7 @@ namespace ra
 #elif __linux__
     DIR *dp;
     struct dirent *dirp;
-    if((dp = opendir(iPath)) == NULL)
+    if ((dp = opendir(iPath)) == NULL)
     {
       return false;
     }
@@ -355,7 +355,7 @@ namespace ra
 #endif
 
       struct stat sb;
-      if(stat(iPath, &sb)==0)
+      if (stat(iPath, &sb)==0)
       {
         if ((sb.st_mode & S_IFDIR) == S_IFDIR)
           return true;
@@ -858,7 +858,7 @@ namespace ra
     {
       struct stat result;
       uint64_t mod_time = 0;
-      if(stat(iPath.c_str(), &result)==0)
+      if (stat(iPath.c_str(), &result)==0)
       {
         mod_time = result.st_mtime;
       }

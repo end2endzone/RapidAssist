@@ -109,7 +109,7 @@ namespace ra
           num_read = read(0, buf, sizeof(buf)-1);
 
         //validate format \033[63;1R
-        if(num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R')
+        if (num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R')
         {
           buf[0] = '!'; //in case we want to print buf for debugging
           buf[num_read] = '\0';
