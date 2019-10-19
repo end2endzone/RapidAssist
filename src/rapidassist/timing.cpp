@@ -102,9 +102,9 @@ namespace ra
       if (frequency.QuadPart == 0)
         QueryPerformanceFrequency(&frequency);
 
-      LARGE_INTEGER now;
-      QueryPerformanceCounter(&now);
-      double seconds = now.QuadPart / double(frequency.QuadPart);
+      LARGE_INTEGER counter;
+      QueryPerformanceCounter(&counter);
+      double seconds = counter.QuadPart / double(frequency.QuadPart);
       return seconds;
     }
 
@@ -145,8 +145,8 @@ namespace ra
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetTickCountTimer() //fast constant 15ms timer
     {
-      DWORD millisecondsCounter = GetTickCount();
-      double seconds = double(millisecondsCounter)/1000.0;
+      DWORD milliseconds_counter = GetTickCount();
+      double seconds = double(milliseconds_counter)/1000.0;
       return seconds;
     }
 
@@ -161,8 +161,8 @@ namespace ra
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetMillisecondsTimerWin32()
     {
-      DWORD millisecondsCounter = timeGetTime();
-      double seconds = double(millisecondsCounter)/1000.0;
+      DWORD milliseconds_counter = timeGetTime();
+      double seconds = double(milliseconds_counter)/1000.0;
       return seconds;
     }
 
@@ -184,19 +184,19 @@ namespace ra
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
     double GetSystemTimeTimerWin32()
     {
-      FILETIME ft;
+      FILETIME file_time;
       ULONGLONG t;
       if (GetSystemTimePreciseAsFileTime_)
       {
         //Windows 8, Windows Server 2012 and later
-        GetSystemTimePreciseAsFileTime_( &ft ); //microseconds accuracy
+        GetSystemTimePreciseAsFileTime_( &file_time ); //microseconds accuracy
       }
       else
       {
         //Windows 2000 and later
-        GetSystemTimeAsFileTime( &ft ); //milliseconds accuracy
+        GetSystemTimeAsFileTime( &file_time ); //milliseconds accuracy
       }
-      t = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
+      t = ((ULONGLONG)file_time.dwHighDateTime << 32) | (ULONGLONG)file_time.dwLowDateTime;
       return (double)t / 10000000.0;
     }
 #endif
@@ -289,44 +289,44 @@ namespace ra
     }
 
 
-    DateTime toDateTime(const std::tm & timeinfo)
+    DateTime toDateTime(const std::tm & time_info)
     {
       DateTime dt;
 
-      dt.year  = timeinfo.tm_year + 1900;
-      dt.month = timeinfo.tm_mon + 1;
-      dt.day   = timeinfo.tm_mday;
-      dt.hour  = timeinfo.tm_hour;
-      dt.min   = timeinfo.tm_min;
-      dt.sec   = timeinfo.tm_sec;
-      dt.wday  = timeinfo.tm_wday;
-      dt.yday  = timeinfo.tm_yday;
-      dt.isdst = (timeinfo.tm_isdst != 0);
+      dt.year  = time_info.tm_year + 1900;
+      dt.month = time_info.tm_mon + 1;
+      dt.day   = time_info.tm_mday;
+      dt.hour  = time_info.tm_hour;
+      dt.min   = time_info.tm_min;
+      dt.sec   = time_info.tm_sec;
+      dt.wday  = time_info.tm_wday;
+      dt.yday  = time_info.tm_yday;
+      dt.isdst = (time_info.tm_isdst != 0);
 
       return dt;
     }
 
     std::tm toTimeInfo(const DateTime & iDateTime)
     {
-      std::tm timeinfo;
+      std::tm time_info;
 
-      timeinfo.tm_year  = iDateTime.year - 1900;
-      timeinfo.tm_mon   = iDateTime.month - 1;
-      timeinfo.tm_mday  = iDateTime.day;
-      timeinfo.tm_hour  = iDateTime.hour;
-      timeinfo.tm_min   = iDateTime.min;
-      timeinfo.tm_sec   = iDateTime.sec;
-      timeinfo.tm_wday  = iDateTime.wday;
-      timeinfo.tm_yday  = iDateTime.yday;
-      timeinfo.tm_isdst = (iDateTime.isdst ? 1 : 0);
+      time_info.tm_year  = iDateTime.year - 1900;
+      time_info.tm_mon   = iDateTime.month - 1;
+      time_info.tm_mday  = iDateTime.day;
+      time_info.tm_hour  = iDateTime.hour;
+      time_info.tm_min   = iDateTime.min;
+      time_info.tm_sec   = iDateTime.sec;
+      time_info.tm_wday  = iDateTime.wday;
+      time_info.tm_yday  = iDateTime.yday;
+      time_info.tm_isdst = (iDateTime.isdst ? 1 : 0);
 
-      return timeinfo;
+      return time_info;
     }
 
     void waitNextSecond()
     {
-      std::tm baseTime = getLocalTime();
-      while(getLocalTime().tm_sec == baseTime.tm_sec)
+      std::tm base_time = getLocalTime();
+      while(getLocalTime().tm_sec == base_time.tm_sec)
       {
         //loop
       }
@@ -334,20 +334,20 @@ namespace ra
 
     std::tm getLocalTime()
     {
-      time_t rawtime;
-      std::time(&rawtime);
+      time_t raw_time;
+      std::time(&raw_time);
 
-      std::tm timeinfo = *localtime(&rawtime);
-      return timeinfo;
+      std::tm time_info = *localtime(&raw_time);
+      return time_info;
     }
 
     std::tm getUtcTime()
     {
-      time_t rawtime;
-      std::time(&rawtime);
+      time_t raw_time;
+      std::time(&raw_time);
 
-      std::tm timeinfo = *gmtime(&rawtime);
-      return timeinfo;
+      std::tm time_info = *gmtime(&raw_time);
+      return time_info;
     }
 
     int millisleep(uint32_t milliseconds)
@@ -380,15 +380,14 @@ namespace ra
     int getCopyrightYear()
     {
       static const int DEFAULT_YEAR = 2016;
-      std::string compilationDate = __DATE__;
-      size_t lastSpace = compilationDate.find_last_of(" ");
-      if (lastSpace == std::string::npos)
+      std::string compilation_date = __DATE__;
+      size_t last_space_index = compilation_date.find_last_of(" ");
+      if (last_space_index == std::string::npos)
         return DEFAULT_YEAR;
-      const char * yearStr = &compilationDate[lastSpace+1];
+      const char * yearStr = &compilation_date[last_space_index+1];
       int year = atoi(yearStr);
       return year;
     }
-
 
   }; //namespace timing
 } //namespace ra

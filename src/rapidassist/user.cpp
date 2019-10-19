@@ -54,10 +54,10 @@ namespace ra
     // CSIDL_LOCAL_APPDATA    matches "C:\Users\JohnSmith\AppData\Local"
     // CSIDL_COMMON_APPDATA   matches "C:\ProgramData"
     // CSIDL_COMMON_DOCUMENTS matches "C:\Users\Public\Documents"
-    CHAR szPath[MAX_PATH];
-    if(SUCCEEDED(SHGetSpecialFolderPath(NULL, szPath, csidl, FALSE)))
+    char path[MAX_PATH];
+    if(SUCCEEDED(SHGetSpecialFolderPath(NULL, path, csidl, FALSE)))
     {
-      return szPath;
+      return path;
     }
     return "";
   }
