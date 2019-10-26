@@ -254,18 +254,9 @@ namespace ra
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
-
-      while ((dirp = readdir(dp)) != NULL) {
-        std::string filename = dirp->d_name;
-
-        bool isDirectory = (dirp->d_type == DT_DIR);
-        bool result = processDirectoryEntry(oFiles, iPath, filename, isDirectory, iDepth);
-        if (!result) {
-          //Warning: Current user is not able to browse this directory.
-        }
-      }
-      closedir(dp);
-      return true;
+    }
+    closedir(dp);
+    return true;
 #endif
     }
 

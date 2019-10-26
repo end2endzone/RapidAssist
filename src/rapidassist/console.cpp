@@ -638,25 +638,25 @@ namespace ra
       case WHITE:
         ansi_foreground = ansi::ForegroundColor::WHITE;
         break;
-      case DARKBLUE:
+      case DARK_BLUE:
         ansi_foreground = ansi::ForegroundColor::BLUE;
         break;
-      case DARKGREEN:
+      case DARK_GREEN:
         ansi_foreground = ansi::ForegroundColor::GREEN;
         break;
-      case DARKCYAN:
+      case DARK_CYAN:
         ansi_foreground = ansi::ForegroundColor::CYAN;
         break;
-      case DARKRED:
+      case DARK_RED:
         ansi_foreground = ansi::ForegroundColor::RED;
         break;
-      case DARKMAGENTA:
+      case DARK_MAGENTA:
         ansi_foreground = ansi::ForegroundColor::MAGENTA;
         break;
-      case DARKYELLOW:
+      case DARK_YELLOW:
         ansi_foreground = ansi::ForegroundColor::YELLOW;
         break;
-      case DARKGRAY:
+      case DARK_GRAY:
         ansi_foreground = ansi::ForegroundColor::DARK_GRAY;
         break;
       case BLUE:
@@ -690,25 +690,25 @@ namespace ra
       case WHITE:
         ansi_background = ansi::BackgroundColor::WHITE;
         break;
-      case DARKBLUE:
+      case DARK_BLUE:
         ansi_background = ansi::BackgroundColor::BLUE;
         break;
-      case DARKGREEN:
+      case DARK_GREEN:
         ansi_background = ansi::BackgroundColor::GREEN;
         break;
-      case DARKCYAN:
+      case DARK_CYAN:
         ansi_background = ansi::BackgroundColor::CYAN;
         break;
-      case DARKRED:
+      case DARK_RED:
         ansi_background = ansi::BackgroundColor::RED;
         break;
-      case DARKMAGENTA:
+      case DARK_MAGENTA:
         ansi_background = ansi::BackgroundColor::MAGENTA;
         break;
-      case DARKYELLOW:
+      case DARK_YELLOW:
         ansi_background = ansi::BackgroundColor::YELLOW;
         break;
-      case DARKGRAY:
+      case DARK_GRAY:
         ansi_background = ansi::BackgroundColor::DARK_GRAY;
         break;
       case BLUE:
