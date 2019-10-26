@@ -632,104 +632,104 @@ namespace ra
 
       //foreground
       switch (iForeground) {
-      case Black:
+      case BLACK:
         ansi_foreground = ansi::ForegroundColor::BLACK;
         break;
-      case White:
+      case WHITE:
         ansi_foreground = ansi::ForegroundColor::WHITE;
         break;
-      case DarkBlue:
+      case DARKBLUE:
         ansi_foreground = ansi::ForegroundColor::BLUE;
         break;
-      case DarkGreen:
+      case DARKGREEN:
         ansi_foreground = ansi::ForegroundColor::GREEN;
         break;
-      case DarkCyan:
+      case DARKCYAN:
         ansi_foreground = ansi::ForegroundColor::CYAN;
         break;
-      case DarkRed:
+      case DARKRED:
         ansi_foreground = ansi::ForegroundColor::RED;
         break;
-      case DarkMagenta:
+      case DARKMAGENTA:
         ansi_foreground = ansi::ForegroundColor::MAGENTA;
         break;
-      case DarkYellow:
+      case DARKYELLOW:
         ansi_foreground = ansi::ForegroundColor::YELLOW;
         break;
-      case DarkGray:
+      case DARKGRAY:
         ansi_foreground = ansi::ForegroundColor::DARK_GRAY;
         break;
-      case Blue:
+      case BLUE:
         ansi_foreground = ansi::ForegroundColor::LIGHT_BLUE;
         break;
-      case Green:
+      case GREEN:
         ansi_foreground = ansi::ForegroundColor::LIGHT_GREEN;
         break;
-      case Cyan:
+      case CYAN:
         ansi_foreground = ansi::ForegroundColor::LIGHT_CYAN;
         break;
-      case Red:
+      case RED:
         ansi_foreground = ansi::ForegroundColor::LIGHT_RED;
         break;
-      case Magenta:
+      case MAGENTA:
         ansi_foreground = ansi::ForegroundColor::LIGHT_MAGENTA;
         break;
-      case Yellow:
+      case YELLOW:
         ansi_foreground = ansi::ForegroundColor::LIGHT_YELLOW;
         break;
-      case Gray:
+      case GRAY:
         ansi_foreground = ansi::ForegroundColor::LIGHT_GRAY;
         break;
       };
 
       //background
       switch (iBackground) {
-      case Black:
+      case BLACK:
         ansi_background = ansi::BackgroundColor::BLACK;
         break;
-      case White:
+      case WHITE:
         ansi_background = ansi::BackgroundColor::WHITE;
         break;
-      case DarkBlue:
+      case DARKBLUE:
         ansi_background = ansi::BackgroundColor::BLUE;
         break;
-      case DarkGreen:
+      case DARKGREEN:
         ansi_background = ansi::BackgroundColor::GREEN;
         break;
-      case DarkCyan:
+      case DARKCYAN:
         ansi_background = ansi::BackgroundColor::CYAN;
         break;
-      case DarkRed:
+      case DARKRED:
         ansi_background = ansi::BackgroundColor::RED;
         break;
-      case DarkMagenta:
+      case DARKMAGENTA:
         ansi_background = ansi::BackgroundColor::MAGENTA;
         break;
-      case DarkYellow:
+      case DARKYELLOW:
         ansi_background = ansi::BackgroundColor::YELLOW;
         break;
-      case DarkGray:
+      case DARKGRAY:
         ansi_background = ansi::BackgroundColor::DARK_GRAY;
         break;
-      case Blue:
+      case BLUE:
         ansi_background = ansi::BackgroundColor::LIGHT_BLUE;
         break;
-      case Green:
+      case GREEN:
         ansi_background = ansi::BackgroundColor::LIGHT_GREEN;
         break;
-      case Cyan:
+      case CYAN:
         ansi_background = ansi::BackgroundColor::LIGHT_CYAN;
         break;
-      case Red:
+      case RED:
         ansi_background = ansi::BackgroundColor::LIGHT_RED;
         break;
-      case Magenta:
+      case MAGENTA:
         ansi_background = ansi::BackgroundColor::LIGHT_MAGENTA;
         break;
-      case Yellow:
+      case YELLOW:
         ansi_background = ansi::BackgroundColor::LIGHT_YELLOW;
         break;
-      case Gray:
+      case GRAY:
         ansi_background = ansi::BackgroundColor::LIGHT_GRAY;
         break;
       };
@@ -863,8 +863,8 @@ namespace ra
       };
 #elif __linux__
       //not implemented yet
-      oForeground = Gray;
-      oBackground = Black;
+      oForeground = GRAY;
+      oBackground = BLACK;
 #endif
     }
 
