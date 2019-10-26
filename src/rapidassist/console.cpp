@@ -54,8 +54,7 @@ namespace ra
 {
   namespace console
   {
-    struct CursorCoordinate
-    {
+    struct CursorCoordinate {
       int x;
       int y;
     };
@@ -63,21 +62,18 @@ namespace ra
     // Keep track of the cursor position for pushCursorPos() and popCursorPos()
     std::vector<CursorCoordinate> cursor_position_stack;
 
-    void getCursorPos(int & col, int & row)
-    {
+    void getCursorPos(int & col, int & row) {
       col = 0;
       row = 0;
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -99,8 +95,7 @@ namespace ra
       int loop_count = 0;
       bool success = false;
       char buf[32];
-      while(!success && loop_count < MAX_LOOP_COUNT)
-      {
+      while(!success && loop_count < MAX_LOOP_COUNT) {
         ssize_t num_write = write(0, "\033[6n", 4);
         fflush(stdout);
 
@@ -109,8 +104,7 @@ namespace ra
           num_read = read(0, buf, sizeof(buf)-1);
 
         //validate format \033[63;1R
-        if (num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R')
-        {
+        if (num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R') {
           buf[0] = '!'; //in case we want to print buf for debugging
           buf[num_read] = '\0';
 
@@ -125,8 +119,7 @@ namespace ra
 
           //parse row
           row = 0;
-          while (next_char[0] >= '0' && next_char[0] <= '9')
-          {
+          while (next_char[0] >= '0' && next_char[0] <= '9') {
             row = 10 * row + next_char[0] - '0';
             next_char++; //next character
           }
@@ -138,8 +131,7 @@ namespace ra
 
           //parse col
           col = 0;
-          while (next_char[0] >= '0' && next_char[0] <= '9')
-          {
+          while (next_char[0] >= '0' && next_char[0] <= '9') {
             col = 10 * col + next_char[0] - '0';
             next_char++; //next character
           }
@@ -153,27 +145,23 @@ namespace ra
 
       tcsetattr(0, TCSANOW, &torig);
 
-      if (success)
-      {
+      if (success) {
         col--; //convert from ANSI 1-based to 0-based
       }
 #endif
     }
 
-    void setCursorPos(const int & col, const int & row)
-    {
+    void setCursorPos(const int & col, const int & row) {
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
       COORD coord;
       coord.X = col;
       coord.Y = row;
-      if (!SetConsoleCursorPosition(hStdout, coord))
-      {
+      if (!SetConsoleCursorPosition(hStdout, coord)) {
         printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -182,20 +170,17 @@ namespace ra
 #endif
     }
 
-    void getDimension(int & width, int & height)
-    {
+    void getDimension(int & width, int & height) {
       width = 0;
       height = 0;
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -210,20 +195,18 @@ namespace ra
     }
 
 #ifdef _WIN32
-    char my_getch()
-    {
+    char my_getch() {
       char c = (char)_getch();
       return c;
     }
-    
-    int my_kbhit()
-    {
+
+    int my_kbhit() {
       int hits = _kbhit();
       return hits;
     }
-    
+
 #else
-    /** 
+    /**
      * Set a file descriptor to blocking or non-blocking mode.
      * http://code.activestate.com/recipes/577384-setting-a-file-descriptor-to-blocking-or-non-block/
      *
@@ -232,8 +215,7 @@ namespace ra
      *
      * @return 1:success, 0:failure.
      **/
-    int fd_set_blocking(int fd, int blocking)
-    {
+    int fd_set_blocking(int fd, int blocking) {
       /* Save the current flags */
       int flags = fcntl(fd, F_GETFL, 0);
       if (flags == -1)
@@ -247,43 +229,39 @@ namespace ra
     }
 
     //https://stackoverflow.com/questions/9429138/non-blocking-keyboard-read-c-c/28222851
-    char my_getch()
-    {
+    char my_getch() {
       int kfd = STDIN_FILENO;
       struct termios cooked, raw;
       char c;
-      
+
       // remember console settings to get back to a 'sane' configuration
-      if (tcgetattr(kfd, &cooked) < 0)
-      {
+      if (tcgetattr(kfd, &cooked) < 0) {
         perror("tcgetattr()");
         return '\0';
       }
-      
+
       // set the console in raw mode
       memcpy(&raw, &cooked, sizeof(struct termios));
       raw.c_lflag &= ~(ICANON | ECHO);
-      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
-      {
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0) {
         perror("tcsetattr()");
 
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return '\0';
       }
 
       // get the next event from the keyboard
-      if (read(kfd, &c, 1) < 0)
-      {
+      if (read(kfd, &c, 1) < 0) {
         perror("read():");
 
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return '\0';
       }
-      
+
       // reset console to its original mode before leaving the function
       if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
         perror("tcsetattr()");
@@ -291,41 +269,38 @@ namespace ra
       return c;
     }
 
-    int my_kbhit()
-    {
+    int my_kbhit() {
       int kfd = STDIN_FILENO;
       struct termios cooked, raw;
       char c;
-      
+
       // remember console settings to get back to previous configuration
       if (tcgetattr(kfd, &cooked) < 0)
         perror("tcgetattr()");
-      
+
       // turn off line buffering
       memcpy(&raw, &cooked, sizeof(struct termios));
       raw.c_lflag &= ~(ICANON);
-      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
-      {
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0) {
         perror("tcsetattr()");
-        
+
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return 0;
       }
 
       // get the number of bytes waiting to be readed
       int bytes_waiting = 0;
-      if (ioctl(kfd, FIONREAD, &bytes_waiting) < 0)
-      {
+      if (ioctl(kfd, FIONREAD, &bytes_waiting) < 0) {
         perror("tcsetattr()");
-        
+
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return 0;
       }
-      
+
       // reset console to its original mode before leaving the function
       if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
         perror("tcsetattr()");
@@ -334,12 +309,10 @@ namespace ra
     }
 #endif
 
-    int waitKeyPress()
-    {
+    int waitKeyPress() {
       //empty input buffer first
       int key = 0;
-      while(my_kbhit())
-      {
+      while (my_kbhit()) {
         key = my_getch();
       }
 
@@ -347,21 +320,18 @@ namespace ra
       key = my_getch();
       return key;
     }
-    
-    void clearScreen()
-    {
+
+    void clearScreen() {
       //system("cls");
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -369,23 +339,19 @@ namespace ra
       DWORD number_of_chars_written;
       DWORD length;
       length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
-      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), length, coord, &number_of_chars_written))
-      {
+      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), length, coord, &number_of_chars_written)) {
         printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, length, coord, &number_of_chars_written))
-      {
+      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, length, coord, &number_of_chars_written)) {
         printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!SetConsoleCursorPosition(hStdout, coord))
-      {
+      if (!SetConsoleCursorPosition(hStdout, coord)) {
         printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -395,18 +361,15 @@ namespace ra
 #endif
     }
 
-    void pushCursorPos()
-    {
+    void pushCursorPos() {
       CursorCoordinate coord;
       getCursorPos(coord.x, coord.y);
 
       cursor_position_stack.push_back(coord);
     }
 
-    void popCursorPos()
-    {
-      if (!cursor_position_stack.empty())
-      {
+    void popCursorPos() {
+      if (!cursor_position_stack.empty()) {
         size_t offset = cursor_position_stack.size() - 1;
         const CursorCoordinate & last = cursor_position_stack[offset];
         setCursorPos(last.x, last.y);
@@ -416,8 +379,7 @@ namespace ra
       }
     }
 
-    char getAnimationSprite(double iRefreshRate)
-    {
+    char getAnimationSprite(double iRefreshRate) {
       static const char animation_sprites[] = {'-', '\\', '|', '/'};
       static const int num_animation_sprites = sizeof(animation_sprites)/sizeof(animation_sprites[0]);
       double seconds = ra::timing::getMillisecondsTimer(); //already seconds
@@ -427,17 +389,14 @@ namespace ra
       return sprite;
     }
 
-    void printAnimationCursor()
-    {
+    void printAnimationCursor() {
       pushCursorPos();
       printf("%c", getAnimationSprite(0.15));
       popCursorPos();
     }
 
-    const char * getTextColorName(const TextColor & color)
-    {
-      switch(color)
-      {
+    const char * getTextColorName(const TextColor & color) {
+      switch (color) {
       case BLACK:
         return "Black";
         break;
@@ -491,10 +450,8 @@ namespace ra
       };
     }
 
-    const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr)
-    {
-      switch(attr)
-      {
+    const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr) {
+      switch(attr) {
       case ansi::FormatAttribute::DEFAULT    : return "Default"   ; break;
       case ansi::FormatAttribute::BOLD       : return "Bold"      ; break;
       case ansi::FormatAttribute::DIM        : return "Dim"       ; break;
@@ -506,10 +463,8 @@ namespace ra
       return "Unknown";
     }
 
-    const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color)
-    {
-      switch(color)
-      {
+    const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color) {
+      switch(color) {
       case ansi::ForegroundColor::DEFAULT      : return "Default"      ; break;
       case ansi::ForegroundColor::BLACK        : return "Black"        ; break;
       case ansi::ForegroundColor::RED          : return "Red"          ; break;
@@ -531,10 +486,8 @@ namespace ra
       return "Unknown";
     }
 
-    const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color)
-    {
-      switch(color)
-      {
+    const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color) {
+      switch(color) {
       case ansi::BackgroundColor::DEFAULT      : return "Default"      ; break;
       case ansi::BackgroundColor::BLACK        : return "Black"        ; break;
       case ansi::BackgroundColor::RED          : return "Red"          ; break;
@@ -556,12 +509,10 @@ namespace ra
       return "Unknown";
     }
 
-    void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
-    {
+    void setTextColor(const TextColor & iForeground, const TextColor & iBackground) {
 #ifdef _WIN32
       WORD foreground_attribute = 0;
-      switch(iForeground)
-      {
+      switch (iForeground) {
       case BLACK:
         foreground_attribute = 0;
         break;
@@ -613,8 +564,7 @@ namespace ra
       };
 
       WORD background_attribute = 0;
-      switch(iBackground)
-      {
+      switch (iBackground) {
       case BLACK:
         background_attribute = 0;
         break;
@@ -666,14 +616,12 @@ namespace ra
       };
 
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
 
-      if (!SetConsoleTextAttribute(hStdout, foreground_attribute | background_attribute))
-      {
+      if (!SetConsoleTextAttribute(hStdout, foreground_attribute | background_attribute)) {
         printf("SetConsoleTextAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -683,8 +631,7 @@ namespace ra
       ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::DEFAULT;
 
       //foreground
-      switch(iForeground)
-      {
+      switch (iForeground) {
       case Black:
         ansi_foreground = ansi::ForegroundColor::BLACK;
         break;
@@ -736,8 +683,7 @@ namespace ra
       };
 
       //background
-      switch(iBackground)
-      {
+      switch (iBackground) {
       case Black:
         ansi_background = ansi::BackgroundColor::BLACK;
         break;
@@ -793,21 +739,18 @@ namespace ra
 #endif
     }
 
-    void getTextColor(TextColor & oForeground, TextColor & oBackground)
-    {
+    void getTextColor(TextColor & oForeground, TextColor & oBackground) {
       oForeground = GRAY;
       oBackground = BLACK;
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -816,8 +759,7 @@ namespace ra
       DWORD background_info = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
       //foreground
-      switch(foreground_info)
-      {
+      switch(foreground_info) {
       case 0:
         oForeground = BLACK;
         break;
@@ -869,8 +811,7 @@ namespace ra
       };
 
       //background
-      switch(background_info)
-      {
+      switch(background_info) {
       case 0:
         oBackground = BLACK;
         break;
@@ -927,8 +868,7 @@ namespace ra
 #endif
     }
 
-    void setDefaultTextColor()
-    {
+    void setDefaultTextColor() {
 #ifdef _WIN32
       ra::console::setTextColor(ra::console::GRAY, ra::console::BLACK);
 #elif __linux__
@@ -936,8 +876,7 @@ namespace ra
 #endif
     }
 
-    bool isDesktopGuiAvailable()
-    {
+    bool isDesktopGuiAvailable() {
 #ifdef _WIN32
       return true;
 #elif __linux__
@@ -947,8 +886,7 @@ namespace ra
 #endif
     }
 
-    bool isRunFromDesktop()
-    {
+    bool isRunFromDesktop() {
 #ifdef _WIN32
       std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
       bool has_no_prompt = prompt.empty();
@@ -962,25 +900,21 @@ namespace ra
 #endif
     }
 
-    bool hasConsoleOwnership()
-    {
+    bool hasConsoleOwnership() {
 #ifdef _WIN32
       //https://stackoverflow.com/questions/9009333/how-to-check-if-the-program-is-run-from-a-console
       HWND hConsoleWnd = GetConsoleWindow();
-      if (hConsoleWnd == NULL)
-      {
+      if (hConsoleWnd == NULL) {
         printf("Failed calling GetConsoleWindow(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
       DWORD console_process_id = 0;
-      if (!GetWindowThreadProcessId(hConsoleWnd, &console_process_id))
-      {
+      if (!GetWindowThreadProcessId(hConsoleWnd, &console_process_id)) {
         printf("Failed calling GetWindowThreadProcessId(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
       DWORD dwCurrentProcessId = GetCurrentProcessId();
-      if (dwCurrentProcessId == console_process_id)
-      {
+      if (dwCurrentProcessId == console_process_id) {
         //the current process is the process that created this console.
         return true;
       }

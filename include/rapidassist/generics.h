@@ -42,8 +42,7 @@ namespace ra
     /// </summary>
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
-    template <typename T> inline void swap(T & a, T & b)
-    {
+    template <typename T> inline void swap(T & a, T & b) {
       T tmp;
       tmp = a;
       a = b;
@@ -56,9 +55,8 @@ namespace ra
     /// <param name="low">The minimum allowed value.</param>
     /// <param name="high">The maximum allowed value.</param>
     /// <returns>Returns low if the given value is lower than low. Returns high if the given value is higher than high. Returns value otherwise.</returns>
-    template <typename T> inline T constrain(const T & value, const T & low, const T & high)
-    {
-      return (value < low ? low : (value > high ? high : value) );
+    template <typename T> inline T constrain(const T & value, const T & low, const T & high) {
+      return (value < low ? low : (value > high ? high : value));
     }
 
     /// <summary>
@@ -67,8 +65,7 @@ namespace ra
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
     /// <returns>Returns the minimum value bewteen two given values.</returns>
-    template <typename T> inline const T & minimum(const T & a, const T & b)
-    {
+    template <typename T> inline const T & minimum(const T & a, const T & b) {
       return (a < b ? a : b);
     }
 
@@ -78,8 +75,7 @@ namespace ra
     /// <param name="a">The first value.</param>
     /// <param name="b">The second value.</param>
     /// <returns>Returns the maximum value bewteen two given values.</returns>
-    template <typename T> inline const T & maximum(const T & a, const T & b)
-    {
+    template <typename T> inline const T & maximum(const T & a, const T & b) {
       return (a > b ? a : b);
     }
 
@@ -92,8 +88,7 @@ namespace ra
     /// <param name="out_min">The minimum value of the output value.</param>
     /// <param name="out_max">The maximum value of the output value.</param>
     /// <returns>Returns the output value.</returns>
-    template <typename T> inline T map(const T & x, const T & in_min, const T & in_max, const T & out_min, const T & out_max)
-    {
+    template <typename T> inline T map(const T & x, const T & in_min, const T & in_max, const T & out_min, const T & out_max) {
       T value = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
       return value;
     }
@@ -105,8 +100,7 @@ namespace ra
     /// <param name="value2">The second value.</param>
     /// <param name="epsilon">The epsilon value (tolerance).</param>
     /// <returns>Returns true if the two given number are near each other given an epsilon value.</returns>
-    template <typename T> inline bool near(const T & value1, const T & value2, const T & epsilon)
-    {
+    template <typename T> inline bool near(const T & value1, const T & value2, const T & epsilon) {
       T value1_min = value1 - epsilon;
       T value1_max = value1 + epsilon;
       if (value1_min <= value2 && value2 <= value1_max)
@@ -120,8 +114,7 @@ namespace ra
     /// </summary>
     /// <param name="value">The value to convert as another type.</param>
     /// <returns>Returns the memory representation of a given type into another type.</returns>
-    template <typename T,typename S> inline T readAs(const S & value)
-    {
+    template <typename T, typename S> inline T readAs(const S & value) {
       const void * sPtr = &value;
       const T * tPtr = static_cast<const T *>(sPtr);
       const T & tValue = (*tPtr);
@@ -133,17 +126,14 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values to flip upside down.</param>
     /// <returns>Returns copy of the list with the elements in the reserve order.</returns>
-    template <typename T> inline void reverse_vector(const std::vector<T> & input, std::vector<T> & output)
-    {
+    template <typename T> inline void reverse_vector(const std::vector<T> & input, std::vector<T> & output) {
       output.clear();
       output.reserve(input.size());
 
-      if (!input.empty())
-      {
+      if (!input.empty()) {
         //proceed with the reverseing algorithm
         size_t num_elements = input.size();
-        for(size_t i=num_elements-1; i != ra::generics::INVALID_INDEX; i--)
-        {
+        for (size_t i = num_elements - 1; i != ra::generics::INVALID_INDEX; i--) {
           const T & element = input[i];
           output.push_back(element);
         }
@@ -156,11 +146,10 @@ namespace ra
     /// <param name="values">The list of values to search.</param>
     /// <param name="value">The value that will be searched within the list.</param>
     /// <returns>Returns true if the value was found. Returns false otherwise.</returns>
-    template <typename T> inline bool hasElement(const std::vector<T> & values, const T & value)
-    {
+    template <typename T> inline bool hasElement(const std::vector<T> & values, const T & value) {
       typename std::vector<T>::const_iterator it = std::find(values.begin(), values.end(), value);
       if (it != values.end())
-	      return true;
+        return true;
       return false;
     }
 
@@ -170,11 +159,10 @@ namespace ra
     /// <param name="values">The list of values to search.</param>
     /// <param name="value">The value that will be searched within the list.</param>
     /// <returns>Returns true if the value was found. Returns false otherwise.</returns>
-    template <typename T> inline bool hasElement(const std::list<T> & values, const T & value)
-    {
+    template <typename T> inline bool hasElement(const std::list<T> & values, const T & value) {
       typename std::vector<T>::iterator it = std::find(values.begin(), values.end(), value);
       if (it != values.end())
-	      return true;
+        return true;
       return false;
     }
 
@@ -183,24 +171,20 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values to search for the value.</param>
     /// <returns>Returns the index of the maximum value. Returns ra::generics::INVALID_INDEX if not found.</returns>
-    template <typename T> inline size_t findMaxIndex(const std::vector<T> & values)
-    {
+    template <typename T> inline size_t findMaxIndex(const std::vector<T> & values) {
       size_t num_items = values.size();
       if (num_items == 0)
         return ra::generics::INVALID_INDEX;
       else if (num_items == 1)
         return 0;
-      else
-      {
+      else {
         size_t index = 0; //first value is the maximum by default
         T max_item = values[index];
-        
+
         //loop through all other values
-        for(size_t i=1; i<values.size(); i++)
-        {
+        for (size_t i = 1; i < values.size(); i++) {
           const T & item = values[i];
-          if (item > max_item)
-          {
+          if (item > max_item) {
             index = i;
             max_item = values[index];
           }
@@ -214,24 +198,20 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values to search for the value.</param>
     /// <returns>Returns the index of the minimum value. Returns ra::generics::INVALID_INDEX if not found.</returns>
-    template <typename T> inline size_t findMinIndex(const std::vector<T> & values)
-    {
+    template <typename T> inline size_t findMinIndex(const std::vector<T> & values) {
       size_t num_items = values.size();
       if (num_items == 0)
         return ra::generics::INVALID_INDEX;
       else if (num_items == 1)
         return 0;
-      else
-      {
+      else {
         size_t index = 0; //first value is the minimum by default
         T min_item = values[index];
-        
+
         //loop through all other values
-        for(size_t i=1; i<values.size(); i++)
-        {
+        for (size_t i = 1; i < values.size(); i++) {
           const T & item = values[i];
-          if (item < min_item)
-          {
+          if (item < min_item) {
             index = i;
             min_item = values[index];
           }
@@ -245,11 +225,9 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values that must be made unique.</param>
     /// <returns>Returns a copy of the given list with all the element unique.</returns>
-    template <typename T> inline std::vector<T> copyUnique(const std::vector<T> & values)
-    {
+    template <typename T> inline std::vector<T> copyUnique(const std::vector<T> & values) {
       std::vector<T> list_copy;
-      for(size_t i=0; i<values.size(); i++)
-      {
+      for (size_t i = 0; i < values.size(); i++) {
         const T & item = values[i];
         bool exists = hasElement<T>(list_copy, item);
         if (!exists)
@@ -263,38 +241,32 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values that must be made unique.</param>
     /// <returns>Returns the number of elements that was removed.</returns>
-    template <typename T> inline size_t makeUnique(std::vector<T> & values)
-    {
+    template <typename T> inline size_t makeUnique(std::vector<T> & values) {
       //search duplicate values in the list.
       std::set<T> tmp_copy;
       std::vector<size_t> duplicates;
-      for(size_t i=0; i<values.size(); i++)
-      {
+      for (size_t i = 0; i < values.size(); i++) {
         const T & item = values[i];
 
         //when a duplicate is found, keep its index value
         bool exists = (std::find(tmp_copy.begin(), tmp_copy.end(), item) != tmp_copy.end());
-        if (exists)
-        {
+        if (exists) {
           //this element is a duplicate
           duplicates.push_back(i);
         }
-        else
-        {
+        else {
           //remember this element
           tmp_copy.insert(item);
         }
       }
 
       //remove duplicates from the list
-      if (!duplicates.empty())
-      {
+      if (!duplicates.empty()) {
         //elements must be removed in the reverse order
         size_t num_duplicates = duplicates.size();
-        for(size_t i=num_duplicates-1; i != ra::generics::INVALID_INDEX; i--)
-        {
+        for (size_t i = num_duplicates - 1; i != ra::generics::INVALID_INDEX; i--) {
           const size_t & index = duplicates[i];
-          values.erase(values.begin()+index);
+          values.erase(values.begin() + index);
         }
       }
 
@@ -306,24 +278,20 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values to search for the value.</param>
     /// <returns>Returns a pointer to the maximum value. Returns NULL if not found.</returns>
-    template <typename T> inline const T * findMaxValue(const std::vector<T> & values)
-    {
+    template <typename T> inline const T * findMaxValue(const std::vector<T> & values) {
       size_t num_items = values.size();
       if (num_items == 0)
         return NULL;
       else if (num_items == 1)
         return &values[0];
-      else
-      {
+      else {
         size_t index = 0; //first value is the maximum by default
         const T * max_item = &values[index];
-        
+
         //loop through all other values
-        for(size_t i=1; i<values.size(); i++)
-        {
+        for (size_t i = 1; i < values.size(); i++) {
           const T & item = values[i];
-          if (item > (*max_item))
-          {
+          if (item > (*max_item)) {
             index = i;
             max_item = &values[index];
           }
@@ -337,24 +305,20 @@ namespace ra
     /// </summary>
     /// <param name="values">The list of values to search for the value.</param>
     /// <returns>Returns a pointer to the minimum value. Returns NULL if not found.</returns>
-    template <typename T> inline const T * findMinValue(const std::vector<T> & values)
-    {
+    template <typename T> inline const T * findMinValue(const std::vector<T> & values) {
       size_t num_items = values.size();
       if (num_items == 0)
         return NULL;
       else if (num_items == 1)
         return &values[0];
-      else
-      {
+      else {
         size_t index = 0; //first value is the minimum by default
         const T * min_item = &values[index];
-        
+
         //loop through all other values
-        for(size_t i=1; i<values.size(); i++)
-        {
+        for (size_t i = 1; i < values.size(); i++) {
           const T & item = values[i];
-          if (item < (*min_item))
-          {
+          if (item < (*min_item)) {
             index = i;
             min_item = &values[index];
           }
@@ -370,15 +334,12 @@ namespace ra
     /// <param name="iArray">The array to search into.</param>
     /// <param name="iSize">The number of elements in the array.</param>
     /// <returns>Returns list of index where the searched value was found in the given array. Returns an empty list if the value is not found.</returns>
-    template <typename T> inline std::vector<size_t> findIndexOf(const T & iValue, const T * iArray, const size_t & iSize)
-    {
+    template <typename T> inline std::vector<size_t> findIndexOf(const T & iValue, const T * iArray, const size_t & iSize) {
       std::vector<size_t> matches;
 
-      for(size_t i=0; i<iSize; i++)
-      {
+      for (size_t i = 0; i < iSize; i++) {
         const T & item = iArray[i];
-        if (item == iValue)
-        {
+        if (item == iValue) {
           matches.push_back(i);
         }
       }
@@ -393,13 +354,10 @@ namespace ra
     /// <param name="iArray">The array to search into.</param>
     /// <param name="iSize">The number of elements in the array.</param>
     /// <returns>Returns the index where the values as found in the array. Returns ra::generics::INVALID_INDEX if the value is not found.</returns>
-    template <typename T> inline size_t findFirst(const T & iValue, const T * iArray, const size_t & iSize)
-    {
-      for(size_t i=0; i<iSize; i++)
-      {
+    template <typename T> inline size_t findFirst(const T & iValue, const T * iArray, const size_t & iSize) {
+      for (size_t i = 0; i < iSize; i++) {
         const T & item = iArray[i];
-        if (item == iValue)
-        {
+        if (item == iValue) {
           return i;
         }
       }

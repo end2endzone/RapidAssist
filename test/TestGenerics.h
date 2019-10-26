@@ -29,8 +29,7 @@
 
 namespace ra { namespace generics { namespace test
 {
-  class TestGenerics : public ::testing::Test
-  {
+  class TestGenerics : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

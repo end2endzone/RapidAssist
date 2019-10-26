@@ -45,31 +45,25 @@ namespace ra
     //  Wrapper class for FILE* instance.
     //  Which automatically closes the FILE* on wrapper's destruction
     // 
-    class FileWrapper
-    {
+    class FileWrapper {
     public:
-      FileWrapper(const char * iPath, const char * iMode)
-      {
+      FileWrapper(const char * iPath, const char * iMode) {
         file_pointer_ = fopen(iPath, iMode);
       }
 
-      ~FileWrapper()
-      {
+      ~FileWrapper() {
         close();
       }
 
-      bool isEOF()
-      {
+      bool isEOF() {
         if (file_pointer_ == NULL)
           return true;
         //http://www.cplusplus.com/reference/cstdio/feof/
         return (feof(file_pointer_) != 0);
       }
 
-      void close()
-      {
-        if (file_pointer_)
-        {
+      void close() {
+        if (file_pointer_) {
           fclose(file_pointer_);
           file_pointer_ = NULL;
         }
@@ -79,20 +73,17 @@ namespace ra
       FILE * file_pointer_;
     };
 
-    std::string subString2(const std::string & iString, size_t iStart, size_t iCount)
-    {
+    std::string subString2(const std::string & iString, size_t iStart, size_t iCount) {
       std::string tmp = iString;
       tmp.substr(iStart, iCount);
       return tmp;
     }
 
-    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter)
-    {
+    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter) {
       return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
     }
 
-    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv)
-    {
+    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv) {
       //find supplied --gtest_filter argument
       std::string gtest_filter;
       bool found = ra::cli::parseArgument("gtest_filter", gtest_filter, argc, argv);
@@ -101,15 +92,13 @@ namespace ra
       return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
     }
 
-    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter)
-    {
+    std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter) {
       std::string filter;
 
       std::string positive_filter = iPositiveFilter;
       std::string negative_filter = iNegativeFilter;
 
-      if (iExistingFilter)
-      {
+      if (iExistingFilter) {
         std::string arg_positive_filter;
         std::string arg_negative_filter;
         splitFilter(iExistingFilter, arg_positive_filter, arg_negative_filter);
@@ -117,36 +106,30 @@ namespace ra
         //append argument filters to positive_filter and negative_filter filters
         if (positive_filter == "")
           positive_filter = arg_positive_filter;
-        else if (arg_positive_filter == "" || arg_positive_filter == "*")
-        {
+        else if (arg_positive_filter == "" || arg_positive_filter == "*") {
           //nothing to add since arg_positive_filter does not specify test cases
         }
-        else
-        {
+        else {
           positive_filter.append(":");
           positive_filter.append(arg_positive_filter);
         }
         if (negative_filter == "")
           negative_filter = arg_negative_filter;
-        else if (arg_negative_filter == "" || arg_negative_filter == "*")
-        {
+        else if (arg_negative_filter == "" || arg_negative_filter == "*") {
           //nothing to add since arg_negative_filter does not specify test cases
         }
-        else 
-        {
+        else {
           negative_filter.append(":");
           negative_filter.append(arg_negative_filter);
         }
       }
 
-      if (positive_filter != "" || negative_filter != "")
-      {
+      if (positive_filter != "" || negative_filter != "") {
         if (positive_filter == "")
           filter.append("*");
         else
           filter.append(positive_filter);
-        if (negative_filter != "")
-        {
+        if (negative_filter != "") {
           filter.append("-");
           filter.append(negative_filter);
         }
@@ -155,8 +138,7 @@ namespace ra
       return filter;
     }
 
-    void splitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter)
-    {
+    void splitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter) {
       oPositiveFilter = "";
       oNegativeFilter = "";
 
@@ -170,33 +152,28 @@ namespace ra
       StringVector filters;
       ra::strings::split(filters, iFilter, "-");
 
-      if (filters.size() > 2)
-      {
+      if (filters.size() > 2) {
         //something went wrong filter contains multiple '-' character
         //return the first 2 elements either way
         oPositiveFilter = filters[0].c_str();
         oNegativeFilter = filters[1].c_str();
       }
-      else if (filters.size() == 2)
-      {
+      else if (filters.size() == 2) {
         //positive and negative filter found
         oPositiveFilter = filters[0].c_str();
         oNegativeFilter = filters[1].c_str();
       }
-      else if (filters.size() == 1)
-      {
+      else if (filters.size() == 1) {
         //positive only filter found
         oPositiveFilter = filters[0].c_str();
         oNegativeFilter = "";
       }
-      else
-      {
+      else {
         //something went wrong
       }
     }
 
-    StringVector getTestList(const char * iTestCasePath)
-    {
+    StringVector getTestList(const char * iTestCasePath) {
       //check that file exists
       if (!ra::filesystem::fileExists(iTestCasePath))
         return StringVector();
@@ -235,32 +212,26 @@ namespace ra
 
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
-      while( fgets(buffer, BUFFER_SIZE, f) )
-      {
+      while (fgets(buffer, BUFFER_SIZE, f)) {
         std::string line = buffer;
         line.substr(0, line.size()-1); //remove CRLF at the end of the 
-        if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header)
-        {
+        if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header) {
           //do nothing
         }
-        else if (subString2(line, 0, 2) == "  ")
-        {
+        else if (subString2(line, 0, 2) == "  ") {
           //test case
           std::string full_test_case_name;
           full_test_case_name.append(test_suite_name);
           full_test_case_name.append(subString2(line, 2, 999));
           test_list.push_back(full_test_case_name);
         }
-        else
-        {
+        else {
           //test suite name
           test_suite_name = "";
-          if (subString2(line, 0, disabled_test_suite_header.size()) == disabled_test_suite_header)
-          {
+          if (subString2(line, 0, disabled_test_suite_header.size()) == disabled_test_suite_header) {
             //disabled test suite
           }
-          else
-          {
+          else {
             test_suite_name = line;
           }
         }
@@ -277,34 +248,29 @@ namespace ra
       return test_list;
     }
 
-    bool isFileEquals(const char* iFile1, const char* iFile2)
-    {
+    bool isFileEquals(const char* iFile1, const char* iFile2) {
       std::string reason;
-      return isFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/ );
+      return isFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/);
     }
 
-    bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason)
-    {
-      return isFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/ );
+    bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason) {
+      return isFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/);
     }
 
-    bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences)
-    {
+    bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences) {
       //Build basic message
       oReason = "";
       std::stringstream ss;
       ss << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
 
       FileWrapper f1(iFile1, "rb");
-      if (f1.file_pointer_ == NULL)
-      {
+      if (f1.file_pointer_ == NULL) {
         ss << "First file is not found.";
         oReason = ss.str();
         return false;
       }
       FileWrapper f2(iFile2, "rb");
-      if (f2.file_pointer_ == NULL)
-      {
+      if (f2.file_pointer_ == NULL) {
         ss << "Second file is not found.";
         oReason = ss.str();
         return false;
@@ -313,8 +279,7 @@ namespace ra
       //Compare by size
       long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
       long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
-      if (size1 != size2)
-      {
+      if (size1 != size2) {
         if (size1 < size2)
           ss << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
         else
@@ -327,24 +292,21 @@ namespace ra
       f1.close();
       f2.close();
       std::vector<FileDiff> differences;
-      bool success = getFileDifferences(iFile1, iFile2, differences, iMaxDifferences+1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
-      if (!success)
-      {
+      bool success = getFileDifferences(iFile1, iFile2, differences, iMaxDifferences + 1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
+      if (!success) {
         ss << "Unable to determine if content is identical...";
         oReason = ss.str();
         return false;
       }
 
-      if (differences.size() == 0)
-      {
+      if (differences.size() == 0) {
         //no diffences. Files are identicals
         return true;
       }
 
       //Build error message from differences
       ss << "Content is different: ";
-      for(size_t i=0; i<differences.size() && i<iMaxDifferences; i++)
-      {
+      for (size_t i = 0; i < differences.size() && i < iMaxDifferences; i++) {
         const FileDiff & d = differences[i];
         if (i >= 1)
           ss << ", ";
@@ -364,8 +326,7 @@ namespace ra
       return false;
     }
 
-    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences)
-    {
+    bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
       FileWrapper f1(iFile1, "rb");
       if (f1.file_pointer_ == NULL)
         return false;
@@ -376,8 +337,7 @@ namespace ra
       //Check by size
       long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
       long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
-      if (size1 != size2)
-      {
+      if (size1 != size2) {
         return false; //unsupported
       }
 
@@ -388,29 +348,24 @@ namespace ra
       size_t offsetRead = 0;
 
       //while there is data to read in files
-      while( !f1.isEOF() && !f2.isEOF() )
-      {
+      while (!f1.isEOF() && !f2.isEOF()) {
         size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, f1.file_pointer_);
         size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, f2.file_pointer_);
-        if (readSize1 != readSize2)
-        {
+        if (readSize1 != readSize2) {
           //this should not happend since both files are identical in length.
           return false; //failed
         }
         bool contentEquals = memcmp(buffer1, buffer2, readSize1) == 0;
-        if (!contentEquals)
-        {
+        if (!contentEquals) {
           //current buffers are different
 
           //Find differences and build file diff info.
-          for(size_t i = 0; i < BUFFER_SIZE; i++)
-          {
+          for (size_t i = 0; i < BUFFER_SIZE; i++) {
             unsigned char c1 = (unsigned char)buffer1[i];
             unsigned char c2 = (unsigned char)buffer2[i];
-            if (c1 != c2)
-            {
+            if (c1 != c2) {
               FileDiff d;
-              d.offset = offsetRead+i;
+              d.offset = offsetRead + i;
               d.c1 = c1;
               d.c2 = c2;
               oDifferences.push_back(d);
@@ -426,8 +381,7 @@ namespace ra
       return true;
     }
 
-    bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter)
-    {
+    bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) {
       if (!ra::filesystem::fileExists(iFilename))
         return false;
 
@@ -435,16 +389,14 @@ namespace ra
       oCharacter = -1;
 
       StringVector lines;
-      bool success = getTextFileContent( iFilename, lines );
+      bool success = getTextFileContent(iFilename, lines);
       if (!success)
         return false;
 
-      for(size_t i=0; i<lines.size(); i++)
-      {
+      for (size_t i = 0; i < lines.size(); i++) {
         const std::string & line = lines[i];
         size_t position = line.find(iValue, 0);
-        if (position != std::string::npos)
-        {
+        if (position != std::string::npos) {
           oLine = (int)i;
           oCharacter = (int)position;
           return true;
@@ -454,8 +406,7 @@ namespace ra
       return false;
     }
 
-    bool getTextFileContent(const char* iFilename, StringVector & oLines )
-    {
+    bool getTextFileContent(const char* iFilename, StringVector & oLines) {
       if (iFilename == NULL)
         return false;
 
@@ -464,22 +415,19 @@ namespace ra
       return success;
     }
 
-    bool createFile(const char * iFilePath, size_t iSize)
-    {
+    bool createFile(const char * iFilePath, size_t iSize) {
       FILE * f = fopen(iFilePath, "wb");
       if (!f)
         return false;
-      for(size_t i=0; i<iSize; i++)
-      {
-        unsigned int value = (i%256);
+      for (size_t i = 0; i < iSize; i++) {
+        unsigned int value = (i % 256);
         fwrite(&value, 1, 1, f);
       }
       fclose(f);
       return true;
     }
 
-    bool createFile(const char * iFilePath)
-    {
+    bool createFile(const char * iFilePath) {
       FILE * f = fopen(iFilePath, "w");
       if (f == NULL)
         return false;
@@ -491,8 +439,7 @@ namespace ra
       return true;
     }
 
-    void changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue)
-    {
+    void changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue) {
       //read
       FILE * f = fopen(iFilePath, "rb");
       if (!f)
@@ -516,55 +463,45 @@ namespace ra
       fclose(f);
     }
 
-    bool isProcessorX86()
-    {
+    bool isProcessorX86() {
       return environment::isProcess32Bit();
     }
 
-    bool isProcessorX64()
-    {
+    bool isProcessorX64() {
       return environment::isProcess64Bit();
     }
 
-    bool isDebugCode()
-    {
+    bool isDebugCode() {
       return environment::isConfigurationDebug();
     }
 
-    bool isReleaseCode()
-    {
+    bool isReleaseCode() {
       return environment::isConfigurationRelease();
     }
 
-    bool isAppVeyor()
-    {
+    bool isAppVeyor() {
       return !environment::getEnvironmentVariable("APPVEYOR").empty();
     }
 
-    bool isTravis()
-    {
+    bool isTravis() {
       return !environment::getEnvironmentVariable("TRAVIS").empty();
     }
 
-    bool isJenkins()
-    {
+    bool isJenkins() {
       return !environment::getEnvironmentVariable("JENKINS_URL").empty();
     }
 
-    std::string getTestSuiteName()
-    {
+    std::string getTestSuiteName() {
       std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
       return name;
     }
 
-    std::string getTestCaseName()
-    {
+    std::string getTestCaseName() {
       std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
       return name;
     }
 
-    std::string getTestQualifiedName()
-    {
+    std::string getTestQualifiedName() {
       const char * test_suite_name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
       const char * test_case_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
 

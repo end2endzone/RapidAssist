@@ -29,8 +29,7 @@
 
 namespace ra { namespace test {
 
-  class TestDemo : public ::testing::Test
-  {
+  class TestDemo : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

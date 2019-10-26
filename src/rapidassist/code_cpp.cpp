@@ -39,8 +39,7 @@ namespace ra
   {
   namespace cpp
   {
-    struct ControlCharacter
-    {
+    struct ControlCharacter {
       char c;
       const char * escape_str;
     };
@@ -60,23 +59,20 @@ namespace ra
       {'\?',"\\\?"},  //0x3F
       {'\\',"\\\\"},  //0x5C
     };
-    static const size_t gNumCtrlChars = sizeof(gCtrlChars)/sizeof(gCtrlChars[0]);
+    static const size_t gNumCtrlChars = sizeof(gCtrlChars) / sizeof(gCtrlChars[0]);
 
-    bool isPrintableCharacter(const char c)
-    {
+    bool isPrintableCharacter(const char c) {
       if (c == 39) // character ' must be escaped with \' which is not supported right now
         return false;
       if (c == 92) // character \ must be escaped with \\ which is not supported right now
         return false;
-      if (c >= 32 && c<= 126)
+      if (c >= 32 && c <= 126)
         return true;
       return false;
     }
 
-    bool isControlCharacter(char c)
-    {
-      for(size_t i=0; i<gNumCtrlChars; i++)
-      {
+    bool isControlCharacter(char c) {
+      for (size_t i = 0; i < gNumCtrlChars; i++) {
         const ControlCharacter & ctrl = gCtrlChars[i];
         if (ctrl.c == c)
           return true;
@@ -84,8 +80,7 @@ namespace ra
       return false;
     }
 
-    bool isHexCharacter(char c)
-    {
+    bool isHexCharacter(char c) {
       if (c >= '0' && c <= '9')
         return true;
       if (c >= 'a' && c <= 'f')
@@ -95,17 +90,14 @@ namespace ra
       return false;
     }
 
-    bool isDigitCharacter(char c)
-    {
+    bool isDigitCharacter(char c) {
       if (c >= '0' && c <= '9')
         return true;
       return false;
     }
 
-    const char * getControlCharacterEscapeString(char c)
-    {
-      for(size_t i=0; i<gNumCtrlChars; i++)
-      {
+    const char * getControlCharacterEscapeString(char c) {
+      for (size_t i = 0; i < gNumCtrlChars; i++) {
         const ControlCharacter & ctrl = gCtrlChars[i];
         if (ctrl.c == c)
           return ctrl.escape_str;
@@ -113,9 +105,8 @@ namespace ra
       return NULL;
     }
 
-    const char * toOctString(unsigned char c)
-    {
-      static char buffer[] = {'\\', '9', '9', '9', '\0'};
+    const char * toOctString(unsigned char c) {
+      static char buffer[] = { '\\', '9', '9', '9', '\0' };
       static const char * octal_characters = "01234567";
       buffer[3] = octal_characters[c%8];
       c /= 8;
@@ -125,9 +116,8 @@ namespace ra
       return buffer;
     }
 
-    const char * toHexString(unsigned char c)
-    {
-      static char buffer[] = {'\\', 'x', 'f', 'f', '\0'};
+    const char * toHexString(unsigned char c) {
+      static char buffer[] = { '\\', 'x', 'f', 'f', '\0' };
       static const char * hexadecimal_characters = "0123456789abcdef";
       buffer[3] = hexadecimal_characters[c%16];
       c /= 16;
@@ -135,13 +125,11 @@ namespace ra
       return buffer;
     }
 
-    std::string toOctString(const unsigned char * iBuffer, size_t iSize)
-    {
+    std::string toOctString(const unsigned char * iBuffer, size_t iSize) {
       return toOctString(iBuffer, iSize, true);
     }
 
-    std::string toOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125)
-    {
+    std::string toOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125) {
       std::string output;
 
       //estimate the size of the output string to prevent memory copy
@@ -150,50 +138,43 @@ namespace ra
       size_t estimated_string_size = iSize - non_printable_size + non_printable_size*4; //4 bytes per octal characters
       output.reserve(estimated_string_size);
 
-      enum CHARACTER_TYPE
-      {
+      enum CHARACTER_TYPE {
         OCTAL,
         CONTROL,
         PRINTABLE,
       };
 
       CHARACTER_TYPE previous = PRINTABLE;
-      for(size_t i=0; i<iSize; i++)
-      {
+      for (size_t i = 0; i < iSize; i++) {
         unsigned char c = iBuffer[i];
-        unsigned char next = iBuffer[i+1];
-        if (i+1 == iSize) //if out of scope
+        unsigned char next = iBuffer[i + 1];
+        if (i + 1 == iSize) //if out of scope
           next = '\0';
 
-        if (c == 0 && !isDigitCharacter(next))
-        {
+        if (c == 0 && !isDigitCharacter(next)) {
           //safe to encode NULL character as '\0' instead of '\000'
           output.append(getControlCharacterEscapeString(c));
           previous = OCTAL;
         }
-        else if (c == 0)
-        {
+        else if (c == 0) {
           output.append(toOctString(c));
           previous = OCTAL;
         }
-        else if (isControlCharacter(c))
-        {
+        else if (isControlCharacter(c)) {
           output.append(getControlCharacterEscapeString(c));
           previous = CONTROL;
         }
-        else if (iDisableWarningC4125 && previous == OCTAL && isDigitCharacter(c) ) //prevent warning C4125: decimal digit terminates octal escape sequence
+        else if (iDisableWarningC4125 && previous == OCTAL && isDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
         {
           //character must be encoded as octal instead of printable
           output.append(toOctString(c));
           previous = OCTAL;
         }
-        else if (isPrintableCharacter(c))
-        {
+        else if (isPrintableCharacter(c)) {
           output.append(1, c);
           previous = PRINTABLE;
         }
-        else
-        {
+        else {
           output.append(toOctString(c));
           previous = OCTAL;
         }
@@ -202,8 +183,7 @@ namespace ra
       return output;
     }
 
-    std::string toHexString(const unsigned char * iBuffer, size_t iSize)
-    {
+    std::string toHexString(const unsigned char * iBuffer, size_t iSize) {
       std::string output;
 
       //estimate the size of the output string to prevent memory copy
@@ -212,34 +192,29 @@ namespace ra
       size_t estimated_string_size = iSize - non_printable_size + non_printable_size*4; //4 bytes per hex characters
       output.reserve(estimated_string_size);
 
-      enum CHARACTER_TYPE
-      {
+      enum CHARACTER_TYPE {
         HEX,
         CONTROL,
         PRINTABLE,
       };
 
       CHARACTER_TYPE previous = PRINTABLE;
-      for(size_t i=0; i<iSize; i++)
-      {
+      for (size_t i = 0; i < iSize; i++) {
         unsigned char c = iBuffer[i];
-        unsigned char next = iBuffer[i+1];
-        if (i+1 == iSize) //if out of scope
+        unsigned char next = iBuffer[i + 1];
+        if (i + 1 == iSize) //if out of scope
           next = '\0';
 
-        if (c == 0 && !isDigitCharacter(next))
-        {
+        if (c == 0 && !isDigitCharacter(next)) {
           //safe to encode NULL character as '\0' instead of '\000'
           output.append(getControlCharacterEscapeString(c));
           previous = CONTROL;
         }
-        else if (c == 0)
-        {
+        else if (c == 0) {
           output.append(toHexString(c));
           previous = HEX;
         }
-        else if (isControlCharacter(c))
-        {
+        else if (isControlCharacter(c)) {
           output.append(getControlCharacterEscapeString(c));
           previous = CONTROL;
         }
@@ -250,13 +225,11 @@ namespace ra
           output.append(toHexString(c));
           previous = HEX;
         }
-        else if (isPrintableCharacter(c))
-        {
+        else if (isPrintableCharacter(c)) {
           output.append(1, c);
           previous = PRINTABLE;
         }
-        else
-        {
+        else {
           output.append(toHexString(c));
           previous = HEX;
         }
@@ -265,12 +238,10 @@ namespace ra
       return output;
     }
 
-    std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize)
-    {
+    std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize) {
       std::ostringstream oss;
 
-      for(size_t i=0; i<iSize; i++)
-      {
+      for (size_t i = 0; i < iSize; i++) {
         unsigned char c = iBuffer[i];
 
         if (isPrintableCharacter((char)c))
@@ -278,7 +249,7 @@ namespace ra
         else
           oss << (int)c; //print as decimal value
 
-        size_t lastByteIndex = iSize-1;
+        size_t lastByteIndex = iSize - 1;
 
         if (i != lastByteIndex)
           oss << ",";

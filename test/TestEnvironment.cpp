@@ -29,16 +29,13 @@ namespace ra { namespace environment { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestEnvironment::SetUp()
-  {
+  void TestEnvironment::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestEnvironment::TearDown()
-  {
+  void TestEnvironment::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testGetEnvironmentVariable)
-  {
+  TEST_F(TestEnvironment, testGetEnvironmentVariable) {
     //test NULL
     {
       static const std::string EXPECTED = "";
@@ -74,128 +71,121 @@ namespace ra { namespace environment { namespace test
     }
 #endif
   }
-  TEST_F(TestEnvironment, testSetEnvironmentVariable)
-  {
+  TEST_F(TestEnvironment, testSetEnvironmentVariable) {
     const char * name = "RAPIDASSIST_FOO";
-     
+
     //test basic set
     {
       //make sure the variable **is not** defined
       std::string actual = environment::getEnvironmentVariable(name);
       ASSERT_EQ("", actual);
- 
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR") );
+
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR"));
       ASSERT_EQ("BAR", environment::getEnvironmentVariable(name));
     }
- 
+
     //test delete
     {
       //make sure the variable **is** defined
       std::string actual = environment::getEnvironmentVariable(name);
       ASSERT_NE("", actual);
- 
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "") );
+
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, ""));
       ASSERT_EQ("", environment::getEnvironmentVariable(name));
     }
- 
+
     //test NULL
     {
-      ASSERT_FALSE( environment::setEnvironmentVariable( (const char *)(NULL), (const char *)(NULL) ) );
-      ASSERT_TRUE(  environment::setEnvironmentVariable(name, (const char *)(NULL) ) );
+      ASSERT_FALSE(environment::setEnvironmentVariable((const char *)(NULL), (const char *)(NULL)));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, (const char *)(NULL)));
     }
- 
+
     //test empty string
     {
-      ASSERT_FALSE( environment::setEnvironmentVariable("", (const char *)(NULL) ) );
+      ASSERT_FALSE(environment::setEnvironmentVariable("", (const char *)(NULL)));
     }
- 
+
     //test override
     {
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR2") );
- 
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR1"));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR2"));
+
       ASSERT_EQ("BAR2", environment::getEnvironmentVariable(name));
     }
 
     //test small integer
     {
       const int value = 42;
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
- 
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR1"));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, value));
+
       ASSERT_EQ("42", environment::getEnvironmentVariable(name));
     }
 
     //test big integers
     {
       const int64_t value = 9223372036854775807;
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
- 
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR1"));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, value));
+
       ASSERT_EQ("9223372036854775807", environment::getEnvironmentVariable(name));
     }
 
     //test float
     {
       const float value = 1.2f; // that is "1.20000005". Should be rounded to 1.2.
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
- 
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR1"));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, value));
+
       ASSERT_EQ("1.2", environment::getEnvironmentVariable(name));
     }
 
     //test double
     {
       const float value = 1.7f;
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, "BAR1") );
-      ASSERT_TRUE( environment::setEnvironmentVariable(name, value) );
- 
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, "BAR1"));
+      ASSERT_TRUE(environment::setEnvironmentVariable(name, value));
+
       ASSERT_EQ("1.7", environment::getEnvironmentVariable(name));
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testProcessXXBit)
-  {
-    if (environment::isProcess32Bit())
-    {
+  TEST_F(TestEnvironment, testProcessXXBit) {
+    if (environment::isProcess32Bit()) {
       ASSERT_FALSE(environment::isProcess64Bit());
       ASSERT_EQ(4, sizeof(void*));
     }
-    else if (environment::isProcess64Bit())
-    {
+    else if (environment::isProcess64Bit()) {
       ASSERT_FALSE(environment::isProcess32Bit());
       ASSERT_EQ(8, sizeof(void*));
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testGetLineSeparator)
-  {
+  TEST_F(TestEnvironment, testGetLineSeparator) {
     const char * separator = environment::getLineSeparator();
-    ASSERT_TRUE( separator != NULL );
-    ASSERT_TRUE( !std::string(separator).empty() );
+    ASSERT_TRUE(separator != NULL);
+    ASSERT_TRUE(!std::string(separator).empty());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testGetEnvironmentVariables)
-  {
+  TEST_F(TestEnvironment, testGetEnvironmentVariables) {
     ra::strings::StringVector variables = environment::getEnvironmentVariables();
-    ASSERT_GT( variables.size(), 0 );
+    ASSERT_GT(variables.size(), 0);
 
     //find 3 expected names in the list
     bool found1 = false;
     bool found2 = false;
     bool found3 = false;
-    #ifdef _WIN32
+#ifdef _WIN32
     static const char * variable1 = "USERNAME";
     static const char * variable2 = "TEMP";
     static const char * variable3 = "Path";
-    #else
+#else
     static const char * variable1 = "USER";
     static const char * variable2 = "HOME";
     static const char * variable3 = "PATH";
-    #endif
+#endif
     std::string variable_list; //build a list of all found variables in case of a failure.
-    for(size_t i=0; i<variables.size(); i++)
-    {
+    for (size_t i = 0; i < variables.size(); i++) {
       const std::string & value = variables[i];
 
       //build a list of all found variables in case of a failure.
@@ -217,18 +207,17 @@ namespace ra { namespace environment { namespace test
 
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testExpand)
-  {
+  TEST_F(TestEnvironment, testExpand) {
     //expand strings that contains 3 expected variable names
-    #ifdef _WIN32
+#ifdef _WIN32
     static const char * variable1 = "%USERNAME%";
     static const char * variable2 = "%TEMP%";
     static const char * variable3 = "%Path%";
-    #else
+#else
     static const char * variable1 = "$USER";
     static const char * variable2 = "$HOME";
     static const char * variable3 = "$PATH";
-    #endif
+#endif
 
     std::string raw_string1 = std::string("<") + variable1 + ">";
     std::string raw_string2 = std::string("<") + variable2 + ">";
@@ -238,9 +227,9 @@ namespace ra { namespace environment { namespace test
     std::string expanded_string2 = ra::environment::expand(raw_string2);
     std::string expanded_string3 = ra::environment::expand(raw_string3);
 
-    ASSERT_NE( raw_string1, expanded_string1 ) << "raw_string1=" << raw_string1.c_str();
-    ASSERT_NE( raw_string2, expanded_string2 ) << "raw_string2=" << raw_string2.c_str();
-    ASSERT_NE( raw_string3, expanded_string3 ) << "raw_string3=" << raw_string3.c_str();
+    ASSERT_NE(raw_string1, expanded_string1) << "raw_string1=" << raw_string1.c_str();
+    ASSERT_NE(raw_string2, expanded_string2) << "raw_string2=" << raw_string2.c_str();
+    ASSERT_NE(raw_string3, expanded_string3) << "raw_string3=" << raw_string3.c_str();
 
   }
   //--------------------------------------------------------------------------------------------------

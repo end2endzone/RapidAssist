@@ -35,15 +35,15 @@ namespace ra
     /// <summary>
     /// Cross-platform system error code type.
     /// </summary>
-    #ifdef _WIN32
-      typedef uint32_t errorcode_t; //GetLastError() returns a DWORD which is unsigned 32 bit
-    #else
-      typedef int errorcode_t; //errno is a macro that evaluates to int
-    #endif
+#ifdef _WIN32
+    typedef uint32_t errorcode_t; //GetLastError() returns a DWORD which is unsigned 32 bit
+#else
+    typedef int errorcode_t; //errno is a macro that evaluates to int
+#endif
 
-    /// <summary>
-    /// Reset the system's last error code.
-    /// </summary>
+/// <summary>
+/// Reset the system's last error code.
+/// </summary>
     void resetLastErrorCode();
 
     /// <summary>

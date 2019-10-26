@@ -35,47 +35,42 @@ namespace ra { namespace errors { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestErrors::SetUp()
-  {
+  void TestErrors::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestErrors::TearDown()
-  {
+  void TestErrors::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestErrors, testErrorsDescriptions)
-  {
-    for(errorcode_t i=0; i<10; i++)
-    {
+  TEST_F(TestErrors, testErrorsDescriptions) {
+    for (errorcode_t i = 0; i < 10; i++) {
       std::string desc = ra::errors::getErrorCodeDescription(i);
-      ASSERT_TRUE( !desc.empty() );
+      ASSERT_TRUE(!desc.empty());
       printf("Error code 0x%x: %s\n", i, desc.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestErrors, testRaisingErrorCode)
-  {
+  TEST_F(TestErrors, testRaisingErrorCode) {
     ra::errors::resetLastErrorCode();
 
-    #ifdef _WIN32
+#ifdef _WIN32
     {
       const char * file_path = "c:\\foo\\bar\\baz\\create_file_not_found\\myfile.dat";
       HANDLE hFile = CreateFile(
-          file_path,              // name of the write
-          GENERIC_WRITE,          // open for writing
-          0,                      // do not share
-          NULL,                   // default security
-          CREATE_NEW,             // create new file only
-          FILE_ATTRIBUTE_NORMAL,  // normal file
-          NULL);                  // no attr. template
+        file_path,              // name of the write
+        GENERIC_WRITE,          // open for writing
+        0,                      // do not share
+        NULL,                   // default security
+        CREATE_NEW,             // create new file only
+        FILE_ATTRIBUTE_NORMAL,  // normal file
+        NULL);                  // no attr. template
     }
-    #else
+#else
     double not_a_number = std::log(-1.0);
-    #endif
+#endif
 
     errorcode_t error_code = ra::errors::getLastErrorCode();
     std::string desc = ra::errors::getErrorCodeDescription(error_code);
-    ASSERT_NE( 0, error_code ) << "Failed. The function is expecting a non-zero error code. Received error_code " << error_code << ", '" << desc << "'.";
+    ASSERT_NE(0, error_code) << "Failed. The function is expecting a non-zero error code. Received error_code " << error_code << ", '" << desc << "'.";
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

@@ -31,16 +31,13 @@ namespace ra { namespace console { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestConsole::SetUp()
-  {
+  void TestConsole::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestConsole::TearDown()
-  {
+  void TestConsole::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testZeroBased)
-  {
+  TEST_F(TestConsole, testZeroBased) {
     //set x to the far left
     printf("Running test %s()\n", ra::testing::getTestQualifiedName().c_str());
 
@@ -51,12 +48,11 @@ namespace ra { namespace console { namespace test
     ASSERT_EQ(0, after_x);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetCursorPosYAxis)
-  {
+  TEST_F(TestConsole, testGetCursorPosYAxis) {
     int before_x = 0;
     int before_y = 0;
     ra::console::getCursorPos(before_x, before_y);
-    
+
     printf("Line1\nLine2\n");
 
     int after_x = 0;
@@ -69,23 +65,20 @@ namespace ra { namespace console { namespace test
     int width = -1;
     int height = -1;
     ra::console::getDimension(width, height);
-    if (after_y == height)
-    {
+    if (after_y == height) {
       printf("inconclusive...\n");
     }
-    else
-    {
+    else {
       //test proceed as normal
       ASSERT_LT(before_y, after_y);
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetCursorPosXAxis)
-  {
+  TEST_F(TestConsole, testGetCursorPosXAxis) {
     int before_x = 0;
     int before_y = 0;
     ra::console::getCursorPos(before_x, before_y);
-    
+
     printf("Offset1");
 
     int after_x = 0;
@@ -97,16 +90,14 @@ namespace ra { namespace console { namespace test
     ASSERT_LT(before_x, after_x);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetCursorPosPerformance)
-  {
+  TEST_F(TestConsole, testGetCursorPosPerformance) {
     //loop for 3 seconds
     static const double time_length = 3.0; //seconds
     double time_start = ra::timing::getMicrosecondsTimer();
     double time_end = time_start + time_length;
 
     int loop_count = 0;
-    while( ra::timing::getMicrosecondsTimer() < time_end )
-    {
+    while (ra::timing::getMicrosecondsTimer() < time_end) {
       int before_x = 0;
       int before_y = 0;
       ra::console::getCursorPos(before_x, before_y);
@@ -120,14 +111,13 @@ namespace ra { namespace console { namespace test
     printf("Time per getCursorPos() calls: %.6fus\n", timePerCallMicro);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, DISABLED_testSetCursorPos)
-  {
+  TEST_F(TestConsole, DISABLED_testSetCursorPos) {
     printf("Running test %s()", ra::testing::getTestQualifiedName().c_str());
 
     int before_x = 0;
     int before_y = 0;
     ra::console::getCursorPos(before_x, before_y);
-    
+
     ra::console::setCursorPos(0, before_y);
 
     //erase running
@@ -143,32 +133,28 @@ namespace ra { namespace console { namespace test
     ASSERT_EQ(before_y, after_y);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetDimension)
-  {
+  TEST_F(TestConsole, testGetDimension) {
     int width = -1;
     int height = -1;
     ra::console::getDimension(width, height);
     printf("Console dimension: %dx%d\n", width, height);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetAnimationSpriteLoop)
-  {
+  TEST_F(TestConsole, testGetAnimationSpriteLoop) {
     static const double refreshrate = 0.01;
     static int MAX_LOOP_COUNT = 100000;
     char current = ra::console::getAnimationSprite(refreshrate);
 
     //wait for the sprite to change
     int loopcount = 0;
-    while(current == ra::console::getAnimationSprite(refreshrate) && loopcount <= MAX_LOOP_COUNT)
-    {
+    while (current == ra::console::getAnimationSprite(refreshrate) && loopcount <= MAX_LOOP_COUNT) {
       loopcount++;
     }
     ASSERT_NE(loopcount, MAX_LOOP_COUNT);
 
     //wait for returning to the first frame
     loopcount = 0;
-    while(current != ra::console::getAnimationSprite(refreshrate) && loopcount <= MAX_LOOP_COUNT)
-    {
+    while (current != ra::console::getAnimationSprite(refreshrate) && loopcount <= MAX_LOOP_COUNT) {
       loopcount++;
     }
     ASSERT_NE(loopcount, MAX_LOOP_COUNT);
@@ -176,23 +162,20 @@ namespace ra { namespace console { namespace test
     //loop completed
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testPrintAnimationCursor)
-  {
+  TEST_F(TestConsole, testPrintAnimationCursor) {
     static const double MAX_TIME_SECONDS = 3.0; //maximum running time of the test in seconds
 
     double time_start = ra::timing::getMillisecondsTimer();
     double time_end = time_start + MAX_TIME_SECONDS;
 
-    while(ra::timing::getMillisecondsTimer() < time_end)
-    {
+    while (ra::timing::getMillisecondsTimer() < time_end) {
       ra::console::printAnimationCursor();
       ra::timing::millisleep(80);
     }
     printf("\n");
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, DISABLED_testAllAnsiColors)
-  {
+  TEST_F(TestConsole, DISABLED_testAllAnsiColors) {
     int format_attributes[] = {
       ansi::FormatAttribute::DEFAULT,
       ansi::FormatAttribute::BOLD,
@@ -202,7 +185,7 @@ namespace ra { namespace console { namespace test
       //ansi::FormatAttribute::REVERSE,
       //ansi::FormatAttribute::HIDDEN,
     };
-    int format_attributes_count = sizeof(format_attributes)/sizeof(format_attributes[0]);
+    int format_attributes_count = sizeof(format_attributes) / sizeof(format_attributes[0]);
 
     int foreground_colors[] = {
       //ansi::ForegroundColor::DEFAULT,
@@ -223,7 +206,7 @@ namespace ra { namespace console { namespace test
       ansi::ForegroundColor::LIGHT_CYAN,
       ansi::ForegroundColor::WHITE,
     };
-    int foreground_colors_count = sizeof(foreground_colors)/sizeof(foreground_colors[0]);
+    int foreground_colors_count = sizeof(foreground_colors) / sizeof(foreground_colors[0]);
 
     int background_colors[] = {
       //ansi::BackgroundColor::DEFAULT,
@@ -244,14 +227,11 @@ namespace ra { namespace console { namespace test
       ansi::BackgroundColor::LIGHT_CYAN,
       ansi::BackgroundColor::WHITE,
     };
-    int background_colors_count = sizeof(background_colors)/sizeof(background_colors[0]);
+    int background_colors_count = sizeof(background_colors) / sizeof(background_colors[0]);
 
-    for(int j=0; j<foreground_colors_count; j++)
-    {
-      for(int k=0; k<background_colors_count; k++)
-      {
-        for(int i=0; i<format_attributes_count; i++)
-        {
+    for (int j = 0; j < foreground_colors_count; j++) {
+      for (int k = 0; k < background_colors_count; k++) {
+        for (int i = 0; i < format_attributes_count; i++) {
           ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::Attr(format_attributes[i]);
           ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::Color(foreground_colors[j]);
           ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::Color(background_colors[k]);
@@ -265,8 +245,7 @@ namespace ra { namespace console { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testTextGroundColor)
-  {
+  TEST_F(TestConsole, testTextGroundColor) {
     int color_first = (int)ra::console::BLACK;
     int color_last = NUM_TEXT_COLOR - 1;
 
@@ -283,27 +262,25 @@ namespace ra { namespace console { namespace test
     //}
 
     //all foreground colors
-    for(int i=color_first; i <= color_last; i++)
-    {
+    for (int i = color_first; i <= color_last; i++) {
       ra::console::TextColor foreground = (ra::console::TextColor)i;
       ra::console::TextColor background = ra::console::BLACK;
       if (foreground == ra::console::BLACK)
         background = ra::console::WHITE;
       ra::console::setTextColor(foreground, background);
-      printf("%s ", ra::console::getTextColorName(foreground)); 
+      printf("%s ", ra::console::getTextColorName(foreground));
     }
     ra::console::setDefaultTextColor();
     printf("\n");
 
     //all background colors
-    for(int i=color_first; i <= color_last; i++)
-    {
+    for (int i = color_first; i <= color_last; i++) {
       ra::console::TextColor foreground = ra::console::BLACK;
       ra::console::TextColor background = (ra::console::TextColor)i;
       if (background == ra::console::BLACK)
         foreground = ra::console::WHITE;
       ra::console::setTextColor(foreground, background);
-      printf("%s ", ra::console::getTextColorName(background)); 
+      printf("%s ", ra::console::getTextColorName(background));
     }
     ra::console::setDefaultTextColor();
     printf("\n");
@@ -313,25 +290,22 @@ namespace ra { namespace console { namespace test
     printf("Back to normal...\n");
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testDesktopConsole)
-  {
+  TEST_F(TestConsole, testDesktopConsole) {
     printf("isDesktopGuiAvailable()=%d\n", ra::console::isDesktopGuiAvailable());
     printf("isRunFromDesktop()=%d\n", ra::console::isRunFromDesktop());
     printf("hasConsoleOwnership()=%d\n", ra::console::hasConsoleOwnership());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testWaitKeyPress)
-  {
+  TEST_F(TestConsole, testWaitKeyPress) {
     printf("Press 10 keys to continue. Pressing 2+ bytes keys will only register the first key.\n");
-    
+
     int line = 0;
-    for(int i=0; i<10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
       int keycode = ra::console::waitKeyPress();
       char c = (char)keycode;
       line++;
-      line = line%256;
-      
+      line = line % 256;
+
       if (c != 0x1B)
         printf("line=%03d, key=0x%x(hex) %d(dec) '%c'\n", line, keycode, keycode, c);
       else

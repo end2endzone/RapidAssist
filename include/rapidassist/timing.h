@@ -36,8 +36,7 @@ namespace ra
     /// <summary>
     /// DateTime stucture with human readable values
     /// </summary>
-    struct DateTime
-    {
+    struct DateTime {
       uint16_t year;  // year - [0, 65000]
       uint16_t month; // month of the year - [1,12]
       uint16_t day;   // day of the month - [1,31]

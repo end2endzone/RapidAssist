@@ -38,39 +38,35 @@ namespace ra
   namespace errors
   {
 
-    void resetLastErrorCode()
-    {
-      #ifdef _WIN32
+    void resetLastErrorCode() {
+#ifdef _WIN32
       static DWORD last_error = 0;
       SetLastError(last_error);
-      #else
+#else
       errno = 0;
-      #endif
+#endif
     }
 
-    errorcode_t getLastErrorCode()
-    {
-      #ifdef _WIN32
+    errorcode_t getLastErrorCode() {
+#ifdef _WIN32
       DWORD last_error = ::GetLastError();
       errorcode_t errcode = static_cast<errorcode_t>(last_error);
       return errcode;
-      #else
+#else
       int error_number = errno;
       errorcode_t errcode = static_cast<errorcode_t>(error_number);
       return errcode;
-      #endif
+#endif
     }
 
-    std::string getLastErrorDescription()
-    {
+    std::string getLastErrorDescription() {
       errorcode_t code = getLastErrorCode();
       std::string desc = getErrorCodeDescription(code);
       return desc;
     }
 
-    std::string getErrorCodeDescription(errorcode_t code)
-    {
-      #ifdef _WIN32
+    std::string getErrorCodeDescription(errorcode_t code) {
+#ifdef _WIN32
       DWORD last_error = static_cast<DWORD>(code);
       const DWORD error_buffer_size = 10240;
       char error_buffer[error_buffer_size] = {0};
@@ -84,11 +80,11 @@ namespace ra
       ra::strings::removeEOL(error_buffer); //error message have a CRLF at the end.
       std::string error_desc = error_buffer;
       return error_desc;
-      #else
+#else
       int error_number = static_cast<int>(code);
       std::string desc = strerror(error_number);
       return desc;
-      #endif
+#endif
     }
 
   } //namespace errors

@@ -36,8 +36,7 @@ namespace ra
 {
   namespace testing
   {
-    struct FileDiff
-    {
+    struct FileDiff {
       size_t offset;    //offset in files where a difference is located
       unsigned char c1; //character of first  file
       unsigned char c2; //character of second file
@@ -85,7 +84,7 @@ namespace ra
     //   iFilename:   The path of the file.
     //   oLines:      The content of the file line by line.
     // 
-    bool getTextFileContent(const char* iFilename, StringVector & oLines );
+    bool getTextFileContent(const char* iFilename, StringVector & oLines);
 
     //
     // Description:

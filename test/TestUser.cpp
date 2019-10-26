@@ -29,16 +29,13 @@
 namespace ra { namespace user { namespace test
 {
   //--------------------------------------------------------------------------------------------------
-  void TestUser::SetUp()
-  {
+  void TestUser::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestUser::TearDown()
-  {
+  void TestUser::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestUser, printValues)
-  {
+  TEST_F(TestUser, printValues) {
     std::string home_dir = ra::user::getHomeDirectory();
     std::string  app_dir = ra::user::getApplicationsDataDirectory();
     std::string docs_dir = ra::user::getDocumentsDirectory();
@@ -46,28 +43,27 @@ namespace ra { namespace user { namespace test
     std::string username = ra::user::getUsername();
 
     printf("home_dir: %s\n", home_dir.c_str());
-    printf(" app_dir: %s\n",  app_dir.c_str());
+    printf(" app_dir: %s\n", app_dir.c_str());
     printf("docs_dir: %s\n", docs_dir.c_str());
     printf("desk_dir: %s\n", desk_dir.c_str());
     printf("username: %s\n", username.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestUser, testDirectoriesExisting)
-  {
+  TEST_F(TestUser, testDirectoriesExisting) {
     std::string home_dir = ra::user::getHomeDirectory();
     std::string  app_dir = ra::user::getApplicationsDataDirectory();
     std::string docs_dir = ra::user::getDocumentsDirectory();
     std::string desk_dir = ra::user::getDesktopDirectory();
 
-    ASSERT_FALSE( home_dir.empty() );
-    ASSERT_FALSE(  app_dir.empty() );
-    ASSERT_FALSE( docs_dir.empty() );
-    ASSERT_FALSE( desk_dir.empty() );
+    ASSERT_FALSE(home_dir.empty());
+    ASSERT_FALSE(app_dir.empty());
+    ASSERT_FALSE(docs_dir.empty());
+    ASSERT_FALSE(desk_dir.empty());
 
-    ASSERT_TRUE( ra::filesystem::directoryExists(home_dir.c_str()) ) << "Failed. Directory '" << home_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::directoryExists( app_dir.c_str()) ) << "Failed. Directory '" <<  app_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::directoryExists(docs_dir.c_str()) ) << "Failed. Directory '" << docs_dir << "' does not exists!";
-    ASSERT_TRUE( ra::filesystem::directoryExists(desk_dir.c_str()) ) << "Failed. Directory '" << desk_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::directoryExists(home_dir.c_str())) << "Failed. Directory '" << home_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::directoryExists(app_dir.c_str())) << "Failed. Directory '" << app_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::directoryExists(docs_dir.c_str())) << "Failed. Directory '" << docs_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::directoryExists(desk_dir.c_str())) << "Failed. Directory '" << desk_dir << "' does not exists!";
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

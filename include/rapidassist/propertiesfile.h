@@ -33,8 +33,7 @@ namespace ra
   namespace filesystem
   {
 
-    class PropertiesFile
-    {
+    class PropertiesFile {
     public:
       PropertiesFile();
       virtual ~PropertiesFile();

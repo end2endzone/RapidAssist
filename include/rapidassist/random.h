@@ -85,11 +85,9 @@ namespace ra
     void getRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols);
     std::string getRandomString(size_t iMaxLen, const char* iSymbols);
 
-    class SymbolsFlags
-    {
+    class SymbolsFlags {
     public:
-      enum Flags
-      {
+      enum Flags {
         LETTERS_LOWERCASE=1,  //lowercase letters
         LETTERS_UPPERCASE=2,  //uppercase letters
         NUMBERS=4,            //numbers from 0 to 9
