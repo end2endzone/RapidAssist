@@ -54,29 +54,25 @@ namespace ra
 {
   namespace console
   {
-    struct CursorCoordinate
-    {
+    struct CursorCoordinate {
       int x;
       int y;
     };
 
     std::vector<CursorCoordinate> gCursorPositionStack;
 
-    void getCursorPos(int & col, int & row)
-    {
+    void getCursorPos(int & col, int & row) {
       col = 0;
       row = 0;
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -98,18 +94,16 @@ namespace ra
       int loopcount = 0;
       bool success = false;
       char buf[32];
-      while(!success && loopcount < MAX_LOOP_COUNT)
-      {
+      while (!success && loopcount < MAX_LOOP_COUNT) {
         ssize_t numWrite = write(0, "\033[6n", 4);
         fflush(stdout);
 
         ssize_t numRead = 0;
         if (numWrite == 4)
-          numRead = read(0, buf, sizeof(buf)-1);
+          numRead = read(0, buf, sizeof(buf) - 1);
 
         //validate format \033[63;1R
-        if(numWrite == 4 && numRead >= 6 && buf[0] == '\033' && buf[numRead - 1] == 'R')
-        {
+        if (numWrite == 4 && numRead >= 6 && buf[0] == '\033' && buf[numRead - 1] == 'R') {
           buf[0] = '!'; //in case we want to print buf for debugging
           buf[numRead] = '\0';
 
@@ -124,8 +118,7 @@ namespace ra
 
           //parse row
           row = 0;
-          while (nextchar[0] >= '0' && nextchar[0] <= '9')
-          {
+          while (nextchar[0] >= '0' && nextchar[0] <= '9') {
             row = 10 * row + nextchar[0] - '0';
             nextchar++; //next character
           }
@@ -137,8 +130,7 @@ namespace ra
 
           //parse col
           col = 0;
-          while (nextchar[0] >= '0' && nextchar[0] <= '9')
-          {
+          while (nextchar[0] >= '0' && nextchar[0] <= '9') {
             col = 10 * col + nextchar[0] - '0';
             nextchar++; //next character
           }
@@ -152,27 +144,23 @@ namespace ra
 
       tcsetattr(0, TCSANOW, &torig);
 
-      if (success)
-      {
+      if (success) {
         col--; //convert from ANSI 1-based to 0-based
       }
 #endif
     }
 
-    void setCursorPos(const int & col, const int & row)
-    {
+    void setCursorPos(const int & col, const int & row) {
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
       COORD coord;
       coord.X = col;
       coord.Y = row;
-      if (!SetConsoleCursorPosition(hStdout, coord))
-      {
+      if (!SetConsoleCursorPosition(hStdout, coord)) {
         printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -181,20 +169,17 @@ namespace ra
 #endif
     }
 
-    void getDimension(int & width, int & height)
-    {
+    void getDimension(int & width, int & height) {
       width = 0;
       height = 0;
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -209,20 +194,18 @@ namespace ra
     }
 
 #ifdef _WIN32
-    char my_getch()
-    {
+    char my_getch() {
       char c = (char)_getch();
       return c;
     }
-    
-    int my_kbhit()
-    {
+
+    int my_kbhit() {
       int hits = _kbhit();
       return hits;
     }
-    
+
 #else
-    /** 
+    /**
      * Set a file descriptor to blocking or non-blocking mode.
      * http://code.activestate.com/recipes/577384-setting-a-file-descriptor-to-blocking-or-non-block/
      *
@@ -231,8 +214,7 @@ namespace ra
      *
      * @return 1:success, 0:failure.
      **/
-    int fd_set_blocking(int fd, int blocking)
-    {
+    int fd_set_blocking(int fd, int blocking) {
       /* Save the current flags */
       int flags = fcntl(fd, F_GETFL, 0);
       if (flags == -1)
@@ -246,43 +228,39 @@ namespace ra
     }
 
     //https://stackoverflow.com/questions/9429138/non-blocking-keyboard-read-c-c/28222851
-    char my_getch()
-    {
+    char my_getch() {
       int kfd = STDIN_FILENO;
       struct termios cooked, raw;
       char c;
-      
+
       // remember console settings to get back to a 'sane' configuration
-      if (tcgetattr(kfd, &cooked) < 0)
-      {
+      if (tcgetattr(kfd, &cooked) < 0) {
         perror("tcgetattr()");
         return '\0';
       }
-      
+
       // set the console in raw mode
       memcpy(&raw, &cooked, sizeof(struct termios));
       raw.c_lflag &= ~(ICANON | ECHO);
-      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
-      {
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0) {
         perror("tcsetattr()");
 
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return '\0';
       }
 
       // get the next event from the keyboard
-      if (read(kfd, &c, 1) < 0)
-      {
+      if (read(kfd, &c, 1) < 0) {
         perror("read():");
 
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return '\0';
       }
-      
+
       // reset console to its original mode before leaving the function
       if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
         perror("tcsetattr()");
@@ -290,41 +268,38 @@ namespace ra
       return c;
     }
 
-    int my_kbhit()
-    {
+    int my_kbhit() {
       int kfd = STDIN_FILENO;
       struct termios cooked, raw;
       char c;
-      
+
       // remember console settings to get back to previous configuration
       if (tcgetattr(kfd, &cooked) < 0)
         perror("tcgetattr()");
-      
+
       // turn off line buffering
       memcpy(&raw, &cooked, sizeof(struct termios));
       raw.c_lflag &= ~(ICANON);
-      if (tcsetattr(kfd, TCSANOW, &raw) < 0)
-      {
+      if (tcsetattr(kfd, TCSANOW, &raw) < 0) {
         perror("tcsetattr()");
-        
+
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return 0;
       }
 
       // get the number of bytes waiting to be readed
       int bytes_waiting = 0;
-      if (ioctl(kfd, FIONREAD, &bytes_waiting) < 0)
-      {
+      if (ioctl(kfd, FIONREAD, &bytes_waiting) < 0) {
         perror("tcsetattr()");
-        
+
         // reset console to its original mode before leaving the function
         tcsetattr(kfd, TCSANOW, &cooked);
-        
+
         return 0;
       }
-      
+
       // reset console to its original mode before leaving the function
       if (tcsetattr(kfd, TCSANOW, &cooked) < 0)
         perror("tcsetattr()");
@@ -333,12 +308,10 @@ namespace ra
     }
 #endif
 
-    int waitKeyPress()
-    {
+    int waitKeyPress() {
       //empty input buffer first
       int key = 0;
-      while(my_kbhit())
-      {
+      while (my_kbhit()) {
         key = my_getch();
       }
 
@@ -346,21 +319,18 @@ namespace ra
       key = my_getch();
       return key;
     }
-    
-    void clearScreen()
-    {
+
+    void clearScreen() {
       //system("cls");
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -368,23 +338,19 @@ namespace ra
       DWORD dwNumberOfCharsWritten;
       DWORD dwConSize;
       dwConSize = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
-      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), dwConSize, coord, &dwNumberOfCharsWritten))
-      {
+      if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), dwConSize, coord, &dwNumberOfCharsWritten)) {
         printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, dwConSize, coord, &dwNumberOfCharsWritten))
-      {
+      if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, dwConSize, coord, &dwNumberOfCharsWritten)) {
         printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      if (!SetConsoleCursorPosition(hStdout, coord))
-      {
+      if (!SetConsoleCursorPosition(hStdout, coord)) {
         printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -394,18 +360,15 @@ namespace ra
 #endif
     }
 
-    void pushCursorPos()
-    {
+    void pushCursorPos() {
       CursorCoordinate coord;
       getCursorPos(coord.x, coord.y);
 
       gCursorPositionStack.push_back(coord);
     }
 
-    void popCursorPos()
-    {
-      if (!gCursorPositionStack.empty())
-      {
+    void popCursorPos() {
+      if (!gCursorPositionStack.empty()) {
         size_t offset = gCursorPositionStack.size() - 1;
         const CursorCoordinate & last = gCursorPositionStack[offset];
         setCursorPos(last.x, last.y);
@@ -415,28 +378,24 @@ namespace ra
       }
     }
 
-    char getAnimationSprite(double iRefreshRate)
-    {
-      static const char gAnimationSprites[] = {'-', '\\', '|', '/'};
-      static const int gNumAnimationSprites = sizeof(gAnimationSprites)/sizeof(gAnimationSprites[0]);
+    char getAnimationSprite(double iRefreshRate) {
+      static const char gAnimationSprites[] = { '-', '\\', '|', '/' };
+      static const int gNumAnimationSprites = sizeof(gAnimationSprites) / sizeof(gAnimationSprites[0]);
       double seconds = ra::timing::getMillisecondsTimer(); //already seconds
-      int spriteIndex = (int)(seconds/iRefreshRate);
+      int spriteIndex = (int)(seconds / iRefreshRate);
       spriteIndex = spriteIndex % gNumAnimationSprites;
       char sprite = gAnimationSprites[spriteIndex];
       return sprite;
     }
 
-    void printAnimationCursor()
-    {
+    void printAnimationCursor() {
       pushCursorPos();
       printf("%c", getAnimationSprite(0.15));
       popCursorPos();
     }
 
-    const char * getTextColorName(const TextColor & color)
-    {
-      switch(color)
-      {
+    const char * getTextColorName(const TextColor & color) {
+      switch (color) {
       case Black:
         return "Black";
         break;
@@ -490,77 +449,69 @@ namespace ra
       };
     }
 
-    const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr)
-    {
-      switch(attr)
-      {
-      case ansi::FormatAttribute::Default    : return "Default"   ; break;
-      case ansi::FormatAttribute::Bold       : return "Bold"      ; break;
-      case ansi::FormatAttribute::Dim        : return "Dim"       ; break;
-      case ansi::FormatAttribute::Underlined : return "Underlined"; break;
-      case ansi::FormatAttribute::Blink      : return "Blink"     ; break;
-      case ansi::FormatAttribute::Reverse    : return "Reverse"   ; break;
-      case ansi::FormatAttribute::Hidden     : return "Hidden"    ; break;
+    const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr) {
+      switch (attr) {
+      case ansi::FormatAttribute::Default: return "Default"; break;
+      case ansi::FormatAttribute::Bold: return "Bold"; break;
+      case ansi::FormatAttribute::Dim: return "Dim"; break;
+      case ansi::FormatAttribute::Underlined: return "Underlined"; break;
+      case ansi::FormatAttribute::Blink: return "Blink"; break;
+      case ansi::FormatAttribute::Reverse: return "Reverse"; break;
+      case ansi::FormatAttribute::Hidden: return "Hidden"; break;
       };
       return "Unknown";
     }
 
-    const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color)
-    {
-      switch(color)
-      {
-      case ansi::ForegroundColor::Default      : return "Default"      ; break;
-      case ansi::ForegroundColor::Black        : return "Black"        ; break;
-      case ansi::ForegroundColor::Red          : return "Red"          ; break;
-      case ansi::ForegroundColor::Green        : return "Green"        ; break;
-      case ansi::ForegroundColor::Yellow       : return "Yellow"       ; break;
-      case ansi::ForegroundColor::Blue         : return "Blue"         ; break;
-      case ansi::ForegroundColor::Magenta      : return "Magenta"      ; break;
-      case ansi::ForegroundColor::Cyan         : return "Cyan"         ; break;
-      case ansi::ForegroundColor::LightGray    : return "LightGray"    ; break;
-      case ansi::ForegroundColor::DarkGray     : return "DarkGray"     ; break;
-      case ansi::ForegroundColor::LightRed     : return "LightRed"     ; break;
-      case ansi::ForegroundColor::LightGreen   : return "LightGreen"   ; break;
-      case ansi::ForegroundColor::LightYellow  : return "LightYellow"  ; break;
-      case ansi::ForegroundColor::LightBlue    : return "LightBlue"    ; break;
-      case ansi::ForegroundColor::LightMagenta : return "LightMagenta" ; break;
-      case ansi::ForegroundColor::LightCyan    : return "LightCyan"    ; break;
-      case ansi::ForegroundColor::White        : return "White"        ; break;
+    const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color) {
+      switch (color) {
+      case ansi::ForegroundColor::Default: return "Default"; break;
+      case ansi::ForegroundColor::Black: return "Black"; break;
+      case ansi::ForegroundColor::Red: return "Red"; break;
+      case ansi::ForegroundColor::Green: return "Green"; break;
+      case ansi::ForegroundColor::Yellow: return "Yellow"; break;
+      case ansi::ForegroundColor::Blue: return "Blue"; break;
+      case ansi::ForegroundColor::Magenta: return "Magenta"; break;
+      case ansi::ForegroundColor::Cyan: return "Cyan"; break;
+      case ansi::ForegroundColor::LightGray: return "LightGray"; break;
+      case ansi::ForegroundColor::DarkGray: return "DarkGray"; break;
+      case ansi::ForegroundColor::LightRed: return "LightRed"; break;
+      case ansi::ForegroundColor::LightGreen: return "LightGreen"; break;
+      case ansi::ForegroundColor::LightYellow: return "LightYellow"; break;
+      case ansi::ForegroundColor::LightBlue: return "LightBlue"; break;
+      case ansi::ForegroundColor::LightMagenta: return "LightMagenta"; break;
+      case ansi::ForegroundColor::LightCyan: return "LightCyan"; break;
+      case ansi::ForegroundColor::White: return "White"; break;
       };
       return "Unknown";
     }
 
-    const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color)
-    {
-      switch(color)
-      {
-      case ansi::BackgroundColor::Default      : return "Default"      ; break;
-      case ansi::BackgroundColor::Black        : return "Black"        ; break;
-      case ansi::BackgroundColor::Red          : return "Red"          ; break;
-      case ansi::BackgroundColor::Green        : return "Green"        ; break;
-      case ansi::BackgroundColor::Yellow       : return "Yellow"       ; break;
-      case ansi::BackgroundColor::Blue         : return "Blue"         ; break;
-      case ansi::BackgroundColor::Magenta      : return "Magenta"      ; break;
-      case ansi::BackgroundColor::Cyan         : return "Cyan"         ; break;
-      case ansi::BackgroundColor::LightGray    : return "LightGray"    ; break;
-      case ansi::BackgroundColor::DarkGray     : return "DarkGray"     ; break;
-      case ansi::BackgroundColor::LightRed     : return "LightRed"     ; break;
-      case ansi::BackgroundColor::LightGreen   : return "LightGreen"   ; break;
-      case ansi::BackgroundColor::LightYellow  : return "LightYellow"  ; break;
-      case ansi::BackgroundColor::LightBlue    : return "LightBlue"    ; break;
-      case ansi::BackgroundColor::LightMagenta : return "LightMagenta" ; break;
-      case ansi::BackgroundColor::LightCyan    : return "LightCyan"    ; break;
-      case ansi::BackgroundColor::White        : return "White"        ; break;
+    const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color) {
+      switch (color) {
+      case ansi::BackgroundColor::Default: return "Default"; break;
+      case ansi::BackgroundColor::Black: return "Black"; break;
+      case ansi::BackgroundColor::Red: return "Red"; break;
+      case ansi::BackgroundColor::Green: return "Green"; break;
+      case ansi::BackgroundColor::Yellow: return "Yellow"; break;
+      case ansi::BackgroundColor::Blue: return "Blue"; break;
+      case ansi::BackgroundColor::Magenta: return "Magenta"; break;
+      case ansi::BackgroundColor::Cyan: return "Cyan"; break;
+      case ansi::BackgroundColor::LightGray: return "LightGray"; break;
+      case ansi::BackgroundColor::DarkGray: return "DarkGray"; break;
+      case ansi::BackgroundColor::LightRed: return "LightRed"; break;
+      case ansi::BackgroundColor::LightGreen: return "LightGreen"; break;
+      case ansi::BackgroundColor::LightYellow: return "LightYellow"; break;
+      case ansi::BackgroundColor::LightBlue: return "LightBlue"; break;
+      case ansi::BackgroundColor::LightMagenta: return "LightMagenta"; break;
+      case ansi::BackgroundColor::LightCyan: return "LightCyan"; break;
+      case ansi::BackgroundColor::White: return "White"; break;
       };
       return "Unknown";
     }
 
-    void setTextColor(const TextColor & iForeground, const TextColor & iBackground)
-    {
+    void setTextColor(const TextColor & iForeground, const TextColor & iBackground) {
 #ifdef _WIN32
       WORD foregroundAttribute = 0;
-      switch(iForeground)
-      {
+      switch (iForeground) {
       case Black:
         foregroundAttribute = 0;
         break;
@@ -612,8 +563,7 @@ namespace ra
       };
 
       WORD backgroundAttribute = 0;
-      switch(iBackground)
-      {
+      switch (iBackground) {
       case Black:
         backgroundAttribute = 0;
         break;
@@ -665,14 +615,12 @@ namespace ra
       };
 
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
 
-      if (!SetConsoleTextAttribute(hStdout, foregroundAttribute | backgroundAttribute))
-      {
+      if (!SetConsoleTextAttribute(hStdout, foregroundAttribute | backgroundAttribute)) {
         printf("SetConsoleTextAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -682,8 +630,7 @@ namespace ra
       ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::Default;
 
       //foreground
-      switch(iForeground)
-      {
+      switch (iForeground) {
       case Black:
         ansi_foreground = ansi::ForegroundColor::Black;
         break;
@@ -735,8 +682,7 @@ namespace ra
       };
 
       //background
-      switch(iBackground)
-      {
+      switch (iBackground) {
       case Black:
         ansi_background = ansi::BackgroundColor::Black;
         break;
@@ -792,21 +738,18 @@ namespace ra
 #endif
     }
 
-    void getTextColor(TextColor & oForeground, TextColor & oBackground)
-    {
+    void getTextColor(TextColor & oForeground, TextColor & oBackground) {
       oForeground = Gray;
       oBackground = Black;
 
 #ifdef _WIN32
       HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-      if (hStdout == INVALID_HANDLE_VALUE)
-      {
+      if (hStdout == INVALID_HANDLE_VALUE) {
         printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
-      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {0};
-      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-      {
+      CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
+      if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
         printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return;
       }
@@ -815,8 +758,7 @@ namespace ra
       DWORD backgroundInfo = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
       //foreground
-      switch(foregroundInfo)
-      {
+      switch (foregroundInfo) {
       case 0:
         oForeground = Black;
         break;
@@ -868,8 +810,7 @@ namespace ra
       };
 
       //background
-      switch(backgroundInfo)
-      {
+      switch (backgroundInfo) {
       case 0:
         oBackground = Black;
         break;
@@ -926,8 +867,7 @@ namespace ra
 #endif
     }
 
-    void setDefaultTextColor()
-    {
+    void setDefaultTextColor() {
 #ifdef _WIN32
       ra::console::setTextColor(ra::console::Gray, ra::console::Black);
 #elif __linux__
@@ -935,8 +875,7 @@ namespace ra
 #endif
     }
 
-    bool isDesktopGuiAvailable()
-    {
+    bool isDesktopGuiAvailable() {
 #ifdef _WIN32
       return true;
 #elif __linux__
@@ -946,8 +885,7 @@ namespace ra
 #endif
     }
 
-    bool isRunFromDesktop()
-    {
+    bool isRunFromDesktop() {
 #ifdef _WIN32
       std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
       bool hasNoPrompt = prompt.empty();
@@ -961,25 +899,21 @@ namespace ra
 #endif
     }
 
-    bool hasConsoleOwnership()
-    {
+    bool hasConsoleOwnership() {
 #ifdef _WIN32
       //https://stackoverflow.com/questions/9009333/how-to-check-if-the-program-is-run-from-a-console
       HWND hConsoleWnd = GetConsoleWindow();
-      if (hConsoleWnd == NULL)
-      {
+      if (hConsoleWnd == NULL) {
         printf("Failed calling GetConsoleWindow(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
       DWORD dwConsoleProcessId = 0;
-      if (!GetWindowThreadProcessId(hConsoleWnd, &dwConsoleProcessId))
-      {
+      if (!GetWindowThreadProcessId(hConsoleWnd, &dwConsoleProcessId)) {
         printf("Failed calling GetWindowThreadProcessId(). Error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
         return false;
       }
       DWORD dwCurrentProcessId = GetCurrentProcessId();
-      if (dwCurrentProcessId == dwConsoleProcessId)
-      {
+      if (dwCurrentProcessId == dwConsoleProcessId) {
         //the current process is the process that created this console.
         return true;
       }

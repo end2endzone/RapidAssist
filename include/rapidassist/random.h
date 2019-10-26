@@ -85,16 +85,14 @@ namespace ra
     void getRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols);
     std::string getRandomString(size_t iMaxLen, const char* iSymbols);
 
-    class SymbolsFlags
-    {
+    class SymbolsFlags {
     public:
-      enum Flags
-      {
-        Letters=1,            //lowercase letters
-        LETTERS=2,            //uppercase letters
-        Numbers=4,            //numbers from 0 to 9
-        SpecialCharacters=8,  //special characters like @ and !
-        All=15,               //all flags
+      enum Flags {
+        Letters = 1,            //lowercase letters
+        LETTERS = 2,            //uppercase letters
+        Numbers = 4,            //numbers from 0 to 9
+        SpecialCharacters = 8,  //special characters like @ and !
+        All = 15,               //all flags
       };
     };
 

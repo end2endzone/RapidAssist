@@ -33,21 +33,16 @@
 namespace ra { namespace strings { namespace test
 {
   //--------------------------------------------------------------------------------------------------
-  void TestString::SetUp()
-  {
+  void TestString::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestString::TearDown()
-  {
+  void TestString::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testIsNumeric)
-  {
+  TEST_F(TestString, testIsNumeric) {
     //lazy test
-    for(int i=-100; i<=100; i++)
-    {
-      for(int j=0; j<=100; j++)
-      {
+    for (int i = -100; i <= 100; i++) {
+      for (int j = 0; j <= 100; j++) {
         //build a string from i and j
         static const int BUFFER_SIZE = 1024;
         char buffer[BUFFER_SIZE];
@@ -80,8 +75,7 @@ namespace ra { namespace strings { namespace test
     ASSERT_FALSE(strings::isNumeric("+12.34!"));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testReplace)
-  {
+  TEST_F(TestString, testReplace) {
     //at the beginning
     {
       const std::string EXPECTED = "DeaDbeef";
@@ -137,11 +131,9 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringParseValue)
-  {
+  TEST_F(TestString, testToStringParseValue) {
     //uint64_t
-    struct UIint64Test
-    {
+    struct UIint64Test {
       const char * EXPECTED_STR;
       uint64_t EXPECTED_VALUE;
     };
@@ -152,14 +144,13 @@ namespace ra { namespace strings { namespace test
       {"576460752303423488", 0x800000000000000ull},
       {"1152921504606846975", 0xFFFFFFFFFFFFFFFull},
     };
-    size_t numTests = sizeof(tests)/sizeof(tests[0]);
-    for(size_t i=0; i<numTests; i++)
-    {
+    size_t numTests = sizeof(tests) / sizeof(tests[0]);
+    for (size_t i = 0; i < numTests; i++) {
       const char * EXPECTED_STR = tests[i].EXPECTED_STR;
       const uint64_t & EXPECTED_VALUE = tests[i].EXPECTED_VALUE;
 
       //assert toString()
-      std::string actualStr = toString( EXPECTED_VALUE );
+      std::string actualStr = toString(EXPECTED_VALUE);
       ASSERT_EQ(EXPECTED_STR, actualStr);
 
       //assert parseValue()
@@ -170,8 +161,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testCapitalizeFirstCharacter)
-  {
+  TEST_F(TestString, testCapitalizeFirstCharacter) {
     {
       //normal
       const std::string EXPECTED = "Deadbeef";
@@ -216,8 +206,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testUppercase)
-  {
+  TEST_F(TestString, testUppercase) {
     {
       //normal
       const std::string EXPECTED = "DEADBEEF";
@@ -262,8 +251,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testLowercase)
-  {
+  TEST_F(TestString, testLowercase) {
     {
       //normal
       const std::string EXPECTED = "deadbeef";
@@ -308,8 +296,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testStreamOperators)
-  {
+  TEST_F(TestString, testStreamOperators) {
     {
       //const void * value
       const std::string HEADER = "fooBAR";
@@ -411,8 +398,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testRemoveEOL)
-  {
+  TEST_F(TestString, testRemoveEOL) {
     //test NULL
     {
       removeEOL(NULL);
@@ -441,8 +427,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testSplit)
-  {
+  TEST_F(TestString, testSplit) {
     //test NULL
     {
       static const std::string INPUT = "Aa.Bb.Cc";
@@ -477,7 +462,7 @@ namespace ra { namespace strings { namespace test
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("Bb", list[1]);
       ASSERT_EQ("Cc", list[2]);
-      ASSERT_EQ("",   list[3]);
+      ASSERT_EQ("", list[3]);
     }
 
     //test first character is separator
@@ -485,7 +470,7 @@ namespace ra { namespace strings { namespace test
       static const std::string INPUT = ".Aa.Bb.Cc";
       StringVector list = split(INPUT, ".");
       ASSERT_EQ(4, list.size());
-      ASSERT_EQ("",   list[0]);
+      ASSERT_EQ("", list[0]);
       ASSERT_EQ("Aa", list[1]);
       ASSERT_EQ("Bb", list[2]);
       ASSERT_EQ("Cc", list[3]);
@@ -506,7 +491,7 @@ namespace ra { namespace strings { namespace test
       StringVector list = split(INPUT, ".");
       ASSERT_EQ(3, list.size());
       ASSERT_EQ("Aa", list[0]);
-      ASSERT_EQ("",   list[1]);
+      ASSERT_EQ("", list[1]);
       ASSERT_EQ("Bb", list[2]);
     }
 
@@ -522,8 +507,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testJoin)
-  {
+  TEST_F(TestString, testJoin) {
     //test NULL
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
@@ -595,8 +579,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testTrim)
-  {
+  TEST_F(TestString, testTrim) {
     {
       static const std::string value = "   abc   ";
       ASSERT_EQ("abc", trim(value));
@@ -614,8 +597,7 @@ namespace ra { namespace strings { namespace test
     ASSERT_EQ("", trim(""));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testReverse)
-  {
+  TEST_F(TestString, testReverse) {
     //assert even number of characters
     ASSERT_EQ("abc", reverse("cba"));
 
@@ -625,14 +607,12 @@ namespace ra { namespace strings { namespace test
     ASSERT_EQ("", reverse(""));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testFormat)
-  {
+  TEST_F(TestString, testFormat) {
     std::string text = ra::strings::format("%d %s %c %3.2f", 23, "this is a string", 'e', 4.234);
-    ASSERT_EQ("23 this is a string e 4.23", text );
+    ASSERT_EQ("23 this is a string e 4.23", text);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testStreamOperatorMatchesToString)
-  {
+  TEST_F(TestString, testStreamOperatorMatchesToString) {
     //assert that 'operator<<' is identical to toString()
 
     {
@@ -650,28 +630,28 @@ namespace ra { namespace strings { namespace test
       ASSERT_EQ(s1, s2);
     }
     {
-      const float value = 1.0f/7.0f;  // 0.142857 15
+      const float value = 1.0f / 7.0f;  // 0.142857 15
       std::string s1, s2;
       s1 << value;
       s2 = toString(value);
       ASSERT_EQ(s1, s2);
     }
     {
-      const double value = 1.0/7.0;  // 0.142857 142857 14285
+      const double value = 1.0 / 7.0;  // 0.142857 142857 14285
       std::string s1, s2;
       s1 << value;
       s2 = toString(value);
       ASSERT_EQ(s1, s2);
     }
     {
-      const float value = 1234.0f/9999.0f;  // 0.1234 1234
+      const float value = 1234.0f / 9999.0f;  // 0.1234 1234
       std::string s1, s2;
       s1 << value;
       s2 = toString(value);
       ASSERT_EQ(s1, s2);
     }
     {
-      const double value = 1234.0/9999.0;  // 0.1234 1234 1234 1234 1
+      const double value = 1234.0 / 9999.0;  // 0.1234 1234 1234 1234 1
       std::string s1, s2;
       s1 << value;
       s2 = toString(value);
@@ -679,8 +659,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringUInt8_t)
-  {
+  TEST_F(TestString, testToStringUInt8_t) {
     typedef uint8_t test_type;
     {
       test_type value = (test_type)32;
@@ -696,8 +675,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringSInt8_t)
-  {
+  TEST_F(TestString, testToStringSInt8_t) {
     typedef int8_t test_type;
     {
       test_type value = (test_type)32;
@@ -713,8 +691,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringUInt16_t)
-  {
+  TEST_F(TestString, testToStringUInt16_t) {
     typedef uint16_t test_type;
     {
       test_type value = (test_type)32;
@@ -730,8 +707,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringSInt16_t)
-  {
+  TEST_F(TestString, testToStringSInt16_t) {
     typedef int16_t test_type;
     {
       test_type value = (test_type)32;
@@ -747,8 +723,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringUInt32_t)
-  {
+  TEST_F(TestString, testToStringUInt32_t) {
     typedef uint32_t test_type;
     {
       test_type value = (test_type)32;
@@ -764,8 +739,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringSInt32_t)
-  {
+  TEST_F(TestString, testToStringSInt32_t) {
     typedef int32_t test_type;
     {
       test_type value = (test_type)32;
@@ -781,8 +755,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringUInt64_t)
-  {
+  TEST_F(TestString, testToStringUInt64_t) {
     typedef uint64_t test_type;
     {
       test_type value = (test_type)32;
@@ -798,8 +771,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringSInt64_t)
-  {
+  TEST_F(TestString, testToStringSInt64_t) {
     typedef int64_t test_type;
     {
       test_type value = (test_type)32;
@@ -815,8 +787,7 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringBoolean)
-  {
+  TEST_F(TestString, testToStringBoolean) {
     typedef bool test_type;
     {
       test_type value = true;
@@ -828,13 +799,11 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringLosslessFloat)
-  {
+  TEST_F(TestString, testToStringLosslessFloat) {
     //try with a few random guess
-    for(size_t i=0; i<20000; i++)
-    {
+    for (size_t i = 0; i < 20000; i++) {
       //compute the fraction
-      float value = ra::random::getRandomFloat(-1000000.0f, +1000000.0f); 
+      float value = ra::random::getRandomFloat(-1000000.0f, +1000000.0f);
       SCOPED_TRACE(value);
 
       //used for debugging
@@ -855,13 +824,11 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringLosslessDouble)
-  {
+  TEST_F(TestString, testToStringLosslessDouble) {
     //try again with a few random guess
-    for(size_t i=0; i<20000; i++)
-    {
+    for (size_t i = 0; i < 20000; i++) {
       //compute the fraction
-      double value = ra::random::getRandomDouble(-100000000000.0f, +100000000000.0f); 
+      double value = ra::random::getRandomDouble(-100000000000.0f, +100000000000.0f);
       SCOPED_TRACE(value);
 
       //used for debugging.
@@ -882,105 +849,101 @@ namespace ra { namespace strings { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringFormattedFloat)
-  {
+  TEST_F(TestString, testToStringFormattedFloat) {
     //test default behavior
     {
       const float value = 0.876543210f;
-      ASSERT_EQ("1",          ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("0.9",        ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("0.88",       ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("0.877",      ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("0.8765",     ra::strings::toStringFormatted(value, 4) );
-      ASSERT_EQ("0.87654",    ra::strings::toStringFormatted(value, 5) );
-      ASSERT_EQ("0.876543",   ra::strings::toStringFormatted(value, 6) );
-      ASSERT_EQ("0.8765432",  ra::strings::toStringFormatted(value, 7) );
-      ASSERT_EQ("0.87654322", ra::strings::toStringFormatted(value, 8) ); //that's an exception
+      ASSERT_EQ("1", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("0.9", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("0.88", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("0.877", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("0.8765", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("0.87654", ra::strings::toStringFormatted(value, 5));
+      ASSERT_EQ("0.876543", ra::strings::toStringFormatted(value, 6));
+      ASSERT_EQ("0.8765432", ra::strings::toStringFormatted(value, 7));
+      ASSERT_EQ("0.87654322", ra::strings::toStringFormatted(value, 8)); //that's an exception
     }
 
     //test non significant zeros
     {
       const float value = 0.1f;
-      ASSERT_EQ("0",      ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("0.1",    ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("0.10",   ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("0.100",  ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4) );
+      ASSERT_EQ("0", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("0.1", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("0.10", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("0.100", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4));
     }
 
     //test big value
     {
       const float value = 1000.0f;
-      ASSERT_EQ("1000",      ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("1000.0",    ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("1000.00",   ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("1000.000",  ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4) );
+      ASSERT_EQ("1000", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("1000.0", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("1000.00", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("1000.000", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4));
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringFormattedDouble)
-  {
+  TEST_F(TestString, testToStringFormattedDouble) {
     //test default behavior
     {
       const double value = 0.876543210;
-      ASSERT_EQ("1",          ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("0.9",        ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("0.88",       ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("0.877",      ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("0.8765",     ra::strings::toStringFormatted(value, 4) );
-      ASSERT_EQ("0.87654",    ra::strings::toStringFormatted(value, 5) );
-      ASSERT_EQ("0.876543",   ra::strings::toStringFormatted(value, 6) );
-      ASSERT_EQ("0.8765432",  ra::strings::toStringFormatted(value, 7) );
-      ASSERT_EQ("0.87654321", ra::strings::toStringFormatted(value, 8) );
+      ASSERT_EQ("1", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("0.9", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("0.88", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("0.877", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("0.8765", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("0.87654", ra::strings::toStringFormatted(value, 5));
+      ASSERT_EQ("0.876543", ra::strings::toStringFormatted(value, 6));
+      ASSERT_EQ("0.8765432", ra::strings::toStringFormatted(value, 7));
+      ASSERT_EQ("0.87654321", ra::strings::toStringFormatted(value, 8));
     }
 
     //test non significant zeros
     {
       const double value = 0.1;
-      ASSERT_EQ("0",      ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("0.1",    ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("0.10",   ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("0.100",  ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4) );
+      ASSERT_EQ("0", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("0.1", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("0.10", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("0.100", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4));
     }
 
     //test big value
     {
       const double value = 1000.0;
-      ASSERT_EQ("1000",      ra::strings::toStringFormatted(value, 0) );
-      ASSERT_EQ("1000.0",    ra::strings::toStringFormatted(value, 1) );
-      ASSERT_EQ("1000.00",   ra::strings::toStringFormatted(value, 2) );
-      ASSERT_EQ("1000.000",  ra::strings::toStringFormatted(value, 3) );
-      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4) );
+      ASSERT_EQ("1000", ra::strings::toStringFormatted(value, 0));
+      ASSERT_EQ("1000.0", ra::strings::toStringFormatted(value, 1));
+      ASSERT_EQ("1000.00", ra::strings::toStringFormatted(value, 2));
+      ASSERT_EQ("1000.000", ra::strings::toStringFormatted(value, 3));
+      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4));
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringLossy)
-  {
+  TEST_F(TestString, testToStringLossy) {
     //float
     {
-      ASSERT_EQ( "1.2"      , ra::strings::toStringLossy(1.2f     , ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.22"     , ra::strings::toStringLossy(1.22f    , ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.222"    , ra::strings::toStringLossy(1.222f   , ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.2222"   , ra::strings::toStringLossy(1.2222f  , ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.22223"  , ra::strings::toStringLossy(1.22223f , ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.222233" , ra::strings::toStringLossy(1.222233f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON) );
+      ASSERT_EQ("1.2", ra::strings::toStringLossy(1.2f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22", ra::strings::toStringLossy(1.22f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222", ra::strings::toStringLossy(1.222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2222", ra::strings::toStringLossy(1.2222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22223", ra::strings::toStringLossy(1.22223f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222233", ra::strings::toStringLossy(1.222233f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
     }
 
     //double
     {
-      ASSERT_EQ( "1.2"      , ra::strings::toStringLossy(1.2     , ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.22"     , ra::strings::toStringLossy(1.22    , ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.222"    , ra::strings::toStringLossy(1.222   , ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.2222"   , ra::strings::toStringLossy(1.2222  , ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.22223"  , ra::strings::toStringLossy(1.22223 , ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
-      ASSERT_EQ( "1.222233" , ra::strings::toStringLossy(1.222233, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON) );
+      ASSERT_EQ("1.2", ra::strings::toStringLossy(1.2, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22", ra::strings::toStringLossy(1.22, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222", ra::strings::toStringLossy(1.222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2222", ra::strings::toStringLossy(1.2222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22223", ra::strings::toStringLossy(1.22223, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222233", ra::strings::toStringLossy(1.222233, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testToStringLossyVsLossLess)
-  {
+  TEST_F(TestString, testToStringLossyVsLossLess) {
     //there should be a difference between lossless and lossy conversions.
 
     //float
@@ -991,13 +954,13 @@ namespace ra { namespace strings { namespace test
       ASSERT_NE(lossless, lossy);
     }
     {
-      const float value = 1.0f/7.0f; // 0.142857 15, theorical value of 0.142857...
+      const float value = 1.0f / 7.0f; // 0.142857 15, theorical value of 0.142857...
       std::string lossless = toStringLossless(value);
       std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
-      const float value = 1234.0f/9999.0f; // 0.12341234, theorical value of 0.1234...
+      const float value = 1234.0f / 9999.0f; // 0.12341234, theorical value of 0.1234...
       std::string lossless = toStringLossless(value);
       std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
@@ -1036,13 +999,13 @@ namespace ra { namespace strings { namespace test
       ASSERT_NE(lossless, lossy);
     }
     {
-      const double value = 1.0/7.0; // 0.14285714285714285, theorical value of 0.142857...
+      const double value = 1.0 / 7.0; // 0.14285714285714285, theorical value of 0.142857...
       std::string lossless = toStringLossless(value);
       std::string lossy = toStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
-      const double value = 1234.0/9999.0; // 0.12341234123412341, theorical value of 0.1234...
+      const double value = 1234.0 / 9999.0; // 0.12341234123412341, theorical value of 0.1234...
       std::string lossless = toStringLossless(value);
       std::string lossy = toStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
@@ -1050,49 +1013,48 @@ namespace ra { namespace strings { namespace test
 
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestString, testParseBoolean)
-  {
-    ASSERT_TRUE ( ra::strings::parseBoolean("true" ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("tRuE" ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("yes"  ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("yEs"  ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("y"    ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("Y"    ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("on"   ));
-    ASSERT_TRUE ( ra::strings::parseBoolean("oN"   ));
+  TEST_F(TestString, testParseBoolean) {
+    ASSERT_TRUE(ra::strings::parseBoolean("true"));
+    ASSERT_TRUE(ra::strings::parseBoolean("tRuE"));
+    ASSERT_TRUE(ra::strings::parseBoolean("yes"));
+    ASSERT_TRUE(ra::strings::parseBoolean("yEs"));
+    ASSERT_TRUE(ra::strings::parseBoolean("y"));
+    ASSERT_TRUE(ra::strings::parseBoolean("Y"));
+    ASSERT_TRUE(ra::strings::parseBoolean("on"));
+    ASSERT_TRUE(ra::strings::parseBoolean("oN"));
 
-    ASSERT_FALSE( ra::strings::parseBoolean("false"));
-    ASSERT_FALSE( ra::strings::parseBoolean("fALsE"));
-    ASSERT_FALSE( ra::strings::parseBoolean("no"   ));
-    ASSERT_FALSE( ra::strings::parseBoolean("nO"   ));
-    ASSERT_FALSE( ra::strings::parseBoolean("n"    ));
-    ASSERT_FALSE( ra::strings::parseBoolean("N"    ));
-    ASSERT_FALSE( ra::strings::parseBoolean("off"  ));
-    ASSERT_FALSE( ra::strings::parseBoolean("oFF"  ));
+    ASSERT_FALSE(ra::strings::parseBoolean("false"));
+    ASSERT_FALSE(ra::strings::parseBoolean("fALsE"));
+    ASSERT_FALSE(ra::strings::parseBoolean("no"));
+    ASSERT_FALSE(ra::strings::parseBoolean("nO"));
+    ASSERT_FALSE(ra::strings::parseBoolean("n"));
+    ASSERT_FALSE(ra::strings::parseBoolean("N"));
+    ASSERT_FALSE(ra::strings::parseBoolean("off"));
+    ASSERT_FALSE(ra::strings::parseBoolean("oFF"));
 
-    ASSERT_FALSE( ra::strings::parseBoolean("anythingelse"));
+    ASSERT_FALSE(ra::strings::parseBoolean("anythingelse"));
 
     bool b = false;
-    ASSERT_TRUE( ra::strings::parse("true" , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("tRuE" , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("yes"  , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("yEs"  , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("y"    , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("Y"    , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("on"   , b)); ASSERT_TRUE( b );
-    ASSERT_TRUE( ra::strings::parse("oN"   , b)); ASSERT_TRUE( b );
+    ASSERT_TRUE(ra::strings::parse("true", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("tRuE", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("yes", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("yEs", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("y", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("Y", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("on", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::parse("oN", b)); ASSERT_TRUE(b);
 
-    ASSERT_TRUE( ra::strings::parse("false", b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("fALsE", b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("no"   , b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("nO"   , b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("n"    , b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("N"    , b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("off"  , b)); ASSERT_FALSE( b );
-    ASSERT_TRUE( ra::strings::parse("oFF"  , b)); ASSERT_FALSE( b );
+    ASSERT_TRUE(ra::strings::parse("false", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("fALsE", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("no", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("nO", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("n", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("N", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("off", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::parse("oFF", b)); ASSERT_FALSE(b);
 
     //assert cannot parse
-    ASSERT_FALSE( ra::strings::parse("anythingelse", b));
+    ASSERT_FALSE(ra::strings::parse("anythingelse", b));
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

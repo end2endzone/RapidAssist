@@ -29,8 +29,7 @@
 
 namespace ra { namespace environment { namespace test
 {
-  class TestEnvironment : public ::testing::Test
-  {
+  class TestEnvironment : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

@@ -56,7 +56,7 @@ namespace ra
     /// <param name="width">The width of the console.</param>
     /// <param name="height">The height of the console.</param>
     void getDimension(int & width, int & height);
-    
+
     /// <summary>
     /// Clears the screen.
     /// </summary>
@@ -98,8 +98,7 @@ namespace ra
     void printAnimationCursor();
 
     /// <summary>Enumaration for all console text colors.</summary>
-    enum TextColor
-    {
+    enum TextColor {
       Black = 0,
       White,
       Blue,
@@ -180,8 +179,7 @@ namespace ra
 
       namespace FormatAttribute
       {
-        enum Attr
-        {
+        enum Attr {
           Default = 0,
           Bold = 1,
           Dim = 2,
@@ -196,8 +194,7 @@ namespace ra
 
       namespace ForegroundColor
       {
-        enum Color
-        {
+        enum Color {
           Default = 39,
           Black = 30,
           Red,
@@ -222,8 +219,7 @@ namespace ra
 
       namespace BackgroundColor
       {
-        enum Color
-        {
+        enum Color {
           Default = 49,
           Black = 40,
           Red,

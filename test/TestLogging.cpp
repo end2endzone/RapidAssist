@@ -29,28 +29,24 @@ namespace ra { namespace logging { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestLogging::SetUp()
-  {
+  void TestLogging::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestLogging::TearDown()
-  {
+  void TestLogging::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestLogging, testLoggerLevels)
-  {
+  TEST_F(TestLogging, testLoggerLevels) {
     logging::setQuietMode(false);
-    logging::log(logging::LOG_INFO,     "This is information at line=%d.", __LINE__);
-    logging::log(logging::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
-    logging::log(logging::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
+    logging::log(logging::LOG_INFO, "This is information at line=%d.", __LINE__);
+    logging::log(logging::LOG_WARNING, "This is a warning at line=%d.", __LINE__);
+    logging::log(logging::LOG_ERROR, "This is an error at line=%d.", __LINE__);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestLogging, testQuietMode)
-  {
+  TEST_F(TestLogging, testQuietMode) {
     logging::setQuietMode(true);
-    logging::log(logging::LOG_INFO,     "This is information at line=%d.", __LINE__);
-    logging::log(logging::LOG_WARNING,  "This is a warning at line=%d.", __LINE__);
-    logging::log(logging::LOG_ERROR,    "This is an error at line=%d.", __LINE__);
+    logging::log(logging::LOG_INFO, "This is information at line=%d.", __LINE__);
+    logging::log(logging::LOG_WARNING, "This is a warning at line=%d.", __LINE__);
+    logging::log(logging::LOG_ERROR, "This is an error at line=%d.", __LINE__);
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

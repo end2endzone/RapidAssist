@@ -29,8 +29,7 @@
 
 namespace ra { namespace strings { namespace test
 {
-  class TestString : public ::testing::Test
-  {
+  class TestString : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

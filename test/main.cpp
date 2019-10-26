@@ -30,8 +30,7 @@
 
 #include "rapidassist/testing.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
   outputXml += (ra::testing::isProcessorX86() ? ".x86" : ".x64");
@@ -43,8 +42,7 @@ int main(int argc, char **argv)
   ::testing::InitGoogleTest(&argc, argv);
 
   //Disable TestTiming.testGetUtcTime() on AppVeyor or Travis CI
-  if (ra::testing::isAppVeyor() || ra::testing::isTravis())
-  {
+  if (ra::testing::isAppVeyor() || ra::testing::isTravis()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
     //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.

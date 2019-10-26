@@ -30,8 +30,7 @@ namespace ra
 {
   namespace cli
   {
-    bool parseArgument(const std::string & name, std::string & value, int argc, char **argv)
-    {
+    bool parseArgument(const std::string & name, std::string & value, int argc, char **argv) {
       value = "";
 
       //look for --name=value pattern
@@ -39,12 +38,10 @@ namespace ra
       pattern.append("--");
       pattern.append(name);
       pattern.append("=");
-      for(int i=0; i<argc; i++)
-      {
+      for (int i = 0; i < argc; i++) {
         std::string arg = argv[i];
-        if (arg.length() > pattern.length() && arg.substr(0,pattern.length()) == pattern)
-        {
-          value = arg.substr(pattern.length(), arg.length()-pattern.length());
+        if (arg.length() > pattern.length() && arg.substr(0, pattern.length()) == pattern) {
+          value = arg.substr(pattern.length(), arg.length() - pattern.length());
           return true;
         }
       }
@@ -53,11 +50,9 @@ namespace ra
       pattern = "";
       pattern.append("--");
       pattern.append(name);
-      for(int i=0; i<argc; i++)
-      {
+      for (int i = 0; i < argc; i++) {
         std::string arg = argv[i];
-        if (arg == pattern)
-        {
+        if (arg == pattern) {
           value = "";
           return true;
         }
@@ -66,35 +61,29 @@ namespace ra
       return false;
     }
 
-    bool parseArgument(const std::string & name, int & value, int argc, char **argv)
-    {
+    bool parseArgument(const std::string & name, int & value, int argc, char **argv) {
       std::string tmp;
       bool found = parseArgument(name, tmp, argc, argv);
-      if (found)
-      {
+      if (found) {
         value = atoi(tmp.c_str());
         return true;
       }
       return false;
     }
 
-    bool parseArgument(const std::string & name, size_t & value, int argc, char **argv)
-    {
+    bool parseArgument(const std::string & name, size_t & value, int argc, char **argv) {
       std::string tmp;
       bool found = parseArgument(name, tmp, argc, argv);
-      if (found)
-      {
+      if (found) {
 #ifdef _WIN32
         static const char * format = "%Iu";
 #elif __linux__
         static const char * format = "%zu";
 #endif
-        if (1 == sscanf(tmp.c_str(), format, &value))
-        {
+        if (1 == sscanf(tmp.c_str(), format, &value)) {
           return true;
         }
-        else
-        {
+        else {
           return false;
         }
       }

@@ -42,13 +42,13 @@ namespace ra
   namespace process
   {
 
-    #ifdef _WIN32
+#ifdef _WIN32
     /// <summary>Defines a process id type for the WIN32 platform. The type is unsigned. The native type is DWORD which is the same as uint32_t.</summary>
     typedef uint32_t processid_t;
-    #else
+#else
     /// <summary>Defines a process id type for the linux platform. The type is   signed.</summary>
     typedef pid_t processid_t;
-    #endif
+#endif
 
     /// <summary>Defines a list of processes id.</summary>
     typedef std::vector<processid_t> ProcessIdList;

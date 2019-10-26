@@ -37,12 +37,10 @@ namespace ra
   namespace filesystem
   {
 
-    std::string processCppEscapeCharacter(const std::string & value)
-    {
+    std::string processCppEscapeCharacter(const std::string & value) {
       //https://en.cppreference.com/w/cpp/language/escape
       //https://en.wikipedia.org/wiki/Escape_sequences_in_C
-      struct EscapeSequence
-      {
+      struct EscapeSequence {
         const char * value;
         char replacement;
       };
@@ -66,21 +64,18 @@ namespace ra
           \uhhhhhhhh
         */
       };
-      static const size_t num_escape_sequences = sizeof(sequences)/sizeof(sequences[0]);
-      
+      static const size_t num_escape_sequences = sizeof(sequences) / sizeof(sequences[0]);
+
       std::string text;
-      for(size_t i=0; i<value.size(); i++)
-      {
+      for (size_t i = 0; i < value.size(); i++) {
         const char * c = &value[i];
 
         //for each escape sequence
         bool isEscapedCharacter = false;
-        for(size_t j=0; isEscapedCharacter == false && j<num_escape_sequences; j++)
-        {
+        for (size_t j = 0; isEscapedCharacter == false && j < num_escape_sequences; j++) {
           const EscapeSequence & seq = sequences[j];
           size_t seq_value_length = strlen(seq.value);
-          if ( strncmp(c, seq.value, seq_value_length) == 0 )
-          {
+          if (strncmp(c, seq.value, seq_value_length) == 0) {
             //this is an escape sequence
             isEscapedCharacter = true;
 
@@ -90,8 +85,7 @@ namespace ra
           }
         }
 
-        if (!isEscapedCharacter)
-        {
+        if (!isEscapedCharacter) {
           text.append(1, *c);
         }
       }
@@ -99,17 +93,13 @@ namespace ra
       return text;
     }
 
-    size_t findFirstUnescapedCharacter(const std::string & value, char c)
-    {
-      for(size_t i=0; i<value.size(); i++)
-      {
+    size_t findFirstUnescapedCharacter(const std::string & value, char c) {
+      for (size_t i = 0; i < value.size(); i++) {
         char tmp = value[i];
-        if (tmp == '\\')
-        {
+        if (tmp == '\\') {
           i++; //also skip next escaped character
         }
-        else if (tmp == c)
-        {
+        else if (tmp == c) {
           return i; //that's the character we are looking for
         }
       }
@@ -117,16 +107,13 @@ namespace ra
       return std::string::npos;
     }
 
-    PropertiesFile::PropertiesFile()
-    {
+    PropertiesFile::PropertiesFile() {
     }
 
-    PropertiesFile::~PropertiesFile()
-    {
+    PropertiesFile::~PropertiesFile() {
     }
 
-    bool PropertiesFile::load(const std::string & file_path)
-    {
+    bool PropertiesFile::load(const std::string & file_path) {
       if (file_path.empty())
         return false;
 
@@ -144,27 +131,24 @@ namespace ra
       std::string multiline_key;
       std::string multiline_value; //accumulator for multiline values
 
-      for(size_t i=0; i<lines.size(); i++)
-      {
+      for (size_t i = 0; i < lines.size(); i++) {
         std::string line = lines[i];
         line = ra::strings::trim(line, ' ');
         if (line.empty())
           continue;
         else if (line[0] == '#' || line[0] == '!')
           continue; //this is a comment line
-        
+
         //define placeholder for key and value
         std::string key;
         std::string value;
 
         //if we parsed a multiline key/value on previous line
-        if (!multiline_key.empty())
-        {
+        if (!multiline_key.empty()) {
           key = "";
           value = line;
         }
-        else
-        {
+        else {
           //search for the first '=', ':' or unescaped ' ' character
           size_t split_pos = std::string::npos;
           size_t space_equal_pos = line.find(" = ");                       //for format "key = value"
@@ -174,23 +158,21 @@ namespace ra
           size_t       space_pos = findFirstUnescapedCharacter(line, ' '); //for format "key value"
           split_pos = std::min(split_pos, space_equal_pos);
           split_pos = std::min(split_pos, space_colon_pos);
-          split_pos = std::min(split_pos,       equal_pos);
-          split_pos = std::min(split_pos,       colon_pos);
-          split_pos = std::min(split_pos,       space_pos);
-          if (split_pos != std::string::npos)
-          {
+          split_pos = std::min(split_pos, equal_pos);
+          split_pos = std::min(split_pos, colon_pos);
+          split_pos = std::min(split_pos, space_pos);
+          if (split_pos != std::string::npos) {
             //compute split length
             size_t split_length = 1; //by default
             if (split_pos == space_equal_pos ||
-                split_pos == space_colon_pos)
-            {
+              split_pos == space_colon_pos) {
               split_length = 3;
             }
 
             //split as "key" and "value"
-            key   = line.substr(0, split_pos);
+            key = line.substr(0, split_pos);
             size_t value_length = line.size() - split_pos - split_length;
-            value = line.substr(split_pos+split_length, value_length);
+            value = line.substr(split_pos + split_length, value_length);
           }
           else
             continue; //no key-value split character in string
@@ -200,7 +182,7 @@ namespace ra
           value = ra::strings::trimLeft(value, ' ');
         }
 
-        key   = processCppEscapeCharacter(key);
+        key = processCppEscapeCharacter(key);
         value = processCppEscapeCharacter(value);
 
         //process properties specific espcape characters on the key
@@ -209,32 +191,28 @@ namespace ra
         ra::strings::replace(key, "\\=", "=");
 
         //is value continued on next line
-        if (!value.empty() && value[value.size()-1] == '\\')
-        {
+        if (!value.empty() && value[value.size() - 1] == '\\') {
           //this key is a multiline value
 
           //remove last \ character
-          value.erase(value.size()-1, 1);
+          value.erase(value.size() - 1, 1);
 
           //save the current key & value for the next line
           if (!key.empty())
             multiline_key = key;
           multiline_value += value;
         }
-        else
-        {
+        else {
           //save the loaded key/value pair
 
           //are we dealing with a multiline value?
-          if (!multiline_key.empty())
-          {
+          if (!multiline_key.empty()) {
             multiline_value += value;
             this->setValue(multiline_key, multiline_value);
-            multiline_key   = "";
+            multiline_key = "";
             multiline_value = "";
           }
-          else
-          {
+          else {
             //single line key value
             this->setValue(key, value);
           }
@@ -246,16 +224,14 @@ namespace ra
       return true;
     }
 
-    bool PropertiesFile::save(const std::string & file_path)
-    {
+    bool PropertiesFile::save(const std::string & file_path) {
       FILE * f = fopen(file_path.c_str(), "w");
       if (!f)
         return false;
 
       //for each properties
-      for (PropertyMap::const_iterator propertyIt = mProperties.begin(); propertyIt != mProperties.end(); propertyIt++)
-      {
-        std::string key   = propertyIt->first;
+      for (PropertyMap::const_iterator propertyIt = mProperties.begin(); propertyIt != mProperties.end(); propertyIt++) {
+        std::string key = propertyIt->first;
         const std::string & value = propertyIt->second;
 
         //remove key split characters
@@ -270,21 +246,18 @@ namespace ra
       return true;
     }
 
-    bool PropertiesFile::clear()
-    {
+    bool PropertiesFile::clear() {
       mProperties.clear();
       return true;
     }
 
-    bool PropertiesFile::hasKey(const std::string & key) const
-    {
+    bool PropertiesFile::hasKey(const std::string & key) const {
       PropertyMap::const_iterator propertyIt = mProperties.find(key);
       bool found = (propertyIt != mProperties.end());
       return found;
     }
 
-    bool PropertiesFile::deleteKey(const std::string & key)
-    {
+    bool PropertiesFile::deleteKey(const std::string & key) {
       PropertyMap::iterator propertyIt = mProperties.find(key);
       bool found = (propertyIt != mProperties.end());
       if (!found)
@@ -294,8 +267,7 @@ namespace ra
       return true;
     }
 
-    bool PropertiesFile::getValue(const std::string & key, std::string & value) const
-    {
+    bool PropertiesFile::getValue(const std::string & key, std::string & value) const {
       PropertyMap::const_iterator propertyIt = mProperties.find(key);
       bool found = (propertyIt != mProperties.end());
       if (!found)
@@ -305,8 +277,7 @@ namespace ra
       return true;
     }
 
-    bool PropertiesFile::setValue(const std::string & key, const std::string & value)
-    {
+    bool PropertiesFile::setValue(const std::string & key, const std::string & value) {
       //overwrite previous property
       mProperties[key] = value;
 

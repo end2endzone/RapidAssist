@@ -221,7 +221,7 @@ namespace ra
     /// <returns>Returns the extension of a file.</returns>
     std::string getFileExtention(const std::string & iPath);
 
-    enum FileSizeEnum {Bytes, Kilobytes, Megabytes, Gigabytes, Terabytes};
+    enum FileSizeEnum { Bytes, Kilobytes, Megabytes, Gigabytes, Terabytes };
 
     /// <summary>
     /// Returns a given size in a user friendly format and units.
@@ -252,7 +252,7 @@ namespace ra
     /// <param name="iPath">An valid file or directory path.</param>
     /// <returns>Returns true if the given path is absolute. Returns false otherwise.</returns>
     bool isAbsolutePath(const std::string & iPath);
- 
+
     /// <summary>
     /// Determine if the given path is a root directory.
     /// </summary>
@@ -263,7 +263,7 @@ namespace ra
     /// <param name="iPath">An valid file or directory path.</param>
     /// <returns>Returns true if the given path is a root directory. Returns false otherwise.</returns>
     bool isRootDirectory(const std::string & iPath);
- 
+
     /// <summary>
     /// Resolves path that contains `..` or `.` elements to an absolute path.
     /// </summary>
@@ -274,7 +274,7 @@ namespace ra
     /// <param name="iPath">An valid relative file or directory path.</param>
     /// <returns>Returns the resolved path.</returns>
     std::string resolvePath(const std::string & iPath);
- 
+
     /// <summary>
     /// Build an absolute path from the given relative path based on the directory of the current executable.
     /// </summary>
@@ -282,7 +282,7 @@ namespace ra
     /// <returns>Returns the absolute path.</returns>
     /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
     std::string getPathBasedOnCurrentProcess(const std::string & iPath);
- 
+
     /// <summary>
     /// Build an absolute path from the given relative path based on the current directory.
     /// </summary>
@@ -294,8 +294,7 @@ namespace ra
     /// <summary>
     /// copyFile() callback interface
     /// </summary>
-    class IProgressReport
-    {
+    class IProgressReport {
     public:
       /// <summary>
       /// CopyFile() callback function.
@@ -308,7 +307,7 @@ namespace ra
     /// CopyFile() callback function.
     /// </summary>
     /// <param name="progress">The progress of the file copy. Ranges [0, 1] inclusive.</param>
-    typedef void (*ProgressReportCallback)(double);
+    typedef void(*ProgressReportCallback)(double);
 
     /// <summary>
     /// Copy a file to another destination.

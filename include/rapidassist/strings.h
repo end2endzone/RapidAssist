@@ -157,17 +157,17 @@ namespace ra
     /// <param name="str">The input string which contains a numeric value.</param>
     /// <param name="oValue">The output numeric value.</param>
     /// <returns>Returns true when the parsing is successful.</returns>
-    bool parse(const std::string& str,   int8_t & oValue);
-    bool parse(const std::string& str,  uint8_t & oValue);
-    bool parse(const std::string& str,  int16_t & oValue);
+    bool parse(const std::string& str, int8_t & oValue);
+    bool parse(const std::string& str, uint8_t & oValue);
+    bool parse(const std::string& str, int16_t & oValue);
     bool parse(const std::string& str, uint16_t & oValue);
-    bool parse(const std::string& str,  int32_t & oValue);
+    bool parse(const std::string& str, int32_t & oValue);
     bool parse(const std::string& str, uint32_t & oValue);
-    bool parse(const std::string& str,  int64_t & oValue);
+    bool parse(const std::string& str, int64_t & oValue);
     bool parse(const std::string& str, uint64_t & oValue);
-    bool parse(const std::string& str,    float & oValue);
-    bool parse(const std::string& str,   double & oValue);
-    bool parse(const std::string& str,     bool & oValue);
+    bool parse(const std::string& str, float & oValue);
+    bool parse(const std::string& str, double & oValue);
+    bool parse(const std::string& str, bool & oValue);
 
     /// <summary>
     /// Capitalize the first character of the given string.

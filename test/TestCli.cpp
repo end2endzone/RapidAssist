@@ -30,18 +30,15 @@ namespace ra { namespace cli { namespace test
 {
 
   //--------------------------------------------------------------------------------------------------
-  void TestCli::SetUp()
-  {
+  void TestCli::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
-  void TestCli::TearDown()
-  {
+  void TestCli::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestCli, testParseArgumentString)
-  {
-    const char * arguments[] = {"myapp", "--arg1=value1", "--test2=value2", "--quick", "--number=12345", "--big=4123456789", "--foo=bar", "--last=final", ""};
-    int argc = sizeof(arguments)/sizeof(arguments[0]) - 1; //the last element must be NULL and not part of the argc value.
+  TEST_F(TestCli, testParseArgumentString) {
+    const char * arguments[] = { "myapp", "--arg1=value1", "--test2=value2", "--quick", "--number=12345", "--big=4123456789", "--foo=bar", "--last=final", "" };
+    int argc = sizeof(arguments) / sizeof(arguments[0]) - 1; //the last element must be NULL and not part of the argc value.
 
     //must const cast because argv is supplied as a `char**` instead of `const char **`
     char ** argv = (char**)arguments;

@@ -60,7 +60,7 @@ namespace ra
     //https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
     //http://nadeausoftware.com/articles/2012/04/c_c_tip_how_measure_elapsed_real_time_benchmarking
     //POSIX clocks benchmark: https://stackoverflow.com/a/13096917
- 
+
     //mach:
     //https://gist.github.com/jbenet/1087739
     //https://stackoverflow.com/questions/21665641/ns-precision-monotonic-clock-in-c-on-linux-and-os-x/21665642#21665642
@@ -85,8 +85,7 @@ namespace ra
     ///  - Must be called from the same thread to compute elapsed time.
     ///</remarks>
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-    double GetPerformanceTimerWin32()
-    {
+    double GetPerformanceTimerWin32() {
       //Warning for processes running a multicore processors...
       //While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
       //for multiple processors, bugs in the BIOS or drivers may result in these routines
@@ -97,7 +96,7 @@ namespace ra
       //  https://stackoverflow.com/questions/44020619/queryperformancecounter-on-multi-core-processor-under-windows-10-behaves-erratic
       //  https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247(v=vs.85).aspx (SetThreadAffinityMask function)
 
-      static LARGE_INTEGER frequency = {0};
+      static LARGE_INTEGER frequency = { 0 };
       //if first pass
       if (frequency.QuadPart == 0)
         QueryPerformanceFrequency(&frequency);
@@ -113,8 +112,7 @@ namespace ra
     ///By default, the resolution is 15.6ms (64Hz).
     ///The function must be called once per process execution.
     ///</summary>
-    void InitMillisecondsInterruptTimer()
-    {
+    void InitMillisecondsInterruptTimer() {
       //allow running only once
       static bool firstPass = true;
       if (!firstPass)
@@ -126,11 +124,10 @@ namespace ra
 
       //wait for the system to apply the new period
       DWORD diff = 0;
-      while(diff == 0 || diff > 5)
-      {
+      while (diff == 0 || diff > 5) {
         DWORD time1 = timeGetTime();
         DWORD time2 = timeGetTime();
-        diff = time2-time1;
+        diff = time2 - time1;
       }
     }
 
@@ -146,7 +143,7 @@ namespace ra
     double GetTickCountTimer() //fast constant 15ms timer
     {
       DWORD millisecondsCounter = GetTickCount();
-      double seconds = double(millisecondsCounter)/1000.0;
+      double seconds = double(millisecondsCounter) / 1000.0;
       return seconds;
     }
 
@@ -159,10 +156,9 @@ namespace ra
     ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
     ///</remarks>
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-    double GetMillisecondsTimerWin32()
-    {
+    double GetMillisecondsTimerWin32() {
       DWORD millisecondsCounter = timeGetTime();
-      double seconds = double(millisecondsCounter)/1000.0;
+      double seconds = double(millisecondsCounter) / 1000.0;
       return seconds;
     }
 
@@ -170,7 +166,7 @@ namespace ra
     // https://stackoverflow.com/questions/24241916/how-to-check-win-api-function-support-during-runtime
     typedef void (WINAPI *FuncT) (LPFILETIME lpSystemTimeAsFileTime);
     HINSTANCE hKernelDll = LoadLibrary(TEXT("Kernel32.dll"));
-    FuncT GetSystemTimePreciseAsFileTime_ = (FuncT) GetProcAddress((HMODULE)hKernelDll, "GetSystemTimePreciseAsFileTime");
+    FuncT GetSystemTimePreciseAsFileTime_ = (FuncT)GetProcAddress((HMODULE)hKernelDll, "GetSystemTimePreciseAsFileTime");
 
     ///<summary>
     ///Returns the elasped time in seconds since an arbitrary starting point.
@@ -182,19 +178,16 @@ namespace ra
     ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
     ///</remarks>
     ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-    double GetSystemTimeTimerWin32()
-    {
+    double GetSystemTimeTimerWin32() {
       FILETIME ft;
       ULONGLONG t;
-      if (GetSystemTimePreciseAsFileTime_)
-      {
+      if (GetSystemTimePreciseAsFileTime_) {
         //Windows 8, Windows Server 2012 and later
-        GetSystemTimePreciseAsFileTime_( &ft ); //microseconds accuracy
+        GetSystemTimePreciseAsFileTime_(&ft); //microseconds accuracy
       }
-      else
-      {
+      else {
         //Windows 2000 and later
-        GetSystemTimeAsFileTime( &ft ); //milliseconds accuracy
+        GetSystemTimeAsFileTime(&ft); //milliseconds accuracy
       }
       t = ((ULONGLONG)ft.dwHighDateTime << 32) | (ULONGLONG)ft.dwLowDateTime;
       return (double)t / 10000000.0;
@@ -207,15 +200,13 @@ namespace ra
 
 
 
-    double getMicrosecondsTimer()
-    {
+    double getMicrosecondsTimer() {
 #ifdef WIN32
       //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
       //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
       //accuracy and works on single and multiple core processors without having
       //to lock the thread on the same core.
-      if (GetSystemTimePreciseAsFileTime_)
-      {
+      if (GetSystemTimePreciseAsFileTime_) {
         double seconds = GetSystemTimeTimerWin32();
         return seconds;
       }
@@ -240,16 +231,15 @@ namespace ra
       if (clock_gettime(CLOCK_MONOTONIC_RAW, &now) == 0) { clock_id = CLOCK_MONOTONIC_RAW; }
       else if (clock_gettime(CLOCK_MONOTONIC, &now) == 0) { clock_id = CLOCK_MONOTONIC; }
       else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
-      else
-      {
+      else {
         //all calls to clock_gettime() have failed.
         //fallback to gettimeofday()
         struct timeval tm;
-        gettimeofday( &tm, NULL );
+        gettimeofday(&tm, NULL);
         double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
         return seconds;
       }
-      
+
       //clock_gettime() is successful
       double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
       return seconds;
@@ -258,28 +248,26 @@ namespace ra
 #endif
     }
 
-    double getMillisecondsTimer()
-    {
+    double getMillisecondsTimer() {
 #ifdef WIN32
       InitMillisecondsInterruptTimer();
       return GetMillisecondsTimerWin32();
 #elif __linux__
       struct timespec now;
       clockid_t clock_id = 0;
-      
+
       if (clock_gettime(CLOCK_MONOTONIC_COARSE, &now) == 0) { clock_id = CLOCK_MONOTONIC_COARSE; }
       else if (clock_gettime(CLOCK_REALTIME_COARSE, &now) == 0) { clock_id = CLOCK_REALTIME_COARSE; }
       else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
-      else
-      {
+      else {
         //all calls to clock_gettime() have failed.
         //fallback to gettimeofday()
         struct timeval tm;
-        gettimeofday( &tm, NULL );
+        gettimeofday(&tm, NULL);
         double seconds = (double)tm.tv_sec + (double)tm.tv_usec / 1000000.0;
         return seconds;
       }
-      
+
       //clock_gettime() is successful
       double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
       return seconds;
@@ -289,51 +277,46 @@ namespace ra
     }
 
 
-    DateTime toDateTime(const std::tm & timeinfo)
-    {
+    DateTime toDateTime(const std::tm & timeinfo) {
       DateTime dt;
 
-      dt.year  = timeinfo.tm_year + 1900;
+      dt.year = timeinfo.tm_year + 1900;
       dt.month = timeinfo.tm_mon + 1;
-      dt.day   = timeinfo.tm_mday;
-      dt.hour  = timeinfo.tm_hour;
-      dt.min   = timeinfo.tm_min;
-      dt.sec   = timeinfo.tm_sec;
-      dt.wday  = timeinfo.tm_wday;
-      dt.yday  = timeinfo.tm_yday;
+      dt.day = timeinfo.tm_mday;
+      dt.hour = timeinfo.tm_hour;
+      dt.min = timeinfo.tm_min;
+      dt.sec = timeinfo.tm_sec;
+      dt.wday = timeinfo.tm_wday;
+      dt.yday = timeinfo.tm_yday;
       dt.isdst = (timeinfo.tm_isdst != 0);
 
       return dt;
     }
 
-    std::tm toTimeInfo(const DateTime & iDateTime)
-    {
+    std::tm toTimeInfo(const DateTime & iDateTime) {
       std::tm timeinfo;
 
-      timeinfo.tm_year  = iDateTime.year - 1900;
-      timeinfo.tm_mon   = iDateTime.month - 1;
-      timeinfo.tm_mday  = iDateTime.day;
-      timeinfo.tm_hour  = iDateTime.hour;
-      timeinfo.tm_min   = iDateTime.min;
-      timeinfo.tm_sec   = iDateTime.sec;
-      timeinfo.tm_wday  = iDateTime.wday;
-      timeinfo.tm_yday  = iDateTime.yday;
+      timeinfo.tm_year = iDateTime.year - 1900;
+      timeinfo.tm_mon = iDateTime.month - 1;
+      timeinfo.tm_mday = iDateTime.day;
+      timeinfo.tm_hour = iDateTime.hour;
+      timeinfo.tm_min = iDateTime.min;
+      timeinfo.tm_sec = iDateTime.sec;
+      timeinfo.tm_wday = iDateTime.wday;
+      timeinfo.tm_yday = iDateTime.yday;
       timeinfo.tm_isdst = (iDateTime.isdst ? 1 : 0);
 
       return timeinfo;
     }
 
-    void waitNextSecond()
-    {
+    void waitNextSecond() {
       std::tm baseTime = getLocalTime();
-      while(getLocalTime().tm_sec == baseTime.tm_sec)
-      {
+      while (getLocalTime().tm_sec == baseTime.tm_sec) {
         //loop
       }
     }
 
-    std::tm getLocalTime()
-    {
+    std::tm getLocalTime() {
       time_t rawtime;
       std::time(&rawtime);
 
@@ -341,8 +324,7 @@ namespace ra
       return timeinfo;
     }
 
-    std::tm getUtcTime()
-    {
+    std::tm getUtcTime() {
       time_t rawtime;
       std::time(&rawtime);
 
@@ -350,13 +332,12 @@ namespace ra
       return timeinfo;
     }
 
-    int millisleep(uint32_t milliseconds)
-    {
+    int millisleep(uint32_t milliseconds) {
       //code from https://stackoverflow.com/a/14818830 and https://stackoverflow.com/a/28827188
 #if defined(WIN32)
       SetLastError(0);
       Sleep(milliseconds);
-      return GetLastError() ?-1 :0;
+      return GetLastError() ? -1 : 0;
 #elif _POSIX_C_SOURCE >= 199309L
       /* prefer to use nanosleep() */
       const struct timespec ts = {
@@ -377,14 +358,13 @@ namespace ra
 #endif
     }
 
-    int getCopyrightYear()
-    {
+    int getCopyrightYear() {
       static const int DEFAULT_YEAR = 2016;
       std::string compilationDate = __DATE__;
       size_t lastSpace = compilationDate.find_last_of(" ");
       if (lastSpace == std::string::npos)
         return DEFAULT_YEAR;
-      const char * yearStr = &compilationDate[lastSpace+1];
+      const char * yearStr = &compilationDate[lastSpace + 1];
       int year = atoi(yearStr);
       return year;
     }

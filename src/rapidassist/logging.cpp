@@ -36,18 +36,15 @@ namespace ra
 
     bool gQuietMode = false;
 
-    void setQuietMode(bool iQuiet)
-    {
+    void setQuietMode(bool iQuiet) {
       gQuietMode = iQuiet;
     }
 
-    bool isQuietModeEnabled()
-    {
+    bool isQuietModeEnabled() {
       return gQuietMode;
     }
 
-    void log(LOGGER_LEVEL iLevel, const char * iFormat, ...)
-    {
+    void log(LOGGER_LEVEL iLevel, const char * iFormat, ...) {
       if (iFormat == NULL)
         return;
 
@@ -61,22 +58,19 @@ namespace ra
       buffer[0] = '\0';
       vsnprintf(buffer, BUFFER_SIZE, iFormat, args);
       logstring = buffer;
-      va_end (args);
+      va_end(args);
 
       //print the single string to the console
       if (iLevel == LOG_INFO && gQuietMode)
         return; //silence the output
 
-      if (iLevel == LOG_ERROR)
-      {
+      if (iLevel == LOG_ERROR) {
         printf("Error: %s\n", logstring.c_str());
       }
-      else if (iLevel == LOG_WARNING)
-      {
+      else if (iLevel == LOG_WARNING) {
         printf("Warning: %s\n", logstring.c_str());
       }
-      else
-      {
+      else {
         printf("%s\n", logstring.c_str());
       }
     }
