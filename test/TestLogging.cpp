@@ -27,7 +27,6 @@
 
 namespace ra { namespace logging { namespace test
 {
-
   //--------------------------------------------------------------------------------------------------
   void TestLogging::SetUp() {
   }

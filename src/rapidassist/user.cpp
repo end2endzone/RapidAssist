@@ -37,11 +37,7 @@
 #   include <sys/types.h>
 #endif
 
-namespace ra
-{
-
-  namespace user
-  {
+namespace ra { namespace user {
 
 #ifdef _WIN32
   inline std::string getWin32Directory(int csidl) {
@@ -61,95 +57,95 @@ namespace ra
   }
 #endif
 
-    std::string getHomeDirectory() {
+  std::string getHomeDirectory() {
 #ifdef _WIN32
-      std::string dir = getWin32Directory(CSIDL_PROFILE);
-      return dir;
+    std::string dir = getWin32Directory(CSIDL_PROFILE);
+    return dir;
 #else
-      //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
-      //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
-      struct passwd pwd;
-      struct passwd *result = NULL;
-      char buf[1024];
-      uid_t uid = geteuid();
-      if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
-        if (result != NULL)
-          return result->pw_dir;
-      }
-
-      //fallback to HOME env variable
-      std::string env_home = ra::environment::getEnvironmentVariable("HOME");
-      if (!env_home.empty())
-        return env_home;
-
-      //failure
-      return "~";
-#endif
+    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
+    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
+    struct passwd pwd;
+    struct passwd *result = NULL;
+    char buf[1024];
+    uid_t uid = geteuid();
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
+      if (result != NULL)
+        return result->pw_dir;
     }
 
-    std::string getApplicationsDataDirectory() {
+    //fallback to HOME env variable
+    std::string env_home = ra::environment::getEnvironmentVariable("HOME");
+    if (!env_home.empty())
+      return env_home;
+
+    //failure
+    return "~";
+#endif
+  }
+
+  std::string getApplicationsDataDirectory() {
 #ifdef _WIN32
-      std::string dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
-      return dir;
+    std::string dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
+    return dir;
 #else
-      return "/usr/share";
+    return "/usr/share";
 #endif
-    }
+  }
 
-    std::string getDocumentsDirectory() {
+  std::string getDocumentsDirectory() {
 #ifdef _WIN32
-      std::string dir = getWin32Directory(CSIDL_PERSONAL);
-      return dir;
+    std::string dir = getWin32Directory(CSIDL_PERSONAL);
+    return dir;
 #else
-      return std::string(getHomeDirectory()) + "/Documents";
+    return std::string(getHomeDirectory()) + "/Documents";
 #endif
-    }
+  }
 
-    std::string getDesktopDirectory() {
+  std::string getDesktopDirectory() {
 #ifdef _WIN32
-      std::string dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
-      return dir;
+    std::string dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
+    return dir;
 #else
-      return std::string(getHomeDirectory()) + "/Desktop";
+    return std::string(getHomeDirectory()) + "/Desktop";
 #endif
-    }
+  }
 
-    std::string getUsername() {
+  std::string getUsername() {
 #ifdef _WIN32
-    char username[UNLEN + 1] = {0};
-    DWORD size = UNLEN + 1;
-    if (SUCCEEDED(GetUserName(username, &size))) {
-      return username;
-    }
+  char username[UNLEN + 1] = {0};
+  DWORD size = UNLEN + 1;
+  if (SUCCEEDED(GetUserName(username, &size))) {
+    return username;
+  }
 
-      //fallback to USERNAME env variable
-      std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");
-      if (!env_username.empty())
-        return env_username;
+    //fallback to USERNAME env variable
+    std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");
+    if (!env_username.empty())
+      return env_username;
 
-      //failure
-      return "";
+    //failure
+    return "";
 #else
-      //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
-      //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
-      struct passwd pwd;
-      struct passwd *result = NULL;
-      char buf[1024];
-      uid_t uid = geteuid();
-      if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
-        if (result != NULL)
-          return result->pw_name;
-      }
-
-      //fallback to LOGNAME env variable
-      std::string env_logname = ra::environment::getEnvironmentVariable("LOGNAME");
-      if (!env_logname.empty())
-        return env_logname;
-
-      //failure
-      return "";
-#endif
+    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
+    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
+    struct passwd pwd;
+    struct passwd *result = NULL;
+    char buf[1024];
+    uid_t uid = geteuid();
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
+      if (result != NULL)
+        return result->pw_name;
     }
 
-  }; //namespace user
+    //fallback to LOGNAME env variable
+    std::string env_logname = ra::environment::getEnvironmentVariable("LOGNAME");
+    if (!env_logname.empty())
+      return env_logname;
+
+    //failure
+    return "";
+#endif
+  }
+
+} //namespace user
 } //namespace ra

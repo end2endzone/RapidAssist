@@ -27,7 +27,6 @@
 
 namespace ra { namespace environment { namespace test
 {
-
   //--------------------------------------------------------------------------------------------------
   void TestEnvironment::SetUp() {
   }

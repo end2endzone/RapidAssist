@@ -33,7 +33,6 @@
 
 namespace ra { namespace errors { namespace test
 {
-
   //--------------------------------------------------------------------------------------------------
   void TestErrors::SetUp() {
   }

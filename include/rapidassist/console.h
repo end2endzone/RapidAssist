@@ -25,225 +25,222 @@
 #ifndef RA_CONSOLE_H
 #define RA_CONSOLE_H
 
-namespace ra
-{
-  namespace console
+namespace ra { namespace console {
+
+  /// <summary>
+  /// Returns the cursor position.
+  /// </summary>
+  /// <remarks>The console x and y coordinate system is 0 based</remarks>
+  /// <param name="col">The x coordinate of the cursor.</param>
+  /// <param name="row">The y coordinate of the cursor.</param>
+  void getCursorPos(int & col, int & row);
+
+  /// <summary>
+  /// Sets the cursor position.
+  /// </summary>
+  /// <remarks>The console x and y coordinate system is 0 based</remarks>
+  /// <param name="col">The x coordinate of the cursor.</param>
+  /// <param name="row">The y coordinate of the cursor.</param>
+  void setCursorPos(const int & col, const int & row);
+
+  /// <summary>
+  /// Gets the width and height of the console window.
+  /// </summary>
+  /// <remarks>
+  /// On Windows, the function returns the size of the console when maximized (and not the maximum length of a string without carriage return).
+  /// The result can be used to 'center' a text on the console.
+  /// </remarks>
+  /// <param name="width">The width of the console.</param>
+  /// <param name="height">The height of the console.</param>
+  void getDimension(int & width, int & height);
+
+  /// <summary>
+  /// Clears the screen.
+  /// </summary>
+  void clearScreen();
+
+  /// <summary>
+  /// Wait for the user to press a key.
+  /// </summary>
+  /// <remarks>
+  /// This function only works with console application.
+  /// </remarks>
+  /// <returns>Returns the code of the key pressed.</returns>
+  int waitKeyPress();
+
+  /// <summary>
+  /// Saves the current cursor position on a stack.
+  /// </summary>
+  void pushCursorPos();
+
+  /// <summary>
+  /// Restores the cursor position from a stack.
+  /// </summary>
+  void popCursorPos();
+
+  /// <summary>
+  /// Returns the current cursor spinning sprite based on the requested refresh rate.
+  /// </summary>
+  /// <param name="iRefreshRate">The duration time in seconds of a single sprite.</param>
+  /// <returns>Returns the current cursor spinning sprite based on the requested refresh rate.</returns>
+  char getAnimationSprite(double iRefreshRate);
+
+  /// <summary>
+  /// Prints a spinning cursor over time.
+  /// </summary>
+  /// <remarks>
+  /// When the function exists, the cursor position is located over the spinning character.
+  /// If user is done with the running task, the cursor must be erased by printing a space character over it.
+  /// </remarks>
+  void printAnimationCursor();
+
+  /// <summary>Enumaration for all console text colors.</summary>
+  enum TextColor {
+    BLACK = 0,
+    WHITE,
+    BLUE,
+    GREEN,
+    CYAN,
+    RED,
+    MAGENTA,
+    YELLOW,
+    GRAY,
+    DARK_BLUE,
+    DARK_GREEN,
+    DARK_CYAN,
+    DARK_RED,
+    DARK_MAGENTA,
+    DARK_YELLOW,
+    DARK_GRAY,
+  };
+
+  static const int NUM_TEXT_COLOR = 16;
+
+  /// <summary>
+  /// Returns the name of the given text color.
+  /// </summary>
+  /// <remarks>The called does not have the ownsership of the returned value.</remarks>
+  /// <returns>Returns the name of the given text color.</returns>
+  const char * getTextColorName(const TextColor & color);
+
+  /// <summary>
+  /// Set a new foreground and background text color.
+  /// </summary>
+  /// <param name="iForeground">The text foreground color.</param>
+  /// <param name="iBackground">The text background color.</param>
+  void setTextColor(const TextColor & iForeground, const TextColor & iBackground);
+
+  /// <summary>
+  /// Get the current foreground and background text color.
+  /// </summary>
+  /// <param name="oForeground">The text foreground color.</param>
+  /// <param name="oBackground">The text background color.</param>
+  void getTextColor(TextColor & oForeground, TextColor & oBackground);
+
+  /// <summary>
+  /// Set default foreground and background text colors.
+  /// </summary>
+  void setDefaultTextColor();
+
+  /// <summary>
+  /// Defines if the current running environment support a desktop GUI.
+  /// </summary>
+  /// <remarks>
+  /// On Windows, a GUI is always available (as the mane implies).
+  /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+  /// </remarks>
+  /// <returns>Returns true if a desktop gui is available. Returns false otherwise.</returns>
+  bool isDesktopGuiAvailable();
+
+  /// <summary>
+  /// Defines if the current running program is launched from desktop GUI.
+  /// </summary>
+  /// <remarks>
+  /// On Windows, a GUI is always available (as the mane implies).
+  /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+  /// </remarks>
+  /// <returns>Returns true if a desktop gui launched the program. Returns false otherwise.</returns>
+  bool isRunFromDesktop();
+
+  /// <summary>
+  /// Defines if the current running program has created the console window.
+  /// </summary>
+  /// <returns>Returns true if the current running program has created the console window. Returns false otherwise.</returns>
+  bool hasConsoleOwnership();
+
+  ///<summary>ANSI color support functions</summary>
+  namespace ansi
   {
+    //https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+    //https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
 
-    /// <summary>
-    /// Returns the cursor position.
-    /// </summary>
-    /// <remarks>The console x and y coordinate system is 0 based</remarks>
-    /// <param name="col">The x coordinate of the cursor.</param>
-    /// <param name="row">The y coordinate of the cursor.</param>
-    void getCursorPos(int & col, int & row);
-
-    /// <summary>
-    /// Sets the cursor position.
-    /// </summary>
-    /// <remarks>The console x and y coordinate system is 0 based</remarks>
-    /// <param name="col">The x coordinate of the cursor.</param>
-    /// <param name="row">The y coordinate of the cursor.</param>
-    void setCursorPos(const int & col, const int & row);
-
-    /// <summary>
-    /// Gets the width and height of the console window.
-    /// </summary>
-    /// <remarks>
-    /// On Windows, the function returns the size of the console when maximized (and not the maximum length of a string without carriage return).
-    /// The result can be used to 'center' a text on the console.
-    /// </remarks>
-    /// <param name="width">The width of the console.</param>
-    /// <param name="height">The height of the console.</param>
-    void getDimension(int & width, int & height);
-
-    /// <summary>
-    /// Clears the screen.
-    /// </summary>
-    void clearScreen();
-
-    /// <summary>
-    /// Wait for the user to press a key.
-    /// </summary>
-    /// <remarks>
-    /// This function only works with console application.
-    /// </remarks>
-    /// <returns>Returns the code of the key pressed.</returns>
-    int waitKeyPress();
-
-    /// <summary>
-    /// Saves the current cursor position on a stack.
-    /// </summary>
-    void pushCursorPos();
-
-    /// <summary>
-    /// Restores the cursor position from a stack.
-    /// </summary>
-    void popCursorPos();
-
-    /// <summary>
-    /// Returns the current cursor spinning sprite based on the requested refresh rate.
-    /// </summary>
-    /// <param name="iRefreshRate">The duration time in seconds of a single sprite.</param>
-    /// <returns>Returns the current cursor spinning sprite based on the requested refresh rate.</returns>
-    char getAnimationSprite(double iRefreshRate);
-
-    /// <summary>
-    /// Prints a spinning cursor over time.
-    /// </summary>
-    /// <remarks>
-    /// When the function exists, the cursor position is located over the spinning character.
-    /// If user is done with the running task, the cursor must be erased by printing a space character over it.
-    /// </remarks>
-    void printAnimationCursor();
-
-    /// <summary>Enumaration for all console text colors.</summary>
-    enum TextColor {
-      BLACK = 0,
-      WHITE,
-      BLUE,
-      GREEN,
-      CYAN,
-      RED,
-      MAGENTA,
-      YELLOW,
-      GRAY,
-      DARK_BLUE,
-      DARK_GREEN,
-      DARK_CYAN,
-      DARK_RED,
-      DARK_MAGENTA,
-      DARK_YELLOW,
-      DARK_GRAY,
-    };
-
-    static const int NUM_TEXT_COLOR = 16;
-
-    /// <summary>
-    /// Returns the name of the given text color.
-    /// </summary>
-    /// <remarks>The called does not have the ownsership of the returned value.</remarks>
-    /// <returns>Returns the name of the given text color.</returns>
-    const char * getTextColorName(const TextColor & color);
-
-    /// <summary>
-    /// Set a new foreground and background text color.
-    /// </summary>
-    /// <param name="iForeground">The text foreground color.</param>
-    /// <param name="iBackground">The text background color.</param>
-    void setTextColor(const TextColor & iForeground, const TextColor & iBackground);
-
-    /// <summary>
-    /// Get the current foreground and background text color.
-    /// </summary>
-    /// <param name="oForeground">The text foreground color.</param>
-    /// <param name="oBackground">The text background color.</param>
-    void getTextColor(TextColor & oForeground, TextColor & oBackground);
-
-    /// <summary>
-    /// Set default foreground and background text colors.
-    /// </summary>
-    void setDefaultTextColor();
-
-    /// <summary>
-    /// Defines if the current running environment support a desktop GUI.
-    /// </summary>
-    /// <remarks>
-    /// On Windows, a GUI is always available (as the mane implies).
-    /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
-    /// </remarks>
-    /// <returns>Returns true if a desktop gui is available. Returns false otherwise.</returns>
-    bool isDesktopGuiAvailable();
-
-    /// <summary>
-    /// Defines if the current running program is launched from desktop GUI.
-    /// </summary>
-    /// <remarks>
-    /// On Windows, a GUI is always available (as the mane implies).
-    /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
-    /// </remarks>
-    /// <returns>Returns true if a desktop gui launched the program. Returns false otherwise.</returns>
-    bool isRunFromDesktop();
-
-    /// <summary>
-    /// Defines if the current running program has created the console window.
-    /// </summary>
-    /// <returns>Returns true if the current running program has created the console window. Returns false otherwise.</returns>
-    bool hasConsoleOwnership();
-
-    ///<summary>ANSI color support functions</summary>
-    namespace ansi
+    namespace FormatAttribute
     {
-      //https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
-      //https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
+      enum Attr {
+        DEFAULT = 0,
+        BOLD = 1,
+        DIM = 2,
+        UNDERLINED = 3,
+        BLINK = 5,
+        REVERSE = 7,
+        HIDDEN = 8
+      };
+      const char * toString(const Attr & attr);
+      static const int NUM_COLOR_ATTR = 7;
+    } //namespace FormatAttribute
 
-      namespace FormatAttribute
-      {
-        enum Attr {
-          DEFAULT = 0,
-          BOLD = 1,
-          DIM = 2,
-          UNDERLINED = 3,
-          BLINK = 5,
-          REVERSE = 7,
-          HIDDEN = 8
-        };
-        const char * toString(const Attr & attr);
-        static const int NUM_COLOR_ATTR = 7;
-      }; //namespace FormatAttribute
+    namespace ForegroundColor
+    {
+      enum Color {
+        DEFAULT = 39,
+        BLACK = 30,
+        RED,
+        GREEN,
+        YELLOW,
+        BLUE,
+        MAGENTA,
+        CYAN,
+        LIGHT_GRAY,
+        DARK_GRAY = 90,
+        LIGHT_RED,
+        LIGHT_GREEN,
+        LIGHT_YELLOW,
+        LIGHT_BLUE,
+        LIGHT_MAGENTA,
+        LIGHT_CYAN,
+        WHITE,
+      };
+      const char * toString(const Color & color);
+      static const int NUM_FOREGROUND_COLOR = 17;
+    } //namespace ForegroundColor
 
-      namespace ForegroundColor
-      {
-        enum Color {
-          DEFAULT = 39,
-          BLACK = 30,
-          RED,
-          GREEN,
-          YELLOW,
-          BLUE,
-          MAGENTA,
-          CYAN,
-          LIGHT_GRAY,
-          DARK_GRAY = 90,
-          LIGHT_RED,
-          LIGHT_GREEN,
-          LIGHT_YELLOW,
-          LIGHT_BLUE,
-          LIGHT_MAGENTA,
-          LIGHT_CYAN,
-          WHITE,
-        };
-        const char * toString(const Color & color);
-        static const int NUM_FOREGROUND_COLOR = 17;
-      }; //namespace ForegroundColor
+    namespace BackgroundColor
+    {
+      enum Color {
+        DEFAULT = 49,
+        BLACK = 40,
+        RED,
+        GREEN,
+        YELLOW,
+        BLUE,
+        MAGENTA,
+        CYAN,
+        LIGHT_GRAY,
+        DARK_GRAY = 100,
+        LIGHT_RED,
+        LIGHT_GREEN,
+        LIGHT_YELLOW,
+        LIGHT_BLUE,
+        LIGHT_MAGENTA,
+        LIGHT_CYAN,
+        WHITE,
+      };
+      const char * toString(const Color & color);
+      static const int NUM_BACKGROUND_COLOR = 17;
+    } //namespace BackgroundColor
+  } //namespace ansi
 
-      namespace BackgroundColor
-      {
-        enum Color {
-          DEFAULT = 49,
-          BLACK = 40,
-          RED,
-          GREEN,
-          YELLOW,
-          BLUE,
-          MAGENTA,
-          CYAN,
-          LIGHT_GRAY,
-          DARK_GRAY = 100,
-          LIGHT_RED,
-          LIGHT_GREEN,
-          LIGHT_YELLOW,
-          LIGHT_BLUE,
-          LIGHT_MAGENTA,
-          LIGHT_CYAN,
-          WHITE,
-        };
-        const char * toString(const Color & color);
-        static const int NUM_BACKGROUND_COLOR = 17;
-      }; //namespace BackgroundColor
-    }; //namespace ansi
-
-  } //namespace console
+} //namespace console
 } //namespace ra
 
 #endif //RA_CONSOLE_H

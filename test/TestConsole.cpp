@@ -29,7 +29,6 @@
 
 namespace ra { namespace console { namespace test
 {
-
   //--------------------------------------------------------------------------------------------------
   void TestConsole::SetUp() {
   }

@@ -31,7 +31,6 @@
 
 namespace ra { namespace filesystem { namespace test
 {
-
   //--------------------------------------------------------------------------------------------------
   void TestPropertiesFile::SetUp() {
   }
