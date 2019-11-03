@@ -28,7 +28,7 @@
 
 namespace ra { namespace cli {
 
-  bool parseArgument(const std::string & name, std::string & value, int argc, char **argv) {
+  bool ParseArgument(const std::string & name, std::string & value, int argc, char **argv) {
     value = "";
 
     //look for --name=value pattern
@@ -59,9 +59,9 @@ namespace ra { namespace cli {
     return false;
   }
 
-  bool parseArgument(const std::string & name, int & value, int argc, char **argv) {
+  bool ParseArgument(const std::string & name, int & value, int argc, char **argv) {
     std::string tmp;
-    bool found = parseArgument(name, tmp, argc, argv);
+    bool found = ParseArgument(name, tmp, argc, argv);
     if (found) {
       value = atoi(tmp.c_str());
       return true;
@@ -69,9 +69,9 @@ namespace ra { namespace cli {
     return false;
   }
 
-  bool parseArgument(const std::string & name, size_t & value, int argc, char **argv) {
+  bool ParseArgument(const std::string & name, size_t & value, int argc, char **argv) {
     std::string tmp;
-    bool found = parseArgument(name, tmp, argc, argv);
+    bool found = ParseArgument(name, tmp, argc, argv);
     if (found) {
 #ifdef _WIN32
       static const char * format = "%Iu";

@@ -46,7 +46,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "quick";
       std::string value;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, "");
     }
@@ -55,7 +55,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "arg1";
       std::string value;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, "value1");
     }
@@ -64,7 +64,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "last";
       std::string value;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, "final");
     }
@@ -73,7 +73,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "foo";
       std::string value;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, "bar");
     }
@@ -82,7 +82,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "number";
       int value = 0;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, 12345);
     }
@@ -91,7 +91,7 @@ namespace ra { namespace cli { namespace test
     {
       static const std::string name = "big";
       size_t value = 0;
-      bool found = cli::parseArgument(name.c_str(), value, argc, argv);
+      bool found = cli::ParseArgument(name.c_str(), value, argc, argv);
       ASSERT_TRUE(found);
       ASSERT_EQ(value, 4123456789ul);
     }

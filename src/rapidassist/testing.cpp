@@ -83,7 +83,7 @@ namespace ra { namespace testing {
   std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv) {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
-    bool found = ra::cli::parseArgument("gtest_filter", gtest_filter, argc, argv);
+    bool found = ra::cli::ParseArgument("gtest_filter", gtest_filter, argc, argv);
     if (found)
       return mergeFilter(iPositiveFilter, iNegativeFilter, gtest_filter.c_str());
     return mergeFilter(iPositiveFilter, iNegativeFilter, NULL);
