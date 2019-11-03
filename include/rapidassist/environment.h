@@ -37,62 +37,62 @@ namespace ra { namespace environment {
   /// </summary>
   /// <param name="iName">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
-  std::string getEnvironmentVariable(const char * iName);
+  std::string GetEnvironmentVariable(const char * iName);
 
   /// <summary>
-  /// Sets a new value for a given environment variable.
+  /// Sets a new value for the given environment variable.
   /// </summary>
-  /// <remarks>Use setEnvironmentVariable(name, NULL) for deleting an existing variable.</remarks>
+  /// <remarks>Use SetEnvironmentVariable(name, NULL) for deleting an existing variable.</remarks>
   /// <param name="iName">Name of the variable</param>
   /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
   /// <returns>Returns true when successful. Returns false otherwise.</returns>
-  bool setEnvironmentVariable(const char * iName, const char * iValue);
-  bool setEnvironmentVariable(const char * iName, const   int8_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const  int16_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const uint16_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const  int32_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const uint32_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const  int64_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const uint64_t & iValue);
-  bool setEnvironmentVariable(const char * iName, const    float & iValue);
-  bool setEnvironmentVariable(const char * iName, const   double & iValue);
+  bool SetEnvironmentVariable(const char * iName, const char * iValue);
+  bool SetEnvironmentVariable(const char * iName, const   int8_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const  uint8_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const  int16_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const uint16_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const  int32_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const uint32_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const  int64_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const uint64_t & iValue);
+  bool SetEnvironmentVariable(const char * iName, const    float & iValue);
+  bool SetEnvironmentVariable(const char * iName, const   double & iValue);
 
   /// <summary>
-  /// Returns if the current process is 32 bit.
+  /// Returns true if the current process is 32 bit.
   /// </summary>
   /// <returns>Returns true if the current process is 32 bit. Returns false otherwise.</returns>
-  bool isProcess32Bit();
+  bool IsProcess32Bit();
 
   /// <summary>
-  /// Returns if the current process is 64 bit.
+  /// Returns true if the current process is 64 bit.
   /// </summary>
   /// <returns>Returns true if the current process is 64 bit. Returns false otherwise.</returns>
-  bool isProcess64Bit();
+  bool IsProcess64Bit();
 
   /// <summary>
-  /// Returns if the current process is in Debug mode.
+  /// Returns true if the current process is in Debug mode.
   /// </summary>
   /// <returns>Returns true if the current process is in Debug mode. Returns false otherwise.</returns>
-  bool isConfigurationDebug();
+  bool IsConfigurationDebug();
 
   /// <summary>
-  /// Returns if the current process is in Release mode.
+  /// Returns true if the current process is in Release mode.
   /// </summary>
   /// <returns>Returns true if the current process is in Release mode. Returns false otherwise.</returns>
-  bool isConfigurationRelease();
+  bool IsConfigurationRelease();
 
   /// <summary>
-  /// Returns the line separator of the current system.
+  /// Returns the line separator of the system.
   /// </summary>
   /// <returns>Returns the line separator for the current system.</returns>
-  const char * getLineSeparator();
+  const char * GetLineSeparator();
 
   /// <summary>
-  /// Returns a list of all environment variables defined by the current process.
+  /// Returns the list of all environment variables defined by the current process.
   /// </summary>
   /// <returns>Returns a list of all environment variables.</returns>
-  ra::strings::StringVector getEnvironmentVariables();
+  ra::strings::StringVector GetEnvironmentVariables();
 
   /// <summary>
   /// Expand a file path by replacing environment variable reference by the actual variable's value.
@@ -101,7 +101,7 @@ namespace ra { namespace environment {
   /// </summary>
   /// <param name="iValue">The path that must be expanded.</param>
   /// <returns>Returns a new string with the expanded strings.</returns>
-  std::string expand(const std::string & iValue);
+  std::string Expand(const std::string & iValue);
 
 } //namespace environment
 } //namespace ra

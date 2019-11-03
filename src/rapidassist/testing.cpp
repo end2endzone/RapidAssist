@@ -461,31 +461,31 @@ namespace ra { namespace testing {
   }
 
   bool isProcessorX86() {
-    return environment::isProcess32Bit();
+    return environment::IsProcess32Bit();
   }
 
   bool isProcessorX64() {
-    return environment::isProcess64Bit();
+    return environment::IsProcess64Bit();
   }
 
   bool isDebugCode() {
-    return environment::isConfigurationDebug();
+    return environment::IsConfigurationDebug();
   }
 
   bool isReleaseCode() {
-    return environment::isConfigurationRelease();
+    return environment::IsConfigurationRelease();
   }
 
   bool isAppVeyor() {
-    return !environment::getEnvironmentVariable("APPVEYOR").empty();
+    return !environment::GetEnvironmentVariable("APPVEYOR").empty();
   }
 
   bool isTravis() {
-    return !environment::getEnvironmentVariable("TRAVIS").empty();
+    return !environment::GetEnvironmentVariable("TRAVIS").empty();
   }
 
   bool isJenkins() {
-    return !environment::getEnvironmentVariable("JENKINS_URL").empty();
+    return !environment::GetEnvironmentVariable("JENKINS_URL").empty();
   }
 
   std::string getTestSuiteName() {

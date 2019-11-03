@@ -41,6 +41,7 @@
 #define __rmdir _rmdir
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
+#undef GetEnvironmentVariable
 #elif __linux__
 #define __chdir chdir
 #define __getcwd getcwd
@@ -267,7 +268,7 @@ namespace ra { namespace filesystem {
     static const char * separator = ":";
 #endif
 
-    std::string path_env = ra::environment::getEnvironmentVariable("PATH");
+    std::string path_env = ra::environment::GetEnvironmentVariable("PATH");
     if (path_env.empty())
       return false;
 
@@ -280,8 +281,8 @@ namespace ra { namespace filesystem {
     for (size_t i = 0; i < paths.size(); i++) {
       std::string path = paths[i];
 
-      //expand the path in case it contains environment variables
-      path = ra::environment::expand(path.c_str());
+      //Expand the path in case it contains environment variables
+      path = ra::environment::Expand(path.c_str());
 
       //Remove the last path separator (\ or / characters)
       ra::filesystem::normalizePath(path);
@@ -456,7 +457,7 @@ namespace ra { namespace filesystem {
 
   std::string getTemporaryDirectory() {
 #ifdef _WIN32
-    std::string temp = environment::getEnvironmentVariable("TEMP");
+    std::string temp = environment::GetEnvironmentVariable("TEMP");
 #elif __linux__
     std::string temp = "/tmp";
 #endif
@@ -1153,7 +1154,7 @@ namespace ra { namespace filesystem {
       if (insert_newline_characters) {
         bool isLast = (i == lines.size() - 1);
         if (!isLast) {
-          fputs(ra::environment::getLineSeparator(), f);
+          fputs(ra::environment::GetLineSeparator(), f);
         }
       }
     }

@@ -34,6 +34,7 @@
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #endif /* WIN32_LEAN_AND_MEAN */
 #include <Windows.h>
+#undef GetEnvironmentVariable
 
 #elif __linux__
 
@@ -878,7 +879,7 @@ namespace ra { namespace console {
 #ifdef _WIN32
     return true;
 #elif __linux__
-    std::string display = ra::environment::getEnvironmentVariable("DISPLAY");
+    std::string display = ra::environment::GetEnvironmentVariable("DISPLAY");
     bool has_desktop_gui = !display.empty();
     return has_desktop_gui;
 #endif
@@ -886,7 +887,7 @@ namespace ra { namespace console {
 
   bool IsRunFromDesktop() {
 #ifdef _WIN32
-    std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
+    std::string prompt = ra::environment::GetEnvironmentVariable("PROMPT");
     bool has_no_prompt = prompt.empty();
     return has_no_prompt;
 #elif __linux__

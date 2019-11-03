@@ -300,7 +300,7 @@ namespace ra { namespace strings { namespace test
     {
       //const void * value
       const std::string HEADER = "fooBAR";
-      const std::string EXPECTED = (environment::isProcess32Bit() ? "fooBAR0x12345678" : "fooBAR0x0000000012345678");
+      const std::string EXPECTED = (environment::IsProcess32Bit() ? "fooBAR0x12345678" : "fooBAR0x0000000012345678");
       const void * value = (const void *)0x12345678;
       std::string actual = HEADER;
       actual << value;

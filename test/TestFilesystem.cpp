@@ -374,7 +374,7 @@ namespace ra { namespace filesystem { namespace test
 
       //search for the last (almost) directory of the root file system.
 #ifdef _WIN32
-      const std::string pattern = environment::getEnvironmentVariable("windir"); //returns C:\Windows or C:\windows
+      const std::string pattern = environment::GetEnvironmentVariable("windir"); //returns C:\Windows or C:\windows
 #else
       const std::string pattern = "/var";
 #endif
@@ -1595,7 +1595,7 @@ namespace ra { namespace filesystem { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testReadTextFile) {
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
       "The" + newline +
       "quick" + newline +
@@ -1649,7 +1649,7 @@ namespace ra { namespace filesystem { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testWriteTextFileFromString) {
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
       "The" + newline +
       "quick" + newline +
@@ -1678,7 +1678,7 @@ namespace ra { namespace filesystem { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testWriteTextFileFromLines) {
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
 
     //building word list
     static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
@@ -1728,7 +1728,7 @@ namespace ra { namespace filesystem { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testPeekFile) {
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
 
     //building word list
     static const std::string sentence = "The quick brown fox jumps over the lazy dog.";

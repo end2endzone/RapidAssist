@@ -175,7 +175,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(created);
 
     //create a text file in user's home directory
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content = ra::testing::getTestQualifiedName();
     const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_home_directory.txt";
     bool success = ra::filesystem::writeFile(home_file_path, content); //write the file as a binary file
@@ -188,7 +188,7 @@ namespace ra { namespace process { namespace test
 
     //define a command that lists the files in the current directory
 #ifdef _WIN32
-    const std::string exec_path = ra::environment::getEnvironmentVariable("ComSpec");
+    const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
     const std::string arguments = "/c dir";
 #else
     ra::strings::StringVector arguments;
@@ -266,7 +266,7 @@ namespace ra { namespace process { namespace test
 #endif
   TEST_F(TestProcess, testKillAndTerminate) {
     //create a text file
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
       ra::testing::getTestQualifiedName() + newline +
       "The" + newline +
@@ -369,7 +369,7 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument) {
     //create a text file
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
       ra::testing::getTestQualifiedName() + newline +
       "The" + newline +
@@ -473,7 +473,7 @@ namespace ra { namespace process { namespace test
 #ifdef _WIN32
     const int expected_error_code = 123456;
     const std::string expected_error_code_str = ra::strings::toString(expected_error_code);
-    const std::string exec_path = ra::environment::getEnvironmentVariable("ComSpec");
+    const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
     const std::string arguments = "/c exit " + expected_error_code_str;
 #else
     const int expected_error_code = 234;

@@ -164,7 +164,7 @@ namespace ra { namespace test {
 
   TEST_F(TestTesting, testGetTextFileContent) {
     //create a sample text file 
-    const std::string newline = ra::environment::getLineSeparator();
+    const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
       "The" + newline +
       "quick" + newline +

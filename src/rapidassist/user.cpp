@@ -28,6 +28,7 @@
 #ifdef WIN32
 #   include <Shlobj.h>
 #   include <windows.h>
+#   undef GetEnvironmentVariable
 #   include <Lmcons.h>
 #else
 #   include <stdlib.h>
@@ -74,7 +75,7 @@ namespace ra { namespace user {
     }
 
     //fallback to HOME env variable
-    std::string env_home = ra::environment::getEnvironmentVariable("HOME");
+    std::string env_home = ra::environment::GetEnvironmentVariable("HOME");
     if (!env_home.empty())
       return env_home;
 
@@ -119,7 +120,7 @@ namespace ra { namespace user {
     }
 
     //fallback to USERNAME env variable
-    std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");
+    std::string env_username = ra::environment::GetEnvironmentVariable("USERNAME");
     if (!env_username.empty())
       return env_username;
 
@@ -138,7 +139,7 @@ namespace ra { namespace user {
     }
 
     //fallback to LOGNAME env variable
-    std::string env_logname = ra::environment::getEnvironmentVariable("LOGNAME");
+    std::string env_logname = ra::environment::GetEnvironmentVariable("LOGNAME");
     if (!env_logname.empty())
       return env_logname;
 
