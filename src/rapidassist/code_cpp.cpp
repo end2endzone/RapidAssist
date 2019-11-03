@@ -57,7 +57,7 @@ namespace ra { namespace code { namespace cpp {
   };
   static const size_t gNumCtrlChars = sizeof(gCtrlChars) / sizeof(gCtrlChars[0]);
 
-  bool isPrintableCharacter(const char c) {
+  bool IsPrintableCharacter(const char c) {
     if (c == 39) // character ' must be escaped with \' which is not supported right now
       return false;
     if (c == 92) // character \ must be escaped with \\ which is not supported right now
@@ -67,7 +67,7 @@ namespace ra { namespace code { namespace cpp {
     return false;
   }
 
-  bool isControlCharacter(char c) {
+  bool IsControlCharacter(char c) {
     for (size_t i = 0; i < gNumCtrlChars; i++) {
       const ControlCharacter & ctrl = gCtrlChars[i];
       if (ctrl.c == c)
@@ -76,7 +76,7 @@ namespace ra { namespace code { namespace cpp {
     return false;
   }
 
-  bool isHexCharacter(char c) {
+  bool IsHexCharacter(char c) {
     if (c >= '0' && c <= '9')
       return true;
     if (c >= 'a' && c <= 'f')
@@ -86,13 +86,13 @@ namespace ra { namespace code { namespace cpp {
     return false;
   }
 
-  bool isDigitCharacter(char c) {
+  bool IsDigitCharacter(char c) {
     if (c >= '0' && c <= '9')
       return true;
     return false;
   }
 
-  const char * getControlCharacterEscapeString(char c) {
+  const char * GetControlCharacterEscapeString(char c) {
     for (size_t i = 0; i < gNumCtrlChars; i++) {
       const ControlCharacter & ctrl = gCtrlChars[i];
       if (ctrl.c == c)
@@ -101,7 +101,7 @@ namespace ra { namespace code { namespace cpp {
     return NULL;
   }
 
-  const char * toOctString(unsigned char c) {
+  const char * ToOctString(unsigned char c) {
     static char buffer[] = { '\\', '9', '9', '9', '\0' };
     static const char * octal_characters = "01234567";
     buffer[3] = octal_characters[c % 8];
@@ -112,7 +112,7 @@ namespace ra { namespace code { namespace cpp {
     return buffer;
   }
 
-  const char * toHexString(unsigned char c) {
+  const char * ToHexString(unsigned char c) {
     static char buffer[] = { '\\', 'x', 'f', 'f', '\0' };
     static const char * hexadecimal_characters = "0123456789abcdef";
     buffer[3] = hexadecimal_characters[c % 16];
@@ -121,11 +121,11 @@ namespace ra { namespace code { namespace cpp {
     return buffer;
   }
 
-  std::string toOctString(const unsigned char * iBuffer, size_t iSize) {
-    return toOctString(iBuffer, iSize, true);
+  std::string ToOctString(const unsigned char * iBuffer, size_t iSize) {
+    return ToOctString(iBuffer, iSize, true);
   }
 
-  std::string toOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125) {
+  std::string ToOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125) {
     std::string output;
 
     //estimate the size of the output string to prevent memory copy
@@ -147,31 +147,31 @@ namespace ra { namespace code { namespace cpp {
       if (i + 1 == iSize) //if out of scope
         next = '\0';
 
-      if (c == 0 && !isDigitCharacter(next)) {
+      if (c == 0 && !IsDigitCharacter(next)) {
         //safe to encode NULL character as '\0' instead of '\000'
-        output.append(getControlCharacterEscapeString(c));
+        output.append(GetControlCharacterEscapeString(c));
         previous = OCTAL;
       }
       else if (c == 0) {
-        output.append(toOctString(c));
+        output.append(ToOctString(c));
         previous = OCTAL;
       }
-      else if (isControlCharacter(c)) {
-        output.append(getControlCharacterEscapeString(c));
+      else if (IsControlCharacter(c)) {
+        output.append(GetControlCharacterEscapeString(c));
         previous = CONTROL;
       }
-      else if (iDisableWarningC4125 && previous == OCTAL && isDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
+      else if (iDisableWarningC4125 && previous == OCTAL && IsDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
       {
         //character must be encoded as octal instead of printable
-        output.append(toOctString(c));
+        output.append(ToOctString(c));
         previous = OCTAL;
       }
-      else if (isPrintableCharacter(c)) {
+      else if (IsPrintableCharacter(c)) {
         output.append(1, c);
         previous = PRINTABLE;
       }
       else {
-        output.append(toOctString(c));
+        output.append(ToOctString(c));
         previous = OCTAL;
       }
     }
@@ -179,7 +179,7 @@ namespace ra { namespace code { namespace cpp {
     return output;
   }
 
-  std::string toHexString(const unsigned char * iBuffer, size_t iSize) {
+  std::string ToHexString(const unsigned char * iBuffer, size_t iSize) {
     std::string output;
 
     //estimate the size of the output string to prevent memory copy
@@ -201,32 +201,32 @@ namespace ra { namespace code { namespace cpp {
       if (i + 1 == iSize) //if out of scope
         next = '\0';
 
-      if (c == 0 && !isDigitCharacter(next)) {
+      if (c == 0 && !IsDigitCharacter(next)) {
         //safe to encode NULL character as '\0' instead of '\000'
-        output.append(getControlCharacterEscapeString(c));
+        output.append(GetControlCharacterEscapeString(c));
         previous = CONTROL;
       }
       else if (c == 0) {
-        output.append(toHexString(c));
+        output.append(ToHexString(c));
         previous = HEX;
       }
-      else if (isControlCharacter(c)) {
-        output.append(getControlCharacterEscapeString(c));
+      else if (IsControlCharacter(c)) {
+        output.append(GetControlCharacterEscapeString(c));
         previous = CONTROL;
       }
-      else if (previous == HEX && isHexCharacter(c)) //an hexadecimal letter cannot follow an hexadecimal escape sequence.
+      else if (previous == HEX && IsHexCharacter(c)) //an hexadecimal letter cannot follow an hexadecimal escape sequence.
       {
         //must also be printed as an hexadecimal escape sequence
         //http://stackoverflow.com/questions/5784969/when-did-c-compilers-start-considering-more-than-two-hex-digits-in-string-lite
-        output.append(toHexString(c));
+        output.append(ToHexString(c));
         previous = HEX;
       }
-      else if (isPrintableCharacter(c)) {
+      else if (IsPrintableCharacter(c)) {
         output.append(1, c);
         previous = PRINTABLE;
       }
       else {
-        output.append(toHexString(c));
+        output.append(ToHexString(c));
         previous = HEX;
       }
     }
@@ -234,13 +234,13 @@ namespace ra { namespace code { namespace cpp {
     return output;
   }
 
-  std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize) {
+  std::string ToCppCharactersArray(const unsigned char * iBuffer, size_t iSize) {
     std::ostringstream oss;
 
     for (size_t i = 0; i < iSize; i++) {
       unsigned char c = iBuffer[i];
 
-      if (isPrintableCharacter((char)c))
+      if (IsPrintableCharacter((char)c))
         oss << '\'' << (char)c << '\'';
       else
         oss << (int)c; //print as decimal value

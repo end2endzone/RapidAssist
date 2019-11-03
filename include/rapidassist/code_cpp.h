@@ -34,7 +34,7 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The input character value</param>
   /// <returns>Returns true if the given character is printable to a console.</returns>
-  bool isPrintableCharacter(const char c);
+  bool IsPrintableCharacter(const char c);
 
   /// <summary>
   /// Returns true if the given character is a string literal control character.
@@ -42,16 +42,16 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns true if the given character is a string literal control character. Returns false otherwise.</returns>
-  bool isControlCharacter(char c);
+  bool IsControlCharacter(char c);
 
   /// <summary>
   /// Returns a string literal that contains the control character.
   /// Returns NULL if the given character is not a control character.
-  /// See isControlCharacter() for details.
+  /// See IsControlCharacter() for details.
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns a string literal that contains the control character. Returns NULL if the given character is not a control character.</returns>
-  const char * getControlCharacterEscapeString(char c);
+  const char * GetControlCharacterEscapeString(char c);
 
   /// <summary>
   /// Returns true if the given character is an hexadecimal character.
@@ -59,7 +59,7 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns true if the given character is an hexadecimal character. Returns false otherwise.</returns>
-  bool isHexCharacter(char c);
+  bool IsHexCharacter(char c);
 
   /// <summary>
   /// Returns true if the given character is a digit character.
@@ -67,7 +67,7 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns true if the given character is a digit character. Returns false otherwise.</returns>
-  bool isDigitCharacter(char c);
+  bool IsDigitCharacter(char c);
 
   /// <summary>
   /// Returns a string literal that contains an octal escape sequence of the given character.
@@ -75,7 +75,7 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns a string literal that contains an octal escape sequence of the given character.</returns>
-  const char * toOctString(unsigned char c);
+  const char * ToOctString(unsigned char c);
 
   /// <summary>
   /// Returns a string literal that contains an hexadecimal escape sequence of the given character.
@@ -83,7 +83,7 @@ namespace ra { namespace code { namespace cpp {
   /// </summary>
   /// <param name="c">The given character</param>
   /// <returns>Returns a string literal that contains an hexadecimal escape sequence of the given character.</returns>
-  const char * toHexString(unsigned char c);
+  const char * ToHexString(unsigned char c);
 
   /// <summary>
   /// Converts the given buffer to a c++ string literals.
@@ -91,11 +91,11 @@ namespace ra { namespace code { namespace cpp {
   /// Characters that matches a known escaped sequence are properly escaped.
   /// Other characters are printed using their octal representation.
   /// </summary>
-  /// <remarks>For a shorter string literal, see other toOctString() API with iDisableWarningC4125 set to false.</remarks>
+  /// <remarks>For a shorter string literal, see other ToOctString() API with iDisableWarningC4125 set to false.</remarks>
   /// <param name="iBuffer">The input buffer to convert</param>
   /// <param name="iSize">The size in bytes of the given buffer</param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string toOctString(const unsigned char * iBuffer, size_t iSize);
+  std::string ToOctString(const unsigned char * iBuffer, size_t iSize);
 
   /// <summary>
   /// Converts the given buffer to a c++ string literals.
@@ -111,7 +111,7 @@ namespace ra { namespace code { namespace cpp {
   /// Allowing C4125 warning result in a shorter string literal.
   /// </param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string toOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125);
+  std::string ToOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125);
 
   /// <summary>
   /// Converts the given buffer to a c++ string literals.
@@ -122,7 +122,7 @@ namespace ra { namespace code { namespace cpp {
   /// <param name="iBuffer">The input buffer to convert</param>
   /// <param name="iSize">The size in bytes of the given buffer</param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string toHexString(const unsigned char * iBuffer, size_t iSize);
+  std::string ToHexString(const unsigned char * iBuffer, size_t iSize);
 
   /// <summary>
   /// Converts the given buffer to an array of characters.
@@ -132,7 +132,7 @@ namespace ra { namespace code { namespace cpp {
   /// <param name="iBuffer">The input buffer to convert</param>
   /// <param name="iSize">The size in bytes of the given buffer</param>
   /// <returns>Returns a string representating an array of bytes which matches the given buffer</returns>
-  std::string toCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
+  std::string ToCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
 
 } //namespace cpp
 } //namespace code
