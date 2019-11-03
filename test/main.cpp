@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     std::string newFilter = ra::testing::mergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
-    //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::getCursorPos', line 79.
+    //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::GetCursorPos', line 79.
     //I guess that it is because standard output is beeing redirected for the purpose of logging the program output.
     //
     //Travis does not like console tests either. The program hang or enters an infinite loop. Don't really know.

@@ -44,7 +44,7 @@
 #include <fstream>      //for exit()
 #include <fcntl.h>      //for fcntl(), F_GETFL and F_SETFL
 
-//for getCursorPos()
+//for GetCursorPos()
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,10 +57,10 @@ namespace ra { namespace console {
     int y;
   };
 
-  // Keep track of the cursor position for pushCursorPos() and popCursorPos()
+  // Keep track of the cursor position for PushCursorPos() and PopCursorPos()
   std::vector<CursorCoordinate> cursor_position_stack;
 
-  void getCursorPos(int & col, int & row) {
+  void GetCursorPos(int & col, int & row) {
     col = 0;
     row = 0;
 
@@ -149,7 +149,7 @@ namespace ra { namespace console {
 #endif
   }
 
-  void setCursorPos(const int & col, const int & row) {
+  void SetCursorPos(const int & col, const int & row) {
 #ifdef _WIN32
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hStdout == INVALID_HANDLE_VALUE) {
@@ -168,7 +168,7 @@ namespace ra { namespace console {
 #endif
   }
 
-  void getDimension(int & width, int & height) {
+  void GetDimension(int & width, int & height) {
     width = 0;
     height = 0;
 #ifdef _WIN32
@@ -307,7 +307,7 @@ namespace ra { namespace console {
   }
 #endif
 
-  int waitKeyPress() {
+  int WaitKeyPress() {
     //empty input buffer first
     int key = 0;
     while (my_kbhit()) {
@@ -319,7 +319,7 @@ namespace ra { namespace console {
     return key;
   }
 
-  void clearScreen() {
+  void ClearScreen() {
     //system("cls");
 
 #ifdef _WIN32
@@ -359,25 +359,25 @@ namespace ra { namespace console {
 #endif
   }
 
-  void pushCursorPos() {
+  void PushCursorPos() {
     CursorCoordinate coord;
-    getCursorPos(coord.x, coord.y);
+    GetCursorPos(coord.x, coord.y);
 
     cursor_position_stack.push_back(coord);
   }
 
-  void popCursorPos() {
+  void PopCursorPos() {
     if (!cursor_position_stack.empty()) {
       size_t offset = cursor_position_stack.size() - 1;
       const CursorCoordinate & last = cursor_position_stack[offset];
-      setCursorPos(last.x, last.y);
+      SetCursorPos(last.x, last.y);
 
       //remove the last entry
       cursor_position_stack.erase(cursor_position_stack.begin() + offset);
     }
   }
 
-  char getAnimationSprite(double iRefreshRate) {
+  char GetAnimationSprite(double iRefreshRate) {
     static const char animation_sprites[] = { '-', '\\', '|', '/' };
     static const int num_animation_sprites = sizeof(animation_sprites) / sizeof(animation_sprites[0]);
     double seconds = ra::timing::getMillisecondsTimer(); //already seconds
@@ -387,13 +387,13 @@ namespace ra { namespace console {
     return sprite;
   }
 
-  void printAnimationCursor() {
-    pushCursorPos();
-    printf("%c", getAnimationSprite(0.15));
-    popCursorPos();
+  void PrintAnimationCursor() {
+    PushCursorPos();
+    printf("%c", GetAnimationSprite(0.15));
+    PopCursorPos();
   }
 
-  const char * getTextColorName(const TextColor & color) {
+  const char * GetTextColorName(const TextColor & color) {
     switch (color) {
     case BLACK:
       return "Black";
@@ -448,7 +448,7 @@ namespace ra { namespace console {
     };
   }
 
-  const char * ansi::FormatAttribute::toString(const ansi::FormatAttribute::Attr & attr) {
+  const char * ansi::FormatAttribute::ToString(const ansi::FormatAttribute::Attr & attr) {
     switch(attr) {
     case ansi::FormatAttribute::DEFAULT    : return "Default"   ; break;
     case ansi::FormatAttribute::BOLD       : return "Bold"      ; break;
@@ -461,7 +461,7 @@ namespace ra { namespace console {
     return "Unknown";
   }
 
-  const char * ansi::ForegroundColor::toString(const ansi::ForegroundColor::Color & color) {
+  const char * ansi::ForegroundColor::ToString(const ansi::ForegroundColor::Color & color) {
     switch(color) {
     case ansi::ForegroundColor::DEFAULT      : return "Default"      ; break;
     case ansi::ForegroundColor::BLACK        : return "Black"        ; break;
@@ -484,7 +484,7 @@ namespace ra { namespace console {
     return "Unknown";
   }
 
-  const char * ansi::BackgroundColor::toString(const ansi::BackgroundColor::Color & color) {
+  const char * ansi::BackgroundColor::ToString(const ansi::BackgroundColor::Color & color) {
     switch(color) {
     case ansi::BackgroundColor::DEFAULT      : return "Default"      ; break;
     case ansi::BackgroundColor::BLACK        : return "Black"        ; break;
@@ -507,7 +507,7 @@ namespace ra { namespace console {
     return "Unknown";
   }
 
-  void setTextColor(const TextColor & iForeground, const TextColor & iBackground) {
+  void SetTextColor(const TextColor & iForeground, const TextColor & iBackground) {
 #ifdef _WIN32
     WORD foreground_attribute = 0;
     switch (iForeground) {
@@ -737,7 +737,7 @@ namespace ra { namespace console {
 #endif
   }
 
-  void getTextColor(TextColor & oForeground, TextColor & oBackground) {
+  void GetTextColor(TextColor & oForeground, TextColor & oBackground) {
     oForeground = GRAY;
     oBackground = BLACK;
 
@@ -866,15 +866,15 @@ namespace ra { namespace console {
 #endif
   }
 
-  void setDefaultTextColor() {
+  void SetDefaultTextColor() {
 #ifdef _WIN32
-    ra::console::setTextColor(ra::console::GRAY, ra::console::BLACK);
+    ra::console::SetTextColor(ra::console::GRAY, ra::console::BLACK);
 #elif __linux__
     printf("\033[0m");
 #endif
   }
 
-  bool isDesktopGuiAvailable() {
+  bool IsDesktopGuiAvailable() {
 #ifdef _WIN32
     return true;
 #elif __linux__
@@ -884,7 +884,7 @@ namespace ra { namespace console {
 #endif
   }
 
-  bool isRunFromDesktop() {
+  bool IsRunFromDesktop() {
 #ifdef _WIN32
     std::string prompt = ra::environment::getEnvironmentVariable("PROMPT");
     bool has_no_prompt = prompt.empty();
@@ -898,7 +898,7 @@ namespace ra { namespace console {
 #endif
   }
 
-  bool hasConsoleOwnership() {
+  bool HasConsoleOwnership() {
 #ifdef _WIN32
     //https://stackoverflow.com/questions/9009333/how-to-check-if-the-program-is-run-from-a-console
     HWND hConsoleWnd = GetConsoleWindow();
@@ -920,7 +920,7 @@ namespace ra { namespace console {
     //another process created the console (ie: cmd.exe)
     return false;
 #elif __linux__
-    return isRunFromDesktop();
+    return IsRunFromDesktop();
 #endif
   }
 

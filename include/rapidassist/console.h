@@ -33,7 +33,7 @@ namespace ra { namespace console {
   /// <remarks>The console x and y coordinate system is 0 based</remarks>
   /// <param name="col">The x coordinate of the cursor.</param>
   /// <param name="row">The y coordinate of the cursor.</param>
-  void getCursorPos(int & col, int & row);
+  void GetCursorPos(int & col, int & row);
 
   /// <summary>
   /// Sets the cursor position.
@@ -41,7 +41,7 @@ namespace ra { namespace console {
   /// <remarks>The console x and y coordinate system is 0 based</remarks>
   /// <param name="col">The x coordinate of the cursor.</param>
   /// <param name="row">The y coordinate of the cursor.</param>
-  void setCursorPos(const int & col, const int & row);
+  void SetCursorPos(const int & col, const int & row);
 
   /// <summary>
   /// Gets the width and height of the console window.
@@ -52,12 +52,12 @@ namespace ra { namespace console {
   /// </remarks>
   /// <param name="width">The width of the console.</param>
   /// <param name="height">The height of the console.</param>
-  void getDimension(int & width, int & height);
+  void GetDimension(int & width, int & height);
 
   /// <summary>
   /// Clears the screen.
   /// </summary>
-  void clearScreen();
+  void ClearScreen();
 
   /// <summary>
   /// Wait for the user to press a key.
@@ -66,24 +66,24 @@ namespace ra { namespace console {
   /// This function only works with console application.
   /// </remarks>
   /// <returns>Returns the code of the key pressed.</returns>
-  int waitKeyPress();
+  int WaitKeyPress();
 
   /// <summary>
   /// Saves the current cursor position on a stack.
   /// </summary>
-  void pushCursorPos();
+  void PushCursorPos();
 
   /// <summary>
   /// Restores the cursor position from a stack.
   /// </summary>
-  void popCursorPos();
+  void PopCursorPos();
 
   /// <summary>
   /// Returns the current cursor spinning sprite based on the requested refresh rate.
   /// </summary>
   /// <param name="iRefreshRate">The duration time in seconds of a single sprite.</param>
   /// <returns>Returns the current cursor spinning sprite based on the requested refresh rate.</returns>
-  char getAnimationSprite(double iRefreshRate);
+  char GetAnimationSprite(double iRefreshRate);
 
   /// <summary>
   /// Prints a spinning cursor over time.
@@ -92,7 +92,7 @@ namespace ra { namespace console {
   /// When the function exists, the cursor position is located over the spinning character.
   /// If user is done with the running task, the cursor must be erased by printing a space character over it.
   /// </remarks>
-  void printAnimationCursor();
+  void PrintAnimationCursor();
 
   /// <summary>Enumaration for all console text colors.</summary>
   enum TextColor {
@@ -121,26 +121,26 @@ namespace ra { namespace console {
   /// </summary>
   /// <remarks>The called does not have the ownsership of the returned value.</remarks>
   /// <returns>Returns the name of the given text color.</returns>
-  const char * getTextColorName(const TextColor & color);
+  const char * GetTextColorName(const TextColor & color);
 
   /// <summary>
   /// Set a new foreground and background text color.
   /// </summary>
   /// <param name="iForeground">The text foreground color.</param>
   /// <param name="iBackground">The text background color.</param>
-  void setTextColor(const TextColor & iForeground, const TextColor & iBackground);
+  void SetTextColor(const TextColor & iForeground, const TextColor & iBackground);
 
   /// <summary>
   /// Get the current foreground and background text color.
   /// </summary>
   /// <param name="oForeground">The text foreground color.</param>
   /// <param name="oBackground">The text background color.</param>
-  void getTextColor(TextColor & oForeground, TextColor & oBackground);
+  void GetTextColor(TextColor & oForeground, TextColor & oBackground);
 
   /// <summary>
   /// Set default foreground and background text colors.
   /// </summary>
-  void setDefaultTextColor();
+  void SetDefaultTextColor();
 
   /// <summary>
   /// Defines if the current running environment support a desktop GUI.
@@ -150,23 +150,23 @@ namespace ra { namespace console {
   /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
   /// </remarks>
   /// <returns>Returns true if a desktop gui is available. Returns false otherwise.</returns>
-  bool isDesktopGuiAvailable();
+  bool IsDesktopGuiAvailable();
 
   /// <summary>
   /// Defines if the current running program is launched from desktop GUI.
   /// </summary>
   /// <remarks>
   /// On Windows, a GUI is always available (as the mane implies).
-  /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+  /// On Linux, a GUI is optional. A desktop GUI is also not available if the application was launched from ssh.
   /// </remarks>
   /// <returns>Returns true if a desktop gui launched the program. Returns false otherwise.</returns>
-  bool isRunFromDesktop();
+  bool IsRunFromDesktop();
 
   /// <summary>
   /// Defines if the current running program has created the console window.
   /// </summary>
   /// <returns>Returns true if the current running program has created the console window. Returns false otherwise.</returns>
-  bool hasConsoleOwnership();
+  bool HasConsoleOwnership();
 
   ///<summary>ANSI color support functions</summary>
   namespace ansi
@@ -185,7 +185,7 @@ namespace ra { namespace console {
         REVERSE = 7,
         HIDDEN = 8
       };
-      const char * toString(const Attr & attr);
+      const char * ToString(const Attr & attr);
       static const int NUM_COLOR_ATTR = 7;
     } //namespace FormatAttribute
 
@@ -210,7 +210,7 @@ namespace ra { namespace console {
         LIGHT_CYAN,
         WHITE,
       };
-      const char * toString(const Color & color);
+      const char * ToString(const Color & color);
       static const int NUM_FOREGROUND_COLOR = 17;
     } //namespace ForegroundColor
 
@@ -235,7 +235,7 @@ namespace ra { namespace console {
         LIGHT_CYAN,
         WHITE,
       };
-      const char * toString(const Color & color);
+      const char * ToString(const Color & color);
       static const int NUM_BACKGROUND_COLOR = 17;
     } //namespace BackgroundColor
   } //namespace ansi
