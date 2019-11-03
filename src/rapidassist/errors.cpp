@@ -66,14 +66,14 @@ namespace ra { namespace errors {
 #ifdef _WIN32
     DWORD last_error = static_cast<DWORD>(code);
     const DWORD error_buffer_size = 10240;
-    char error_buffer[error_buffer_size] = {0};
+    char error_buffer[error_buffer_size] = { 0 };
     ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-                    NULL,
-                    last_error,
-                    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-                    error_buffer,
-                    error_buffer_size-1,
-                    NULL);
+      NULL,
+      last_error,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      error_buffer,
+      error_buffer_size - 1,
+      NULL);
     ra::strings::removeEOL(error_buffer); //error message have a CRLF at the end.
     std::string error_desc = error_buffer;
     return error_desc;

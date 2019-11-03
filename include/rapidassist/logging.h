@@ -32,8 +32,7 @@ namespace ra { namespace logging {
   /// <summary>
   /// Different logging levels
   /// </summary>
-  enum LoggerLevel
-  {
+  enum LoggerLevel {
     LOG_INFO,
     LOG_WARNING,
     LOG_ERROR,

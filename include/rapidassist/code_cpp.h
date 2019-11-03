@@ -28,6 +28,7 @@
 #include <string>
 
 namespace ra { namespace code { namespace cpp {
+
   /// <summary>
   /// Returns true if the given character is printable to a console.
   /// </summary>

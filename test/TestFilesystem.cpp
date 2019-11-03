@@ -37,6 +37,7 @@
 
 namespace ra { namespace filesystem { namespace test
 {
+
   int countValues(const std::vector<std::string> & iList, const std::string & iValue) {
     int count = 0;
     for (size_t i = 0; i < iList.size(); i++) {
@@ -175,9 +176,9 @@ namespace ra { namespace filesystem { namespace test
       size = filesystem::getFileSize(ptr);
       fclose(ptr);
       ASSERT_EQ(EXPECTED, size);
-  }
+    }
 
-}
+  }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetFilename) {
     //test NULL
@@ -350,7 +351,7 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_TRUE(hasHondaDirectory);
       ASSERT_TRUE(hasPricesFile);
       ASSERT_FALSE(hasJettaFile);
-      }
+    }
 
     //test root file system
     {
@@ -387,14 +388,14 @@ namespace ra { namespace filesystem { namespace test
         //fix for multiple Windows system (including AppVeyor) which has 'windir' defined as 'C:\windows' instead of 'C:\Windows'.
         if (pattern == "C:\\windows") {
           found |= (file == "C:\\Windows");
-      }
+        }
 #endif
-    }
+      }
       ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in directory '" << path << "'.\n"
         "Found the following elements: \n" <<
         strings::join(files, "\n").c_str();
+    }
   }
-}
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFindFileFromPaths) {
     //test no result
@@ -501,7 +502,7 @@ namespace ra { namespace filesystem { namespace test
       //cleanup
       deleteDirectory(path.c_str());
     }
-    }
+  }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testDeleteFile) {
     //test NULL
@@ -566,7 +567,7 @@ namespace ra { namespace filesystem { namespace test
       //assert the file is really deleted
       bool found = filesystem::fileExists(path.c_str());
       ASSERT_FALSE(found);
-  }
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testDeleteDirectory) {
@@ -1073,7 +1074,7 @@ namespace ra { namespace filesystem { namespace test
       uint64_t time2 = filesystem::getFileModifiedDate(filename2);
       uint64_t diff = time2 - time1;
       ASSERT_GE(diff, EXPECTED);
-  }
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testHasReadAccess) {
@@ -1140,7 +1141,7 @@ namespace ra { namespace filesystem { namespace test
       bool hasWrite = filesystem::hasWriteAccess(path);
       ASSERT_FALSE(hasWrite);
     }
-    }
+  }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testAbsolutePath) {
 #ifdef _WIN32
@@ -1491,10 +1492,10 @@ namespace ra { namespace filesystem { namespace test
       printf("%s(%.2f)\n", __FUNCTION__, progress);
     }
     bool hasProgressBegin() { return progress_begin_; }
-    bool hasProgressEnd  () { return progress_end_  ; }
+    bool hasProgressEnd() { return progress_end_; }
   private:
     bool progress_begin_;
-    bool progress_end_  ;
+    bool progress_end_;
   };
   TEST_F(TestFilesystem, testCopyFileCallbackFunctor) {
     //copy this process executable to another file

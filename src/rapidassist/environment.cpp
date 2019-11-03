@@ -211,6 +211,5 @@ namespace ra { namespace environment {
     return output;
   }
 
-
 } //namespace environment
 } //namespace ra

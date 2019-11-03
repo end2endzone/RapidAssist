@@ -33,7 +33,6 @@
 #include <string.h>
 
 namespace ra { namespace filesystem {
-
   std::string processCppEscapeCharacter(const std::string & value) {
     //https://en.cppreference.com/w/cpp/language/escape
     //https://en.wikipedia.org/wiki/Escape_sequences_in_C
@@ -69,7 +68,7 @@ namespace ra { namespace filesystem {
 
       //for each escape sequence
       bool is_escaped_character = false;
-      for(size_t j=0; is_escaped_character == false && j<num_escape_sequences; j++) {
+      for (size_t j = 0; is_escaped_character == false && j < num_escape_sequences; j++) {
         const EscapeSequence & seq = sequences[j];
         size_t seq_value_length = strlen(seq.value);
         if (strncmp(c, seq.value, seq_value_length) == 0) {
@@ -228,7 +227,7 @@ namespace ra { namespace filesystem {
 
     //for each properties
     for (PropertyMap::const_iterator propertyIt = properties_.begin(); propertyIt != properties_.end(); propertyIt++) {
-      std::string key   = propertyIt->first;
+      std::string key = propertyIt->first;
       const std::string & value = propertyIt->second;
 
       //remove key split characters

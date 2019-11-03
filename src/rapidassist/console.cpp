@@ -51,6 +51,7 @@
 #endif
 
 namespace ra { namespace console {
+
   struct CursorCoordinate {
     int x;
     int y;
@@ -92,13 +93,13 @@ namespace ra { namespace console {
     int loop_count = 0;
     bool success = false;
     char buf[32];
-    while(!success && loop_count < MAX_LOOP_COUNT) {
+    while (!success && loop_count < MAX_LOOP_COUNT) {
       ssize_t num_write = write(0, "\033[6n", 4);
       fflush(stdout);
 
       ssize_t num_read = 0;
       if (num_write == 4)
-        num_read = read(0, buf, sizeof(buf)-1);
+        num_read = read(0, buf, sizeof(buf) - 1);
 
       //validate format \033[63;1R
       if (num_write == 4 && num_read >= 6 && buf[0] == '\033' && buf[num_read - 1] == 'R') {
@@ -377,10 +378,10 @@ namespace ra { namespace console {
   }
 
   char getAnimationSprite(double iRefreshRate) {
-    static const char animation_sprites[] = {'-', '\\', '|', '/'};
-    static const int num_animation_sprites = sizeof(animation_sprites)/sizeof(animation_sprites[0]);
+    static const char animation_sprites[] = { '-', '\\', '|', '/' };
+    static const int num_animation_sprites = sizeof(animation_sprites) / sizeof(animation_sprites[0]);
     double seconds = ra::timing::getMillisecondsTimer(); //already seconds
-    int sprite_index = (int)(seconds/iRefreshRate);
+    int sprite_index = (int)(seconds / iRefreshRate);
     sprite_index = sprite_index % num_animation_sprites;
     char sprite = animation_sprites[sprite_index];
     return sprite;
@@ -756,7 +757,7 @@ namespace ra { namespace console {
     DWORD background_info = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
     //foreground
-    switch(foreground_info) {
+    switch (foreground_info) {
     case 0:
       oForeground = BLACK;
       break;
@@ -808,7 +809,7 @@ namespace ra { namespace console {
     };
 
     //background
-    switch(background_info) {
+    switch (background_info) {
     case 0:
       oBackground = BLACK;
       break;

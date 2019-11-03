@@ -31,6 +31,7 @@
 #include <stdio.h>
 
 namespace ra { namespace strings {
+
   typedef std::vector<std::string> StringVector;
 
   /// <summary>The required amount of precision to get a lossless conversion from  float to string.</summary>

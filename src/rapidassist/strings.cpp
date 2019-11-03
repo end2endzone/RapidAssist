@@ -199,7 +199,7 @@ namespace ra { namespace strings {
   }
 
   template <typename T>
-  inline std::string toStringDigits (const T & t, int num_digits) {
+  inline std::string toStringDigits(const T & t, int num_digits) {
     if (num_digits < 0)
       num_digits = 0;
     if (num_digits > 99)
@@ -211,13 +211,13 @@ namespace ra { namespace strings {
     format[0] = '%';
     format[1] = '.';
     if (num_digits >= 10) {
-      format[2] = '0'+(char)(num_digits/10);
-      format[3] = '0'+(char)(num_digits%10);
+      format[2] = '0' + (char)(num_digits / 10);
+      format[3] = '0' + (char)(num_digits % 10);
       format[4] = 'f';
       format[5] = '\0';
     }
     else {
-      format[2] = '0'+(char)(num_digits%10);
+      format[2] = '0' + (char)(num_digits % 10);
       format[3] = 'f';
       format[4] = '\0';
     }
@@ -554,7 +554,7 @@ namespace ra { namespace strings {
     if (size) {
       size_t loop_start = size - 1;
       size_t loop_end = 0;
-      for(size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX; i--) {
+      for (size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX; i--) {
         if (tmp[i] == iChar) {
           tmp.erase(i, 1);
         }
@@ -589,7 +589,7 @@ namespace ra { namespace strings {
     if (size) {
       size_t loop_start = 0;
       size_t loop_end = (size - 1) / 2;
-      for(size_t i = loop_start; i <= loop_end; i++) {
+      for (size_t i = loop_start; i <= loop_end; i++) {
         if (i != (size - i - 1)) {
           ra::generics::swap(tmp[i], tmp[size - i - 1]);
         }

@@ -139,7 +139,7 @@ namespace ra { namespace timing {
   double GetTickCountTimer() //fast constant 15ms timer
   {
     DWORD milliseconds_counter = GetTickCount();
-    double seconds = double(milliseconds_counter)/1000.0;
+    double seconds = double(milliseconds_counter) / 1000.0;
     return seconds;
   }
 
@@ -154,7 +154,7 @@ namespace ra { namespace timing {
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
   double GetMillisecondsTimerWin32() {
     DWORD milliseconds_counter = timeGetTime();
-    double seconds = double(milliseconds_counter)/1000.0;
+    double seconds = double(milliseconds_counter) / 1000.0;
     return seconds;
   }
 
@@ -179,11 +179,11 @@ namespace ra { namespace timing {
     ULONGLONG t;
     if (GetSystemTimePreciseAsFileTime_) {
       //Windows 8, Windows Server 2012 and later
-      GetSystemTimePreciseAsFileTime_( &file_time ); //microseconds accuracy
+      GetSystemTimePreciseAsFileTime_(&file_time); //microseconds accuracy
     }
     else {
       //Windows 2000 and later
-      GetSystemTimeAsFileTime( &file_time ); //milliseconds accuracy
+      GetSystemTimeAsFileTime(&file_time); //milliseconds accuracy
     }
     t = ((ULONGLONG)file_time.dwHighDateTime << 32) | (ULONGLONG)file_time.dwLowDateTime;
     return (double)t / 10000000.0;
@@ -307,7 +307,7 @@ namespace ra { namespace timing {
 
   void waitNextSecond() {
     std::tm base_time = getLocalTime();
-    while(getLocalTime().tm_sec == base_time.tm_sec) {
+    while (getLocalTime().tm_sec == base_time.tm_sec) {
       //loop
     }
   }
@@ -360,7 +360,7 @@ _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
     size_t last_space_index = compilation_date.find_last_of(" ");
     if (last_space_index == std::string::npos)
       return DEFAULT_YEAR;
-    const char * yearStr = &compilation_date[last_space_index+1];
+    const char * yearStr = &compilation_date[last_space_index + 1];
     int year = atoi(yearStr);
     return year;
   }

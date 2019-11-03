@@ -30,6 +30,7 @@
 #include <cstdio> //for vsnprintf()
 
 namespace ra { namespace logging {
+
   //global flag to silence the logging output
   bool quiet_mode = false;
 

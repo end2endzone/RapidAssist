@@ -28,6 +28,7 @@
 #include <ctime>    //for random
 
 namespace ra { namespace random {
+
   //Force initializing random number provider each time the application starts
   bool initRandomProvider();
   static bool rand_initialized = initRandomProvider();
@@ -58,7 +59,7 @@ namespace ra { namespace random {
 
     //get a random value within [0, max]
     int rand_value = rand();
-    while(rand_value > max) {
+    while (rand_value > max) {
       rand_value = rand();
     }
 

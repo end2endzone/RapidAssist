@@ -32,6 +32,7 @@
 #include <algorithm>
 
 namespace ra { namespace generics {
+
   static const size_t INVALID_INDEX = (size_t)-1;
 
   /// <summary>

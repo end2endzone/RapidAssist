@@ -211,7 +211,7 @@ namespace ra { namespace testing {
     char buffer[BUFFER_SIZE];
     while (fgets(buffer, BUFFER_SIZE, f)) {
       std::string line = buffer;
-      line.substr(0, line.size()-1); //remove CRLF at the end of the 
+      line.substr(0, line.size() - 1); //remove CRLF at the end of the 
       if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header) {
         //do nothing
       }

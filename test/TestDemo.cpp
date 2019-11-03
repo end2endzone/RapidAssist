@@ -27,7 +27,6 @@
 #include "rapidassist/strings.h"
 
 namespace ra { namespace test {
-
   void TestDemo::SetUp() {
     ASSERT_TRUE(ra::testing::createFile("demo1.tmp"));
     ASSERT_TRUE(ra::testing::createFile("demo2.tmp"));

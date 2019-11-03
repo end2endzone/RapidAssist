@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 namespace ra { namespace errors {
+
   /// <summary>
   /// Cross-platform system error code type.
   /// </summary>

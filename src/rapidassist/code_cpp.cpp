@@ -34,6 +34,7 @@
 //http://en.cppreference.com/w/cpp/language/escape
 
 namespace ra { namespace code { namespace cpp {
+
   struct ControlCharacter {
     char c;
     const char * escape_str;
@@ -103,9 +104,9 @@ namespace ra { namespace code { namespace cpp {
   const char * toOctString(unsigned char c) {
     static char buffer[] = { '\\', '9', '9', '9', '\0' };
     static const char * octal_characters = "01234567";
-    buffer[3] = octal_characters[c%8];
+    buffer[3] = octal_characters[c % 8];
     c /= 8;
-    buffer[2] = octal_characters[c%8];
+    buffer[2] = octal_characters[c % 8];
     c /= 8;
     buffer[1] = octal_characters[c];
     return buffer;
@@ -114,7 +115,7 @@ namespace ra { namespace code { namespace cpp {
   const char * toHexString(unsigned char c) {
     static char buffer[] = { '\\', 'x', 'f', 'f', '\0' };
     static const char * hexadecimal_characters = "0123456789abcdef";
-    buffer[3] = hexadecimal_characters[c%16];
+    buffer[3] = hexadecimal_characters[c % 16];
     c /= 16;
     buffer[2] = hexadecimal_characters[c];
     return buffer;
@@ -129,8 +130,8 @@ namespace ra { namespace code { namespace cpp {
 
     //estimate the size of the output string to prevent memory copy
     //assume 50% of buffer is *NOT* printable
-    size_t non_printable_size = ((iSize*50)/100);
-    size_t estimated_string_size = iSize - non_printable_size + non_printable_size*4; //4 bytes per octal characters
+    size_t non_printable_size = ((iSize * 50) / 100);
+    size_t estimated_string_size = iSize - non_printable_size + non_printable_size * 4; //4 bytes per octal characters
     output.reserve(estimated_string_size);
 
     enum CHARACTER_TYPE {
@@ -183,8 +184,8 @@ namespace ra { namespace code { namespace cpp {
 
     //estimate the size of the output string to prevent memory copy
     //assume 50% of buffer is *NOT* printable
-    size_t non_printable_size = ((iSize*50)/100);
-    size_t estimated_string_size = iSize - non_printable_size + non_printable_size*4; //4 bytes per hex characters
+    size_t non_printable_size = ((iSize * 50) / 100);
+    size_t estimated_string_size = iSize - non_printable_size + non_printable_size * 4; //4 bytes per hex characters
     output.reserve(estimated_string_size);
 
     enum CHARACTER_TYPE {

@@ -28,6 +28,7 @@
 #include <string>
 
 namespace ra { namespace cli {
+
   /// <summary>
   /// Parses an argument from the command line parameters (argc, argv)
   /// The argument must be in the form of --name=value or --name

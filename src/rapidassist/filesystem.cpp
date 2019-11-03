@@ -51,6 +51,7 @@
 #endif
 
 namespace ra { namespace filesystem {
+
   struct greater {
     template<class T>
     bool operator()(T const &a, T const &b) const { return a > b; }
@@ -80,7 +81,7 @@ namespace ra { namespace filesystem {
       return 0;
 
     struct stat sb;
-    if (stat(iPath, &sb)==0) {
+    if (stat(iPath, &sb) == 0) {
       return sb.st_size;
     }
 
@@ -141,7 +142,7 @@ namespace ra { namespace filesystem {
       return false;
 
     struct stat sb;
-    if (stat(iPath, &sb)==0) {
+    if (stat(iPath, &sb) == 0) {
       if ((sb.st_mode & S_IREAD) == S_IREAD)
         return true;
     }
@@ -153,7 +154,7 @@ namespace ra { namespace filesystem {
       return false;
 
     struct stat sb;
-    if (stat(iPath, &sb)==0) {
+    if (stat(iPath, &sb) == 0) {
       if ((sb.st_mode & S_IWRITE) == S_IWRITE)
         return true;
     }
@@ -173,7 +174,7 @@ namespace ra { namespace filesystem {
       //should we recurse on directory ?
       if (is_directory && iDepth != 0) {
         //compute new depth
-        int sub_depth = iDepth-1;
+        int sub_depth = iDepth - 1;
         if (sub_depth < -1)
           sub_depth = -1;
 
@@ -201,7 +202,7 @@ namespace ra { namespace filesystem {
 
     WIN32_FIND_DATA find_data;
     HANDLE hFind = FindFirstFile(query.c_str(), &find_data);
- 
+
     if (hFind == INVALID_HANDLE_VALUE)
       return false;
 
@@ -236,23 +237,23 @@ namespace ra { namespace filesystem {
     FindClose(hFind);
     return true;
 #elif __linux__
-  DIR *dp;
-  struct dirent *dirp;
-  if ((dp = opendir(iPath)) == NULL) {
-    return false;
-  }
- 
-  while ((dirp = readdir(dp)) != NULL) {
-    std::string filename = dirp->d_name;
- 
-    bool is_directory = (dirp->d_type == DT_DIR);
-    bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
-    if (!result) {
-      //Warning: Current user is not able to browse this directory.
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(iPath)) == NULL) {
+      return false;
     }
-  }
-  closedir(dp);
-  return true;
+
+    while ((dirp = readdir(dp)) != NULL) {
+      std::string filename = dirp->d_name;
+
+      bool is_directory = (dirp->d_type == DT_DIR);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
+      if (!result) {
+        //Warning: Current user is not able to browse this directory.
+      }
+    }
+    closedir(dp);
+    return true;
 #endif
   }
 
@@ -319,7 +320,7 @@ namespace ra { namespace filesystem {
 #endif
 
     struct stat sb;
-    if (stat(iPath, &sb)==0) {
+    if (stat(iPath, &sb) == 0) {
       if ((sb.st_mode & S_IFDIR) == S_IFDIR)
         return true;
     }
@@ -479,7 +480,7 @@ namespace ra { namespace filesystem {
 
     std::vector<std::string> path_elements;
     splitPath(iPath, path_elements);
-    for(size_t i=0; i<path_elements.size(); i++) {
+    for (size_t i = 0; i < path_elements.size(); i++) {
       const std::string & element = path_elements[i];
       if (element.size() > 12 || element.find(' ') != std::string::npos) {
         std::string element83 = element;
@@ -672,9 +673,9 @@ namespace ra { namespace filesystem {
 
   std::string getUserFriendlySize(uint64_t iBytesSize) {
     static const uint64_t kb_limit = 1024;
-    static const uint64_t mb_limit = kb_limit*1000;
-    static const uint64_t gb_limit = 1024*mb_limit;
-    static const uint64_t tb_limit = 1024*gb_limit;
+    static const uint64_t mb_limit = kb_limit * 1000;
+    static const uint64_t gb_limit = 1024 * mb_limit;
+    static const uint64_t tb_limit = 1024 * gb_limit;
 
     FileSizeEnum preferedUnit = BYTES;
 
@@ -701,9 +702,9 @@ namespace ra { namespace filesystem {
     static const uint64_t digits_precision = 100;
     static const uint64_t factor = 1024;
     static const uint64_t kb_precision = 1;
-    static const uint64_t mb_precision = 1024*kb_precision;
-    static const uint64_t gb_precision = 1024*mb_precision;
-    static const uint64_t tb_precision = 1024*gb_precision;
+    static const uint64_t mb_precision = 1024 * kb_precision;
+    static const uint64_t gb_precision = 1024 * mb_precision;
+    static const uint64_t tb_precision = 1024 * gb_precision;
 
     std::string friendly_size;
 
@@ -711,19 +712,19 @@ namespace ra { namespace filesystem {
     double formatted_size = 0.0;
     switch (iUnit) {
     case BYTES:
-      formatted_size = double( iBytesSize );
+      formatted_size = double(iBytesSize);
       break;
     case KILOBYTES:
-      formatted_size = double( ((iBytesSize*digits_precision)/factor)/kb_precision )/double(digits_precision);
+      formatted_size = double(((iBytesSize*digits_precision) / factor) / kb_precision) / double(digits_precision);
       break;
     case MEGABYTES:
-      formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/mb_precision )/double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / mb_precision) / double(digits_precision);
       break;
     case GIGABYTES:
-      formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/gb_precision )/double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / gb_precision) / double(digits_precision);
       break;
     case TERABYTES:
-      formatted_size = double( uint64_t(uint64_t(iBytesSize/factor)*digits_precision)/tb_precision )/double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / tb_precision) / double(digits_precision);
       break;
     };
 
@@ -736,31 +737,31 @@ namespace ra { namespace filesystem {
     //Append unit descrition to friendly_size
     switch (iUnit) {
     case BYTES:
-      {
-        friendly_size = strings::toString(iBytesSize);
-        friendly_size += " bytes";
-      };
-      break;
+    {
+      friendly_size = strings::toString(iBytesSize);
+      friendly_size += " bytes";
+    };
+    break;
     case KILOBYTES:
-      {
-        friendly_size += " KB";
-      };
-      break;
+    {
+      friendly_size += " KB";
+    };
+    break;
     case MEGABYTES:
-      {
-        friendly_size += " MB";
-      };
-      break;
+    {
+      friendly_size += " MB";
+    };
+    break;
     case GIGABYTES:
-      {
-        friendly_size += " GB";
-      };
-      break;
+    {
+      friendly_size += " GB";
+    };
+    break;
     case TERABYTES:
-      {
-        friendly_size += " TB";
-      };
-      break;
+    {
+      friendly_size += " TB";
+    };
+    break;
     };
 
     return friendly_size;
@@ -769,7 +770,7 @@ namespace ra { namespace filesystem {
   uint64_t getFileModifiedDate(const std::string & iPath) {
     struct stat result;
     uint64_t mod_time = 0;
-    if (stat(iPath.c_str(), &result)==0) {
+    if (stat(iPath.c_str(), &result) == 0) {
       mod_time = result.st_mtime;
     }
     return mod_time;
@@ -859,7 +860,7 @@ namespace ra { namespace filesystem {
         }
         else {
           //get previous element
-          const std::string & previous_element = elements[index-1]; 
+          const std::string & previous_element = elements[index - 1];
 
           if (previous_element == PREVIOUS_DIRECTORY) {
             //there is nothing we can do with this element
@@ -875,7 +876,7 @@ namespace ra { namespace filesystem {
             //added to `previous_element` to be properly detected by `isRootDirectory()`.
             //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
             //separator which creates an empty string element when calling `ra::strings::split()`.
-            if ( isRootDirectory(previous_element + ra::filesystem::getPathSeparatorStr()) ) {
+            if (isRootDirectory(previous_element + ra::filesystem::getPathSeparatorStr())) {
               //one cannot walk down past the root
 
               //keep same offset. The next search will occurs where the deleted `..` element was.
@@ -956,7 +957,7 @@ namespace ra { namespace filesystem {
     if (progress_function)
       progress_function(progress);
 
-    const size_t buffer_size = 100*1024; //100k memory buffer
+    const size_t buffer_size = 100 * 1024; //100k memory buffer
     uint8_t buffer[buffer_size];
 
     size_t copied_size = 0;

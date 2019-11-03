@@ -33,6 +33,7 @@
 using ra::strings::StringVector;
 
 namespace ra { namespace testing {
+
   struct FileDiff {
     size_t offset;    //offset in files where a difference is located
     unsigned char c1; //character of first  file

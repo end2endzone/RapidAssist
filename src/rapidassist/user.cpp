@@ -112,11 +112,11 @@ namespace ra { namespace user {
 
   std::string getUsername() {
 #ifdef _WIN32
-  char username[UNLEN + 1] = {0};
-  DWORD size = UNLEN + 1;
-  if (SUCCEEDED(GetUserName(username, &size))) {
-    return username;
-  }
+    char username[UNLEN + 1] = { 0 };
+    DWORD size = UNLEN + 1;
+    if (SUCCEEDED(GetUserName(username, &size))) {
+      return username;
+    }
 
     //fallback to USERNAME env variable
     std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");

@@ -218,7 +218,7 @@ namespace ra { namespace filesystem {
   /// <returns>Returns the extension of a file.</returns>
   std::string getFileExtention(const std::string & iPath);
 
-  enum FileSizeEnum {BYTES, KILOBYTES, MEGABYTES, GIGABYTES, TERABYTES};
+  enum FileSizeEnum { BYTES, KILOBYTES, MEGABYTES, GIGABYTES, TERABYTES };
 
   /// <summary>
   /// Returns a given size in a user friendly format and units.

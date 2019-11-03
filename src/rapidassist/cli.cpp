@@ -27,6 +27,7 @@
 #include <cstdio> //for sscanf()
 
 namespace ra { namespace cli {
+
   bool parseArgument(const std::string & name, std::string & value, int argc, char **argv) {
     value = "";
 

@@ -100,13 +100,13 @@ namespace ra { namespace process {
     // and display information about each thread
     // associated with the specified process
     do {
-      if ( thread_entry.th32OwnerProcessID == pid ) {
+      if (thread_entry.th32OwnerProcessID == pid) {
         //printf( "\n\n     THREAD ID      = 0x%08X", thread_entry.th32ThreadID );
         //printf( "\n     Base priority  = %d", thread_entry.tpBasePri );
         //printf( "\n     Delta priority = %d", thread_entry.tpDeltaPri );
         tids.push_back(thread_entry.th32ThreadID);
       }
-    } while(Thread32Next(hThreadSnap, &thread_entry));
+    } while (Thread32Next(hThreadSnap, &thread_entry));
 
     return true;
   }
@@ -230,8 +230,8 @@ namespace ra { namespace process {
           if (iTimeoutMS != INFINITE) {
 
             //Call WM_CLOSE & WM_QUIT on all the threads
-            size_t thread_timeout_ms = iTimeoutMS/num_threads;
-            for(size_t thread_index = 0; thread_index<num_threads && !success; thread_index++) {
+            size_t thread_timeout_ms = iTimeoutMS / num_threads;
+            for (size_t thread_index = 0; thread_index < num_threads && !success; thread_index++) {
               DWORD thread_id = thread_ids[thread_index];
               bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
               post_success = post_success && (PostThreadMessage(thread_id, WM_QUIT, 0, 0) != 0);
@@ -250,8 +250,8 @@ namespace ra { namespace process {
           }
           else {
             //Call WM_CLOSE & WM_QUIT on all the threads
-            while(!success) {
-              for(size_t thread_index = 0; thread_index<num_threads && !success; thread_index++) {
+            while (!success) {
+              for (size_t thread_index = 0; thread_index < num_threads && !success; thread_index++) {
                 DWORD thread_id = thread_ids[thread_index];
                 bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
                 post_success = post_success && (PostThreadMessage(thread_id, WM_QUIT, 0, 0) != 0);
@@ -392,7 +392,7 @@ namespace ra { namespace process {
     path = buffer;
 #elif __linux__
     //from https://stackoverflow.com/a/33249023
-    char exe_path[PATH_MAX + 1] = {0};
+    char exe_path[PATH_MAX + 1] = { 0 };
     ssize_t len = ::readlink("/proc/self/exe", exe_path, sizeof(exe_path));
     if (len == -1 || len == sizeof(exe_path))
       len = 0;
@@ -425,7 +425,7 @@ namespace ra { namespace process {
     DWORD num_processes = process_ids_size / sizeof(DWORD);
 
     //for each process
-    for (unsigned int i=0; i<num_processes; i++) {
+    for (unsigned int i = 0; i < num_processes; i++) {
       DWORD pid = process_ids[i];
       processes.push_back(pid);
     }
@@ -531,8 +531,8 @@ namespace ra { namespace process {
     }
 
     //launch a new process with the command line
-    PROCESS_INFORMATION process_info = {0};
-    STARTUPINFO startup_info = {0};
+    PROCESS_INFORMATION process_info = { 0 };
+    STARTUPINFO startup_info = { 0 };
     startup_info.cb = sizeof(STARTUPINFO);
     startup_info.dwFlags = STARTF_USESHOWWINDOW;
     startup_info.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
@@ -715,9 +715,9 @@ namespace ra { namespace process {
     return success;
 #endif
   }
-    
+
   bool getExitCode(const processid_t & pid, int & exit_code) {
-  #ifdef _WIN32
+#ifdef _WIN32
     DWORD local_exit_code;
     ExitCodeResult result = getWin32ExitCodeResult(pid, local_exit_code);
     if (result == EXIT_CODE_SUCCESS) {
@@ -729,8 +729,8 @@ namespace ra { namespace process {
     int status = 0;
     if (waitpid(pid, &status, WNOHANG | WUNTRACED | WCONTINUED) == pid) {
       //waitpid success
-      bool process_exited = WIFEXITED( status );
-      exit_code = WEXITSTATUS( status );
+      bool process_exited = WIFEXITED(status);
+      exit_code = WEXITSTATUS(status);
       return true;
     }
     return false;
@@ -794,7 +794,7 @@ namespace ra { namespace process {
     return true;
 #endif
   }
-    
+
   bool waitExit(const processid_t & pid, int & exit_code) {
     bool success = waitExit(pid);
     if (!success)
