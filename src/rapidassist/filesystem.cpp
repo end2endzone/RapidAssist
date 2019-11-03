@@ -58,8 +58,8 @@ namespace ra { namespace filesystem {
     bool operator()(T const &a, T const &b) const { return a > b; }
   };
 
-  void normalizePath(std::string & path) {
-    char separator = getPathSeparator();
+  void NormalizePath(std::string & path) {
+    char separator = GetPathSeparator();
 
     if (separator == '/') {
       //replace invalid path separator
@@ -77,7 +77,7 @@ namespace ra { namespace filesystem {
     }
   }
 
-  uint32_t getFileSize(const char * iPath) {
+  uint32_t GetFileSize(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return 0;
 
@@ -89,7 +89,7 @@ namespace ra { namespace filesystem {
     return 0;
   }
 
-  uint32_t getFileSize(FILE * f) {
+  uint32_t GetFileSize(FILE * f) {
     if (f == NULL)
       return 0;
     long initPos = ftell(f);
@@ -99,23 +99,23 @@ namespace ra { namespace filesystem {
     return size;
   }
 
-  std::string getFilename(const char * iPath) {
+  std::string GetFilename(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return "";
 
     std::string directory;
     std::string filename;
-    splitPath(iPath, directory, filename);
+    SplitPath(iPath, directory, filename);
 
     return filename;
   }
 
-  std::string getFilenameWithoutExtension(const char * iPath) {
+  std::string GetFilenameWithoutExtension(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return "";
 
-    std::string filename = ra::filesystem::getFilename(iPath);
-    std::string extension = ra::filesystem::getFileExtention(iPath);
+    std::string filename = ra::filesystem::GetFilename(iPath);
+    std::string extension = ra::filesystem::GetFileExtention(iPath);
 
     //extract filename without extension
     std::string filename_without_extension = filename.substr(0, filename.size() - extension.size());
@@ -126,7 +126,7 @@ namespace ra { namespace filesystem {
     return filename_without_extension;
   }
 
-  bool fileExists(const char * iPath) {
+  bool FileExists(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -138,7 +138,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool hasReadAccess(const char * iPath) {
+  bool HasReadAccess(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -150,7 +150,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool hasWriteAccess(const char * iPath) {
+  bool HasWriteAccess(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -162,14 +162,14 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  //shared cross-platform code for findFiles().
+  //shared cross-platform code for FindFiles().
   bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth) {
     //is it a valid item ?
     if (iFilename != "." && iFilename != "..") {
       //build full path
       std::string full_filename = iDirectoryPath;
-      normalizePath(full_filename);
-      full_filename << getPathSeparatorStr() << iFilename;
+      NormalizePath(full_filename);
+      full_filename << GetPathSeparatorStr() << iFilename;
       oFiles.push_back(full_filename);
 
       //should we recurse on directory ?
@@ -180,7 +180,7 @@ namespace ra { namespace filesystem {
           sub_depth = -1;
 
         //find children
-        bool result = findFiles(oFiles, full_filename.c_str(), sub_depth);
+        bool result = FindFiles(oFiles, full_filename.c_str(), sub_depth);
         if (!result) {
           return false;
         }
@@ -191,14 +191,14 @@ namespace ra { namespace filesystem {
   }
 
 
-  bool findFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) {
+  bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) {
     if (iPath == NULL)
       return false;
 
 #ifdef _WIN32
     //Build a *.* query
     std::string query = iPath;
-    normalizePath(query);
+    NormalizePath(query);
     query << "\\*";
 
     WIN32_FIND_DATA find_data;
@@ -258,7 +258,7 @@ namespace ra { namespace filesystem {
 #endif
   }
 
-  bool findFileFromPaths(const std::string & filename, ra::strings::StringVector & locations) {
+  bool FindFileFromPaths(const std::string & filename, ra::strings::StringVector & locations) {
     locations.clear();
 
     //define separator in PATH environment variable
@@ -285,14 +285,14 @@ namespace ra { namespace filesystem {
       path = ra::environment::Expand(path.c_str());
 
       //Remove the last path separator (\ or / characters)
-      ra::filesystem::normalizePath(path);
+      ra::filesystem::NormalizePath(path);
 
       //append the query filename
-      path += ra::filesystem::getPathSeparatorStr();
+      path += ra::filesystem::GetPathSeparatorStr();
       path += filename;
 
       //look if the file exists
-      if (ra::filesystem::fileExists(path.c_str())) {
+      if (ra::filesystem::FileExists(path.c_str())) {
         //found a possible match for filename
         locations.push_back(path);
         found = true;
@@ -302,21 +302,21 @@ namespace ra { namespace filesystem {
     return found;
   }
 
-  std::string findFileFromPaths(const std::string & filename) {
+  std::string FindFileFromPaths(const std::string & filename) {
     ra::strings::StringVector locations;
-    bool found = findFileFromPaths(filename, locations);
+    bool found = FindFileFromPaths(filename, locations);
     if (!found || locations.size() == 0)
       return "";
     const std::string & first = locations[0];
     return first;
   }
 
-  bool directoryExists(const char * iPath) {
+  bool DirectoryExists(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
 #ifdef _WIN32
-    //Note that the current windows implementation of directoryExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
+    //Note that the current windows implementation of DirectoryExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
     //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
 #endif
 
@@ -328,11 +328,11 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool createDirectory(const char * iPath) {
+  bool CreateDirectory(const char * iPath) {
     if (iPath == NULL)
       return false;
 
-    if (directoryExists(iPath))
+    if (DirectoryExists(iPath))
       return true;
 
     //directory does not already exists and must be created
@@ -341,7 +341,7 @@ namespace ra { namespace filesystem {
     char *pp;
     char *sp;
     int   status;
-    char separator = getPathSeparator();
+    char separator = GetPathSeparator();
 #ifdef _WIN32
     char *copypath = _strdup(iPath);
 #else
@@ -367,7 +367,7 @@ namespace ra { namespace filesystem {
 #endif
         if (status != 0) {
           //directory already exists?
-          if (directoryExists(copypath)) {
+          if (DirectoryExists(copypath)) {
             status = 0;
           }
         }
@@ -386,18 +386,18 @@ namespace ra { namespace filesystem {
     return (status == 0);
   }
 
-  bool deleteDirectory(const char * iPath) {
+  bool DeleteDirectory(const char * iPath) {
     if (iPath == NULL)
       return false;
 
-    if (!directoryExists(iPath))
+    if (!DirectoryExists(iPath))
       return true;
 
     //directory exists and must be deleted
 
     //find all files and directories in specified directory
     ra::strings::StringVector files;
-    bool found = findFiles(files, iPath);
+    bool found = FindFiles(files, iPath);
     if (!found)
       return false;
 
@@ -408,8 +408,8 @@ namespace ra { namespace filesystem {
     //process files and directories
     for (size_t i = 0; i < files.size(); i++) {
       const std::string & direntry = files[i];
-      if (fileExists(direntry.c_str())) {
-        bool deleted = deleteFile(direntry.c_str());
+      if (FileExists(direntry.c_str())) {
+        bool deleted = DeleteFile(direntry.c_str());
         if (!deleted)
           return false; //failed to delete file
       }
@@ -426,7 +426,7 @@ namespace ra { namespace filesystem {
     return (result == 0);
   }
 
-  bool deleteFile(const char * iPath) {
+  bool DeleteFile(const char * iPath) {
     if (iPath == NULL)
       return false;
 
@@ -434,7 +434,7 @@ namespace ra { namespace filesystem {
     return (result == 0);
   }
 
-  std::string getTemporaryFileName() {
+  std::string GetTemporaryFileName() {
     //get positive random value
     int value = random::getRandomInt();
     if (value < 0)
@@ -449,13 +449,13 @@ namespace ra { namespace filesystem {
     return std::string(str);
   }
 
-  std::string getTemporaryFilePath() {
-    std::string temp_dir = getTemporaryDirectory();
-    std::string rnd_path = temp_dir + getPathSeparator() + getTemporaryFileName();
+  std::string GetTemporaryFilePath() {
+    std::string temp_dir = GetTemporaryDirectory();
+    std::string rnd_path = temp_dir + GetPathSeparator() + GetTemporaryFileName();
     return rnd_path;
   }
 
-  std::string getTemporaryDirectory() {
+  std::string GetTemporaryDirectory() {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariable("TEMP");
 #elif __linux__
@@ -464,7 +464,7 @@ namespace ra { namespace filesystem {
     return temp;
   }
 
-  std::string getParentPath(const std::string & iPath) {
+  std::string GetParentPath(const std::string & iPath) {
     std::string parent;
 
     std::size_t offset = iPath.find_last_of("/\\");
@@ -480,12 +480,12 @@ namespace ra { namespace filesystem {
     std::string short_path;
 
     std::vector<std::string> path_elements;
-    splitPath(iPath, path_elements);
+    SplitPath(iPath, path_elements);
     for (size_t i = 0; i < path_elements.size(); i++) {
       const std::string & element = path_elements[i];
       if (element.size() > 12 || element.find(' ') != std::string::npos) {
         std::string element83 = element;
-        std::string ext = getFileExtention(element);
+        std::string ext = GetFileExtention(element);
         strings::replace(element83, (std::string(".") + ext), ""); //remove extension from filename
         strings::replace(ext, " ", ""); //remove spaces in extension
         ext = ext.substr(0, 3); //truncate file extension
@@ -541,9 +541,9 @@ namespace ra { namespace filesystem {
     return short_path;
   }
 
-  std::string getShortPathForm(const std::string & iPath) {
+  std::string GetShortPathForm(const std::string & iPath) {
 #ifdef WIN32
-    if (fileExists(iPath.c_str()) || directoryExists(iPath.c_str())) {
+    if (FileExists(iPath.c_str()) || DirectoryExists(iPath.c_str())) {
       //file must exist to use WIN32 api
       return getShortPathFormWin32(iPath);
     }
@@ -556,7 +556,7 @@ namespace ra { namespace filesystem {
 #endif
   }
 
-  void splitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename) {
+  void SplitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename) {
     oDirectory = "";
     oFilename = "";
 
@@ -571,7 +571,7 @@ namespace ra { namespace filesystem {
     }
   }
 
-  void splitPath(const std::string & iPath, std::vector<std::string> & oElements) {
+  void SplitPath(const std::string & iPath, std::vector<std::string> & oElements) {
     oElements.clear();
     std::string s = iPath;
     std::string accumulator;
@@ -592,8 +592,8 @@ namespace ra { namespace filesystem {
     }
   }
 
-  std::string makeRelativePath(const std::string & base_path, const std::string & test_path) {
-    static const std::string path_separator = ra::filesystem::getPathSeparatorStr();
+  std::string MakeRelativePath(const std::string & base_path, const std::string & test_path) {
+    static const std::string path_separator = ra::filesystem::GetPathSeparatorStr();
 
     ra::strings::StringVector base_path_parts = ra::strings::split(base_path, path_separator.c_str());
     ra::strings::StringVector test_path_parts = ra::strings::split(test_path, path_separator.c_str());
@@ -634,7 +634,7 @@ namespace ra { namespace filesystem {
     return "";
   }
 
-  char getPathSeparator() {
+  char GetPathSeparator() {
 #ifdef _WIN32
     return '\\';
 #elif __linux__
@@ -642,7 +642,7 @@ namespace ra { namespace filesystem {
 #endif
   }
 
-  const char * getPathSeparatorStr() {
+  const char * GetPathSeparatorStr() {
 #ifdef _WIN32
     return "\\";
 #elif __linux__
@@ -650,16 +650,16 @@ namespace ra { namespace filesystem {
 #endif
   }
 
-  std::string getCurrentDirectory() {
+  std::string GetCurrentDirectory() {
     return std::string(__getcwd(NULL, 0));
   }
 
-  std::string getFileExtention(const std::string & iPath) {
+  std::string GetFileExtention(const std::string & iPath) {
     //extract filename from path to prevent
     //reading a directory's extension
     std::string directory;
     std::string filename;
-    splitPath(iPath, directory, filename);
+    SplitPath(iPath, directory, filename);
 
     std::string extension;
     std::size_t offset = filename.find_last_of(".");
@@ -672,7 +672,7 @@ namespace ra { namespace filesystem {
     return extension;
   }
 
-  std::string getUserFriendlySize(uint64_t iBytesSize) {
+  std::string GetUserFriendlySize(uint64_t iBytesSize) {
     static const uint64_t kb_limit = 1024;
     static const uint64_t mb_limit = kb_limit * 1000;
     static const uint64_t gb_limit = 1024 * mb_limit;
@@ -696,10 +696,10 @@ namespace ra { namespace filesystem {
       preferedUnit = TERABYTES;
     }
 
-    return getUserFriendlySize(iBytesSize, preferedUnit);
+    return GetUserFriendlySize(iBytesSize, preferedUnit);
   }
 
-  std::string getUserFriendlySize(uint64_t iBytesSize, FileSizeEnum iUnit) {
+  std::string GetUserFriendlySize(uint64_t iBytesSize, FileSizeEnum iUnit) {
     static const uint64_t digits_precision = 100;
     static const uint64_t factor = 1024;
     static const uint64_t kb_precision = 1;
@@ -768,7 +768,7 @@ namespace ra { namespace filesystem {
     return friendly_size;
   }
 
-  uint64_t getFileModifiedDate(const std::string & iPath) {
+  uint64_t GetFileModifiedDate(const std::string & iPath) {
     struct stat result;
     uint64_t mod_time = 0;
     if (stat(iPath.c_str(), &result) == 0) {
@@ -786,8 +786,8 @@ namespace ra { namespace filesystem {
     return false;
   }
 #endif
-  bool isAbsolutePath(const std::string & iPath) {
-    if (iPath.length() > 0 && iPath[0] == ra::filesystem::getPathSeparator())
+  bool IsAbsolutePath(const std::string & iPath) {
+    if (iPath.length() > 0 && iPath[0] == ra::filesystem::GetPathSeparator())
       return true; //this is also true for `\\server\shared` path on Windows.
 #ifdef _WIN32
     if (iPath.length() > 2 && iPath[1] == ':' && iPath[2] == '\\' && isDriveLetter(iPath[0]))
@@ -796,7 +796,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool isRootDirectory(const std::string & iPath) {
+  bool IsRootDirectory(const std::string & iPath) {
     if (iPath == "/")
       return true;
 #ifdef _WIN32
@@ -815,7 +815,7 @@ namespace ra { namespace filesystem {
     return std::string::npos;
   }
 
-  std::string resolvePath(const std::string & iPath) {
+  std::string ResolvePath(const std::string & iPath) {
     std::string output;
     //#ifdef _WIN32
     //      char absolutePath[_MAX_PATH+1] = "";
@@ -832,12 +832,12 @@ namespace ra { namespace filesystem {
     //remove `/./` path elements
     {
       std::string pattern;
-      pattern << ra::filesystem::getPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::getPathSeparatorStr();
-      ra::strings::replace(path, pattern, ra::filesystem::getPathSeparatorStr());
+      pattern << ra::filesystem::GetPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::GetPathSeparatorStr();
+      ra::strings::replace(path, pattern, ra::filesystem::GetPathSeparatorStr());
 
       //look for a path that ends with /. or \.
       pattern.clear();
-      pattern << ra::filesystem::getPathSeparatorStr() << ".";
+      pattern << ra::filesystem::GetPathSeparatorStr() << ".";
       if (path.size() >= pattern.size() && pattern == &path[path.size() - pattern.size()]) {
         //remove the ending
         size_t offset = path.size() - pattern.size();
@@ -849,7 +849,7 @@ namespace ra { namespace filesystem {
     {
       //split by path separator
       ra::strings::StringVector elements;
-      ra::strings::split(elements, path, ra::filesystem::getPathSeparatorStr());
+      ra::strings::split(elements, path, ra::filesystem::GetPathSeparatorStr());
 
       //search for /..
       size_t offset = 0; //current index of the element where we are searching
@@ -874,10 +874,10 @@ namespace ra { namespace filesystem {
             //should we remove the element before?
             //Note:
             //On Windows, the root element is defined by the string "C:" (without the \ character). The \ character must be
-            //added to `previous_element` to be properly detected by `isRootDirectory()`.
+            //added to `previous_element` to be properly detected by `IsRootDirectory()`.
             //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
             //separator which creates an empty string element when calling `ra::strings::split()`.
-            if (isRootDirectory(previous_element + ra::filesystem::getPathSeparatorStr())) {
+            if (IsRootDirectory(previous_element + ra::filesystem::GetPathSeparatorStr())) {
               //one cannot walk down past the root
 
               //keep same offset. The next search will occurs where the deleted `..` element was.
@@ -896,7 +896,7 @@ namespace ra { namespace filesystem {
       }
 
       //join the string back again
-      path = ra::strings::join(elements, ra::filesystem::getPathSeparatorStr());
+      path = ra::strings::join(elements, ra::filesystem::GetPathSeparatorStr());
     }
 
     output = path;
@@ -904,42 +904,42 @@ namespace ra { namespace filesystem {
     return output;
   }
 
-  std::string getPathBasedOnCurrentProcess(const std::string & iPath) {
-    if (isAbsolutePath(iPath))
+  std::string GetPathBasedOnCurrentProcess(const std::string & iPath) {
+    if (IsAbsolutePath(iPath))
       return iPath;
 
     std::string dir = ra::process::getCurrentProcessDir();
-    ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
+    ra::filesystem::NormalizePath(dir); //remove last / or \ character if any API used return an unexpected value
 
     std::string tmp_path;
     tmp_path.append(dir);
-    tmp_path.append(ra::filesystem::getPathSeparatorStr());
+    tmp_path.append(ra::filesystem::GetPathSeparatorStr());
     tmp_path.append(iPath);
 
-    std::string resolved = resolvePath(tmp_path);
+    std::string resolved = ResolvePath(tmp_path);
 
     return resolved;
   }
 
-  std::string getPathBasedOnCurrentDirectory(const std::string & iPath) {
-    if (isAbsolutePath(iPath))
+  std::string GetPathBasedOnCurrentDirectory(const std::string & iPath) {
+    if (IsAbsolutePath(iPath))
       return iPath;
 
-    std::string dir = ra::filesystem::getCurrentDirectory();
-    ra::filesystem::normalizePath(dir); //remove last / or \ character if any API used return an unexpected value
+    std::string dir = ra::filesystem::GetCurrentDirectory();
+    ra::filesystem::NormalizePath(dir); //remove last / or \ character if any API used return an unexpected value
 
     std::string tmp_path;
     tmp_path.append(dir);
-    tmp_path.append(ra::filesystem::getPathSeparatorStr());
+    tmp_path.append(ra::filesystem::GetPathSeparatorStr());
     tmp_path.append(iPath);
 
-    std::string resolved = resolvePath(tmp_path);
+    std::string resolved = ResolvePath(tmp_path);
 
     return resolved;
   }
 
   bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function) {
-    size_t file_size = ra::filesystem::getFileSize(source_path.c_str());
+    size_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
 
     FILE* fin = fopen(source_path.c_str(), "rb");
     if (!fin)
@@ -954,7 +954,7 @@ namespace ra { namespace filesystem {
     //publish progress
     double progress = 0.0;
     if (progress_functor)
-      progress_functor->onProgressReport(progress);
+      progress_functor->OnProgressReport(progress);
     if (progress_function)
       progress_function(progress);
 
@@ -972,7 +972,7 @@ namespace ra { namespace filesystem {
         //publish progress
         progress = double(copied_size) / double(file_size);
         if (progress_functor)
-          progress_functor->onProgressReport(progress);
+          progress_functor->OnProgressReport(progress);
         if (progress_function)
           progress_function(progress);
       }
@@ -988,7 +988,7 @@ namespace ra { namespace filesystem {
       //publish progress
       progress = 1.0;
       if (progress_functor)
-        progress_functor->onProgressReport(progress);
+        progress_functor->OnProgressReport(progress);
       if (progress_function)
         progress_function(progress);
     }
@@ -996,28 +996,28 @@ namespace ra { namespace filesystem {
     return success;
   }
 
-  bool copyFile(const std::string & source_path, const std::string & destination_path) {
+  bool CopyFile(const std::string & source_path, const std::string & destination_path) {
     return copyFileInternal(source_path, destination_path, NULL, NULL);
   }
 
-  bool copyFile(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor) {
+  bool CopyFile(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor) {
     return copyFileInternal(source_path, destination_path, progress_functor, NULL);
   }
 
-  bool copyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function) {
+  bool CopyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function) {
     return copyFileInternal(source_path, destination_path, NULL, progress_function);
   }
 
-  bool peekFile(const std::string & path, size_t size, std::string & data) {
+  bool PeekFile(const std::string & path, size_t size, std::string & data) {
     //static const std::string EMPTY;
     data.clear();
 
     //validate if file exists
-    if (!ra::filesystem::fileExists(path.c_str()))
+    if (!ra::filesystem::FileExists(path.c_str()))
       return false;
 
     //allocate a buffer which can hold the data of the file
-    size_t file_size = ra::filesystem::getFileSize(path.c_str());
+    size_t file_size = ra::filesystem::GetFileSize(path.c_str());
     size_t max_read_size = (file_size < size ? file_size : size);
 
     //validates empty files 
@@ -1052,22 +1052,22 @@ namespace ra { namespace filesystem {
     return success;
   }
 
-  bool readFile(const std::string & path, std::string & data) {
+  bool ReadFile(const std::string & path, std::string & data) {
     //validate if file exists
-    if (!ra::filesystem::fileExists(path.c_str()))
+    if (!ra::filesystem::FileExists(path.c_str()))
       return false;
 
-    uint32_t file_size = ra::filesystem::getFileSize(path.c_str());
+    uint32_t file_size = ra::filesystem::GetFileSize(path.c_str());
 
     //validates empty files 
     if (file_size == 0)
       return true;
 
-    bool readed = peekFile(path, file_size, data);
+    bool readed = PeekFile(path, file_size, data);
     return readed;
   }
 
-  bool writeFile(const std::string & path, const std::string & data) {
+  bool WriteFile(const std::string & path, const std::string & data) {
     FILE * f = fopen(path.c_str(), "wb");
     if (!f)
       return false;
@@ -1080,9 +1080,9 @@ namespace ra { namespace filesystem {
     return success;
   }
 
-  bool fileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue) {
+  bool FileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue) {
     std::string data;
-    if (!readFile(path, data))
+    if (!ReadFile(path, data))
       return false;
 
     int num_finding = ra::strings::replace(data, oldvalue, newvalue);
@@ -1090,14 +1090,14 @@ namespace ra { namespace filesystem {
     //does the file was modified?
     if (num_finding) {
       //yes, write modifications to the file
-      if (!writeFile(path, data))
+      if (!WriteFile(path, data))
         return false;
     }
 
     return true;
   }
 
-  bool readTextFile(const std::string & path, ra::strings::StringVector & lines, bool trim_newline_characters) {
+  bool ReadTextFile(const std::string & path, ra::strings::StringVector & lines, bool trim_newline_characters) {
     lines.clear();
 
     static const int BUFFER_SIZE = 10240;
@@ -1120,9 +1120,9 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool readTextFile(const std::string & path, std::string & content) {
+  bool ReadTextFile(const std::string & path, std::string & content) {
     ra::strings::StringVector lines;
-    bool success = readTextFile(path.c_str(), lines, false);
+    bool success = ReadTextFile(path.c_str(), lines, false);
     if (!success)
       return false;
 
@@ -1131,7 +1131,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool writeTextFile(const std::string & path, const std::string & content) {
+  bool WriteTextFile(const std::string & path, const std::string & content) {
     FILE* f = fopen(path.c_str(), "w");
     if (!f)
       return false;
@@ -1141,7 +1141,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool writeTextFile(const std::string & path, const ra::strings::StringVector & lines, bool insert_newline_characters) {
+  bool WriteTextFile(const std::string & path, const ra::strings::StringVector & lines, bool insert_newline_characters) {
     FILE* f = fopen(path.c_str(), "w");
     if (!f)
       return false;

@@ -113,7 +113,7 @@ namespace ra { namespace filesystem {
     if (file_path.empty())
       return false;
 
-    if (!ra::filesystem::fileExists(file_path.c_str()))
+    if (!ra::filesystem::FileExists(file_path.c_str()))
       return false;
 
     clear();

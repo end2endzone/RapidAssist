@@ -60,10 +60,10 @@ namespace ra { namespace user { namespace test
     ASSERT_FALSE(docs_dir.empty());
     ASSERT_FALSE(desk_dir.empty());
 
-    ASSERT_TRUE(ra::filesystem::directoryExists(home_dir.c_str())) << "Failed. Directory '" << home_dir << "' does not exists!";
-    ASSERT_TRUE(ra::filesystem::directoryExists(app_dir.c_str())) << "Failed. Directory '" << app_dir << "' does not exists!";
-    ASSERT_TRUE(ra::filesystem::directoryExists(docs_dir.c_str())) << "Failed. Directory '" << docs_dir << "' does not exists!";
-    ASSERT_TRUE(ra::filesystem::directoryExists(desk_dir.c_str())) << "Failed. Directory '" << desk_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(home_dir.c_str())) << "Failed. Directory '" << home_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(app_dir.c_str())) << "Failed. Directory '" << app_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(docs_dir.c_str())) << "Failed. Directory '" << docs_dir << "' does not exists!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(desk_dir.c_str())) << "Failed. Directory '" << desk_dir << "' does not exists!";
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

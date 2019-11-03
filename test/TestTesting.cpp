@@ -176,7 +176,7 @@ namespace ra { namespace test {
       "lazy" + newline +
       "dog.";
     const std::string file_path = ra::testing::getTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //read the file as a text file
@@ -197,7 +197,7 @@ namespace ra { namespace test {
     ASSERT_EQ(std::string("dog."), lines[8]);
 
     //cleanup
-    ra::filesystem::deleteFile(file_path.c_str());
+    ra::filesystem::DeleteFile(file_path.c_str());
   }
 
 } //namespace test

@@ -66,14 +66,14 @@ namespace ra { namespace process { namespace test
     std::string path = ra::process::getCurrentProcessPath();
     printf("Process path: %s\n", path.c_str());
     ASSERT_TRUE(!path.empty());
-    ASSERT_TRUE(ra::filesystem::fileExists(path.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(path.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessDir) {
     std::string dir = ra::process::getCurrentProcessDir();
     printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());
-    ASSERT_TRUE(ra::filesystem::directoryExists(dir.c_str()));
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(dir.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testToString) {
@@ -163,27 +163,27 @@ namespace ra { namespace process { namespace test
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //keep the current directory to verify if it has not changed
-    const std::string curr_dir1 = ra::filesystem::getCurrentDirectory();
+    const std::string curr_dir1 = ra::filesystem::GetCurrentDirectory();
 
     //will run the process from user's home directory
     const std::string home_dir = ra::user::getHomeDirectory();
-    ASSERT_TRUE(ra::filesystem::directoryExists(home_dir.c_str()));
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(home_dir.c_str()));
 
     //will also run the process from a custom directory
-    const std::string custom_dir = curr_dir1 + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".dir";
-    bool created = ra::filesystem::createDirectory(custom_dir.c_str());
+    const std::string custom_dir = curr_dir1 + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".dir";
+    bool created = ra::filesystem::CreateDirectory(custom_dir.c_str());
     ASSERT_TRUE(created);
 
     //create a text file in user's home directory
     const std::string newline = ra::environment::GetLineSeparator();
     const std::string content = ra::testing::getTestQualifiedName();
-    const std::string home_file_path = home_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_home_directory.txt";
-    bool success = ra::filesystem::writeFile(home_file_path, content); //write the file as a binary file
+    const std::string home_file_path = home_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_home_directory.txt";
+    bool success = ra::filesystem::WriteFile(home_file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //create a text file in custom directory
-    const std::string custom_file_path = custom_dir + ra::filesystem::getPathSeparatorStr() + "This_file_is_in_a_custom_directory.txt";
-    success = ra::filesystem::writeFile(custom_file_path, content); //write the file as a binary file
+    const std::string custom_file_path = custom_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_a_custom_directory.txt";
+    success = ra::filesystem::WriteFile(custom_file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //define a command that lists the files in the current directory
@@ -223,12 +223,12 @@ namespace ra { namespace process { namespace test
     }
 
     //assert that current directory is not affected by the launched processes 
-    const std::string curr_dir2 = ra::filesystem::getCurrentDirectory();
+    const std::string curr_dir2 = ra::filesystem::GetCurrentDirectory();
     ASSERT_EQ(curr_dir1, curr_dir2);
 
     //cleanup
-    ra::filesystem::deleteFile(home_file_path.c_str());
-    ra::filesystem::deleteDirectory(custom_dir.c_str());
+    ra::filesystem::DeleteFile(home_file_path.c_str());
+    ra::filesystem::DeleteDirectory(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 #ifndef _WIN32
@@ -243,7 +243,7 @@ namespace ra { namespace process { namespace test
 
     ra::strings::StringVector args;
     args.push_back("sane");
-    const std::string curr_dir = ra::filesystem::getCurrentDirectory();
+    const std::string curr_dir = ra::filesystem::GetCurrentDirectory();
     ra::process::processid_t pid = ra::process::startProcess("/bin/stty", curr_dir, args);
 
     //wait for the process to complete
@@ -258,10 +258,10 @@ namespace ra { namespace process { namespace test
     //nano's cache file is named ".TestProcess.testProcesses.txt.swp".
 
     std::string parent_dir, filename;
-    ra::filesystem::splitPath(file_path, parent_dir, filename);
+    ra::filesystem::SplitPath(file_path, parent_dir, filename);
 
-    const std::string cache_path = parent_dir + ra::filesystem::getPathSeparatorStr() + "." + filename + ".swp";
-    ra::filesystem::deleteFile(cache_path.c_str());
+    const std::string cache_path = parent_dir + ra::filesystem::GetPathSeparatorStr() + "." + filename + ".swp";
+    ra::filesystem::DeleteFile(cache_path.c_str());
   }
 #endif
   TEST_F(TestProcess, testKillAndTerminate) {
@@ -278,8 +278,8 @@ namespace ra { namespace process { namespace test
       "the" + newline +
       "lazy" + newline +
       "dog.";
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //define the command 
@@ -294,7 +294,7 @@ namespace ra { namespace process { namespace test
 
     //run the process from the current directory
     const std::string test_dir = ra::process::getCurrentProcessDir();
-    ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
 #ifndef _WIN32
     //delete nano's cache before launching nano
@@ -364,7 +364,7 @@ namespace ra { namespace process { namespace test
     ASSERT_FALSE(started);
 
     //cleanup
-    ra::filesystem::deleteFile(file_path.c_str());
+    ra::filesystem::DeleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument) {
@@ -381,8 +381,8 @@ namespace ra { namespace process { namespace test
       "the" + newline +
       "lazy" + newline +
       "dog.";
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::getPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::writeFile(file_path, content); //write the file as a binary file
+    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
+    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //take a snapshot of the list of processes before opening the document
@@ -416,14 +416,14 @@ namespace ra { namespace process { namespace test
     }
 
     //cleanup
-    ra::filesystem::deleteFile(file_path.c_str());
+    ra::filesystem::DeleteFile(file_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCode) {
     //define the sleep x seconds command
     const std::string sleep_time = "2";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::findFileFromPaths("sleep.exe");
+    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
     const std::string arguments = sleep_time;
 #else
     ra::strings::StringVector arguments;
@@ -432,7 +432,7 @@ namespace ra { namespace process { namespace test
 #endif
 
     //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //start the process
     const std::string curr_dir = ra::process::getCurrentProcessDir();
@@ -487,7 +487,7 @@ namespace ra { namespace process { namespace test
 #endif
 
     //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //start the process
     const std::string curr_dir = ra::process::getCurrentProcessDir();
@@ -508,7 +508,7 @@ namespace ra { namespace process { namespace test
     //define the sleep x seconds command
     const std::string sleep_time = "5";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::findFileFromPaths("sleep.exe");
+    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
     const std::string arguments = sleep_time;
 #else
     ra::strings::StringVector arguments;
@@ -517,7 +517,7 @@ namespace ra { namespace process { namespace test
 #endif
 
     //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::fileExists(exec_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //remember which time it is
     double time_start = ra::timing::getMillisecondsTimer();

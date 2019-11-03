@@ -290,7 +290,7 @@ namespace ra { namespace process {
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
   bool getProcessState(const processid_t & pid, char & state) {
     std::string stat_path = std::string("/proc/") + ra::strings::toString(pid) + "/stat";
-    bool exists = ra::filesystem::fileExists(stat_path.c_str());
+    bool exists = ra::filesystem::FileExists(stat_path.c_str());
     if (!exists)
       return false;
 
@@ -432,19 +432,19 @@ namespace ra { namespace process {
 #else
     //list processes from the filesystem
     ra::strings::StringVector files;
-    bool found = ra::filesystem::findFiles(files, "/proc", 0);
+    bool found = ra::filesystem::FindFiles(files, "/proc", 0);
     if (!found)
       return processes; //failed
     for (size_t i = 0; i < files.size(); i++) {
       const std::string & file = files[i];
 
       //filter out files
-      bool is_directory = ra::filesystem::directoryExists(file.c_str());
+      bool is_directory = ra::filesystem::DirectoryExists(file.c_str());
       if (!is_directory)
         continue;
 
       //filter out directories that are not numeric.
-      const std::string name = ra::filesystem::getFilename(file.c_str());
+      const std::string name = ra::filesystem::GetFilename(file.c_str());
       bool numeric = ra::strings::isNumeric(name.c_str());
       if (!numeric)
         continue;
@@ -485,12 +485,12 @@ namespace ra { namespace process {
     std::string exec_path = getCurrentProcessPath();
     if (exec_path.empty())
       return dir; //failure
-    dir = ra::filesystem::getParentPath(exec_path);
+    dir = ra::filesystem::GetParentPath(exec_path);
     return dir;
   }
 
   processid_t startProcess(const std::string & iExecPath) {
-    std::string curr_dir = ra::filesystem::getCurrentDirectory();
+    std::string curr_dir = ra::filesystem::GetCurrentDirectory();
 
     // Launch the process from the current process current directory
     processid_t pid = startProcess(iExecPath, curr_dir);
@@ -554,8 +554,8 @@ namespace ra { namespace process {
 #else
   processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) {
     //temporary change the current directory for the child process
-    std::string curr_dir = ra::filesystem::getCurrentDirectory();
-    if (!ra::filesystem::directoryExists(iDefaultDirectory.c_str()))
+    std::string curr_dir = ra::filesystem::GetCurrentDirectory();
+    if (!ra::filesystem::DirectoryExists(iDefaultDirectory.c_str()))
       return INVALID_PROCESS_ID;
     int chdir_result = chdir(iDefaultDirectory.c_str());
 
@@ -593,7 +593,7 @@ namespace ra { namespace process {
 #endif
 
   bool openDocument(const std::string & iPath) {
-    if (!ra::filesystem::fileExists(iPath.c_str()))
+    if (!ra::filesystem::FileExists(iPath.c_str()))
       return false; //file not found
 
 #ifdef _WIN32
@@ -621,11 +621,11 @@ namespace ra { namespace process {
     return false;
 #else
     const char * xdgopen_path = "/usr/bin/xdg-open";
-    if (!ra::filesystem::fileExists(xdgopen_path))
+    if (!ra::filesystem::FileExists(xdgopen_path))
       return false; //xdg-open not found
 
     const ra::strings::StringVector args;
-    std::string curr_dir = ra::filesystem::getCurrentDirectory();
+    std::string curr_dir = ra::filesystem::GetCurrentDirectory();
     processid_t pid = startProcess(xdgopen_path, curr_dir, args);
     bool success = (pid != INVALID_PROCESS_ID);
     return success;

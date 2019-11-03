@@ -172,7 +172,7 @@ namespace ra { namespace testing {
 
   StringVector getTestList(const char * iTestCasePath) {
     //check that file exists
-    if (!ra::filesystem::fileExists(iTestCasePath))
+    if (!ra::filesystem::FileExists(iTestCasePath))
       return StringVector();
 
     static const std::string log_filename = "gTestHelper.tmp";
@@ -194,7 +194,7 @@ namespace ra { namespace testing {
     if (return_code != 0)
       return StringVector();
 
-    if (!ra::filesystem::fileExists(log_filename.c_str()))
+    if (!ra::filesystem::FileExists(log_filename.c_str()))
       return StringVector();
 
     //load test case list from log filename
@@ -274,8 +274,8 @@ namespace ra { namespace testing {
     }
 
     //Compare by size
-    long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
-    long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
+    long size1 = ra::filesystem::GetFileSize(f1.file_pointer_);
+    long size2 = ra::filesystem::GetFileSize(f2.file_pointer_);
     if (size1 != size2) {
       if (size1 < size2)
         ss << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
@@ -332,8 +332,8 @@ namespace ra { namespace testing {
       return false;
 
     //Check by size
-    long size1 = ra::filesystem::getFileSize(f1.file_pointer_);
-    long size2 = ra::filesystem::getFileSize(f2.file_pointer_);
+    long size1 = ra::filesystem::GetFileSize(f1.file_pointer_);
+    long size2 = ra::filesystem::GetFileSize(f2.file_pointer_);
     if (size1 != size2) {
       return false; //unsupported
     }
@@ -379,7 +379,7 @@ namespace ra { namespace testing {
   }
 
   bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) {
-    if (!ra::filesystem::fileExists(iFilename))
+    if (!ra::filesystem::FileExists(iFilename))
       return false;
 
     oLine = -1;
@@ -408,7 +408,7 @@ namespace ra { namespace testing {
       return false;
 
     std::string path = iFilename;
-    bool success = ra::filesystem::readTextFile(path, oLines, true);
+    bool success = ra::filesystem::ReadTextFile(path, oLines, true);
     return success;
   }
 
@@ -441,7 +441,7 @@ namespace ra { namespace testing {
     FILE * f = fopen(iFilePath, "rb");
     if (!f)
       return;
-    long size = ra::filesystem::getFileSize(f);
+    long size = ra::filesystem::GetFileSize(f);
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;
