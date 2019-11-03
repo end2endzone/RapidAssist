@@ -42,14 +42,14 @@ namespace ra { namespace errors { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestErrors, testErrorsDescriptions) {
     for (errorcode_t i = 0; i < 10; i++) {
-      std::string desc = ra::errors::getErrorCodeDescription(i);
+      std::string desc = ra::errors::GetErrorCodeDescription(i);
       ASSERT_TRUE(!desc.empty());
       printf("Error code 0x%x: %s\n", i, desc.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestErrors, testRaisingErrorCode) {
-    ra::errors::resetLastErrorCode();
+    ra::errors::ResetLastErrorCode();
 
 #ifdef _WIN32
     {
@@ -67,8 +67,8 @@ namespace ra { namespace errors { namespace test
     double not_a_number = std::log(-1.0);
 #endif
 
-    errorcode_t error_code = ra::errors::getLastErrorCode();
-    std::string desc = ra::errors::getErrorCodeDescription(error_code);
+    errorcode_t error_code = ra::errors::GetLastErrorCode();
+    std::string desc = ra::errors::GetErrorCodeDescription(error_code);
     ASSERT_NE(0, error_code) << "Failed. The function is expecting a non-zero error code. Received error_code " << error_code << ", '" << desc << "'.";
   }
   //--------------------------------------------------------------------------------------------------

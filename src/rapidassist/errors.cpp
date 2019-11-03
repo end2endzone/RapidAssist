@@ -35,7 +35,7 @@
 
 namespace ra { namespace errors {
 
-  void resetLastErrorCode() {
+  void ResetLastErrorCode() {
 #ifdef _WIN32
     static DWORD last_error = 0;
     SetLastError(last_error);
@@ -44,7 +44,7 @@ namespace ra { namespace errors {
 #endif
   }
 
-  errorcode_t getLastErrorCode() {
+  errorcode_t GetLastErrorCode() {
 #ifdef _WIN32
     DWORD last_error = ::GetLastError();
     errorcode_t errcode = static_cast<errorcode_t>(last_error);
@@ -56,13 +56,13 @@ namespace ra { namespace errors {
 #endif
   }
 
-  std::string getLastErrorDescription() {
-    errorcode_t code = getLastErrorCode();
-    std::string desc = getErrorCodeDescription(code);
+  std::string GetLastErrorDescription() {
+    errorcode_t code = GetLastErrorCode();
+    std::string desc = GetErrorCodeDescription(code);
     return desc;
   }
 
-  std::string getErrorCodeDescription(errorcode_t code) {
+  std::string GetErrorCodeDescription(errorcode_t code) {
 #ifdef _WIN32
     DWORD last_error = static_cast<DWORD>(code);
     const DWORD error_buffer_size = 10240;

@@ -42,25 +42,25 @@ namespace ra { namespace errors {
   /// <summary>
   /// Reset the system's last error code.
   /// </summary>
-  void resetLastErrorCode();
+  void ResetLastErrorCode();
 
   /// <summary>
   /// Returns the system's last error code that occured in a function.
   /// </summary>
   /// <returns>Returns the last error code that occured in a function.</returns>
-  errorcode_t getLastErrorCode();
+  errorcode_t GetLastErrorCode();
 
   /// <summary>
   /// Returns the description of the last error.
   /// </summary>
   /// <returns>Returns the description of the last error.</returns>
-  std::string getLastErrorDescription();
+  std::string GetLastErrorDescription();
 
   /// <summary>
   /// Returns the description of the given error code.
   /// </summary>
   /// <returns>Returns the description of the given error code.</returns>
-  std::string getErrorCodeDescription(errorcode_t code);
+  std::string GetErrorCodeDescription(errorcode_t code);
 
 } //namespace errors
 } //namespace ra
