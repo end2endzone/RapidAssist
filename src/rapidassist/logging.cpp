@@ -34,15 +34,15 @@ namespace ra { namespace logging {
   //global flag to silence the logging output
   bool quiet_mode = false;
 
-  void setQuietMode(bool iQuiet) {
+  void SetQuietMode(bool iQuiet) {
     quiet_mode = iQuiet;
   }
 
-  bool isQuietModeEnabled() {
+  bool IsQuietModeEnabled() {
     return quiet_mode;
   }
 
-  void log(LoggerLevel iLevel, const char * iFormat, ...) {
+  void Log(LoggerLevel iLevel, const char * iFormat, ...) {
     if (iFormat == NULL)
       return;
 

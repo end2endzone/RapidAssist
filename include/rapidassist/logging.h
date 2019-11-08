@@ -43,20 +43,20 @@ namespace ra { namespace logging {
   /// Silences all log of level LOG_INFO 
   /// </summary>
   /// <param name="iQuiet">The new value of the quiet mode.</param>
-  void setQuietMode(bool iQuiet);
+  void SetQuietMode(bool iQuiet);
 
   /// <summary>
   /// Returns true if the quiet mode is enabled.
   /// </summary>
   /// <returns>Returns true if the quiet mode is enabled.</returns>
-  bool isQuietModeEnabled();
+  bool IsQuietModeEnabled();
 
   /// <summary>
   /// Prints the given arguments to the console depending on the specified logging level.
   /// </summary>
   /// <param name="iLevel">The level of the given arguments</param>
   /// <param name="iFormat">The format of the given argument. Same as printf's format.</param>
-  void log(LoggerLevel iLevel, const char * iFormat, ...);
+  void Log(LoggerLevel iLevel, const char * iFormat, ...);
 
 } //namespace environment
 } //namespace ra
