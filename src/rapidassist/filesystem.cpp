@@ -43,6 +43,9 @@
 #include <Windows.h> //for GetShortPathName()
 #undef GetEnvironmentVariable
 #undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
 #elif __linux__
 #define __chdir chdir
 #define __getcwd getcwd
