@@ -1,7 +1,8 @@
 Changes for 0.7.0:
-
+ 
 **This version of RapidAssist contains breaking changes!**
 **Many library categories (including their associated namespaces) are renamed for clarity and better compatibility with other libraries.**
+**Function names now follows *[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Function_Names)* naming rules: functions start with a capital letter and have a capital letter for each new word.**
 
 * Fixed issue #35: Rename time namespace to timing.
 * Fixed issue #36: Rename gtesthelp namespace to testing.
