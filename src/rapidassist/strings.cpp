@@ -591,7 +591,7 @@ namespace ra { namespace strings {
       size_t loop_end = (size - 1) / 2;
       for (size_t i = loop_start; i <= loop_end; i++) {
         if (i != (size - i - 1)) {
-          ra::generics::swap(tmp[i], tmp[size - i - 1]);
+          ra::generics::Swap(tmp[i], tmp[size - i - 1]);
         }
       }
     }

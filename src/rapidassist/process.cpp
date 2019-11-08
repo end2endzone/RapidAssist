@@ -33,6 +33,7 @@
 //#   define WIN32_LEAN_AND_MEAN 1
 //#   endif
 #   include <windows.h> // for GetModuleHandleEx()
+#   undef GetCurrentDirectory
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
 #   include <Tlhelp32.h>
@@ -309,7 +310,7 @@ namespace ra { namespace process {
     ra::strings::StringVector tokens;
     ra::strings::split(tokens, buffer, ' ');
 
-    //assert the minimum number of tokens
+    //assert the Minimum number of tokens
     if (tokens.size() < 3)
       return false; //not enough tokens
 

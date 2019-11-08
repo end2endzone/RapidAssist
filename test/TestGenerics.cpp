@@ -38,7 +38,7 @@ namespace ra { namespace generics { namespace test
   TEST_F(TestGenerics, testSwapInt) {
     int a = 5;
     int b = 9;
-    ra::generics::swap(a, b);
+    ra::generics::Swap(a, b);
 
     ASSERT_EQ(5, b);
     ASSERT_EQ(9, a);
@@ -47,7 +47,7 @@ namespace ra { namespace generics { namespace test
   TEST_F(TestGenerics, testSwapString) {
     std::string a = "abc";
     std::string b = "def";
-    ra::generics::swap(a, b);
+    ra::generics::Swap(a, b);
 
     ASSERT_EQ("abc", b);
     ASSERT_EQ("def", a);
@@ -57,25 +57,25 @@ namespace ra { namespace generics { namespace test
     int a = 5;
     int b = 9;
 
-    ASSERT_EQ(5, ra::generics::minimum(a, b));
-    ASSERT_EQ(5, ra::generics::minimum(b, a));
+    ASSERT_EQ(5, ra::generics::Minimum(a, b));
+    ASSERT_EQ(5, ra::generics::Minimum(b, a));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestGenerics, testMaximum) {
     int a = 5;
     int b = 9;
 
-    ASSERT_EQ(9, ra::generics::maximum(a, b));
-    ASSERT_EQ(9, ra::generics::maximum(b, a));
+    ASSERT_EQ(9, ra::generics::Maximum(a, b));
+    ASSERT_EQ(9, ra::generics::Maximum(b, a));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestGenerics, testConstrain) {
     int low = 10;
     int high = 20;
 
-    ASSERT_EQ(low, ra::generics::constrain(5, low, high));
-    ASSERT_EQ(high, ra::generics::constrain(999, low, high));
-    ASSERT_EQ(15, ra::generics::constrain(15, low, high));
+    ASSERT_EQ(low, ra::generics::Constrain(5, low, high));
+    ASSERT_EQ(high, ra::generics::Constrain(999, low, high));
+    ASSERT_EQ(15, ra::generics::Constrain(15, low, high));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestGenerics, testMap) {
@@ -85,34 +85,34 @@ namespace ra { namespace generics { namespace test
     int celsius_boil = 100;
 
     //celcius to fahrenheit
-    ASSERT_EQ(32, ra::generics::map<int>(0, celsius_freeze, celsius_boil, fahrenheit_freeze, fahrenheit_boil));
-    ASSERT_EQ(212, ra::generics::map<int>(100, celsius_freeze, celsius_boil, fahrenheit_freeze, fahrenheit_boil));
+    ASSERT_EQ(32, ra::generics::Map<int>(0, celsius_freeze, celsius_boil, fahrenheit_freeze, fahrenheit_boil));
+    ASSERT_EQ(212, ra::generics::Map<int>(100, celsius_freeze, celsius_boil, fahrenheit_freeze, fahrenheit_boil));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestGenerics, testNear) {
     //as integer
-    ASSERT_FALSE(ra::generics::near(5, 9, 1));    //epsilon too small
-    ASSERT_FALSE(ra::generics::near(9, 5, 1));    //epsilon too small
-    ASSERT_TRUE(ra::generics::near(5, 9, 4));    //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(9, 5, 4));    //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(5, 9, 400));  //epsilon too big
-    ASSERT_TRUE(ra::generics::near(9, 5, 400));  //epsilon too big
+    ASSERT_FALSE(ra::generics::Near(5, 9, 1));    //epsilon too small
+    ASSERT_FALSE(ra::generics::Near(9, 5, 1));    //epsilon too small
+    ASSERT_TRUE(ra::generics::Near(5, 9, 4));    //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(9, 5, 4));    //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(5, 9, 400));  //epsilon too big
+    ASSERT_TRUE(ra::generics::Near(9, 5, 400));  //epsilon too big
 
     //as float
-    ASSERT_FALSE(ra::generics::near(5.0f, 9.0f, 1.0f));   //epsilon too small
-    ASSERT_FALSE(ra::generics::near(9.0f, 5.0f, 1.0f));   //epsilon too small
-    ASSERT_TRUE(ra::generics::near(5.0f, 9.0f, 4.0f));   //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(9.0f, 5.0f, 4.0f));   //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(5.0f, 9.0f, 400.0f)); //epsilon too big
-    ASSERT_TRUE(ra::generics::near(9.0f, 5.0f, 400.0f)); //epsilon too big
+    ASSERT_FALSE(ra::generics::Near(5.0f, 9.0f, 1.0f));   //epsilon too small
+    ASSERT_FALSE(ra::generics::Near(9.0f, 5.0f, 1.0f));   //epsilon too small
+    ASSERT_TRUE(ra::generics::Near(5.0f, 9.0f, 4.0f));   //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(9.0f, 5.0f, 4.0f));   //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(5.0f, 9.0f, 400.0f)); //epsilon too big
+    ASSERT_TRUE(ra::generics::Near(9.0f, 5.0f, 400.0f)); //epsilon too big
 
     //as double
-    ASSERT_FALSE(ra::generics::near(5.0, 9.0, 1.0));    //epsilon too small
-    ASSERT_FALSE(ra::generics::near(9.0, 5.0, 1.0));    //epsilon too small
-    ASSERT_TRUE(ra::generics::near(5.0, 9.0, 4.0));    //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(9.0, 5.0, 4.0));    //epsilon is exact
-    ASSERT_TRUE(ra::generics::near(5.0, 9.0, 400.0));  //epsilon too big
-    ASSERT_TRUE(ra::generics::near(9.0, 5.0, 400.0));  //epsilon too big
+    ASSERT_FALSE(ra::generics::Near(5.0, 9.0, 1.0));    //epsilon too small
+    ASSERT_FALSE(ra::generics::Near(9.0, 5.0, 1.0));    //epsilon too small
+    ASSERT_TRUE(ra::generics::Near(5.0, 9.0, 4.0));    //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(9.0, 5.0, 4.0));    //epsilon is exact
+    ASSERT_TRUE(ra::generics::Near(5.0, 9.0, 400.0));  //epsilon too big
+    ASSERT_TRUE(ra::generics::Near(9.0, 5.0, 400.0));  //epsilon too big
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestGenerics, testReadAs) {
@@ -120,19 +120,19 @@ namespace ra { namespace generics { namespace test
     {
       float f = 0.0f;
       int32_t i = 0;
-      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f));
+      ASSERT_EQ(i, ra::generics::ReadAs<int32_t>(f));
 
       f = 0.1f;
       i = 1036831949;
-      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f));
+      ASSERT_EQ(i, ra::generics::ReadAs<int32_t>(f));
 
       f = 100000.0f;
       i = 1203982336;
-      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f));
+      ASSERT_EQ(i, ra::generics::ReadAs<int32_t>(f));
 
       f = 1.3958644e+010f;
       i = 1347420160;
-      ASSERT_EQ(i, ra::generics::readAs<int32_t>(f));
+      ASSERT_EQ(i, ra::generics::ReadAs<int32_t>(f));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ namespace ra { namespace generics { namespace test
       names.push_back("Feyd Rautha");
 
       ra::strings::StringVector reverse_names;
-      ra::generics::reverse_vector(names, reverse_names);
+      ra::generics::ReverseVector(names, reverse_names);
 
       ASSERT_EQ(std::string("Feyd Rautha"), reverse_names[0]);
       ASSERT_EQ(std::string("Baron Vladimir Harkonnen"), reverse_names[1]);
@@ -168,7 +168,7 @@ namespace ra { namespace generics { namespace test
       names.push_back("Jennifer");
 
       ra::strings::StringVector reverse_names;
-      ra::generics::reverse_vector(names, reverse_names);
+      ra::generics::ReverseVector(names, reverse_names);
 
       ASSERT_EQ(std::string("Jennifer"), reverse_names[0]);
       ASSERT_EQ(std::string("George McFly"), reverse_names[1]);
@@ -181,7 +181,7 @@ namespace ra { namespace generics { namespace test
     {
       ra::strings::StringVector names;
       ra::strings::StringVector reverse_names;
-      ra::generics::reverse_vector(names, reverse_names);
+      ra::generics::ReverseVector(names, reverse_names);
     }
 
     //test single element list
@@ -190,7 +190,7 @@ namespace ra { namespace generics { namespace test
       names.push_back("HAL 9000");
 
       ra::strings::StringVector reverse_names;
-      ra::generics::reverse_vector(names, reverse_names);
+      ra::generics::ReverseVector(names, reverse_names);
 
       ASSERT_EQ(std::string("HAL 9000"), reverse_names[0]);
     }
@@ -206,14 +206,14 @@ namespace ra { namespace generics { namespace test
       values.push_back(-10);
       values.push_back(0);
 
-      size_t index = ra::generics::findMaxIndex(values);
+      size_t index = ra::generics::FindMaxIndex(values);
       ASSERT_EQ(2, index);
     }
 
     //test empty list
     {
       std::vector<int> values;
-      size_t index = ra::generics::findMaxIndex(values);
+      size_t index = ra::generics::FindMaxIndex(values);
       ASSERT_EQ(ra::generics::INVALID_INDEX, index);
     }
 
@@ -222,7 +222,7 @@ namespace ra { namespace generics { namespace test
       std::vector<int> values;
       values.push_back(42);
 
-      size_t index = ra::generics::findMaxIndex(values);
+      size_t index = ra::generics::FindMaxIndex(values);
       ASSERT_EQ(0, index);
     }
   }
@@ -237,14 +237,14 @@ namespace ra { namespace generics { namespace test
       values.push_back(-10);
       values.push_back(0);
 
-      size_t index = ra::generics::findMinIndex(values);
+      size_t index = ra::generics::FindMinIndex(values);
       ASSERT_EQ(3, index);
     }
 
     //test empty list
     {
       std::vector<int> values;
-      size_t index = ra::generics::findMinIndex(values);
+      size_t index = ra::generics::FindMinIndex(values);
       ASSERT_EQ(ra::generics::INVALID_INDEX, index);
     }
 
@@ -253,7 +253,7 @@ namespace ra { namespace generics { namespace test
       std::vector<int> values;
       values.push_back(42);
 
-      size_t index = ra::generics::findMinIndex(values);
+      size_t index = ra::generics::FindMinIndex(values);
       ASSERT_EQ(0, index);
     }
   }
@@ -273,7 +273,7 @@ namespace ra { namespace generics { namespace test
       values.push_back("yellow");
       values.push_back("blue");
 
-      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ra::strings::StringVector unique_values = ra::generics::CopyUnique(values);
       ASSERT_EQ(5, unique_values.size());
 
       //assert order is preserved
@@ -287,7 +287,7 @@ namespace ra { namespace generics { namespace test
     //test empty list
     {
       ra::strings::StringVector values;
-      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ra::strings::StringVector unique_values = ra::generics::CopyUnique(values);
       ASSERT_EQ(0, unique_values.size());
     }
 
@@ -296,7 +296,7 @@ namespace ra { namespace generics { namespace test
       ra::strings::StringVector values;
       values.push_back("pink");
 
-      ra::strings::StringVector unique_values = ra::generics::copyUnique(values);
+      ra::strings::StringVector unique_values = ra::generics::CopyUnique(values);
       ASSERT_EQ(1, unique_values.size());
 
       //assert order is preserved
@@ -324,7 +324,7 @@ namespace ra { namespace generics { namespace test
       values.push_back("Neptune");
       values.push_back("Uranus");
 
-      size_t num_duplicates = ra::generics::makeUnique(values);
+      size_t num_duplicates = ra::generics::MakeUnique(values);
       ASSERT_EQ(9, values.size());
       ASSERT_EQ(6, num_duplicates);
 
@@ -343,7 +343,7 @@ namespace ra { namespace generics { namespace test
     //test empty list
     {
       ra::strings::StringVector values;
-      size_t num_duplicates = ra::generics::makeUnique(values);
+      size_t num_duplicates = ra::generics::MakeUnique(values);
       ASSERT_EQ(0, values.size());
       ASSERT_EQ(0, num_duplicates);
     }
@@ -353,7 +353,7 @@ namespace ra { namespace generics { namespace test
       ra::strings::StringVector values;
       values.push_back("Earth");
 
-      size_t num_duplicates = ra::generics::makeUnique(values);
+      size_t num_duplicates = ra::generics::MakeUnique(values);
       ASSERT_EQ(1, values.size());
       ASSERT_EQ(0, num_duplicates);
     }
@@ -369,7 +369,7 @@ namespace ra { namespace generics { namespace test
       values.push_back(-10);
       values.push_back(0);
 
-      const int * max_value = ra::generics::findMaxValue(values);
+      const int * max_value = ra::generics::FindMaxValue(values);
       ASSERT_TRUE(max_value != NULL);
       ASSERT_EQ(42, (*max_value));
     }
@@ -377,7 +377,7 @@ namespace ra { namespace generics { namespace test
     //test empty list
     {
       std::vector<int> values;
-      const int * max_value = ra::generics::findMaxValue(values);
+      const int * max_value = ra::generics::FindMaxValue(values);
       ASSERT_TRUE(max_value == NULL);
     }
 
@@ -386,7 +386,7 @@ namespace ra { namespace generics { namespace test
       std::vector<int> values;
       values.push_back(42);
 
-      const int * max_value = ra::generics::findMaxValue(values);
+      const int * max_value = ra::generics::FindMaxValue(values);
       ASSERT_TRUE(max_value != NULL);
       ASSERT_EQ(42, (*max_value));
     }
@@ -402,7 +402,7 @@ namespace ra { namespace generics { namespace test
       values.push_back(-10);
       values.push_back(0);
 
-      const int * min_value = ra::generics::findMinValue(values);
+      const int * min_value = ra::generics::FindMinValue(values);
       ASSERT_TRUE(min_value != NULL);
       ASSERT_EQ(-10, (*min_value));
     }
@@ -410,7 +410,7 @@ namespace ra { namespace generics { namespace test
     //test empty list
     {
       std::vector<int> values;
-      const int * min_value = ra::generics::findMinValue(values);
+      const int * min_value = ra::generics::FindMinValue(values);
       ASSERT_TRUE(min_value == NULL);
     }
 
@@ -419,7 +419,7 @@ namespace ra { namespace generics { namespace test
       std::vector<int> values;
       values.push_back(42);
 
-      const int * min_value = ra::generics::findMinValue(values);
+      const int * min_value = ra::generics::FindMinValue(values);
       ASSERT_TRUE(min_value != NULL);
       ASSERT_EQ(42, (*min_value));
     }
@@ -444,7 +444,7 @@ namespace ra { namespace generics { namespace test
       };
       static const size_t num_gods = sizeof(gods) / sizeof(gods[0]);
 
-      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("Thor", gods, num_gods);
+      std::vector<size_t> locations = ra::generics::FindIndexOf<std::string>("Thor", gods, num_gods);
       ASSERT_EQ(1, locations.size());
       ASSERT_EQ(3, locations[0]);
     }
@@ -467,14 +467,14 @@ namespace ra { namespace generics { namespace test
       };
       static const size_t num_gods = sizeof(gods) / sizeof(gods[0]);
 
-      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("The strongest god", gods, num_gods);
+      std::vector<size_t> locations = ra::generics::FindIndexOf<std::string>("The strongest god", gods, num_gods);
       ASSERT_EQ(0, locations.size());
     }
 
     //test empty list
     {
       static const std::string gods[] = { "temp" };
-      std::vector<size_t> locations = ra::generics::findIndexOf<std::string>("Thor", gods, 0);
+      std::vector<size_t> locations = ra::generics::FindIndexOf<std::string>("Thor", gods, 0);
       ASSERT_EQ(0, locations.size());
     }
   }
@@ -491,13 +491,13 @@ namespace ra { namespace generics { namespace test
 
     //test default behavior
     {
-      size_t index = ra::generics::findFirst<std::string>("Osiris", gods, num_gods);
+      size_t index = ra::generics::FindFirst<std::string>("Osiris", gods, num_gods);
       ASSERT_EQ(2, index);
     }
 
     //test not found
     {
-      size_t index = ra::generics::findFirst<std::string>("Bast", gods, num_gods);
+      size_t index = ra::generics::FindFirst<std::string>("Bast", gods, num_gods);
       ASSERT_EQ(ra::generics::INVALID_INDEX, index);
     }
   }

@@ -807,7 +807,7 @@ namespace ra { namespace strings { namespace test
       SCOPED_TRACE(value);
 
       //used for debugging
-      int32_t value_raw = ra::generics::readAs<int32_t>(value);
+      int32_t value_raw = ra::generics::ReadAs<int32_t>(value);
       SCOPED_TRACE(value_raw);
 
       //convert to string
@@ -832,7 +832,7 @@ namespace ra { namespace strings { namespace test
       SCOPED_TRACE(value);
 
       //used for debugging.
-      int64_t value_raw = ra::generics::readAs<int64_t>(value);
+      int64_t value_raw = ra::generics::ReadAs<int64_t>(value);
       SCOPED_TRACE(value_raw);
 
       //convert to string
