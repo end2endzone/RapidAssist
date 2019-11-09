@@ -120,7 +120,7 @@ namespace ra { namespace filesystem {
 
     // TODO: process file open here
     ra::strings::StringVector lines;
-    bool loaded = ra::testing::getTextFileContent(file_path.c_str(), lines);
+    bool loaded = ra::testing::GetTextFileContent(file_path.c_str(), lines);
     if (!loaded)
       return false;
 

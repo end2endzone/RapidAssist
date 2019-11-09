@@ -49,9 +49,9 @@ namespace ra { namespace testing {
   //   oReason:         A textual reason why the files are not identical. Empty if files are identical.
   //   iMaxDifferences: The maximum number of textual differences.
   // 
-  bool isFileEquals(const char* iFile1, const char* iFile2);
-  bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason);
-  bool isFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences);
+  bool IsFileEquals(const char* iFile1, const char* iFile2);
+  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason);
+  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences);
 
   //
   // Description:
@@ -62,7 +62,7 @@ namespace ra { namespace testing {
   //   oDifferences:    The list of all differences within both files. Empty if files are identical.
   //   iMaxDifferences: The maximum number of differences.
   // 
-  bool getFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
+  bool GetFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
 
   //
   // Description:
@@ -73,7 +73,7 @@ namespace ra { namespace testing {
   //   oLine:       The line number where iValue is found.
   //   oCharacter:  The character offset within the line.
   // 
-  bool findInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter);
+  bool FindInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter);
 
   //
   // Description:
@@ -82,7 +82,7 @@ namespace ra { namespace testing {
   //   iFilename:   The path of the file.
   //   oLines:      The content of the file line by line.
   // 
-  bool getTextFileContent(const char* iFilename, StringVector & oLines);
+  bool GetTextFileContent(const char* iFilename, StringVector & oLines);
 
   //
   // Description:
@@ -91,7 +91,7 @@ namespace ra { namespace testing {
   //   iFilePath:   The path of the file.
   //   iSize:       The size in bytes of the file.
   // 
-  bool createFile(const char * iFilePath, size_t iSize);
+  bool CreateFile(const char * iFilePath, size_t iSize);
 
   //
   // Description:
@@ -99,7 +99,7 @@ namespace ra { namespace testing {
   // Arguments:
   //   iFilePath:   The path of the file.
   // 
-  bool createFile(const char * iFilePath);
+  bool CreateFile(const char * iFilePath);
 
   //
   // Description:
@@ -109,7 +109,7 @@ namespace ra { namespace testing {
   //   iOffset:   The offset of the modified byte.
   //   iValue:    The value of the replacement.
   // 
-  void changeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue);
+  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue);
 
   //
   // Description:
@@ -121,14 +121,14 @@ namespace ra { namespace testing {
   // Arguments:
   //   iPositiveFilter:   positive filter
   //   iNegativeFilter:   negative filter
-  //   iExistingFilter:   existing filter or a pre-build filter (build from a previous call to mergeFilter)
+  //   iExistingFilter:   existing filter or a pre-build filter (build from a previous call to MergeFilter)
   // Example:
-  //   calling mergeFilter("", "C21XB1.testSniperA2GRanging25:C21XB1.testSniperA2GRanging40") return the filter
+  //   calling MergeFilter("", "C21XB1.testSniperA2GRanging25:C21XB1.testSniperA2GRanging40") return the filter
   //   "*-C21XB1.testSniperA2GRanging25:C21XB1.testSniperA2GRanging40"
   // 
-  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter);
-  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter);
-  std::string mergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv);
+  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter);
+  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter);
+  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv);
 
   //
   // Description:
@@ -136,12 +136,12 @@ namespace ra { namespace testing {
   // Notes:
   //   iFilter must not be NULL
   // Example:
-  //   calling splitFilter("", ..., ...) returns the "" as positive filter and "" as negative filter
-  //   calling splitFilter("*", ..., ...) returns the "*" as positive filter and "" as negative filter
-  //   calling splitFilter("-TestLib.testCase", ..., ...) returns the "" as positive filter and "TestLib.testCase" as negative filter
-  //   calling splitFilter("TestFoo.testFoo-TestLib.testCase:TestMath.testMath", ..., ...) returns the "TestFoo.testFoo" as positive filter and "TestLib.testCase:TestMath.testMath" as negative filter
+  //   calling SplitFilter("", ..., ...) returns the "" as positive filter and "" as negative filter
+  //   calling SplitFilter("*", ..., ...) returns the "*" as positive filter and "" as negative filter
+  //   calling SplitFilter("-TestLib.testCase", ..., ...) returns the "" as positive filter and "TestLib.testCase" as negative filter
+  //   calling SplitFilter("TestFoo.testFoo-TestLib.testCase:TestMath.testMath", ..., ...) returns the "TestFoo.testFoo" as positive filter and "TestLib.testCase:TestMath.testMath" as negative filter
   // 
-  void splitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter);
+  void SplitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter);
 
   //
   // Description
@@ -152,42 +152,42 @@ namespace ra { namespace testing {
   // Arguments:
   //  iTestCasePath:    Path to the GTest compatible executable file
   //
-  StringVector getTestList(const char * iTestCasePath);
+  StringVector GetTestList(const char * iTestCasePath);
 
   //
   // Description
   //  Returns true if the specified processor flag is enabled
   //
-  bool isProcessorX86();
-  bool isProcessorX64();
-  bool isDebugCode();
-  bool isReleaseCode();
+  bool IsProcessorX86();
+  bool IsProcessorX64();
+  bool IsDebugCode();
+  bool IsReleaseCode();
 
   //
   // Description
   //  Returns true if the specified continuous integration server is running.
   //
-  bool isAppVeyor();
-  bool isTravis();
-  bool isJenkins();
+  bool IsAppVeyor();
+  bool IsTravis();
+  bool IsJenkins();
 
   //
   // Description
   //  Returns the name of the current Test Suite name. ie "TestFooClass"
   //
-  std::string getTestSuiteName();
+  std::string GetTestSuiteName();
 
   //
   // Description
   //  Returns the name of the current Test Case name. ie "testConstructor"
   //
-  std::string getTestCaseName();
+  std::string GetTestCaseName();
 
   //
   // Description
   //  Returns the fully qualified name of the current test case name. ie "TestFooClass.testConstructor"
   //
-  std::string getTestQualifiedName();
+  std::string GetTestQualifiedName();
 
 } //namespace testing
 } //namespace ra

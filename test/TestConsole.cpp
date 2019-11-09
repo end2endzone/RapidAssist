@@ -38,7 +38,7 @@ namespace ra { namespace console { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testZeroBased) {
     //set x to the far left
-    printf("Running test %s()\n", ra::testing::getTestQualifiedName().c_str());
+    printf("Running test %s()\n", ra::testing::GetTestQualifiedName().c_str());
 
     int after_x = 0;
     int after_y = 0;
@@ -111,7 +111,7 @@ namespace ra { namespace console { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, DISABLED_testSetCursorPos) {
-    printf("Running test %s()", ra::testing::getTestQualifiedName().c_str());
+    printf("Running test %s()", ra::testing::GetTestQualifiedName().c_str());
 
     int before_x = 0;
     int before_y = 0;
