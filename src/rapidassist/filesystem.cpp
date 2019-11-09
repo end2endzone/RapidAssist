@@ -440,7 +440,7 @@ namespace ra { namespace filesystem {
 
   std::string GetTemporaryFileName() {
     //get positive random value
-    int value = random::getRandomInt();
+    int value = random::GetRandomInt();
     if (value < 0)
       value *= -1;
 

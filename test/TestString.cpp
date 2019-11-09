@@ -803,7 +803,7 @@ namespace ra { namespace strings { namespace test
     //try with a few random guess
     for (size_t i = 0; i < 20000; i++) {
       //compute the fraction
-      float value = ra::random::getRandomFloat(-1000000.0f, +1000000.0f);
+      float value = ra::random::GetRandomFloat(-1000000.0f, +1000000.0f);
       SCOPED_TRACE(value);
 
       //used for debugging
@@ -828,7 +828,7 @@ namespace ra { namespace strings { namespace test
     //try again with a few random guess
     for (size_t i = 0; i < 20000; i++) {
       //compute the fraction
-      double value = ra::random::getRandomDouble(-100000000000.0f, +100000000000.0f);
+      double value = ra::random::GetRandomDouble(-100000000000.0f, +100000000000.0f);
       SCOPED_TRACE(value);
 
       //used for debugging.

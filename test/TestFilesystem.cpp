@@ -1547,8 +1547,8 @@ namespace ra { namespace filesystem { namespace test
         ra::filesystem::GetPathSeparatorStr() + "foo" +
         ra::filesystem::GetPathSeparatorStr() + "bar" +
         ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".bin"; //directory 'foo\bar' does not exists.
-      const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
-      const std::string content = ra::random::getRandomString(content_size);
+      const size_t content_size = (size_t)ra::random::GetRandomInt(1300, 13000);
+      const std::string content = ra::random::GetRandomString(content_size);
       bool success = ra::filesystem::WriteFile(file_path, content);
       ASSERT_FALSE(success);
     }
@@ -1556,8 +1556,8 @@ namespace ra { namespace filesystem { namespace test
     //test random content write
     {
       const std::string file_path = ra::testing::getTestQualifiedName() + ".bin";
-      const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
-      const std::string content = ra::random::getRandomString(content_size);
+      const size_t content_size = (size_t)ra::random::GetRandomInt(1300, 13000);
+      const std::string content = ra::random::GetRandomString(content_size);
       bool success = ra::filesystem::WriteFile(file_path, content);
       ASSERT_TRUE(success);
 
@@ -1573,8 +1573,8 @@ namespace ra { namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testReadWriteFileDataLoss) {
     const std::string file_path = ra::testing::getTestQualifiedName() + ".bin";
-    const size_t content_size = (size_t)ra::random::getRandomInt(1300, 13000);
-    const std::string content_write = ra::random::getRandomString(content_size);
+    const size_t content_size = (size_t)ra::random::GetRandomInt(1300, 13000);
+    const std::string content_write = ra::random::GetRandomString(content_size);
     bool success = ra::filesystem::WriteFile(file_path, content_write);
     ASSERT_TRUE(success);
 

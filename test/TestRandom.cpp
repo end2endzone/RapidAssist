@@ -38,7 +38,7 @@ namespace ra { namespace random { namespace test
   TEST_F(TestRandom, testGetRandomInt) {
     int previous = 0;
     for (size_t i = 0; i < 100; i++) {
-      int newValue = getRandomInt();
+      int newValue = GetRandomInt();
       ASSERT_NE(previous, newValue);
       previous = newValue;
     }
@@ -58,7 +58,7 @@ namespace ra { namespace random { namespace test
       static const int RANGE_MAX = +49;
       bool found[100] = { 0 };  //from [-50, +49] is like [0, +99], which is 100 different values
       for (size_t i = 0; i < 10000; i++) {
-        int value = getRandomInt(RANGE_MIN, RANGE_MAX);
+        int value = GetRandomInt(RANGE_MIN, RANGE_MAX);
         ASSERT_GE(value, RANGE_MIN);
         ASSERT_LE(value, RANGE_MAX);
 
@@ -77,13 +77,13 @@ namespace ra { namespace random { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestRandom, testGetRandomString) {
-    ASSERT_TRUE(!getRandomString().empty());
+    ASSERT_TRUE(!GetRandomString().empty());
 
-    ASSERT_TRUE(getRandomString(0).empty());
+    ASSERT_TRUE(GetRandomString(0).empty());
 
     //assert maxlen
     for (size_t i = 0; i < 10; i++) {
-      std::string s = getRandomString(i);
+      std::string s = GetRandomString(i);
       ASSERT_EQ(i, s.size());
     }
 
@@ -91,7 +91,7 @@ namespace ra { namespace random { namespace test
     static const std::string SYMBOLS = "0123abc";
     for (size_t i = 0; i < 1000; i++) {
       static const size_t LENGTH = 20;
-      std::string s = getRandomString(LENGTH, SYMBOLS.c_str());
+      std::string s = GetRandomString(LENGTH, SYMBOLS.c_str());
       ASSERT_EQ(LENGTH, s.size());
 
       for (size_t j = 0; j < s.size(); j++) {
