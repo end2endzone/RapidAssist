@@ -75,7 +75,7 @@ namespace ra { namespace process {
   /// <param name="pid">The process id of the process.</param>
   /// <param name="tids">The list of thread ids of the process.</param>
   /// <returns>Returns true if the list of thread is returned. Returns false otherwise.</returns>
-  bool getThreadIds(const processid_t & pid, ProcessIdList & tids) {
+  bool GetThreadIds(const processid_t & pid, ProcessIdList & tids) {
     tids.clear();
 
     //Getting threads id of the process
@@ -118,7 +118,7 @@ namespace ra { namespace process {
     EXIT_CODE_FAILED
   };
 
-  ExitCodeResult getWin32ExitCodeResult(const processid_t & pid, DWORD & code) {
+  ExitCodeResult GetWin32ExitCodeResult(const processid_t & pid, DWORD & code) {
     ExitCodeResult result = EXIT_CODE_FAILED;
 
     //Get a handle
@@ -189,7 +189,7 @@ namespace ra { namespace process {
     return TRUE;
   }
 
-  bool findProcessWindows(const processid_t & pid, HwndList & oWindows) {
+  bool FindProcessWindows(const processid_t & pid, HwndList & oWindows) {
     oWindows.clear();
 
     FindProcessWindowsStruct s;
@@ -200,9 +200,9 @@ namespace ra { namespace process {
     return success;
   }
 
-  bool closeWindows(const processid_t & pid) {
+  bool CloseWindows(const processid_t & pid) {
     HwndList hWnds;
-    bool success = findProcessWindows(pid, hWnds);
+    bool success = FindProcessWindows(pid, hWnds);
     if (success) {
       for (size_t i = 0; i < hWnds.size(); i++) {
         HWND hWnd = hWnds[i];
@@ -218,14 +218,14 @@ namespace ra { namespace process {
     return success;
   }
 
-  bool terminate(const processid_t & pid, DWORD iTimeoutMS) {
+  bool Terminate(const processid_t & pid, DWORD iTimeoutMS) {
     bool success = false;
 
     //Get a handle
     HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (hProcess) {
       ProcessIdList thread_ids;
-      if (getThreadIds(pid, thread_ids)) {
+      if (GetThreadIds(pid, thread_ids)) {
         size_t num_threads = thread_ids.size();
         if (num_threads >= 1) {
           if (iTimeoutMS != INFINITE) {
@@ -242,10 +242,10 @@ namespace ra { namespace process {
 
                 //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
                 if (!success)
-                  success = !isRunning(pid);
+                  success = !IsRunning(pid);
 
                 //Some app needs to have their windows closed
-                closeWindows(pid);
+                CloseWindows(pid);
               }
             }
           }
@@ -262,10 +262,10 @@ namespace ra { namespace process {
 
                   //Some app does not signal the thread that accepted the WM_CLOSE or WM_QUIT messages
                   if (!success)
-                    success = !isRunning(pid);
+                    success = !IsRunning(pid);
 
                   //Some app needs to have their windows closed
-                  closeWindows(pid);
+                  CloseWindows(pid);
                 }
               }
             }
@@ -289,7 +289,7 @@ namespace ra { namespace process {
   /// <param name="pid">The process id of the process.</param>
   /// <param name="state">The process state of the given process id.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool getProcessState(const processid_t & pid, char & state) {
+  bool GetProcessState(const processid_t & pid, char & state) {
     std::string stat_path = std::string("/proc/") + ra::strings::toString(pid) + "/stat";
     bool exists = ra::filesystem::FileExists(stat_path.c_str());
     if (!exists)
@@ -341,8 +341,8 @@ namespace ra { namespace process {
   /// </summary>
   /// <param name="state">The process state process.</param>
   /// <returns>Returns true if the process is running. Returns false otherwise.</returns>
-  bool isRunningState(const char state) {
-    // See getProcessState() for known process states.
+  bool IsRunningState(const char state) {
+    // See GetProcessState() for known process states.
     bool running = (state == 'D' || state == 'R' || state == 'S');
     return running;
   }
@@ -352,20 +352,20 @@ namespace ra { namespace process {
   /// </summary>
   /// <param name="pid">The process id of the process.</param>
   /// <returns>Returns true if the process id is a zombie process. Returns false otherwise.</returns>
-  bool isZombieProcess(const processid_t & pid) {
+  bool IsZombieProcess(const processid_t & pid) {
     //read the state of the given process
     char state = '\0';
-    if (!getProcessState(pid, state))
+    if (!GetProcessState(pid, state))
       return false; //failure to get process state
 
-    // See getProcessState() for known process states.
+    // See GetProcessState() for known process states.
     bool zombie = (state == 'Z');
     return zombie;
   }
 
 #endif
 
-  std::string toString(const ProcessIdList & processes) {
+  std::string ToString(const ProcessIdList & processes) {
     std::string s;
     for (size_t i = 0; i < processes.size(); i++) {
       processid_t pid = processes[i];
@@ -376,7 +376,7 @@ namespace ra { namespace process {
     return s;
   }
 
-  std::string getCurrentProcessPath() {
+  std::string GetCurrentProcessPath() {
     std::string path;
 #ifdef _WIN32
     HMODULE hModule = GetModuleHandle(NULL);
@@ -414,7 +414,7 @@ namespace ra { namespace process {
     return path;
   }
 
-  ProcessIdList getProcesses() {
+  ProcessIdList GetProcesses() {
     ProcessIdList processes;
 
 #ifdef _WIN32
@@ -459,9 +459,9 @@ namespace ra { namespace process {
       //filter out process id that are not running
       //(i.e. zombie processes)
       char state = '\0';
-      if (!getProcessState(pid, state))
+      if (!GetProcessState(pid, state))
         continue;
-      bool running = isRunningState(state);
+      bool running = IsRunningState(state);
       if (!running)
         continue;
 
@@ -472,46 +472,46 @@ namespace ra { namespace process {
     return processes;
   }
 
-  processid_t getCurrentProcessId() {
+  processid_t GetCurrentProcessId() {
 #ifdef _WIN32
-    processid_t pid = GetCurrentProcessId();
+    processid_t pid = ::GetCurrentProcessId();
 #else
     processid_t pid = getpid();
 #endif
     return pid;
   }
 
-  std::string getCurrentProcessDir() {
+  std::string GetCurrentProcessDir() {
     std::string dir;
-    std::string exec_path = getCurrentProcessPath();
+    std::string exec_path = GetCurrentProcessPath();
     if (exec_path.empty())
       return dir; //failure
     dir = ra::filesystem::GetParentPath(exec_path);
     return dir;
   }
 
-  processid_t startProcess(const std::string & iExecPath) {
+  processid_t StartProcess(const std::string & iExecPath) {
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
 
     // Launch the process from the current process current directory
-    processid_t pid = startProcess(iExecPath, curr_dir);
+    processid_t pid = StartProcess(iExecPath, curr_dir);
     return pid;
   }
 
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory) {
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory) {
     // Launch the process with no arguments
 #ifdef _WIN32
-    processid_t pid = startProcess(iExecPath, iDefaultDirectory, "");
+    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, "");
     return pid;
 #else
     ra::strings::StringVector args;
-    processid_t pid = startProcess(iExecPath, iDefaultDirectory, args);
+    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, args);
     return pid;
 #endif
   }
 
 #ifdef _WIN32
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
     //build the full command line
     std::string command;
 
@@ -553,7 +553,7 @@ namespace ra { namespace process {
     return INVALID_PROCESS_ID;
   }
 #else
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) {
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) {
     //temporary change the current directory for the child process
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
     if (!ra::filesystem::DirectoryExists(iDefaultDirectory.c_str()))
@@ -593,7 +593,7 @@ namespace ra { namespace process {
   }
 #endif
 
-  bool openDocument(const std::string & iPath) {
+  bool OpenDocument(const std::string & iPath) {
     if (!ra::filesystem::FileExists(iPath.c_str()))
       return false; //file not found
 
@@ -627,13 +627,13 @@ namespace ra { namespace process {
 
     const ra::strings::StringVector args;
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    processid_t pid = startProcess(xdgopen_path, curr_dir, args);
+    processid_t pid = StartProcess(xdgopen_path, curr_dir, args);
     bool success = (pid != INVALID_PROCESS_ID);
     return success;
 #endif
   }
 
-  bool kill(const processid_t & pid) {
+  bool Kill(const processid_t & pid) {
     bool success = false;
 #ifdef _WIN32
     //Get a handle
@@ -656,10 +656,10 @@ namespace ra { namespace process {
     return success;
   }
 
-  bool isRunning(const processid_t & pid) {
+  bool IsRunning(const processid_t & pid) {
 #ifdef _WIN32
     DWORD exit_code = 0;
-    ExitCodeResult result = getWin32ExitCodeResult(pid, exit_code);
+    ExitCodeResult result = GetWin32ExitCodeResult(pid, exit_code);
     bool running = false;
     switch (result) {
     case EXIT_CODE_SUCCESS:
@@ -674,7 +674,7 @@ namespace ra { namespace process {
       running = false;
 
       //search within existing processes
-      ProcessIdList processes = getProcesses();
+      ProcessIdList processes = GetProcesses();
       for (size_t i = 0; i < processes.size() && running == false; i++) {
         DWORD tmp_pid = processes[i];
         if (tmp_pid == pid)
@@ -683,24 +683,24 @@ namespace ra { namespace process {
     }
     break;
     default:
-      running = false; //should not append unless getWin32ExitCodeResult is modified without notice.
+      running = false; //should not append unless GetWin32ExitCodeResult is modified without notice.
     };
     return running;
 #else
     char state = '\0';
-    if (!getProcessState(pid, state))
+    if (!GetProcessState(pid, state))
       return false; //unable to find process state
 
-    // See getProcessState() for known process states.
-    bool running = isRunningState(state);
+    // See GetProcessState() for known process states.
+    bool running = IsRunningState(state);
     return running;
 #endif
   }
 
-  bool terminate(const processid_t & pid) {
+  bool Terminate(const processid_t & pid) {
 #ifdef _WIN32
     //ask the process to exit gracefully allowing a maximum of 60 seconds to close
-    bool terminated = terminate(pid, 60000);
+    bool terminated = Terminate(pid, 60000);
     return terminated;
 #else
     //ask the process to exit gracefully
@@ -717,10 +717,10 @@ namespace ra { namespace process {
 #endif
   }
 
-  bool getExitCode(const processid_t & pid, int & exit_code) {
+  bool GetExitCode(const processid_t & pid, int & exit_code) {
 #ifdef _WIN32
     DWORD local_exit_code;
-    ExitCodeResult result = getWin32ExitCodeResult(pid, local_exit_code);
+    ExitCodeResult result = GetWin32ExitCodeResult(pid, local_exit_code);
     if (result == EXIT_CODE_SUCCESS) {
       exit_code = static_cast<int>(local_exit_code);
       return true;
@@ -738,7 +738,7 @@ namespace ra { namespace process {
 #endif
   }
 
-  bool waitExit(const processid_t & pid) {
+  bool WaitExit(const processid_t & pid) {
 #ifdef _WIN32
     //Get a handle on the process
     HANDLE hProcess = OpenProcess(SYNCHRONIZE, TRUE, pid);
@@ -752,8 +752,8 @@ namespace ra { namespace process {
     return false;
 #else
     //DISABLED THE FOLLOWING IMPLEMENTATION:
-    //  waitpid() function consumes the process exit code which disables the implementation of getExitCode().
-    //  In other words, calling getExitCode() will always fails after calling the waitpid() function.
+    //  waitpid() function consumes the process exit code which disables the implementation of GetExitCode().
+    //  In other words, calling GetExitCode() will always fails after calling the waitpid() function.
     //  This is why this function would have to also return the exit code.
     //  
     //  int status = 0;
@@ -787,7 +787,7 @@ namespace ra { namespace process {
     //wait for the process state to change
     //this implementation is slow but does not rely on waitpid()
     //to detect the end of the process
-    while (isRunning(pid)) {
+    while (IsRunning(pid)) {
       //wait a little more and verify again
       ra::timing::millisleep(1000);
     }
@@ -796,14 +796,14 @@ namespace ra { namespace process {
 #endif
   }
 
-  bool waitExit(const processid_t & pid, int & exit_code) {
-    bool success = waitExit(pid);
+  bool WaitExit(const processid_t & pid, int & exit_code) {
+    bool success = WaitExit(pid);
     if (!success)
       return false;
 
 #ifndef _WIN32
     //also read the process exit code to remove the zombie process
-    success = getExitCode(pid, exit_code);
+    success = GetExitCode(pid, exit_code);
 #endif
 
     return success;

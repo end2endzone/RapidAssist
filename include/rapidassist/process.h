@@ -57,38 +57,38 @@ namespace ra { namespace process {
   /// Converts a list of process id to a string.
   /// </summary>
   /// <returns>Returns a list of process id as a string.</returns>
-  std::string toString(const ProcessIdList & processes);
+  std::string ToString(const ProcessIdList & processes);
 
   /// <summary>
   /// Provides the file path of the current executing process.
   /// </summary>
   /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
-  std::string getCurrentProcessPath();
+  std::string GetCurrentProcessPath();
 
   /// <summary>
   /// Provides the directory of the current executing process.
   /// </summary>
   /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
-  std::string getCurrentProcessDir();
+  std::string GetCurrentProcessDir();
 
   /// <summary>
   /// Get the list of all running processes of the system.
   /// </summary>
   /// <returns>Returns the list of all running processes of the system.</returns>
-  ProcessIdList getProcesses();
+  ProcessIdList GetProcesses();
 
   /// <summary>
   /// Get the current process id.
   /// </summary>
   /// <returns>Returns the current process id.</returns>
-  processid_t getCurrentProcessId();
+  processid_t GetCurrentProcessId();
 
   /// <summary>
   /// Start the given process.
   /// </summary>
   /// <param name="iExecPath">The path to the executable to start.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t startProcess(const std::string & iExecPath);
+  processid_t StartProcess(const std::string & iExecPath);
 
   /// <summary>
   /// Start the given process from the given directory.
@@ -96,7 +96,7 @@ namespace ra { namespace process {
   /// <param name="iExecPath">The path to the executable to start.</param>
   /// <param name="iDefaultDirectory">The directory to run the command from.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory);
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory);
 
 #ifdef _WIN32
   /// <summary>
@@ -107,7 +107,7 @@ namespace ra { namespace process {
   /// <param name="iDefaultDirectory">The directory to run the command from.</param>
   /// <param name="iCommandLine">The command line to send to the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine);
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine);
 #else
   /// <summary>
   /// Start the given process with the given arguments from the given directory.
@@ -117,7 +117,7 @@ namespace ra { namespace process {
   /// <param name="iDefaultDirectory">The directory to run the command from.</param>
   /// <param name="iArguments">The list of arguments for the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t startProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments);
+  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments);
 #endif
 
   /// <summary>
@@ -125,28 +125,28 @@ namespace ra { namespace process {
   /// </summary>
   /// <param name="iPath">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  bool openDocument(const std::string & iPath);
+  bool OpenDocument(const std::string & iPath);
 
   /// <summary>
   /// Kill an existing process using the process id.
   /// </summary>
   /// <param name="pid">The process id of the target process to kill.</param>
   /// <returns>Returns true if the process was successfully killed. Returns false otherwise.</returns>
-  bool kill(const processid_t & pid);
+  bool Kill(const processid_t & pid);
 
   /// <summary>
   /// Terminate gracefully an existing process using the process id.
   /// </summary>
-  /// <param name="pid">The process id of the target process to terminate.</param>
+  /// <param name="pid">The process id of the target process to Terminate.</param>
   /// <returns>Returns true if the process was successfully terminated. Returns false otherwise.</returns>
-  bool terminate(const processid_t & pid);
+  bool Terminate(const processid_t & pid);
 
   /// <summary>
   /// Verify the given process id is valid.
   /// </summary>
   /// <param name="pid">The process id to verify.</param>
   /// <returns>Returns true if the process is alive. Returns false otherwise.</returns>
-  bool isRunning(const processid_t & pid);
+  bool IsRunning(const processid_t & pid);
 
   /// <summary>
   /// Returns the exit code of the given process id.
@@ -156,7 +156,7 @@ namespace ra { namespace process {
   /// <param name="pid">The process id to verify.</param>
   /// <param name="exitcode">The process exit code if the function is successful.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool getExitCode(const processid_t & pid, int & exitcode);
+  bool GetExitCode(const processid_t & pid, int & exitcode);
 
   /// <summary>
   /// Wait for the given process termination.
@@ -164,7 +164,7 @@ namespace ra { namespace process {
   /// </summary>
   /// <param name="pid">The process id to wait for.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool waitExit(const processid_t & pid);
+  bool WaitExit(const processid_t & pid);
 
   /// <summary>
   /// Wait for the given process termination and return the process exit code.
@@ -173,7 +173,7 @@ namespace ra { namespace process {
   /// <param name="pid">The process id to wait for.</param>
   /// <param name="exitcode">The process exit code if the function is successful.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool waitExit(const processid_t & pid, int & exitcode);
+  bool WaitExit(const processid_t & pid, int & exitcode);
 
 } //namespace process
 } //namespace ra

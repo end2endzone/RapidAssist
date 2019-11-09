@@ -912,7 +912,7 @@ namespace ra { namespace filesystem {
     if (IsAbsolutePath(iPath))
       return iPath;
 
-    std::string dir = ra::process::getCurrentProcessDir();
+    std::string dir = ra::process::GetCurrentProcessDir();
     ra::filesystem::NormalizePath(dir); //remove last / or \ character if any API used return an unexpected value
 
     std::string tmp_path;

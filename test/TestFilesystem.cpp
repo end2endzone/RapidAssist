@@ -1423,7 +1423,7 @@ namespace ra { namespace filesystem { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testCopyFileBasic) {
     //copy this process executable to another file
-    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_path = ra::process::GetCurrentProcessPath();
     const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
     const std::string temp_dir = filesystem::GetTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
@@ -1454,7 +1454,7 @@ namespace ra { namespace filesystem { namespace test
   }
   TEST_F(TestFilesystem, testCopyFileCallbackFunction) {
     //copy this process executable to another file
-    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_path = ra::process::GetCurrentProcessPath();
     const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
     const std::string temp_dir = filesystem::GetTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
@@ -1499,7 +1499,7 @@ namespace ra { namespace filesystem { namespace test
   };
   TEST_F(TestFilesystem, testCopyFileCallbackFunctor) {
     //copy this process executable to another file
-    const std::string process_path = ra::process::getCurrentProcessPath();
+    const std::string process_path = ra::process::GetCurrentProcessPath();
     const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
     const std::string temp_dir = filesystem::GetTemporaryDirectory();
     const std::string output_filename = ra::testing::getTestQualifiedName() + "." + process_filename + ".tmp";
@@ -1533,7 +1533,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test file read
     {
-      const std::string file_path = ra::process::getCurrentProcessPath();
+      const std::string file_path = ra::process::GetCurrentProcessPath();
       std::string content;
       bool success = ra::filesystem::ReadFile(file_path, content);
       ASSERT_TRUE(success);

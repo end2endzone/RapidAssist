@@ -63,14 +63,14 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessPath) {
-    std::string path = ra::process::getCurrentProcessPath();
+    std::string path = ra::process::GetCurrentProcessPath();
     printf("Process path: %s\n", path.c_str());
     ASSERT_TRUE(!path.empty());
     ASSERT_TRUE(ra::filesystem::FileExists(path.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessDir) {
-    std::string dir = ra::process::getCurrentProcessDir();
+    std::string dir = ra::process::GetCurrentProcessDir();
     printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());
     ASSERT_TRUE(ra::filesystem::DirectoryExists(dir.c_str()));
@@ -82,7 +82,7 @@ namespace ra { namespace process { namespace test
     //test empty list
     {
       const std::string expected = "";
-      std::string actual = ra::process::toString(pids);
+      std::string actual = ra::process::ToString(pids);
       ASSERT_EQ(expected, actual);
     }
 
@@ -90,7 +90,7 @@ namespace ra { namespace process { namespace test
     {
       pids.push_back(12);
       const std::string expected = "12";
-      std::string actual = ra::process::toString(pids);
+      std::string actual = ra::process::ToString(pids);
       ASSERT_EQ(expected, actual);
     }
 
@@ -98,7 +98,7 @@ namespace ra { namespace process { namespace test
     {
       pids.push_back(34);
       const std::string expected = "12, 34";
-      std::string actual = ra::process::toString(pids);
+      std::string actual = ra::process::ToString(pids);
       ASSERT_EQ(expected, actual);
     }
 
@@ -106,20 +106,20 @@ namespace ra { namespace process { namespace test
     {
       pids.push_back(56);
       const std::string expected = "12, 34, 56";
-      std::string actual = ra::process::toString(pids);
+      std::string actual = ra::process::ToString(pids);
       ASSERT_EQ(expected, actual);
     }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetProcesses) {
-    ProcessIdList processes = getProcesses();
+    ProcessIdList processes = GetProcesses();
     size_t num_process = processes.size();
     printf("Found %s running processes\n", ra::strings::toString(num_process).c_str());
     ASSERT_NE(0, processes.size());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessId) {
-    processid_t curr_pid = ra::process::getCurrentProcessId();
+    processid_t curr_pid = ra::process::GetCurrentProcessId();
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
   }
   //--------------------------------------------------------------------------------------------------
@@ -128,19 +128,19 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testIsRunning) {
-    processid_t curr_pid = ra::process::getCurrentProcessId();
+    processid_t curr_pid = ra::process::GetCurrentProcessId();
     ASSERT_NE(curr_pid, ra::process::INVALID_PROCESS_ID);
 
-    ASSERT_FALSE(ra::process::isRunning(ra::process::INVALID_PROCESS_ID));
-    ASSERT_TRUE(ra::process::isRunning(curr_pid));
+    ASSERT_FALSE(ra::process::IsRunning(ra::process::INVALID_PROCESS_ID));
+    ASSERT_TRUE(ra::process::IsRunning(curr_pid));
 
     //test with a random process id
     processid_t fake_pid = 12345678;
-    ASSERT_FALSE(ra::process::isRunning(fake_pid));
+    ASSERT_FALSE(ra::process::IsRunning(fake_pid));
 
     //expect all existing processes are running
     printf("Getting the list of active processes...\n");
-    ProcessIdList processes = getProcesses();
+    ProcessIdList processes = GetProcesses();
     ASSERT_NE(0, processes.size());
 
     printf("Note:\n"
@@ -150,7 +150,7 @@ namespace ra { namespace process { namespace test
 
     for (size_t i = 0; i < processes.size(); i++) {
       processid_t pid = processes[i];
-      EXPECT_TRUE(ra::process::isRunning(pid)) << "The process with pid " << pid << " does not appears to be running.";
+      EXPECT_TRUE(ra::process::IsRunning(pid)) << "The process with pid " << pid << " does not appears to be running.";
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -208,12 +208,12 @@ namespace ra { namespace process { namespace test
       fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
       //start the process
-      ra::process::processid_t pid = ra::process::startProcess(exec_path, mydir, arguments);
+      ra::process::processid_t pid = ra::process::StartProcess(exec_path, mydir, arguments);
       ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
       //wait for the process to complete
       int exitcode = 0;
-      bool wait_ok = ra::process::waitExit(pid, exitcode);
+      bool wait_ok = ra::process::WaitExit(pid, exitcode);
       ASSERT_TRUE(wait_ok);
 
       fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
@@ -244,11 +244,11 @@ namespace ra { namespace process { namespace test
     ra::strings::StringVector args;
     args.push_back("sane");
     const std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    ra::process::processid_t pid = ra::process::startProcess("/bin/stty", curr_dir, args);
+    ra::process::processid_t pid = ra::process::StartProcess("/bin/stty", curr_dir, args);
 
     //wait for the process to complete
     int exitcode = 0;
-    bool wait_ok = ra::process::waitExit(pid, exitcode);
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
 
     printf("\n");
     fflush(NULL);
@@ -278,7 +278,7 @@ namespace ra { namespace process { namespace test
       "the" + newline +
       "lazy" + newline +
       "dog.";
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::process::GetCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
@@ -293,7 +293,7 @@ namespace ra { namespace process { namespace test
 #endif
 
     //run the process from the current directory
-    const std::string test_dir = ra::process::getCurrentProcessDir();
+    const std::string test_dir = ra::process::GetCurrentProcessDir();
     ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
 #ifndef _WIN32
@@ -304,19 +304,19 @@ namespace ra { namespace process { namespace test
     printf("Launching '%s'...\n", exec_path.c_str());
 
     //start the process
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, test_dir, arguments);
+    ra::process::processid_t pid = ra::process::StartProcess(exec_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     ra::timing::millisleep(5000); //allow time for the process to start properly.
 
     //assert the process is started
-    bool started = ra::process::isRunning(pid);
+    bool started = ra::process::IsRunning(pid);
     ASSERT_TRUE(started);
 
     printf("Killing '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
 
     //try to kill the process
-    bool killed = ra::process::kill(pid);
+    bool killed = ra::process::Kill(pid);
     ASSERT_TRUE(killed);
 
 #ifndef _WIN32
@@ -326,7 +326,7 @@ namespace ra { namespace process { namespace test
     printf("Killed...\n");
 
     //assert the process is not found
-    started = ra::process::isRunning(pid);
+    started = ra::process::IsRunning(pid);
     ASSERT_FALSE(started);
 
 #ifndef _WIN32
@@ -337,19 +337,19 @@ namespace ra { namespace process { namespace test
     printf("Launching '%s' (again)...\n", exec_path.c_str());
 
     //start the process (again)
-    pid = ra::process::startProcess(exec_path, test_dir, arguments);
+    pid = ra::process::StartProcess(exec_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     ra::timing::millisleep(5000); //allow time for the process to start properly (again).
 
     //assert the process is started (again)
-    started = ra::process::isRunning(pid);
+    started = ra::process::IsRunning(pid);
     ASSERT_TRUE(started);
 
     printf("Terminating '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
 
     //try to terimnate the process
-    bool terminated = ra::process::terminate(pid);
+    bool terminated = ra::process::Terminate(pid);
     ASSERT_TRUE(terminated);
 
 #ifndef _WIN32
@@ -360,7 +360,7 @@ namespace ra { namespace process { namespace test
     printf("Terminated...\n");
 
     //assert the process is not found
-    started = ra::process::isRunning(pid);
+    started = ra::process::IsRunning(pid);
     ASSERT_FALSE(started);
 
     //cleanup
@@ -381,15 +381,15 @@ namespace ra { namespace process { namespace test
       "the" + newline +
       "lazy" + newline +
       "dog.";
-    const std::string file_path = ra::process::getCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
+    const std::string file_path = ra::process::GetCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::getTestQualifiedName() + ".txt";
     bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
     ASSERT_TRUE(success);
 
     //take a snapshot of the list of processes before opening the document
-    ProcessIdList process_before = ra::process::getProcesses();
+    ProcessIdList process_before = ra::process::GetProcesses();
 
 #ifdef _WIN32
-    success = ra::process::openDocument(file_path);
+    success = ra::process::OpenDocument(file_path);
     ASSERT_TRUE(success);
 #else
     // N/A
@@ -398,19 +398,19 @@ namespace ra { namespace process { namespace test
     ra::timing::millisleep(5000); //allow time for the process to start properly (again).
 
     //try to identify the new process
-    ProcessIdList process_after = ra::process::getProcesses();
+    ProcessIdList process_after = ra::process::GetProcesses();
     ProcessIdList new_pids = getNewProcesses(process_before, process_after);
     if (new_pids.size() == 1) {
       //found the new process that opened the document
 
       //kill the process
       processid_t document_pid = new_pids[0];
-      bool killed = ra::process::kill(document_pid);
+      bool killed = ra::process::Kill(document_pid);
       ASSERT_TRUE(killed);
     }
     else {
       //fail finding the new process
-      std::string pids = ra::process::toString(new_pids);
+      std::string pids = ra::process::ToString(new_pids);
       printf("Warning: fail to identify the process for document '%s'\n", file_path.c_str());
       printf("Warning: the following new process may need to be closed for cleanup: %s\n", pids.c_str());
     }
@@ -435,8 +435,8 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //start the process
-    const std::string curr_dir = ra::process::getCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, arguments);
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
 
     //assert that process is started
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -444,23 +444,23 @@ namespace ra { namespace process { namespace test
     //wait a little to be in the middle of execution of the process
     ra::timing::millisleep(500);
 
-    printf("calling ra::process::getExitCode() while process is running...\n");
+    printf("calling ra::process::GetExitCode() while process is running...\n");
     int code = 0;
-    bool success = ra::process::getExitCode(pid, code);
+    bool success = ra::process::GetExitCode(pid, code);
 
-    //assert getExitCode fails while the process is running
+    //assert GetExitCode fails while the process is running
     ASSERT_FALSE(success);
 
     printf("call failed which is expected.\n");
     printf("waiting for the process to exit gracefully...\n");
 
     //wait for the program to exit
-    success = ra::process::waitExit(pid);
+    success = ra::process::WaitExit(pid);
     ASSERT_TRUE(success);
 
     //try again
-    printf("calling ra::process::getExitCode() again...\n");
-    success = ra::process::getExitCode(pid, code);
+    printf("calling ra::process::GetExitCode() again...\n");
+    success = ra::process::GetExitCode(pid, code);
 
     ASSERT_TRUE(success);
     ASSERT_EQ(0, code); //assert application exit code is SUCCESS.
@@ -490,16 +490,16 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //start the process
-    const std::string curr_dir = ra::process::getCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, arguments);
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
 
     //wait for the program to exit
-    bool success = ra::process::waitExit(pid);
+    bool success = ra::process::WaitExit(pid);
     ASSERT_TRUE(success);
 
     //get the exit code
     int actual_exit_code = 0;
-    success = ra::process::getExitCode(pid, actual_exit_code);
+    success = ra::process::GetExitCode(pid, actual_exit_code);
     ASSERT_TRUE(success);
     ASSERT_EQ(expected_error_code, actual_exit_code);
   }
@@ -523,15 +523,15 @@ namespace ra { namespace process { namespace test
     double time_start = ra::timing::getMillisecondsTimer();
 
     //start the process
-    const std::string curr_dir = ra::process::getCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::startProcess(exec_path, curr_dir, arguments);
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
 
     //assert that process was launched
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
     int exitcode = 0;
-    bool wait_ok = ra::process::waitExit(pid, exitcode);
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
     ASSERT_TRUE(wait_ok);
 
     //compute elapsed time
