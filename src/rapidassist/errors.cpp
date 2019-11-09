@@ -74,7 +74,7 @@ namespace ra { namespace errors {
       error_buffer,
       error_buffer_size - 1,
       NULL);
-    ra::strings::removeEOL(error_buffer); //error message have a CRLF at the end.
+    ra::strings::RemoveEol(error_buffer); //error message have a CRLF at the end.
     std::string error_desc = error_buffer;
     return error_desc;
 #else

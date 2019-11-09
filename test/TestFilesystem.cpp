@@ -281,7 +281,7 @@ namespace ra { namespace filesystem { namespace test
     }
 
     //create cars directory tree
-    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
     {
       bool carsOK = createCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
@@ -393,7 +393,7 @@ namespace ra { namespace filesystem { namespace test
       }
       ASSERT_TRUE(found) << "Failed finding the pattern '" << pattern.c_str() << "' in directory '" << path << "'.\n"
         "Found the following elements: \n" <<
-        strings::join(files, "\n").c_str();
+        strings::Join(files, "\n").c_str();
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -458,7 +458,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test directory already exits (call twice)
     {
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       bool success = false;
       success = filesystem::CreateDirectory(path.c_str());
       ASSERT_TRUE(success);
@@ -475,7 +475,7 @@ namespace ra { namespace filesystem { namespace test
     {
       //build path with subdirectories
       char separator[] = { GetPathSeparator(), '\0' };
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
@@ -492,7 +492,7 @@ namespace ra { namespace filesystem { namespace test
 
       //build path with subdirectories
       const char * separator = GetPathSeparatorStr();
-      std::string path = temp_dir + separator + ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = temp_dir + separator + ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
@@ -513,7 +513,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test success
     {
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__) + ".txt";
       bool success = ra::testing::createFile(path.c_str());
       ASSERT_TRUE(success);
 
@@ -531,7 +531,7 @@ namespace ra { namespace filesystem { namespace test
       return; //test failure unsupported. See below.
 #endif
 
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__) + ".txt";
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__) + ".txt";
       bool success = ra::testing::createFile(path.c_str());
       ASSERT_TRUE(success);
 
@@ -578,7 +578,7 @@ namespace ra { namespace filesystem { namespace test
     }
 
     //create cars directory tree
-    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+    std::string basePath = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
     {
       bool carsOK = createCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
@@ -1086,7 +1086,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test read access
     {
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::createFile(path.c_str()));
 
       bool hasRead = filesystem::HasReadAccess(path.c_str());
@@ -1120,7 +1120,7 @@ namespace ra { namespace filesystem { namespace test
 
     //test write access
     {
-      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::toString(__LINE__);
+      std::string path = ra::testing::getTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::createFile(path.c_str()));
 
       bool hasWrite = filesystem::HasWriteAccess(path.c_str());
@@ -1637,7 +1637,7 @@ namespace ra { namespace filesystem { namespace test
 #ifdef _WIN32
     // CRLF characters are replaced by CR when a file is readed in text mode
     std::string expected = content;
-    ra::strings::replace(expected, newline, "\n");
+    ra::strings::Replace(expected, newline, "\n");
 #else
     std::string expected = content;
 #endif
@@ -1683,7 +1683,7 @@ namespace ra { namespace filesystem { namespace test
     //building word list
     static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
     ra::strings::StringVector word_list;
-    ra::strings::split(word_list, sentence, " ");
+    ra::strings::Split(word_list, sentence, " ");
 
     //assert writing without adding new line between words
     const std::string file_path1 = ra::testing::getTestQualifiedName() + ".1.txt";
@@ -1742,7 +1742,7 @@ namespace ra { namespace filesystem { namespace test
     for (size_t i = 0; i < 500; i++) {
       buffer += sentence;
       buffer += "\n";
-      buffer += ra::strings::toString(i);
+      buffer += ra::strings::ToString(i);
       buffer += "\n";
     }
     bool write_ok = ra::filesystem::WriteFile(file_path, buffer);

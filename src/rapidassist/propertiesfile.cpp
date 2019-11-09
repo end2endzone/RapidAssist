@@ -129,7 +129,7 @@ namespace ra { namespace filesystem {
 
     for (size_t i = 0; i < lines.size(); i++) {
       std::string line = lines[i];
-      line = ra::strings::trim(line, ' ');
+      line = ra::strings::Trim(line, ' ');
       if (line.empty())
         continue;
       else if (line[0] == '#' || line[0] == '!')
@@ -174,17 +174,17 @@ namespace ra { namespace filesystem {
           continue; //no key-value split character in string
 
         //trim both to support the format "var=value" and "var = value"
-        key = ra::strings::trimRight(key, ' ');
-        value = ra::strings::trimLeft(value, ' ');
+        key = ra::strings::TrimRight(key, ' ');
+        value = ra::strings::TrimLeft(value, ' ');
       }
 
       key = ProcessCppEscapeCharacter(key);
       value = ProcessCppEscapeCharacter(value);
 
       //process properties specific espcape characters on the key
-      ra::strings::replace(key, "\\ ", " ");
-      ra::strings::replace(key, "\\:", ":");
-      ra::strings::replace(key, "\\=", "=");
+      ra::strings::Replace(key, "\\ ", " ");
+      ra::strings::Replace(key, "\\:", ":");
+      ra::strings::Replace(key, "\\=", "=");
 
       //is value continued on next line
       if (!value.empty() && value[value.size() - 1] == '\\') {
@@ -231,9 +231,9 @@ namespace ra { namespace filesystem {
       const std::string & value = propertyIt->second;
 
       //remove key split characters
-      ra::strings::replace(key, " ", "\\ ");
-      ra::strings::replace(key, "=", "\\=");
-      ra::strings::replace(key, ":", "\\:");
+      ra::strings::Replace(key, " ", "\\ ");
+      ra::strings::Replace(key, "=", "\\=");
+      ra::strings::Replace(key, ":", "\\:");
 
       fprintf(f, "%s = %s\n", key.c_str(), value.c_str());
     }

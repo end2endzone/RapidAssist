@@ -114,7 +114,7 @@ namespace ra { namespace process { namespace test
   TEST_F(TestProcess, testGetProcesses) {
     ProcessIdList processes = GetProcesses();
     size_t num_process = processes.size();
-    printf("Found %s running processes\n", ra::strings::toString(num_process).c_str());
+    printf("Found %s running processes\n", ra::strings::ToString(num_process).c_str());
     ASSERT_NE(0, processes.size());
   }
   //--------------------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testInvalidProcessId) {
-    printf("ra::process::INVALID_PROCESS_ID defined as 0x%X or %s\n", ra::process::INVALID_PROCESS_ID, ra::strings::toString(ra::process::INVALID_PROCESS_ID).c_str());
+    printf("ra::process::INVALID_PROCESS_ID defined as 0x%X or %s\n", ra::process::INVALID_PROCESS_ID, ra::strings::ToString(ra::process::INVALID_PROCESS_ID).c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testIsRunning) {
@@ -472,12 +472,12 @@ namespace ra { namespace process { namespace test
     //define the process exit with error code command
 #ifdef _WIN32
     const int expected_error_code = 123456;
-    const std::string expected_error_code_str = ra::strings::toString(expected_error_code);
+    const std::string expected_error_code_str = ra::strings::ToString(expected_error_code);
     const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
     const std::string arguments = "/c exit " + expected_error_code_str;
 #else
     const int expected_error_code = 234;
-    const std::string expected_error_code_str = ra::strings::toString(expected_error_code);
+    const std::string expected_error_code_str = ra::strings::ToString(expected_error_code);
     ra::strings::StringVector arguments;
     arguments.push_back("-c");
     std::string exit_arg = "exit ";

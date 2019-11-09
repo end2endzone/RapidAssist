@@ -83,11 +83,11 @@ namespace ra { namespace environment {
   bool SetEnvironmentVariable(const char * iName, const  int64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
   bool SetEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
   bool SetEnvironmentVariable(const char * iName, const    float & iValue) {
-    const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
     return SetEnvironmentVariable(iName, tmp.c_str());
   }
   bool SetEnvironmentVariable(const char * iName, const   double & iValue) {
-    const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
     return SetEnvironmentVariable(iName, tmp.c_str());
   }
 
@@ -185,13 +185,13 @@ namespace ra { namespace environment {
       std::string value = ra::environment::GetEnvironmentVariable(name.c_str());
 
       //process with search and replace
-      ra::strings::replace(output, pattern, value);
+      ra::strings::Replace(output, pattern, value);
 
 #ifdef _WIN32
       //On Windows, the expansion is not case sensitive.
       //also look for case insensitive replacement
-      std::string pattern_uppercase = ra::strings::uppercase(pattern);
-      std::string output_uppercase = ra::strings::uppercase(output);
+      std::string pattern_uppercase = ra::strings::Uppercase(pattern);
+      std::string output_uppercase = ra::strings::Uppercase(output);
       size_t pattern_pos = output_uppercase.find(pattern_uppercase);
       while (pattern_pos != std::string::npos) {
         //extract the pattern from the value.
@@ -199,10 +199,10 @@ namespace ra { namespace environment {
         std::string pattern2 = output.substr(pattern_pos, pattern.size());
 
         //process with search and replace using the unofficial pattern
-        ra::strings::replace(output, pattern2, value);
+        ra::strings::Replace(output, pattern2, value);
 
         //search again for next pattern
-        output_uppercase = ra::strings::uppercase(output);
+        output_uppercase = ra::strings::Uppercase(output);
         pattern_pos = output_uppercase.find(pattern_uppercase);
       }
 #endif

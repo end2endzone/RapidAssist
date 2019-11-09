@@ -49,30 +49,30 @@ namespace ra { namespace strings { namespace test
 
         //integers
         sprintf(buffer, "%d", i);
-        ASSERT_TRUE(strings::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
+        ASSERT_TRUE(strings::IsNumeric(buffer)) << "IsNumeric(\"" << buffer << "\") returned false.";
 
         //floating point
         sprintf(buffer, "%d.%03d", i, j);
-        ASSERT_TRUE(strings::isNumeric(buffer)) << "isNumeric(\"" << buffer << "\") returned false.";
+        ASSERT_TRUE(strings::IsNumeric(buffer)) << "IsNumeric(\"" << buffer << "\") returned false.";
       }
     }
 
     //test special case
-    ASSERT_TRUE(strings::isNumeric("+12"));
+    ASSERT_TRUE(strings::IsNumeric("+12"));
 
     //plus or minus sign error
-    ASSERT_FALSE(strings::isNumeric("12+123"));
-    ASSERT_FALSE(strings::isNumeric("12-123"));
-    ASSERT_FALSE(strings::isNumeric("+12+123"));
-    ASSERT_FALSE(strings::isNumeric("+12-123"));
+    ASSERT_FALSE(strings::IsNumeric("12+123"));
+    ASSERT_FALSE(strings::IsNumeric("12-123"));
+    ASSERT_FALSE(strings::IsNumeric("+12+123"));
+    ASSERT_FALSE(strings::IsNumeric("+12-123"));
 
     //multiple dots
-    ASSERT_FALSE(strings::isNumeric("12.345.67"));
-    ASSERT_FALSE(strings::isNumeric("+12.345.67"));
+    ASSERT_FALSE(strings::IsNumeric("12.345.67"));
+    ASSERT_FALSE(strings::IsNumeric("+12.345.67"));
 
     //alpha characters
-    ASSERT_FALSE(strings::isNumeric("+12.34a"));
-    ASSERT_FALSE(strings::isNumeric("+12.34!"));
+    ASSERT_FALSE(strings::IsNumeric("+12.34a"));
+    ASSERT_FALSE(strings::IsNumeric("+12.34!"));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testReplace) {
@@ -80,7 +80,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "DeaDbeef";
       std::string str = "deadbeef";
-      int numReplacements = replace(str, "d", "D");
+      int numReplacements = ra::strings::Replace(str, "d", "D");
       ASSERT_EQ(2, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -89,7 +89,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "beefDeaD";
       std::string str = "beefdead";
-      int numReplacements = replace(str, "d", "D");
+      int numReplacements = ra::strings::Replace(str, "d", "D");
       ASSERT_EQ(2, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -98,7 +98,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "aabbccddeeff";
       std::string str = "deadbeef";
-      int numReplacements = replace(str, "deadbeef", "aabbccddeeff");
+      int numReplacements = ra::strings::Replace(str, "deadbeef", "aabbccddeeff");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -107,7 +107,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "deadbeef";
       std::string str = "deadbeef";
-      int numReplacements = replace(str, "notfound", "error");
+      int numReplacements = ra::strings::Replace(str, "notfound", "error");
       ASSERT_EQ(0, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -116,7 +116,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "super deadbeef";
       std::string str = "deadbeef";
-      int numReplacements = replace(str, "dead", "super dead");
+      int numReplacements = ra::strings::Replace(str, "dead", "super dead");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -125,7 +125,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "dead!";
       std::string str = "deadbeef";
-      int numReplacements = replace(str, "beef", "!");
+      int numReplacements = ra::strings::Replace(str, "beef", "!");
       ASSERT_EQ(1, numReplacements);
       ASSERT_EQ(EXPECTED, str);
     }
@@ -149,13 +149,13 @@ namespace ra { namespace strings { namespace test
       const char * expected_str = tests[i].expected_str;
       const uint64_t & expected_value = tests[i].expected_value;
 
-      //assert toString()
-      std::string actualStr = toString(expected_value);
+      //assert ra::strings::ToString()
+      std::string actualStr = ra::strings::ToString(expected_value);
       ASSERT_EQ(expected_str, actualStr);
 
-      //assert parseValue()
+      //assert ra::strings::ParseValue()
       uint64_t actualValue = 0;
-      bool parsed = parse(expected_str, actualValue);
+      bool parsed = ra::strings::Parse(expected_str, actualValue);
       ASSERT_TRUE(parsed);
       ASSERT_EQ(expected_value, actualValue);
     }
@@ -166,42 +166,42 @@ namespace ra { namespace strings { namespace test
       //normal
       const std::string EXPECTED = "Deadbeef";
       const std::string value = "deadbeef";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //empty
       const std::string EXPECTED = "";
       const std::string value = "";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //single letter
       const std::string EXPECTED = "A";
       const std::string value = "a";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //special character
       const std::string EXPECTED = "#!/bin/bash";
       const std::string value = "#!/bin/bash";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //spaces
       const std::string EXPECTED = " foo";
       const std::string value = " foo";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //numbers
       const std::string EXPECTED = "5foo";
       const std::string value = "5foo";
-      std::string actual = capitalizeFirstCharacter(value);
+      std::string actual = CapitalizeFirstCharacter(value);
       ASSERT_EQ(EXPECTED, actual);
     }
   }
@@ -211,42 +211,42 @@ namespace ra { namespace strings { namespace test
       //normal
       const std::string EXPECTED = "DEADBEEF";
       const std::string value = "deadbeef";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //empty
       const std::string EXPECTED = "";
       const std::string value = "";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //single letter
       const std::string EXPECTED = "A";
       const std::string value = "a";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //special character
       const std::string EXPECTED = "#!/BIN/BASH";
       const std::string value = "#!/bin/bash";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //spaces
       const std::string EXPECTED = " FOO";
       const std::string value = " foo";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //numbers
       const std::string EXPECTED = "5FOO";
       const std::string value = "5foo";
-      std::string actual = uppercase(value);
+      std::string actual = ra::strings::Uppercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
   }
@@ -256,42 +256,42 @@ namespace ra { namespace strings { namespace test
       //normal
       const std::string EXPECTED = "deadbeef";
       const std::string value = "DeAdBeEf";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //empty
       const std::string EXPECTED = "";
       const std::string value = "";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //single letter
       const std::string EXPECTED = "a";
       const std::string value = "A";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //special character
       const std::string EXPECTED = "#!/bin/bash";
       const std::string value = "#!/bIn/BaSh";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //spaces
       const std::string EXPECTED = " foo";
       const std::string value = " fOO";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
     {
       //numbers
       const std::string EXPECTED = "5foo";
       const std::string value = "5fOO";
-      std::string actual = lowercase(value);
+      std::string actual = ra::strings::Lowercase(value);
       ASSERT_EQ(EXPECTED, actual);
     }
   }
@@ -401,20 +401,20 @@ namespace ra { namespace strings { namespace test
   TEST_F(TestString, testRemoveEOL) {
     //test NULL
     {
-      removeEOL(NULL);
+      RemoveEol(NULL);
     }
 
     //test empty string
     {
       char empty[] = "";
-      removeEOL(empty);
+      RemoveEol(empty);
     }
 
     //test windows
     {
       const std::string EXPECTED = "fooBAR";
       char buffer[] = "fooBAR\r\n";
-      removeEOL(buffer);
+      RemoveEol(buffer);
       ASSERT_EQ(EXPECTED, buffer);
     }
 
@@ -422,7 +422,7 @@ namespace ra { namespace strings { namespace test
     {
       const std::string EXPECTED = "fooBAR";
       char buffer[] = "fooBAR\n";
-      removeEOL(buffer);
+      RemoveEol(buffer);
       ASSERT_EQ(EXPECTED, buffer);
     }
   }
@@ -431,15 +431,15 @@ namespace ra { namespace strings { namespace test
     //test NULL
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = split(INPUT, (const char *)NULL); //same as not found
+      StringVector list = ra::strings::Split(INPUT, (const char *)NULL); //same as not found
       ASSERT_EQ(1, list.size());
       ASSERT_EQ(INPUT, list[0]);
     }
 
-    //test no split found
+    //test no ra::strings::Split found
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = split(INPUT, "!");
+      StringVector list = ra::strings::Split(INPUT, "!");
       ASSERT_EQ(1, list.size());
       ASSERT_EQ(INPUT, list[0]);
     }
@@ -447,7 +447,7 @@ namespace ra { namespace strings { namespace test
     //test found
     {
       static const std::string INPUT = "Aa.Bb.Cc";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(3, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("Bb", list[1]);
@@ -457,7 +457,7 @@ namespace ra { namespace strings { namespace test
     //test last character is separator
     {
       static const std::string INPUT = "Aa.Bb.Cc.";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("Bb", list[1]);
@@ -468,7 +468,7 @@ namespace ra { namespace strings { namespace test
     //test first character is separator
     {
       static const std::string INPUT = ".Aa.Bb.Cc";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("", list[0]);
       ASSERT_EQ("Aa", list[1]);
@@ -479,7 +479,7 @@ namespace ra { namespace strings { namespace test
     //test with only a separator
     {
       static const std::string INPUT = ".";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(2, list.size());
       ASSERT_EQ("", list[0]);
       ASSERT_EQ("", list[1]);
@@ -488,7 +488,7 @@ namespace ra { namespace strings { namespace test
     //test consecutive separators
     {
       static const std::string INPUT = "Aa..Bb";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(3, list.size());
       ASSERT_EQ("Aa", list[0]);
       ASSERT_EQ("", list[1]);
@@ -498,7 +498,7 @@ namespace ra { namespace strings { namespace test
     //test only separators
     {
       static const std::string INPUT = "...";
-      StringVector list = split(INPUT, ".");
+      StringVector list = ra::strings::Split(INPUT, ".");
       ASSERT_EQ(4, list.size());
       ASSERT_EQ("", list[0]);
       ASSERT_EQ("", list[1]);
@@ -511,16 +511,16 @@ namespace ra { namespace strings { namespace test
     //test NULL
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
-      StringVector list = split(EXPECTED, ".");
-      std::string joinStr = join(list, (const char *)NULL); //same as empty separator
+      StringVector list = ra::strings::Split(EXPECTED, ".");
+      std::string joinStr = ra::strings::Join(list, (const char *)NULL); //same as empty separator
       ASSERT_EQ(std::string("AaBbCc"), joinStr);
     }
 
     //test empty separator
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
-      StringVector list = split(EXPECTED, ".");
-      std::string joinStr = join(list, "");
+      StringVector list = ra::strings::Split(EXPECTED, ".");
+      std::string joinStr = ra::strings::Join(list, "");
       ASSERT_EQ(std::string("AaBbCc"), joinStr);
     }
 
@@ -528,8 +528,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa.Bb.Cc";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -537,8 +537,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa.Bb.Cc.";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -546,8 +546,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = ".Aa.Bb.Cc";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -555,8 +555,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = ".Aa.Bb.Cc.";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -564,8 +564,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "Aa..Bb";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
 
@@ -573,8 +573,8 @@ namespace ra { namespace strings { namespace test
     {
       static const std::string EXPECTED = "...";
       static const char * SEPARATOR = ".";
-      StringVector list = split(EXPECTED, SEPARATOR);
-      std::string joinStr = join(list, SEPARATOR);
+      StringVector list = ra::strings::Split(EXPECTED, SEPARATOR);
+      std::string joinStr = ra::strings::Join(list, SEPARATOR);
       ASSERT_EQ(EXPECTED, joinStr);
     }
   }
@@ -582,79 +582,79 @@ namespace ra { namespace strings { namespace test
   TEST_F(TestString, testTrim) {
     {
       static const std::string value = "   abc   ";
-      ASSERT_EQ("abc", trim(value));
-      ASSERT_EQ("abc   ", trimLeft(value));
-      ASSERT_EQ("   abc", trimRight(value));
+      ASSERT_EQ("abc", ra::strings::Trim(value));
+      ASSERT_EQ("abc   ", ra::strings::TrimLeft(value));
+      ASSERT_EQ("   abc", ra::strings::TrimRight(value));
     }
 
     {
       static const std::string value = "***abc***";
-      ASSERT_EQ("abc", trim(value, '*'));
-      ASSERT_EQ("abc***", trimLeft(value, '*'));
-      ASSERT_EQ("***abc", trimRight(value, '*'));
+      ASSERT_EQ("abc", ra::strings::Trim(value, '*'));
+      ASSERT_EQ("abc***", ra::strings::TrimLeft(value, '*'));
+      ASSERT_EQ("***abc", ra::strings::TrimRight(value, '*'));
     }
 
-    ASSERT_EQ("", trim(""));
+    ASSERT_EQ("", ra::strings::Trim(""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testReverse) {
     //assert even number of characters
-    ASSERT_EQ("abc", reverse("cba"));
+    ASSERT_EQ("abc", ra::strings::Reverse("cba"));
 
     //assert odd number of characters
-    ASSERT_EQ("abcd", reverse("dcba"));
+    ASSERT_EQ("abcd", ra::strings::Reverse("dcba"));
 
-    ASSERT_EQ("", reverse(""));
+    ASSERT_EQ("", ra::strings::Reverse(""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testFormat) {
-    std::string text = ra::strings::format("%d %s %c %3.2f", 23, "this is a string", 'e', 4.234);
+    std::string text = ra::strings::Format("%d %s %c %3.2f", 23, "this is a string", 'e', 4.234);
     ASSERT_EQ("23 this is a string e 4.23", text);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testStreamOperatorMatchesToString) {
-    //assert that 'operator<<' is identical to toString()
+    //assert that 'operator<<' is identical to ra::strings::ToString()
 
     {
       const float value = 1.0f;
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
     {
       const double value = 1.0;
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
     {
       const float value = 1.0f / 7.0f;  // 0.142857 15
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
     {
       const double value = 1.0 / 7.0;  // 0.142857 142857 14285
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
     {
       const float value = 1234.0f / 9999.0f;  // 0.1234 1234
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
     {
       const double value = 1234.0 / 9999.0;  // 0.1234 1234 1234 1234 1
       std::string s1, s2;
       s1 << value;
-      s2 = toString(value);
+      s2 = ra::strings::ToString(value);
       ASSERT_EQ(s1, s2);
     }
   }
@@ -663,15 +663,15 @@ namespace ra { namespace strings { namespace test
     typedef uint8_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)0; //UINT8_MIN
-      ASSERT_EQ("0", toString(value));
+      ASSERT_EQ("0", ra::strings::ToString(value));
     }
     {
       test_type value = UINT8_MAX;
-      ASSERT_EQ("255", toString(value));
+      ASSERT_EQ("255", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -679,15 +679,15 @@ namespace ra { namespace strings { namespace test
     typedef int8_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)INT8_MIN;
-      ASSERT_EQ("-128", toString(value));
+      ASSERT_EQ("-128", ra::strings::ToString(value));
     }
     {
       test_type value = INT8_MAX;
-      ASSERT_EQ("127", toString(value));
+      ASSERT_EQ("127", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -695,15 +695,15 @@ namespace ra { namespace strings { namespace test
     typedef uint16_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)0; //UINT16_MIN
-      ASSERT_EQ("0", toString(value));
+      ASSERT_EQ("0", ra::strings::ToString(value));
     }
     {
       test_type value = UINT16_MAX;
-      ASSERT_EQ("65535", toString(value));
+      ASSERT_EQ("65535", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -711,15 +711,15 @@ namespace ra { namespace strings { namespace test
     typedef int16_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)INT16_MIN;
-      ASSERT_EQ("-32768", toString(value));
+      ASSERT_EQ("-32768", ra::strings::ToString(value));
     }
     {
       test_type value = INT16_MAX;
-      ASSERT_EQ("32767", toString(value));
+      ASSERT_EQ("32767", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -727,15 +727,15 @@ namespace ra { namespace strings { namespace test
     typedef uint32_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)0; //UINT32_MIN
-      ASSERT_EQ("0", toString(value));
+      ASSERT_EQ("0", ra::strings::ToString(value));
     }
     {
       test_type value = UINT32_MAX;
-      ASSERT_EQ("4294967295", toString(value));
+      ASSERT_EQ("4294967295", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -743,15 +743,15 @@ namespace ra { namespace strings { namespace test
     typedef int32_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)INT32_MIN;
-      ASSERT_EQ("-2147483648", toString(value));
+      ASSERT_EQ("-2147483648", ra::strings::ToString(value));
     }
     {
       test_type value = INT32_MAX;
-      ASSERT_EQ("2147483647", toString(value));
+      ASSERT_EQ("2147483647", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -759,15 +759,15 @@ namespace ra { namespace strings { namespace test
     typedef uint64_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)0; //UINT64_MIN
-      ASSERT_EQ("0", toString(value));
+      ASSERT_EQ("0", ra::strings::ToString(value));
     }
     {
       test_type value = UINT64_MAX;
-      ASSERT_EQ("18446744073709551615", toString(value));
+      ASSERT_EQ("18446744073709551615", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -775,15 +775,15 @@ namespace ra { namespace strings { namespace test
     typedef int64_t test_type;
     {
       test_type value = (test_type)32;
-      ASSERT_EQ("32", toString(value));
+      ASSERT_EQ("32", ra::strings::ToString(value));
     }
     {
       test_type value = (test_type)INT64_MIN;
-      ASSERT_EQ("-9223372036854775808", toString(value));
+      ASSERT_EQ("-9223372036854775808", ra::strings::ToString(value));
     }
     {
       test_type value = INT64_MAX;
-      ASSERT_EQ("9223372036854775807", toString(value));
+      ASSERT_EQ("9223372036854775807", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -791,11 +791,11 @@ namespace ra { namespace strings { namespace test
     typedef bool test_type;
     {
       test_type value = true;
-      ASSERT_EQ("true", toString(value));
+      ASSERT_EQ("true", ra::strings::ToString(value));
     }
     {
       test_type value = false;
-      ASSERT_EQ("false", toString(value));
+      ASSERT_EQ("false", ra::strings::ToString(value));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -811,12 +811,12 @@ namespace ra { namespace strings { namespace test
       SCOPED_TRACE(value_raw);
 
       //convert to string
-      std::string str = ra::strings::toStringLossless(value);
+      std::string str = ra::strings::ToStringLossless(value);
       SCOPED_TRACE(str);
 
       //convert back to float
       float parsed_value = 0.0f;
-      bool success = ra::strings::parse(str, parsed_value);
+      bool success = ra::strings::Parse(str, parsed_value);
       ASSERT_TRUE(success);
 
       //we truly wants a bitwise compare
@@ -836,12 +836,12 @@ namespace ra { namespace strings { namespace test
       SCOPED_TRACE(value_raw);
 
       //convert to string
-      std::string str = ra::strings::toStringLossless(value);
+      std::string str = ra::strings::ToStringLossless(value);
       SCOPED_TRACE(str);
 
       //convert back to double
       double parsed_value = 0.0;
-      bool success = ra::strings::parse(str, parsed_value);
+      bool success = ra::strings::Parse(str, parsed_value);
       ASSERT_TRUE(success);
 
       //we truly wants a bitwise compare
@@ -853,35 +853,35 @@ namespace ra { namespace strings { namespace test
     //test default behavior
     {
       const float value = 0.876543210f;
-      ASSERT_EQ("1", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("0.9", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("0.88", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("0.877", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("0.8765", ra::strings::toStringFormatted(value, 4));
-      ASSERT_EQ("0.87654", ra::strings::toStringFormatted(value, 5));
-      ASSERT_EQ("0.876543", ra::strings::toStringFormatted(value, 6));
-      ASSERT_EQ("0.8765432", ra::strings::toStringFormatted(value, 7));
-      ASSERT_EQ("0.87654322", ra::strings::toStringFormatted(value, 8)); //that's an exception
+      ASSERT_EQ("1", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("0.9", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("0.88", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("0.877", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("0.8765", ra::strings::ToStringFormatted(value, 4));
+      ASSERT_EQ("0.87654", ra::strings::ToStringFormatted(value, 5));
+      ASSERT_EQ("0.876543", ra::strings::ToStringFormatted(value, 6));
+      ASSERT_EQ("0.8765432", ra::strings::ToStringFormatted(value, 7));
+      ASSERT_EQ("0.87654322", ra::strings::ToStringFormatted(value, 8)); //that's an exception
     }
 
     //test non significant zeros
     {
       const float value = 0.1f;
-      ASSERT_EQ("0", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("0.1", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("0.10", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("0.100", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("0", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("0.1", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("0.10", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("0.100", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("0.1000", ra::strings::ToStringFormatted(value, 4));
     }
 
     //test big value
     {
       const float value = 1000.0f;
-      ASSERT_EQ("1000", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("1000.0", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("1000.00", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("1000.000", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("1000", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("1000.0", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("1000.00", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("1000.000", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("1000.0000", ra::strings::ToStringFormatted(value, 4));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -889,57 +889,57 @@ namespace ra { namespace strings { namespace test
     //test default behavior
     {
       const double value = 0.876543210;
-      ASSERT_EQ("1", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("0.9", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("0.88", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("0.877", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("0.8765", ra::strings::toStringFormatted(value, 4));
-      ASSERT_EQ("0.87654", ra::strings::toStringFormatted(value, 5));
-      ASSERT_EQ("0.876543", ra::strings::toStringFormatted(value, 6));
-      ASSERT_EQ("0.8765432", ra::strings::toStringFormatted(value, 7));
-      ASSERT_EQ("0.87654321", ra::strings::toStringFormatted(value, 8));
+      ASSERT_EQ("1", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("0.9", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("0.88", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("0.877", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("0.8765", ra::strings::ToStringFormatted(value, 4));
+      ASSERT_EQ("0.87654", ra::strings::ToStringFormatted(value, 5));
+      ASSERT_EQ("0.876543", ra::strings::ToStringFormatted(value, 6));
+      ASSERT_EQ("0.8765432", ra::strings::ToStringFormatted(value, 7));
+      ASSERT_EQ("0.87654321", ra::strings::ToStringFormatted(value, 8));
     }
 
     //test non significant zeros
     {
       const double value = 0.1;
-      ASSERT_EQ("0", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("0.1", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("0.10", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("0.100", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("0.1000", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("0", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("0.1", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("0.10", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("0.100", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("0.1000", ra::strings::ToStringFormatted(value, 4));
     }
 
     //test big value
     {
       const double value = 1000.0;
-      ASSERT_EQ("1000", ra::strings::toStringFormatted(value, 0));
-      ASSERT_EQ("1000.0", ra::strings::toStringFormatted(value, 1));
-      ASSERT_EQ("1000.00", ra::strings::toStringFormatted(value, 2));
-      ASSERT_EQ("1000.000", ra::strings::toStringFormatted(value, 3));
-      ASSERT_EQ("1000.0000", ra::strings::toStringFormatted(value, 4));
+      ASSERT_EQ("1000", ra::strings::ToStringFormatted(value, 0));
+      ASSERT_EQ("1000.0", ra::strings::ToStringFormatted(value, 1));
+      ASSERT_EQ("1000.00", ra::strings::ToStringFormatted(value, 2));
+      ASSERT_EQ("1000.000", ra::strings::ToStringFormatted(value, 3));
+      ASSERT_EQ("1000.0000", ra::strings::ToStringFormatted(value, 4));
     }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testToStringLossy) {
     //float
     {
-      ASSERT_EQ("1.2", ra::strings::toStringLossy(1.2f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.22", ra::strings::toStringLossy(1.22f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.222", ra::strings::toStringLossy(1.222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.2222", ra::strings::toStringLossy(1.2222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.22223", ra::strings::toStringLossy(1.22223f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.222233", ra::strings::toStringLossy(1.222233f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2", ra::strings::ToStringLossy(1.2f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22", ra::strings::ToStringLossy(1.22f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222", ra::strings::ToStringLossy(1.222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2222", ra::strings::ToStringLossy(1.2222f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22223", ra::strings::ToStringLossy(1.22223f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222233", ra::strings::ToStringLossy(1.222233f, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON));
     }
 
     //double
     {
-      ASSERT_EQ("1.2", ra::strings::toStringLossy(1.2, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.22", ra::strings::toStringLossy(1.22, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.222", ra::strings::toStringLossy(1.222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.2222", ra::strings::toStringLossy(1.2222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.22223", ra::strings::toStringLossy(1.22223, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
-      ASSERT_EQ("1.222233", ra::strings::toStringLossy(1.222233, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2", ra::strings::ToStringLossy(1.2, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22", ra::strings::ToStringLossy(1.22, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222", ra::strings::ToStringLossy(1.222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.2222", ra::strings::ToStringLossy(1.2222, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.22223", ra::strings::ToStringLossy(1.22223, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
+      ASSERT_EQ("1.222233", ra::strings::ToStringLossy(1.222233, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON));
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -949,44 +949,44 @@ namespace ra { namespace strings { namespace test
     //float
     {
       const float value = 0.45f; // 0.44999999
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = 1.0f / 7.0f; // 0.142857 15, theorical value of 0.142857...
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = 1234.0f / 9999.0f; // 0.12341234, theorical value of 0.1234...
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = 112704.88f;
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = (((float)1234 / 9999) + 1000.0f); // 1000.1234, theorical value of 1000.1234...
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = (998877654321.0f / 1000000000.0f); // 998.87762
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const float value = 5.3f; // 5.3000002
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
 
@@ -994,67 +994,67 @@ namespace ra { namespace strings { namespace test
     //double
     {
       const double value = 0.3; // 0.29999999999999999
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const double value = 1.0 / 7.0; // 0.14285714285714285, theorical value of 0.142857...
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
     {
       const double value = 1234.0 / 9999.0; // 0.12341234123412341, theorical value of 0.1234...
-      std::string lossless = toStringLossless(value);
-      std::string lossy = toStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+      std::string lossless = ToStringLossless(value);
+      std::string lossy = ToStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
       ASSERT_NE(lossless, lossy);
     }
 
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestString, testParseBoolean) {
-    ASSERT_TRUE(ra::strings::parseBoolean("true"));
-    ASSERT_TRUE(ra::strings::parseBoolean("tRuE"));
-    ASSERT_TRUE(ra::strings::parseBoolean("yes"));
-    ASSERT_TRUE(ra::strings::parseBoolean("yEs"));
-    ASSERT_TRUE(ra::strings::parseBoolean("y"));
-    ASSERT_TRUE(ra::strings::parseBoolean("Y"));
-    ASSERT_TRUE(ra::strings::parseBoolean("on"));
-    ASSERT_TRUE(ra::strings::parseBoolean("oN"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("true"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("tRuE"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("yes"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("yEs"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("y"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("Y"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("on"));
+    ASSERT_TRUE(ra::strings::ParseBoolean("oN"));
 
-    ASSERT_FALSE(ra::strings::parseBoolean("false"));
-    ASSERT_FALSE(ra::strings::parseBoolean("fALsE"));
-    ASSERT_FALSE(ra::strings::parseBoolean("no"));
-    ASSERT_FALSE(ra::strings::parseBoolean("nO"));
-    ASSERT_FALSE(ra::strings::parseBoolean("n"));
-    ASSERT_FALSE(ra::strings::parseBoolean("N"));
-    ASSERT_FALSE(ra::strings::parseBoolean("off"));
-    ASSERT_FALSE(ra::strings::parseBoolean("oFF"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("false"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("fALsE"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("no"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("nO"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("n"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("N"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("off"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("oFF"));
 
-    ASSERT_FALSE(ra::strings::parseBoolean("anythingelse"));
+    ASSERT_FALSE(ra::strings::ParseBoolean("anythingelse"));
 
     bool b = false;
-    ASSERT_TRUE(ra::strings::parse("true", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("tRuE", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("yes", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("yEs", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("y", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("Y", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("on", b)); ASSERT_TRUE(b);
-    ASSERT_TRUE(ra::strings::parse("oN", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("true", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("tRuE", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("yes", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("yEs", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("y", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("Y", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("on", b)); ASSERT_TRUE(b);
+    ASSERT_TRUE(ra::strings::Parse("oN", b)); ASSERT_TRUE(b);
 
-    ASSERT_TRUE(ra::strings::parse("false", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("fALsE", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("no", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("nO", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("n", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("N", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("off", b)); ASSERT_FALSE(b);
-    ASSERT_TRUE(ra::strings::parse("oFF", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("false", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("fALsE", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("no", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("nO", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("n", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("N", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("off", b)); ASSERT_FALSE(b);
+    ASSERT_TRUE(ra::strings::Parse("oFF", b)); ASSERT_FALSE(b);
 
-    //assert cannot parse
-    ASSERT_FALSE(ra::strings::parse("anythingelse", b));
+    //assert cannot ra::strings::Parse
+    ASSERT_FALSE(ra::strings::Parse("anythingelse", b));
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

@@ -190,14 +190,14 @@ namespace ra { namespace environment { namespace test
       //build a list of all found variables in case of a failure.
       if (!variable_list.empty())
         variable_list += "\n";
-      variable_list += ra::strings::toString(i) + "=" + value;
+      variable_list += ra::strings::ToString(i) + "=" + value;
 
       //look for expected names
       if (value == variable1)  found1 = true;
       if (value == variable2)  found2 = true;
 
       //Note: In a windows console, the variable is named 'Path' but when unit tests are launched from Visual Studio, the name is 'PATH'.
-      if (value == variable3 || value == ra::strings::uppercase(variable3)) found3 = true;
+      if (value == variable3 || value == ra::strings::Uppercase(variable3)) found3 = true;
     }
 
     ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();

@@ -56,15 +56,15 @@ namespace ra { namespace test {
     ASSERT_TRUE(ra::testing::isFileEquals(expectedFile.c_str(), generatedFile.c_str()));
 
     //split a string into multiple parts
-    StringVector words = ra::strings::split("The quick brown fox jumps over the lazy dog", " ");
+    StringVector words = ra::strings::Split("The quick brown fox jumps over the lazy dog", " ");
     size_t numWords = words.size(); //returns 9
 
     //converting numeric values to string
-    std::string IntMaxStr = ra::strings::toString(UINT64_MAX); //returns "18446744073709551615"
+    std::string IntMaxStr = ra::strings::ToString(UINT64_MAX); //returns "18446744073709551615"
 
     //execute search and replace in strings
     std::string whoiam = "My name is Antoine and I am a superhero.";
-    int numReplaced = ra::strings::replace(whoiam, "hero", "vilan"); //returns 1
+    int numReplaced = ra::strings::Replace(whoiam, "hero", "vilan"); //returns 1
   }
 
 } //namespace test

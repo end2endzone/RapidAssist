@@ -290,7 +290,7 @@ namespace ra { namespace process {
   /// <param name="state">The process state of the given process id.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
   bool GetProcessState(const processid_t & pid, char & state) {
-    std::string stat_path = std::string("/proc/") + ra::strings::toString(pid) + "/stat";
+    std::string stat_path = std::string("/proc/") + ra::strings::ToString(pid) + "/stat";
     bool exists = ra::filesystem::FileExists(stat_path.c_str());
     if (!exists)
       return false;
@@ -308,7 +308,7 @@ namespace ra { namespace process {
 
     //split each token into a list
     ra::strings::StringVector tokens;
-    ra::strings::split(tokens, buffer, ' ');
+    ra::strings::Split(tokens, buffer, ' ');
 
     //assert the Minimum number of tokens
     if (tokens.size() < 3)
@@ -371,7 +371,7 @@ namespace ra { namespace process {
       processid_t pid = processes[i];
       if (!s.empty())
         s.append(", ");
-      s += ra::strings::toString(pid);
+      s += ra::strings::ToString(pid);
     }
     return s;
   }
@@ -446,7 +446,7 @@ namespace ra { namespace process {
 
       //filter out directories that are not numeric.
       const std::string name = ra::filesystem::GetFilename(file.c_str());
-      bool numeric = ra::strings::isNumeric(name.c_str());
+      bool numeric = ra::strings::IsNumeric(name.c_str());
       if (!numeric)
         continue;
 

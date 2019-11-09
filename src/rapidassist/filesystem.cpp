@@ -67,11 +67,11 @@ namespace ra { namespace filesystem {
 
     if (separator == '/') {
       //replace invalid path separator
-      ra::strings::replace(path, "\\", "/");
+      ra::strings::Replace(path, "\\", "/");
     }
     else if (separator == '\\') {
       //replace invalid path separator
-      ra::strings::replace(path, "/", "\\");
+      ra::strings::Replace(path, "/", "\\");
     }
 
     //make sure the last character of the path is not a separator
@@ -125,7 +125,7 @@ namespace ra { namespace filesystem {
     std::string filename_without_extension = filename.substr(0, filename.size() - extension.size());
 
     //remove last dot of the filename if required
-    filename_without_extension = ra::strings::trimRight(filename_without_extension, '.');
+    filename_without_extension = ra::strings::TrimRight(filename_without_extension, '.');
 
     return filename_without_extension;
   }
@@ -278,7 +278,7 @@ namespace ra { namespace filesystem {
 
     //split each path
     ra::strings::StringVector paths;
-    ra::strings::split(paths, path_env, separator);
+    ra::strings::Split(paths, path_env, separator);
 
     //search within all paths
     bool found = false;
@@ -490,10 +490,10 @@ namespace ra { namespace filesystem {
       if (element.size() > 12 || element.find(' ') != std::string::npos) {
         std::string element83 = element;
         std::string ext = GetFileExtention(element);
-        strings::replace(element83, (std::string(".") + ext), ""); //remove extension from filename
-        strings::replace(ext, " ", ""); //remove spaces in extension
+        strings::Replace(element83, (std::string(".") + ext), ""); //remove extension from filename
+        strings::Replace(ext, " ", ""); //remove spaces in extension
         ext = ext.substr(0, 3); //truncate file extension
-        strings::replace(element83, " ", ""); //remove spaces
+        strings::Replace(element83, " ", ""); //remove spaces
         element83 = element83.substr(0, 6); //truncate file name
         element83.append("~1");
         if (!ext.empty()) {
@@ -599,8 +599,8 @@ namespace ra { namespace filesystem {
   std::string MakeRelativePath(const std::string & base_path, const std::string & test_path) {
     static const std::string path_separator = ra::filesystem::GetPathSeparatorStr();
 
-    ra::strings::StringVector base_path_parts = ra::strings::split(base_path, path_separator.c_str());
-    ra::strings::StringVector test_path_parts = ra::strings::split(test_path, path_separator.c_str());
+    ra::strings::StringVector base_path_parts = ra::strings::Split(base_path, path_separator.c_str());
+    ra::strings::StringVector test_path_parts = ra::strings::Split(test_path, path_separator.c_str());
 
     bool have_common_base = false; //true if base_path and test_path share a common base
 
@@ -623,8 +623,8 @@ namespace ra { namespace filesystem {
         base_path_parts[i] = "..";
       }
 
-      std::string new_base_path = ra::strings::join(base_path_parts, path_separator.c_str());
-      std::string new_test_path = ra::strings::join(test_path_parts, path_separator.c_str());
+      std::string new_base_path = ra::strings::Join(base_path_parts, path_separator.c_str());
+      std::string new_test_path = ra::strings::Join(test_path_parts, path_separator.c_str());
 
       //build relative path
       std::string relative_path = new_base_path;
@@ -743,7 +743,7 @@ namespace ra { namespace filesystem {
     switch (iUnit) {
     case BYTES:
     {
-      friendly_size = strings::toString(iBytesSize);
+      friendly_size = strings::ToString(iBytesSize);
       friendly_size += " bytes";
     };
     break;
@@ -837,7 +837,7 @@ namespace ra { namespace filesystem {
     {
       std::string pattern;
       pattern << ra::filesystem::GetPathSeparatorStr() << CURRENT_DIRECTORY << ra::filesystem::GetPathSeparatorStr();
-      ra::strings::replace(path, pattern, ra::filesystem::GetPathSeparatorStr());
+      ra::strings::Replace(path, pattern, ra::filesystem::GetPathSeparatorStr());
 
       //look for a path that ends with /. or \.
       pattern.clear();
@@ -853,7 +853,7 @@ namespace ra { namespace filesystem {
     {
       //split by path separator
       ra::strings::StringVector elements;
-      ra::strings::split(elements, path, ra::filesystem::GetPathSeparatorStr());
+      ra::strings::Split(elements, path, ra::filesystem::GetPathSeparatorStr());
 
       //search for /..
       size_t offset = 0; //current index of the element where we are searching
@@ -880,7 +880,7 @@ namespace ra { namespace filesystem {
             //On Windows, the root element is defined by the string "C:" (without the \ character). The \ character must be
             //added to `previous_element` to be properly detected by `IsRootDirectory()`.
             //On Linux, the root element is defined by an empty string. This is because an absolute path starts with a
-            //separator which creates an empty string element when calling `ra::strings::split()`.
+            //separator which creates an empty string element when calling `ra::strings::Split()`.
             if (IsRootDirectory(previous_element + ra::filesystem::GetPathSeparatorStr())) {
               //one cannot walk down past the root
 
@@ -900,7 +900,7 @@ namespace ra { namespace filesystem {
       }
 
       //join the string back again
-      path = ra::strings::join(elements, ra::filesystem::GetPathSeparatorStr());
+      path = ra::strings::Join(elements, ra::filesystem::GetPathSeparatorStr());
     }
 
     output = path;
@@ -1089,7 +1089,7 @@ namespace ra { namespace filesystem {
     if (!ReadFile(path, data))
       return false;
 
-    int num_finding = ra::strings::replace(data, oldvalue, newvalue);
+    int num_finding = ra::strings::Replace(data, oldvalue, newvalue);
 
     //does the file was modified?
     if (num_finding) {
@@ -1114,7 +1114,7 @@ namespace ra { namespace filesystem {
     while (fgets(buffer, BUFFER_SIZE, f) != NULL) {
       if (trim_newline_characters) {
         //remove last CRLF at the end of the string
-        ra::strings::removeEOL(buffer);
+        ra::strings::RemoveEol(buffer);
       }
 
       std::string line = buffer;
@@ -1131,7 +1131,7 @@ namespace ra { namespace filesystem {
       return false;
 
     //merge all lines (including newline characters)
-    content = ra::strings::join(lines, "");
+    content = ra::strings::Join(lines, "");
     return true;
   }
 

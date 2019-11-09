@@ -147,7 +147,7 @@ namespace ra { namespace testing {
       return;
 
     StringVector filters;
-    ra::strings::split(filters, iFilter, "-");
+    ra::strings::Split(filters, iFilter, "-");
 
     if (filters.size() > 2) {
       //something went wrong filter contains multiple '-' character
