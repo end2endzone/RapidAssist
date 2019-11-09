@@ -33,7 +33,7 @@
 #include <string.h>
 
 namespace ra { namespace filesystem {
-  std::string processCppEscapeCharacter(const std::string & value) {
+  std::string ProcessCppEscapeCharacter(const std::string & value) {
     //https://en.cppreference.com/w/cpp/language/escape
     //https://en.wikipedia.org/wiki/Escape_sequences_in_C
     struct EscapeSequence {
@@ -89,7 +89,7 @@ namespace ra { namespace filesystem {
     return text;
   }
 
-  size_t findFirstUnescapedCharacter(const std::string & value, char c) {
+  size_t FindFirstUnescapedCharacter(const std::string & value, char c) {
     for (size_t i = 0; i < value.size(); i++) {
       char tmp = value[i];
       if (tmp == '\\') {
@@ -109,14 +109,14 @@ namespace ra { namespace filesystem {
   PropertiesFile::~PropertiesFile() {
   }
 
-  bool PropertiesFile::load(const std::string & file_path) {
+  bool PropertiesFile::Load(const std::string & file_path) {
     if (file_path.empty())
       return false;
 
     if (!ra::filesystem::FileExists(file_path.c_str()))
       return false;
 
-    clear();
+    Clear();
 
     // TODO: process file open here
     ra::strings::StringVector lines;
@@ -149,9 +149,9 @@ namespace ra { namespace filesystem {
         size_t split_pos = std::string::npos;
         size_t space_equal_pos = line.find(" = ");                       //for format "key = value"
         size_t space_colon_pos = line.find(" : ");                       //for format "key : value"
-        size_t       equal_pos = findFirstUnescapedCharacter(line, '='); //for format "key=value"
-        size_t       colon_pos = findFirstUnescapedCharacter(line, ':'); //for format "key:value"
-        size_t       space_pos = findFirstUnescapedCharacter(line, ' '); //for format "key value"
+        size_t       equal_pos = FindFirstUnescapedCharacter(line, '='); //for format "key=value"
+        size_t       colon_pos = FindFirstUnescapedCharacter(line, ':'); //for format "key:value"
+        size_t       space_pos = FindFirstUnescapedCharacter(line, ' '); //for format "key value"
         split_pos = std::min(split_pos, space_equal_pos);
         split_pos = std::min(split_pos, space_colon_pos);
         split_pos = std::min(split_pos, equal_pos);
@@ -178,8 +178,8 @@ namespace ra { namespace filesystem {
         value = ra::strings::trimLeft(value, ' ');
       }
 
-      key = processCppEscapeCharacter(key);
-      value = processCppEscapeCharacter(value);
+      key = ProcessCppEscapeCharacter(key);
+      value = ProcessCppEscapeCharacter(value);
 
       //process properties specific espcape characters on the key
       ra::strings::replace(key, "\\ ", " ");
@@ -204,13 +204,13 @@ namespace ra { namespace filesystem {
         //are we dealing with a multiline value?
         if (!multiline_key.empty()) {
           multiline_value += value;
-          this->setValue(multiline_key, multiline_value);
+          this->SetValue(multiline_key, multiline_value);
           multiline_key = "";
           multiline_value = "";
         }
         else {
           //single line key value
-          this->setValue(key, value);
+          this->SetValue(key, value);
         }
       }
 
@@ -220,7 +220,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool PropertiesFile::save(const std::string & file_path) {
+  bool PropertiesFile::Save(const std::string & file_path) {
     FILE * f = fopen(file_path.c_str(), "w");
     if (!f)
       return false;
@@ -242,18 +242,18 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool PropertiesFile::clear() {
+  bool PropertiesFile::Clear() {
     properties_.clear();
     return true;
   }
 
-  bool PropertiesFile::hasKey(const std::string & key) const {
+  bool PropertiesFile::HasKey(const std::string & key) const {
     PropertyMap::const_iterator it = properties_.find(key);
     bool found = (it != properties_.end());
     return found;
   }
 
-  bool PropertiesFile::deleteKey(const std::string & key) {
+  bool PropertiesFile::DeleteKey(const std::string & key) {
     PropertyMap::iterator it = properties_.find(key);
     bool found = (it != properties_.end());
     if (!found)
@@ -263,7 +263,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool PropertiesFile::getValue(const std::string & key, std::string & value) const {
+  bool PropertiesFile::GetValue(const std::string & key, std::string & value) const {
     PropertyMap::const_iterator it = properties_.find(key);
     bool found = (it != properties_.end());
     if (!found)
@@ -273,7 +273,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool PropertiesFile::setValue(const std::string & key, const std::string & value) {
+  bool PropertiesFile::SetValue(const std::string & key, const std::string & value) {
     //overwrite previous property
     properties_[key] = value;
 

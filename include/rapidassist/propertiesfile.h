@@ -35,14 +35,14 @@ namespace ra { namespace filesystem {
     PropertiesFile();
     virtual ~PropertiesFile();
 
-    virtual bool load(const std::string & file_path);
-    virtual bool save(const std::string & file_path);
+    virtual bool Load(const std::string & file_path);
+    virtual bool Save(const std::string & file_path);
 
-    virtual bool clear();
-    virtual bool hasKey(const std::string & key) const;
-    virtual bool deleteKey(const std::string & key);
-    virtual bool getValue(const std::string & key, std::string & value) const;
-    virtual bool setValue(const std::string & key, const std::string & value);
+    virtual bool Clear();
+    virtual bool HasKey(const std::string & key) const;
+    virtual bool DeleteKey(const std::string & key);
+    virtual bool GetValue(const std::string & key, std::string & value) const;
+    virtual bool SetValue(const std::string & key, const std::string & value);
 
   private:
     typedef std::map<std::string /*keyname*/, std::string /*value*/> PropertyMap;
