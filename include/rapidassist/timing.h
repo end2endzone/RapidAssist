@@ -50,31 +50,31 @@ namespace ra { namespace timing {
   /// </summary>
   /// <param name="timeinfo">The given std::tm value.</param>
   /// <returns>Returns a DateTime structure matching the given std::tm info.</returns>
-  DateTime toDateTime(const std::tm & timeinfo);
+  DateTime ToDateTime(const std::tm & timeinfo);
 
   /// <summary>
   /// Converts a DateTime structure to a std::tm structure.
   /// </summary>
   /// <param name="iDateTime">The given DateTime value.</param>
   /// <returns>Returns a std::tm structure matching the given DateTime info.</returns>
-  std::tm toTimeInfo(const DateTime & iDateTime);
+  std::tm ToTimeInfo(const DateTime & iDateTime);
 
   /// <summary>
   /// Wait for the clock to jump to the next second. Synchronize the time clock to a new second.
   /// </summary>
-  void waitNextSecond();
+  void WaitNextSecond();
 
   /// <summary>
   /// Returns the system local time.
   /// </summary>
   /// <returns>Returns the system local time.</returns>
-  std::tm getLocalTime();
+  std::tm GetLocalTime();
 
   /// <summary>
   /// Returns the system utc time.
   /// </summary>
   /// <returns>Returns the system utc time.</returns>
-  std::tm getUtcTime();
+  std::tm GetUtcTime();
 
   /// <summary>
   /// Sleep the current thread for the given amount of milliseconds
@@ -82,28 +82,28 @@ namespace ra { namespace timing {
   /// <param name="milliseconds">The time in milliseconds where the thread must sleep.</param>
   /// <returns>On successfully sleeping for the requested interval, function returns 0.
   ///         If the call is interrupted or encounters an error, then it returns -1</returns>
-  int millisleep(uint32_t milliseconds);
+  int Millisleep(uint32_t milliseconds);
 
   /// <summary>
   /// Returns the year when the code was build.
   /// Usefull for copyright messages.
   /// </summary>
   /// <returns>Returns the year when the function was compiled.</returns>
-  int getCopyrightYear();
+  int GetCopyrightYear();
 
   /// <summary>
   /// Portable function to calculate the elapsed time with microseconds resolution.
   /// </summary>
   /// <remarks>The function query the internal high resolution clock/timer to calculate the elapsed time.</remarks>
   /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with microseconds resolution. Returns -1.0 on error.</returns>
-  double getMicrosecondsTimer();
+  double GetMicrosecondsTimer();
 
   /// <summary>
   /// Portable function to calculate the elapsed time with milliseconds resolution.
   /// </summary>
   /// <remarks>The function uses the internal clock to calculate the elapsed time.</remarks>
   /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
-  double getMillisecondsTimer();
+  double GetMillisecondsTimer();
 
 } //namespace timing
 } //namespace ra

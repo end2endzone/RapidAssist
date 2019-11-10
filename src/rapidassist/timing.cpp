@@ -196,7 +196,7 @@ namespace ra { namespace timing {
 
 
 
-  double getMicrosecondsTimer() {
+  double GetMicrosecondsTimer() {
 #ifdef WIN32
     //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
     //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
@@ -244,7 +244,7 @@ namespace ra { namespace timing {
 #endif
   }
 
-  double getMillisecondsTimer() {
+  double GetMillisecondsTimer() {
 #ifdef WIN32
     InitMillisecondsInterruptTimer();
     return GetMillisecondsTimerWin32();
@@ -273,7 +273,7 @@ namespace ra { namespace timing {
   }
 
 
-  DateTime toDateTime(const std::tm & time_info) {
+  DateTime ToDateTime(const std::tm & time_info) {
     DateTime dt;
 
     dt.year  = time_info.tm_year + 1900;
@@ -289,7 +289,7 @@ namespace ra { namespace timing {
     return dt;
   }
 
-  std::tm toTimeInfo(const DateTime & iDateTime) {
+  std::tm ToTimeInfo(const DateTime & iDateTime) {
     std::tm time_info;
 
     time_info.tm_year  = iDateTime.year - 1900;
@@ -305,14 +305,14 @@ namespace ra { namespace timing {
     return time_info;
   }
 
-  void waitNextSecond() {
-    std::tm base_time = getLocalTime();
-    while (getLocalTime().tm_sec == base_time.tm_sec) {
+  void WaitNextSecond() {
+    std::tm base_time = GetLocalTime();
+    while (GetLocalTime().tm_sec == base_time.tm_sec) {
       //loop
     }
   }
 
-  std::tm getLocalTime() {
+  std::tm GetLocalTime() {
     time_t raw_time;
     std::time(&raw_time);
 
@@ -320,7 +320,7 @@ namespace ra { namespace timing {
     return time_info;
   }
 
-  std::tm getUtcTime() {
+  std::tm GetUtcTime() {
     time_t raw_time;
     std::time(&raw_time);
 
@@ -328,7 +328,7 @@ namespace ra { namespace timing {
     return time_info;
   }
 
-  int millisleep(uint32_t milliseconds) {
+  int Millisleep(uint32_t milliseconds) {
     //code from https://stackoverflow.com/a/14818830 and https://stackoverflow.com/a/28827188
 #if defined(WIN32)
     SetLastError(0);
@@ -354,7 +354,7 @@ _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
 #endif
   }
 
-  int getCopyrightYear() {
+  int GetCopyrightYear() {
     static const int DEFAULT_YEAR = 2016;
     std::string compilation_date = __DATE__;
     size_t last_space_index = compilation_date.find_last_of(" ");

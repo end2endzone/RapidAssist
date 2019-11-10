@@ -381,7 +381,7 @@ namespace ra { namespace console {
   char GetAnimationSprite(double iRefreshRate) {
     static const char animation_sprites[] = { '-', '\\', '|', '/' };
     static const int num_animation_sprites = sizeof(animation_sprites) / sizeof(animation_sprites[0]);
-    double seconds = ra::timing::getMillisecondsTimer(); //already seconds
+    double seconds = ra::timing::GetMillisecondsTimer(); //already seconds
     int sprite_index = (int)(seconds / iRefreshRate);
     sprite_index = sprite_index % num_animation_sprites;
     char sprite = animation_sprites[sprite_index];

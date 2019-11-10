@@ -774,7 +774,7 @@ namespace ra { namespace process {
     //  int res = ::kill(pid, 0);
     //  while (res == 0 || (res < 0 && errno == EPERM))
     //  {
-    //    ra::timing::millisleep(100);
+    //    ra::timing::Millisleep(100);
     //    res = ::kill(pid, 0);
     //  }
 
@@ -789,7 +789,7 @@ namespace ra { namespace process {
     //to detect the end of the process
     while (IsRunning(pid)) {
       //wait a little more and verify again
-      ra::timing::millisleep(1000);
+      ra::timing::Millisleep(1000);
     }
 
     return true;

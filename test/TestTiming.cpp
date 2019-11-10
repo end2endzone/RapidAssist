@@ -36,12 +36,12 @@ namespace ra { namespace timing { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testMillisleep) {
     //synchronize time to a new seconds
-    waitNextSecond();
+    WaitNextSecond();
 
-    //assert that millisleep() is actually sleeping
-    std::tm time1 = getLocalTime();
-    ASSERT_EQ(0, ra::timing::millisleep(3000 + 50)); //at least 3 seconds
-    std::tm time2 = getLocalTime();
+    //assert that Millisleep() is actually sleeping
+    std::tm time1 = GetLocalTime();
+    ASSERT_EQ(0, ra::timing::Millisleep(3000 + 50)); //at least 3 seconds
+    std::tm time2 = GetLocalTime();
 
     //convert hour, minute and seconds to absolute seconds
     int seconds1 = time1.tm_hour * 3600 + time1.tm_min * 60 + time1.tm_sec;
@@ -56,16 +56,16 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetCopyrightYear) {
-    int year = getCopyrightYear();
-    DateTime now = toDateTime(getLocalTime());
+    int year = GetCopyrightYear();
+    DateTime now = ToDateTime(GetLocalTime());
     ASSERT_GT(year, 2016); //assert value is not default value
     ASSERT_LE(year, now.year);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testDateTimeConvert) {
-    std::tm now = getLocalTime();
-    DateTime dt = toDateTime(now);
-    std::tm actual = toTimeInfo(dt);
+    std::tm now = GetLocalTime();
+    DateTime dt = ToDateTime(now);
+    std::tm actual = ToTimeInfo(dt);
 
     ASSERT_EQ(now.tm_year, actual.tm_year);
     ASSERT_EQ(now.tm_mon, actual.tm_mon);
@@ -79,21 +79,21 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetUtcTime) {
-    std::tm local = getLocalTime();
-    std::tm utc = getUtcTime();
+    std::tm local = GetLocalTime();
+    std::tm utc = GetUtcTime();
 
     ASSERT_NE(local.tm_hour, utc.tm_hour);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMicrosecondsTimerPerformance) {
-    //find the resolution of the getMicrosecondsTimer() function
+    //find the resolution of the GetMicrosecondsTimer() function
     for (size_t i = 0; i < 10; i++) {
-      double time1 = getMicrosecondsTimer();
+      double time1 = GetMicrosecondsTimer();
       double time2 = time1;
 
-      //loop until the returned value of getMicrosecondsTimer() has changed
+      //loop until the returned value of GetMicrosecondsTimer() has changed
       while (time2 == time1)
-        time2 = getMicrosecondsTimer();
+        time2 = GetMicrosecondsTimer();
 
       double milliseconds = (time2 - time1)*1000.0;
       double microseconds = milliseconds * 1000.0;
@@ -105,23 +105,23 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMicrosecondsTimerAgaintsSleep) {
-    double time1 = getMicrosecondsTimer();
-    ra::timing::millisleep(800);
-    double time2 = getMicrosecondsTimer();
+    double time1 = GetMicrosecondsTimer();
+    ra::timing::Millisleep(800);
+    double time2 = GetMicrosecondsTimer();
 
     double milliseconds = (time2 - time1)*1000.0;
     ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMillisecondsTimerPerformance) {
-    //find the resolution of the getMillisecondsTimer() function
+    //find the resolution of the GetMillisecondsTimer() function
     for (size_t i = 0; i < 10; i++) {
-      double time1 = getMillisecondsTimer();
+      double time1 = GetMillisecondsTimer();
       double time2 = time1;
 
-      //loop until the returned value of getMillisecondsTimer() has changed
+      //loop until the returned value of GetMillisecondsTimer() has changed
       while (time2 == time1)
-        time2 = getMillisecondsTimer();
+        time2 = GetMillisecondsTimer();
 
       double milliseconds = (time2 - time1)*1000.0;
       double microseconds = milliseconds * 1000.0;
@@ -134,9 +134,9 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMillisecondsTimerAgaintsSleep) {
-    double time1 = getMillisecondsTimer();
-    ra::timing::millisleep(800);
-    double time2 = getMillisecondsTimer();
+    double time1 = GetMillisecondsTimer();
+    ra::timing::Millisleep(800);
+    double time2 = GetMillisecondsTimer();
 
     double milliseconds = (time2 - time1)*1000.0;
     ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux

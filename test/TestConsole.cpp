@@ -92,11 +92,11 @@ namespace ra { namespace console { namespace test
   TEST_F(TestConsole, testGetCursorPosPerformance) {
     //loop for 3 seconds
     static const double time_length = 3.0; //seconds
-    double time_start = ra::timing::getMicrosecondsTimer();
+    double time_start = ra::timing::GetMicrosecondsTimer();
     double time_end = time_start + time_length;
 
     int loop_count = 0;
-    while (ra::timing::getMicrosecondsTimer() < time_end) {
+    while (ra::timing::GetMicrosecondsTimer() < time_end) {
       int before_x = 0;
       int before_y = 0;
       ra::console::GetCursorPos(before_x, before_y);
@@ -164,12 +164,12 @@ namespace ra { namespace console { namespace test
   TEST_F(TestConsole, testPrintAnimationCursor) {
     static const double MAX_TIME_SECONDS = 3.0; //maximum running time of the test in seconds
 
-    double time_start = ra::timing::getMillisecondsTimer();
+    double time_start = ra::timing::GetMillisecondsTimer();
     double time_end = time_start + MAX_TIME_SECONDS;
 
-    while (ra::timing::getMillisecondsTimer() < time_end) {
+    while (ra::timing::GetMillisecondsTimer() < time_end) {
       ra::console::PrintAnimationCursor();
-      ra::timing::millisleep(80);
+      ra::timing::Millisleep(80);
     }
     printf("\n");
   }

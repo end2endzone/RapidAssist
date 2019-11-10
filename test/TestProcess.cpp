@@ -307,7 +307,7 @@ namespace ra { namespace process { namespace test
     ra::process::processid_t pid = ra::process::StartProcess(exec_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
-    ra::timing::millisleep(5000); //allow time for the process to start properly.
+    ra::timing::Millisleep(5000); //allow time for the process to start properly.
 
     //assert the process is started
     bool started = ra::process::IsRunning(pid);
@@ -340,7 +340,7 @@ namespace ra { namespace process { namespace test
     pid = ra::process::StartProcess(exec_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
-    ra::timing::millisleep(5000); //allow time for the process to start properly (again).
+    ra::timing::Millisleep(5000); //allow time for the process to start properly (again).
 
     //assert the process is started (again)
     started = ra::process::IsRunning(pid);
@@ -395,7 +395,7 @@ namespace ra { namespace process { namespace test
     // N/A
 #endif
 
-    ra::timing::millisleep(5000); //allow time for the process to start properly (again).
+    ra::timing::Millisleep(5000); //allow time for the process to start properly (again).
 
     //try to identify the new process
     ProcessIdList process_after = ra::process::GetProcesses();
@@ -442,7 +442,7 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait a little to be in the middle of execution of the process
-    ra::timing::millisleep(500);
+    ra::timing::Millisleep(500);
 
     printf("calling ra::process::GetExitCode() while process is running...\n");
     int code = 0;
@@ -520,7 +520,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //remember which time it is
-    double time_start = ra::timing::getMillisecondsTimer();
+    double time_start = ra::timing::GetMillisecondsTimer();
 
     //start the process
     const std::string curr_dir = ra::process::GetCurrentProcessDir();
@@ -535,7 +535,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(wait_ok);
 
     //compute elapsed time
-    double time_end = ra::timing::getMillisecondsTimer();
+    double time_end = ra::timing::GetMillisecondsTimer();
     double elapsed_seconds = time_end - time_start;
 
     //assert elapsed time matches expected time based on the argument
