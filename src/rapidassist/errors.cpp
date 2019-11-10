@@ -33,63 +33,56 @@
 #include <string.h>   // for strerror()
 #endif
 
-namespace ra
-{
-  namespace errors
-  {
+namespace ra { namespace errors {
 
-    void resetLastErrorCode()
-    {
-      #ifdef _WIN32
-      static DWORD dwLastError = 0;
-      SetLastError(dwLastError);
-      #else
-      errno = 0;
-      #endif
-    }
+  void ResetLastErrorCode() {
+#ifdef _WIN32
+    static DWORD last_error = 0;
+    SetLastError(last_error);
+#else
+    errno = 0;
+#endif
+  }
 
-    errorcode_t getLastErrorCode()
-    {
-      #ifdef _WIN32
-      DWORD dwLastError = ::GetLastError();
-      errorcode_t errcode = static_cast<errorcode_t>(dwLastError);
-      return errcode;
-      #else
-      int errnum = errno;
-      errorcode_t errcode = static_cast<errorcode_t>(errnum);
-      return errcode;
-      #endif
-    }
+  errorcode_t GetLastErrorCode() {
+#ifdef _WIN32
+    DWORD last_error = ::GetLastError();
+    errorcode_t errcode = static_cast<errorcode_t>(last_error);
+    return errcode;
+#else
+    int error_number = errno;
+    errorcode_t errcode = static_cast<errorcode_t>(error_number);
+    return errcode;
+#endif
+  }
 
-    std::string getLastErrorDescription()
-    {
-      errorcode_t code = getLastErrorCode();
-      std::string desc = getErrorCodeDescription(code);
-      return desc;
-    }
+  std::string GetLastErrorDescription() {
+    errorcode_t code = GetLastErrorCode();
+    std::string desc = GetErrorCodeDescription(code);
+    return desc;
+  }
 
-    std::string getErrorCodeDescription(errorcode_t code)
-    {
-      #ifdef _WIN32
-      DWORD dwLastError = static_cast<DWORD>(code);
-      const DWORD dwErrorBufferSize = 10240;
-      char lpErrorBuffer[dwErrorBufferSize] = {0};
-      ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-                      NULL,
-                      dwLastError,
-                      MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-                      lpErrorBuffer,
-                      dwErrorBufferSize-1,
-                      NULL);
-      ra::strings::removeEOL(lpErrorBuffer); //error message have a CRLF at the end.
-      std::string strError = lpErrorBuffer;
-      return strError;
-      #else
-      int errnum = static_cast<int>(code);
-      std::string desc = strerror(errnum);
-      return desc;
-      #endif
-    }
+  std::string GetErrorCodeDescription(errorcode_t code) {
+#ifdef _WIN32
+    DWORD last_error = static_cast<DWORD>(code);
+    const DWORD error_buffer_size = 10240;
+    char error_buffer[error_buffer_size] = { 0 };
+    ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
+      NULL,
+      last_error,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      error_buffer,
+      error_buffer_size - 1,
+      NULL);
+    ra::strings::RemoveEol(error_buffer); //error message have a CRLF at the end.
+    std::string error_desc = error_buffer;
+    return error_desc;
+#else
+    int error_number = static_cast<int>(code);
+    std::string desc = strerror(error_number);
+    return desc;
+#endif
+  }
 
-  } //namespace errors
+} //namespace errors
 } //namespace ra

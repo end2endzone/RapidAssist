@@ -27,50 +27,44 @@
 #include "rapidassist/strings.h"
 
 namespace ra { namespace test {
-
-  void TestDemo::SetUp()
-  {
-    ASSERT_TRUE( ra::testing::createFile("demo1.tmp") );
-    ASSERT_TRUE( ra::testing::createFile("demo2.tmp") );
+  void TestDemo::SetUp() {
+    ASSERT_TRUE(ra::testing::CreateFile("demo1.tmp"));
+    ASSERT_TRUE(ra::testing::CreateFile("demo2.tmp"));
   }
 
-  void TestDemo::TearDown()
-  {
+  void TestDemo::TearDown() {
   }
 
-  std::string generateTestFile()
-  {
+  std::string generateTestFile() {
     //for testing purpose only
     return std::string("demo1.tmp");
   }
-  std::string getExpectedTestFilePath()
-  {
+  std::string getExpectedTestFilePath() {
     //for testing purpose only
     return std::string("demo2.tmp");
   }
 
-  TEST_F(TestDemo, testCodeSample)
-  {
+  TEST_F(TestDemo, testCodeSample) {
     //create a dummy file based on current gtest name
     static const int FILE_SIZE = 1000; //bytes
-    const std::string path = ra::testing::getTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
-    ASSERT_TRUE( ra::testing::createFile(path.c_str(), FILE_SIZE) );
-  
+    const std::string path = ra::testing::GetTestQualifiedName() + ".tmp"; //returns "TestDemo.testCodeSample.tmp"
+    ASSERT_TRUE(ra::testing::CreateFile(path.c_str(), FILE_SIZE));
+
     //test that a generated file is equals to the expected file
     std::string generatedFile = generateTestFile();
     std::string expectedFile = getExpectedTestFilePath();
-    ASSERT_TRUE ( ra::testing::isFileEquals( expectedFile.c_str(), generatedFile.c_str()) );
+    ASSERT_TRUE(ra::testing::IsFileEquals(expectedFile.c_str(), generatedFile.c_str()));
 
     //split a string into multiple parts
-    StringVector words = ra::strings::split("The quick brown fox jumps over the lazy dog", " ");
+    StringVector words = ra::strings::Split("The quick brown fox jumps over the lazy dog", " ");
     size_t numWords = words.size(); //returns 9
 
     //converting numeric values to string
-    std::string IntMaxStr = ra::strings::toString(UINT64_MAX); //returns "18446744073709551615"
+    std::string IntMaxStr = ra::strings::ToString(UINT64_MAX); //returns "18446744073709551615"
 
     //execute search and replace in strings
     std::string whoiam = "My name is Antoine and I am a superhero.";
-    int numReplaced = ra::strings::replace(whoiam, "hero", "vilan"); //returns 1
+    int numReplaced = ra::strings::Replace(whoiam, "hero", "vilan"); //returns 1
   }
 
 } //namespace test

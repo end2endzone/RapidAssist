@@ -27,50 +27,47 @@
 
 #include <string>
 
-namespace ra
-{
-  namespace user
-  {
+namespace ra { namespace user {
 
-    /// <summary>
-    /// Returns the current user 'home' directory.
-    /// For unix    systems, the returned path is "~".
-    /// For windows systems, the returned path is "%USERPROFILE%" (ie "C:\Users\JohnSmith").
-    /// </summary>
-    /// <returns>Returns the current user's home directory.</returns>
-    std::string getHomeDirectory();
+  /// <summary>
+  /// Returns the current user 'home' directory.
+  /// For unix    systems, the returned path is "~".
+  /// For windows systems, the returned path is "%USERPROFILE%" (ie "C:\Users\JohnSmith").
+  /// </summary>
+  /// <returns>Returns the current user's home directory.</returns>
+  std::string GetHomeDirectory();
 
-    /// <summary>
-    /// Returns the current user 'application data' directory.
-    /// For unix    systems, the returned path is "/usr/share".
-    /// For windows systems, the returned path is "%USERPROFILE%\AppData\Local" (ie "C:\Users\JohnSmith\AppData\Local").
-    /// </summary>
-    /// <returns>Returns the current user's application data directory.</returns>
-    std::string getApplicationsDataDirectory();
+  /// <summary>
+  /// Returns the current user 'application data' directory.
+  /// For unix    systems, the returned path is "/usr/share".
+  /// For windows systems, the returned path is "%USERPROFILE%\AppData\Local" (ie "C:\Users\JohnSmith\AppData\Local").
+  /// </summary>
+  /// <returns>Returns the current user's application data directory.</returns>
+  std::string GetApplicationsDataDirectory();
 
-    /// <summary>
-    /// Returns the current user 'documents' directory.
-    /// For unix    systems, the returned path is "~/Documents".
-    /// For windows systems, the returned path is "%USERPROFILE%\Documents" (ie "C:\Users\JohnSmith\Documents").
-    /// </summary>
-    /// <returns>Returns the current user's documents directory.</returns>
-    std::string getDocumentsDirectory();
+  /// <summary>
+  /// Returns the current user 'documents' directory.
+  /// For unix    systems, the returned path is "~/Documents".
+  /// For windows systems, the returned path is "%USERPROFILE%\Documents" (ie "C:\Users\JohnSmith\Documents").
+  /// </summary>
+  /// <returns>Returns the current user's documents directory.</returns>
+  std::string GetDocumentsDirectory();
 
-    /// <summary>
-    /// Returns the current user 'desktop' directory.
-    /// For unix    systems, the returned path is "~/Desktop".
-    /// For windows systems, the returned path is "%USERPROFILE%\Desktop" (ie "C:\Users\JohnSmith\Desktop").
-    /// </summary>
-    /// <returns>Returns the current user's desktop directory.</returns>
-    std::string getDesktopDirectory();
+  /// <summary>
+  /// Returns the current user 'desktop' directory.
+  /// For unix    systems, the returned path is "~/Desktop".
+  /// For windows systems, the returned path is "%USERPROFILE%\Desktop" (ie "C:\Users\JohnSmith\Desktop").
+  /// </summary>
+  /// <returns>Returns the current user's desktop directory.</returns>
+  std::string GetDesktopDirectory();
 
-    /// <summary>
-    /// Returns the user's login username.
-    /// </summary>
-    /// <returns>Returns the user's login username.</returns>
-    std::string getUsername();
+  /// <summary>
+  /// Returns the user's login username.
+  /// </summary>
+  /// <returns>Returns the user's login username.</returns>
+  std::string GetUsername();
 
-  } //namespace user
+} //namespace user
 } //namespace ra
 
 #endif //RA_USER_H

@@ -29,8 +29,7 @@
 
 namespace ra { namespace filesystem { namespace test
 {
-  class TestPropertiesFile : public ::testing::Test
-  {
+  class TestPropertiesFile : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

@@ -29,8 +29,7 @@
 
 namespace ra { namespace errors { namespace test
 {
-  class TestErrors : public ::testing::Test
-  {
+  class TestErrors : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

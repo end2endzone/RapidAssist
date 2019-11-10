@@ -29,8 +29,7 @@
 
 namespace ra { namespace cli { namespace test
 {
-  class TestCli : public ::testing::Test
-  {
+  class TestCli : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

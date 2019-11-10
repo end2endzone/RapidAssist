@@ -29,8 +29,7 @@
 
 namespace ra { namespace console { namespace test
 {
-  class TestConsole : public ::testing::Test
-  {
+  class TestConsole : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

@@ -31,206 +31,185 @@
 
 #ifdef _WIN32
 #else
-  //for getEnvironmentVariables()
+  //for GetEnvironmentVariables()
   extern char **environ;
 #endif
 
-namespace ra
-{
-  namespace environment
-  {
+namespace ra { namespace environment {
 
-    std::string getEnvironmentVariable(const char * iName)
-    {
-      if (iName == NULL)
-        return std::string();
-      const char * value = getenv(iName);
-      if (value == NULL)
-        return std::string();
-      else
-        return std::string(value);
+  std::string GetEnvironmentVariable(const char * iName) {
+    if (iName == NULL)
+      return std::string();
+    const char * value = getenv(iName);
+    if (value == NULL)
+      return std::string();
+    else
+      return std::string(value);
+  }
+
+  bool SetEnvironmentVariable(const char * iName, const char * iValue) {
+    //validate invalid inputs
+    if (iName == NULL || strlen(iName) == 0) {
+      return false;
     }
 
-    bool setEnvironmentVariable(const char * iName, const char * iValue)
-    {
-      //validate invalid inputs
-      if (iName == NULL || strlen(iName) == 0)
-      {
-        return false;
-      }
- 
 #ifdef _WIN32
-      std::string command;
-      command.append(iName);
-      command.append("=");
-      if (iValue)
-      {
-        command.append(iValue);
-      }
-      int result = _putenv(command.c_str());
+    std::string command;
+    command.append(iName);
+    command.append("=");
+    if (iValue) {
+      command.append(iValue);
+    }
+    int result = _putenv(command.c_str());
 #elif __linux__
-      int result = -1; //failure
-      bool erase = (iValue == NULL || strlen(iValue) == 0);
-      if (erase)
-        result = unsetenv(iName);
-      else
-        result = setenv(iName, iValue, 1); //overwrite existing
+    int result = -1; //failure
+    bool erase = (iValue == NULL || strlen(iValue) == 0);
+    if (erase)
+      result = unsetenv(iName);
+    else
+      result = setenv(iName, iValue, 1); //overwrite existing
 #endif
 
-      bool success = (result == 0);
-      return success;
-    }
+    bool success = (result == 0);
+    return success;
+  }
 
-    bool setEnvironmentVariable(const char * iName, const   int8_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  uint8_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int16_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint16_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int32_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint32_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const  int64_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return setEnvironmentVariable(iName, tmp.c_str() ); }
-    bool setEnvironmentVariable(const char * iName, const    float & iValue)
-    {
-      const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
-      return setEnvironmentVariable(iName, tmp.c_str() );
-    }
-    bool setEnvironmentVariable(const char * iName, const   double & iValue)
-    {
-      const std::string & tmp = ra::strings::toStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
-      return setEnvironmentVariable(iName, tmp.c_str() );
-    }
+  bool SetEnvironmentVariable(const char * iName, const   int8_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const  uint8_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const  int16_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const uint16_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const  int32_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const uint32_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const  int64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * iName, const    float & iValue) {
+    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+    return SetEnvironmentVariable(iName, tmp.c_str());
+  }
+  bool SetEnvironmentVariable(const char * iName, const   double & iValue) {
+    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+    return SetEnvironmentVariable(iName, tmp.c_str());
+  }
 
-    bool isProcess32Bit()
-    {
+  bool IsProcess32Bit() {
 #if defined(_WIN32) && !defined(_WIN64) //Windows
-      return true;
+    return true;
 #elif defined(__LP32__) || defined(_ILP32) //GCC
-      return true;
+    return true;
 #elif (__SIZEOF_POINTER__ == 4) //GCC only ?
-      return true;
+    return true;
 #elif ( __WORDSIZE == 32 ) //portable
-      return true;
+    return true;
 #else
-      return false;
+    return false;
 #endif
-    }
+  }
 
-    bool isProcess64Bit()
-    {
+  bool IsProcess64Bit() {
 #if defined(_WIN64) //Windows
-      return true;
+    return true;
 #elif defined(__LP64__) || defined(_LP64) //GCC
-      return true;
+    return true;
 #elif (__SIZEOF_POINTER__ == 8) //GCC only ?
-      return true;
+    return true;
 #elif ( __WORDSIZE == 64 ) //portable
-      return true;
+    return true;
 #else
-      return false;
+    return false;
 #endif
-    }
+  }
 
-    bool isConfigurationDebug()
-    {
+  bool IsConfigurationDebug() {
 #ifdef NDEBUG
-      return false;
+    return false;
 #else
-      return true;
+    return true;
 #endif
-    }
+  }
 
-    bool isConfigurationRelease()
-    {
+  bool IsConfigurationRelease() {
 #ifdef NDEBUG
-      return true;
+    return true;
 #else
-      return false;
+    return false;
 #endif
-    }
+  }
 
-    const char * getLineSeparator()
-    {
+  const char * GetLineSeparator() {
 #ifdef _WIN32
-      return "\r\n";
+    return "\r\n";
 #else
-      return "\n";
+    return "\n";
 #endif
-    }
+  }
 
-    ra::strings::StringVector getEnvironmentVariables()
-    {
-      ra::strings::StringVector vars;
+  ra::strings::StringVector GetEnvironmentVariables() {
+    ra::strings::StringVector vars;
 
-      char *s = *environ;
+    char *s = *environ;
 
-      int i = 0;
-      s = *(environ+i);
+    int i = 0;
+    s = *(environ + i);
 
-      while(s)
-      {
-        std::string definition = s;
-        size_t offset = definition.find('=');
-        if (offset != std::string::npos)
-        {
-          std::string name = definition.substr(0, offset);
-          std::string value = definition.substr(offset+1);
-          int a = 0;
+    while (s) {
+      std::string definition = s;
+      size_t offset = definition.find('=');
+      if (offset != std::string::npos) {
+        std::string name = definition.substr(0, offset);
+        std::string value = definition.substr(offset + 1);
+        int a = 0;
 
-          vars.push_back(name);
-        }
-
-        //next var
-        i++; 
-        s = *(environ+i);
+        vars.push_back(name);
       }
 
-      return vars;
+      //next var
+      i++;
+      s = *(environ + i);
     }
 
-    std::string expand(const std::string & iValue)
-    {
-      std::string output = iValue;
+    return vars;
+  }
 
-      ra::strings::StringVector variables = getEnvironmentVariables();
-      for(size_t i=0; i<variables.size(); i++)
-      {
-        const std::string & name = variables[i];
+  std::string Expand(const std::string & iValue) {
+    std::string output = iValue;
+
+    ra::strings::StringVector variables = GetEnvironmentVariables();
+    for (size_t i = 0; i < variables.size(); i++) {
+      const std::string & name = variables[i];
 
 #ifdef _WIN32
-        std::string pattern = std::string("%") + name + std::string("%");
+      std::string pattern = std::string("%") + name + std::string("%");
 #else
-        std::string pattern = std::string("$") + name;
+      std::string pattern = std::string("$") + name;
 #endif
-        std::string value = ra::environment::getEnvironmentVariable(name.c_str());
+      std::string value = ra::environment::GetEnvironmentVariable(name.c_str());
 
-        //process with search and replace
-        ra::strings::replace(output, pattern, value);
+      //process with search and replace
+      ra::strings::Replace(output, pattern, value);
 
 #ifdef _WIN32
-        //On Windows, the expansion is not case sensitive.
-        //also look for case insensitive replacement
-        std::string pattern_uppercase = ra::strings::uppercase(pattern);
-        std::string output_uppercase = ra::strings::uppercase(output);
-        size_t pattern_pos = output_uppercase.find(pattern_uppercase);
-        while (pattern_pos != std::string::npos)
-        {
-          //extract the pattern from the value.
-          //ie: the value contains %systemdrive% instead of the official %SystemDrive%
-          std::string pattern2 = output.substr(pattern_pos, pattern.size());
+      //On Windows, the expansion is not case sensitive.
+      //also look for case insensitive replacement
+      std::string pattern_uppercase = ra::strings::Uppercase(pattern);
+      std::string output_uppercase = ra::strings::Uppercase(output);
+      size_t pattern_pos = output_uppercase.find(pattern_uppercase);
+      while (pattern_pos != std::string::npos) {
+        //extract the pattern from the value.
+        //ie: the value contains %systemdrive% instead of the official %SystemDrive%
+        std::string pattern2 = output.substr(pattern_pos, pattern.size());
 
-          //process with search and replace using the unofficial pattern
-          ra::strings::replace(output, pattern2, value);
+        //process with search and replace using the unofficial pattern
+        ra::strings::Replace(output, pattern2, value);
 
-          //search again for next pattern
-          output_uppercase = ra::strings::uppercase(output);
-          pattern_pos = output_uppercase.find(pattern_uppercase);
-        }
-#endif
+        //search again for next pattern
+        output_uppercase = ra::strings::Uppercase(output);
+        pattern_pos = output_uppercase.find(pattern_uppercase);
       }
-
-      return output;
+#endif
     }
 
+    return output;
+  }
 
-  } //namespace environment
+} //namespace environment
 } //namespace ra

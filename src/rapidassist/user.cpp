@@ -28,6 +28,7 @@
 #ifdef WIN32
 #   include <Shlobj.h>
 #   include <windows.h>
+#   undef GetEnvironmentVariable
 #   include <Lmcons.h>
 #else
 #   include <stdlib.h>
@@ -37,15 +38,10 @@
 #   include <sys/types.h>
 #endif
 
-namespace ra
-{
-
-  namespace user
-  {
+namespace ra { namespace user {
 
 #ifdef _WIN32
-  inline std::string getWin32Directory(int csidl)
-  {
+  inline std::string getWin32Directory(int csidl) {
     // https://stackoverflow.com/questions/18493484/shgetfolderpath-deprecated-what-is-alternative-to-retrieve-path-for-windows-fol
     // https://superuser.com/questions/150012/what-is-the-difference-between-local-and-roaming-folders
     // CSIDL_PROFILE          matches "C:\Users\JohnSmith"
@@ -54,17 +50,15 @@ namespace ra
     // CSIDL_LOCAL_APPDATA    matches "C:\Users\JohnSmith\AppData\Local"
     // CSIDL_COMMON_APPDATA   matches "C:\ProgramData"
     // CSIDL_COMMON_DOCUMENTS matches "C:\Users\Public\Documents"
-    CHAR szPath[MAX_PATH];
-    if(SUCCEEDED(SHGetSpecialFolderPath(NULL, szPath, csidl, FALSE)))
-    {
-      return szPath;
+    char path[MAX_PATH];
+    if (SUCCEEDED(SHGetSpecialFolderPath(NULL, path, csidl, FALSE))) {
+      return path;
     }
     return "";
   }
 #endif
 
-  std::string getHomeDirectory()
-  {
+  std::string GetHomeDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_PROFILE);
     return dir;
@@ -75,24 +69,22 @@ namespace ra
     struct passwd *result = NULL;
     char buf[1024];
     uid_t uid = geteuid();
-    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0)
-    {
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
       if (result != NULL)
         return result->pw_dir;
     }
-    
+
     //fallback to HOME env variable
-    std::string env_home = ra::environment::getEnvironmentVariable("HOME");
+    std::string env_home = ra::environment::GetEnvironmentVariable("HOME");
     if (!env_home.empty())
       return env_home;
-    
+
     //failure
     return "~";
 #endif
   }
 
-  std::string getApplicationsDataDirectory()
-  {
+  std::string GetApplicationsDataDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
     return dir;
@@ -101,38 +93,34 @@ namespace ra
 #endif
   }
 
-  std::string getDocumentsDirectory()
-  {
+  std::string GetDocumentsDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_PERSONAL);
     return dir;
 #else
-    return std::string(getHomeDirectory()) + "/Documents";
+    return std::string(GetHomeDirectory()) + "/Documents";
 #endif
   }
 
-  std::string getDesktopDirectory()
-  {
+  std::string GetDesktopDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
     return dir;
 #else
-    return std::string(getHomeDirectory()) + "/Desktop";
+    return std::string(GetHomeDirectory()) + "/Desktop";
 #endif
   }
 
-  std::string getUsername()
-  {
+  std::string GetUsername() {
 #ifdef _WIN32
-    char username[UNLEN + 1] = {0};
+    char username[UNLEN + 1] = { 0 };
     DWORD size = UNLEN + 1;
-    if(SUCCEEDED( GetUserName(username, &size) ))
-    {
+    if (SUCCEEDED(GetUserName(username, &size))) {
       return username;
     }
 
     //fallback to USERNAME env variable
-    std::string env_username = ra::environment::getEnvironmentVariable("USERNAME");
+    std::string env_username = ra::environment::GetEnvironmentVariable("USERNAME");
     if (!env_username.empty())
       return env_username;
 
@@ -145,14 +133,13 @@ namespace ra
     struct passwd *result = NULL;
     char buf[1024];
     uid_t uid = geteuid();
-    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0)
-    {
+    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
       if (result != NULL)
         return result->pw_name;
     }
 
     //fallback to LOGNAME env variable
-    std::string env_logname = ra::environment::getEnvironmentVariable("LOGNAME");
+    std::string env_logname = ra::environment::GetEnvironmentVariable("LOGNAME");
     if (!env_logname.empty())
       return env_logname;
 
@@ -161,5 +148,5 @@ namespace ra
 #endif
   }
 
-  }; //namespace user
+} //namespace user
 } //namespace ra

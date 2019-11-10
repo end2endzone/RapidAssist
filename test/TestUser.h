@@ -29,8 +29,7 @@
 
 namespace ra { namespace user { namespace test
 {
-  class TestUser : public ::testing::Test
-  {
+  class TestUser : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();

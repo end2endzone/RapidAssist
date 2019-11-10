@@ -27,43 +27,38 @@
 
 #include <string>
 
-namespace ra
-{
-  namespace logging
-  {
+namespace ra { namespace logging {
 
-    /// <summary>
-    /// Different logging levels
-    /// </summary>
-    enum LOGGER_LEVEL
-    {
-      LOG_INFO,
-      LOG_WARNING,
-      LOG_ERROR,
-    };
+  /// <summary>
+  /// Different logging levels
+  /// </summary>
+  enum LoggerLevel {
+    LOG_INFO,
+    LOG_WARNING,
+    LOG_ERROR,
+  };
 
-    /// <summary>
-    /// Sets the quiet mode enabled or disabled.
-    /// Silences all log of level LOG_INFO 
-    /// </summary>
-    /// <param name="iQuiet">The new value of the quiet mode.</param>
-    void setQuietMode(bool iQuiet);
+  /// <summary>
+  /// Sets the quiet mode enabled or disabled.
+  /// Silences all log of level LOG_INFO 
+  /// </summary>
+  /// <param name="iQuiet">The new value of the quiet mode.</param>
+  void SetQuietMode(bool iQuiet);
 
-    /// <summary>
-    /// Returns true if the quiet mode is enabled.
-    /// </summary>
-    /// <returns>Returns true if the quiet mode is enabled.</returns>
-    bool isQuietModeEnabled();
+  /// <summary>
+  /// Returns true if the quiet mode is enabled.
+  /// </summary>
+  /// <returns>Returns true if the quiet mode is enabled.</returns>
+  bool IsQuietModeEnabled();
 
-    /// <summary>
-    /// Prints the given arguments to the console depending on the specified logging level.
-    /// </summary>
-    /// <param name="iLevel">The level of the given arguments</param>
-    /// <param name="iFormat">The format of the given argument. Same as printf's format.</param>
-    void log(LOGGER_LEVEL iLevel, const char * iFormat, ...);
+  /// <summary>
+  /// Prints the given arguments to the console depending on the specified logging level.
+  /// </summary>
+  /// <param name="iLevel">The level of the given arguments</param>
+  /// <param name="iFormat">The format of the given argument. Same as printf's format.</param>
+  void Log(LoggerLevel iLevel, const char * iFormat, ...);
 
-
-  } //namespace environment
+} //namespace environment
 } //namespace ra
 
 #endif //RA_LOGGING_H

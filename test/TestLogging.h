@@ -29,8 +29,7 @@
 
 namespace ra { namespace logging { namespace test
 {
-  class TestLogging : public ::testing::Test
-  {
+  class TestLogging : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();
