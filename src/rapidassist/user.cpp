@@ -58,7 +58,7 @@ namespace ra { namespace user {
   }
 #endif
 
-  std::string getHomeDirectory() {
+  std::string GetHomeDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_PROFILE);
     return dir;
@@ -84,7 +84,7 @@ namespace ra { namespace user {
 #endif
   }
 
-  std::string getApplicationsDataDirectory() {
+  std::string GetApplicationsDataDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
     return dir;
@@ -93,25 +93,25 @@ namespace ra { namespace user {
 #endif
   }
 
-  std::string getDocumentsDirectory() {
+  std::string GetDocumentsDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_PERSONAL);
     return dir;
 #else
-    return std::string(getHomeDirectory()) + "/Documents";
+    return std::string(GetHomeDirectory()) + "/Documents";
 #endif
   }
 
-  std::string getDesktopDirectory() {
+  std::string GetDesktopDirectory() {
 #ifdef _WIN32
     std::string dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
     return dir;
 #else
-    return std::string(getHomeDirectory()) + "/Desktop";
+    return std::string(GetHomeDirectory()) + "/Desktop";
 #endif
   }
 
-  std::string getUsername() {
+  std::string GetUsername() {
 #ifdef _WIN32
     char username[UNLEN + 1] = { 0 };
     DWORD size = UNLEN + 1;

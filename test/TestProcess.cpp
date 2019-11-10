@@ -166,7 +166,7 @@ namespace ra { namespace process { namespace test
     const std::string curr_dir1 = ra::filesystem::GetCurrentDirectory();
 
     //will run the process from user's home directory
-    const std::string home_dir = ra::user::getHomeDirectory();
+    const std::string home_dir = ra::user::GetHomeDirectory();
     ASSERT_TRUE(ra::filesystem::DirectoryExists(home_dir.c_str()));
 
     //will also run the process from a custom directory

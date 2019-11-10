@@ -36,11 +36,11 @@ namespace ra { namespace user { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUser, printValues) {
-    std::string home_dir = ra::user::getHomeDirectory();
-    std::string  app_dir = ra::user::getApplicationsDataDirectory();
-    std::string docs_dir = ra::user::getDocumentsDirectory();
-    std::string desk_dir = ra::user::getDesktopDirectory();
-    std::string username = ra::user::getUsername();
+    std::string home_dir = ra::user::GetHomeDirectory();
+    std::string  app_dir = ra::user::GetApplicationsDataDirectory();
+    std::string docs_dir = ra::user::GetDocumentsDirectory();
+    std::string desk_dir = ra::user::GetDesktopDirectory();
+    std::string username = ra::user::GetUsername();
 
     printf("home_dir: %s\n", home_dir.c_str());
     printf(" app_dir: %s\n", app_dir.c_str());
@@ -50,10 +50,10 @@ namespace ra { namespace user { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUser, testDirectoriesExisting) {
-    std::string home_dir = ra::user::getHomeDirectory();
-    std::string  app_dir = ra::user::getApplicationsDataDirectory();
-    std::string docs_dir = ra::user::getDocumentsDirectory();
-    std::string desk_dir = ra::user::getDesktopDirectory();
+    std::string home_dir = ra::user::GetHomeDirectory();
+    std::string  app_dir = ra::user::GetApplicationsDataDirectory();
+    std::string docs_dir = ra::user::GetDocumentsDirectory();
+    std::string desk_dir = ra::user::GetDesktopDirectory();
 
     ASSERT_FALSE(home_dir.empty());
     ASSERT_FALSE(app_dir.empty());

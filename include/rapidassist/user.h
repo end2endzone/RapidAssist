@@ -35,7 +35,7 @@ namespace ra { namespace user {
   /// For windows systems, the returned path is "%USERPROFILE%" (ie "C:\Users\JohnSmith").
   /// </summary>
   /// <returns>Returns the current user's home directory.</returns>
-  std::string getHomeDirectory();
+  std::string GetHomeDirectory();
 
   /// <summary>
   /// Returns the current user 'application data' directory.
@@ -43,7 +43,7 @@ namespace ra { namespace user {
   /// For windows systems, the returned path is "%USERPROFILE%\AppData\Local" (ie "C:\Users\JohnSmith\AppData\Local").
   /// </summary>
   /// <returns>Returns the current user's application data directory.</returns>
-  std::string getApplicationsDataDirectory();
+  std::string GetApplicationsDataDirectory();
 
   /// <summary>
   /// Returns the current user 'documents' directory.
@@ -51,7 +51,7 @@ namespace ra { namespace user {
   /// For windows systems, the returned path is "%USERPROFILE%\Documents" (ie "C:\Users\JohnSmith\Documents").
   /// </summary>
   /// <returns>Returns the current user's documents directory.</returns>
-  std::string getDocumentsDirectory();
+  std::string GetDocumentsDirectory();
 
   /// <summary>
   /// Returns the current user 'desktop' directory.
@@ -59,13 +59,13 @@ namespace ra { namespace user {
   /// For windows systems, the returned path is "%USERPROFILE%\Desktop" (ie "C:\Users\JohnSmith\Desktop").
   /// </summary>
   /// <returns>Returns the current user's desktop directory.</returns>
-  std::string getDesktopDirectory();
+  std::string GetDesktopDirectory();
 
   /// <summary>
   /// Returns the user's login username.
   /// </summary>
   /// <returns>Returns the user's login username.</returns>
-  std::string getUsername();
+  std::string GetUsername();
 
 } //namespace user
 } //namespace ra
