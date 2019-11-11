@@ -56,7 +56,7 @@ namespace ra { namespace test {
     ASSERT_TRUE(ra::testing::IsFileEquals(expectedFile.c_str(), generatedFile.c_str()));
 
     //split a string into multiple parts
-    StringVector words = ra::strings::Split("The quick brown fox jumps over the lazy dog", " ");
+    ra::strings::StringVector words = ra::strings::Split("The quick brown fox jumps over the lazy dog", " ");
     size_t numWords = words.size(); //returns 9
 
     //converting numeric values to string

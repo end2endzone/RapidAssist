@@ -28,9 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "strings.h"
-
-using ra::strings::StringVector;
+#include "rapidassist/strings.h"
 
 namespace ra { namespace testing {
 
@@ -82,7 +80,7 @@ namespace ra { namespace testing {
   //   iFilename:   The path of the file.
   //   oLines:      The content of the file line by line.
   // 
-  bool GetTextFileContent(const char* iFilename, StringVector & oLines);
+  bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines);
 
   //
   // Description:
@@ -152,7 +150,7 @@ namespace ra { namespace testing {
   // Arguments:
   //  iTestCasePath:    Path to the GTest compatible executable file
   //
-  StringVector GetTestList(const char * iTestCasePath);
+  ra::strings::StringVector GetTestList(const char * iTestCasePath);
 
   //
   // Description

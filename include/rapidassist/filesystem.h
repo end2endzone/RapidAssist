@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include "strings.h"
+#include "rapidassist/strings.h"
 
 namespace ra { namespace filesystem {
 

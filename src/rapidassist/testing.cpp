@@ -146,7 +146,7 @@ namespace ra { namespace testing {
     if (filter_string == "")
       return;
 
-    StringVector filters;
+    ra::strings::StringVector filters;
     ra::strings::Split(filters, iFilter, "-");
 
     if (filters.size() > 2) {
@@ -170,10 +170,10 @@ namespace ra { namespace testing {
     }
   }
 
-  StringVector GetTestList(const char * iTestCasePath) {
+  ra::strings::StringVector GetTestList(const char * iTestCasePath) {
     //check that file exists
     if (!ra::filesystem::FileExists(iTestCasePath))
-      return StringVector();
+      return ra::strings::StringVector();
 
     static const std::string log_filename = "gTestHelper.tmp";
 
@@ -192,20 +192,20 @@ namespace ra { namespace testing {
     //exec
     int return_code = system(command_line.c_str());
     if (return_code != 0)
-      return StringVector();
+      return ra::strings::StringVector();
 
     if (!ra::filesystem::FileExists(log_filename.c_str()))
-      return StringVector();
+      return ra::strings::StringVector();
 
     //load test case list from log filename
-    StringVector test_list;
+    ra::strings::StringVector test_list;
     static const std::string disabled_test_case_header = "  DISABLED_";
     static const std::string disabled_test_suite_header = "DISABLED_";
     std::string test_suite_name;
     std::string test_case_name;
     FILE * f = fopen(log_filename.c_str(), "r");
     if (!f)
-      return StringVector();
+      return ra::strings::StringVector();
 
     static const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
@@ -385,7 +385,7 @@ namespace ra { namespace testing {
     oLine = -1;
     oCharacter = -1;
 
-    StringVector lines;
+    ra::strings::StringVector lines;
     bool success = GetTextFileContent(iFilename, lines);
     if (!success)
       return false;
@@ -403,7 +403,7 @@ namespace ra { namespace testing {
     return false;
   }
 
-  bool GetTextFileContent(const char* iFilename, StringVector & oLines) {
+  bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines) {
     if (iFilename == NULL)
       return false;
 
