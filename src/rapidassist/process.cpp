@@ -452,7 +452,7 @@ namespace ra { namespace process {
 
       //that's a process id. Parse it
       processid_t pid = INVALID_PROCESS_ID;
-      bool parsed_ok = ra::strings::parse(name.c_str(), pid);
+      bool parsed_ok = ra::strings::Parse(name.c_str(), pid);
       if (!parsed_ok)
         continue;
 
