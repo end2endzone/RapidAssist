@@ -162,43 +162,5 @@ namespace ra { namespace test {
     ASSERT_EQ(msg.find("..."), std::string::npos) << msg.c_str();
   }
 
-  TEST_F(TestTesting, testGetTextFileContent) {
-    //create a sample text file 
-    const std::string newline = ra::environment::GetLineSeparator();
-    const std::string content =
-      "The" + newline +
-      "quick" + newline +
-      "brown" + newline +
-      "fox" + newline +
-      "jumps" + newline +
-      "over" + newline +
-      "the" + newline +
-      "lazy" + newline +
-      "dog.";
-    const std::string file_path = ra::testing::GetTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //read the file as a text file
-    ra::strings::StringVector lines;
-    success = ra::testing::GetTextFileContent(file_path.c_str(), lines);
-    ASSERT_TRUE(success);
-
-    //assert the expected words at the specified lines.
-    ASSERT_GE(lines.size(), 9);
-    ASSERT_EQ(std::string("The"), lines[0]);
-    ASSERT_EQ(std::string("quick"), lines[1]);
-    ASSERT_EQ(std::string("brown"), lines[2]);
-    ASSERT_EQ(std::string("fox"), lines[3]);
-    ASSERT_EQ(std::string("jumps"), lines[4]);
-    ASSERT_EQ(std::string("over"), lines[5]);
-    ASSERT_EQ(std::string("the"), lines[6]);
-    ASSERT_EQ(std::string("lazy"), lines[7]);
-    ASSERT_EQ(std::string("dog."), lines[8]);
-
-    //cleanup
-    ra::filesystem::DeleteFile(file_path.c_str());
-  }
-
 } //namespace test
 } //namespace ra

@@ -386,7 +386,7 @@ namespace ra { namespace testing {
     oCharacter = -1;
 
     ra::strings::StringVector lines;
-    bool success = GetTextFileContent(iFilename, lines);
+    bool success = ra::filesystem::ReadTextFile(iFilename, lines);
     if (!success)
       return false;
 

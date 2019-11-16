@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "rapidassist/macros.h"
 #include "rapidassist/strings.h"
 
 namespace ra { namespace testing {
@@ -80,7 +81,7 @@ namespace ra { namespace testing {
   //   iFilename:   The path of the file.
   //   oLines:      The content of the file line by line.
   // 
-  bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines);
+  DEPRECATED bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines);
 
   //
   // Description:

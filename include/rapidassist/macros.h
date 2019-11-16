@@ -29,6 +29,17 @@
 #define SAFE_DELETE(var)        {if (var) delete   var; var = NULL;}
 #define SAFE_DELETE_ARRAY(var)  {if (var) delete[] var; var = NULL;}
 
+//Function deprecation support.
+//See https://stackoverflow.com/questions/295120/c-mark-as-deprecated
+#if defined(__GNUC__) || defined(__clang__)
+#define DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED __declspec(deprecated)
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED
+#endif
+
 #ifdef _MSC_VER
 
 /// <summary>
