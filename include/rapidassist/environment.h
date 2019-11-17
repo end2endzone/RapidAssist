@@ -74,13 +74,25 @@ namespace ra { namespace environment {
   /// Returns true if the current process is in Debug mode.
   /// </summary>
   /// <returns>Returns true if the current process is in Debug mode. Returns false otherwise.</returns>
-  bool IsConfigurationDebug();
+  inline bool IsConfigurationDebug() {
+#ifdef NDEBUG
+    return false;
+#else
+    return true;
+#endif
+  }
 
   /// <summary>
   /// Returns true if the current process is in Release mode.
   /// </summary>
   /// <returns>Returns true if the current process is in Release mode. Returns false otherwise.</returns>
-  bool IsConfigurationRelease();
+  inline bool IsConfigurationRelease() {
+#ifdef NDEBUG
+    return true;
+#else
+    return false;
+#endif
+  }
 
   /// <summary>
   /// Returns the line separator of the system.

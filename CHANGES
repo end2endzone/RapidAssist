@@ -11,6 +11,7 @@ Changes for 0.7.0:
 * Fixed issue #43: Consider using Google's C++ Style Guide.
 * Fixed issue #44: Remove usage of the word 'folder' for functions in ra::filesystem namespace.
 * Fixed issue #45: Deprecate functions from ra::testing namespace that are available in other namespaces.
+* Fixed issue #47: Move ra::environment::IsConfigurationDebug() implementation in header file.
 
 Changes for 0.6.0:
 

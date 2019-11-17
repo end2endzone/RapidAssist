@@ -119,22 +119,6 @@ namespace ra { namespace environment {
 #endif
   }
 
-  bool IsConfigurationDebug() {
-#ifdef NDEBUG
-    return false;
-#else
-    return true;
-#endif
-  }
-
-  bool IsConfigurationRelease() {
-#ifdef NDEBUG
-    return true;
-#else
-    return false;
-#endif
-  }
-
   const char * GetLineSeparator() {
 #ifdef _WIN32
     return "\r\n";
