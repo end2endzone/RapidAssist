@@ -85,11 +85,17 @@ namespace ra { namespace timing {
   int Millisleep(uint32_t milliseconds);
 
   /// <summary>
-  /// Returns the year when the code was build.
+  /// Get the year from the compilation date string expanded by the __DATE__ macro.
+  /// </summary>
+  /// <returns>Returns the year from the compilation date string.</returns>
+  int GetYearFromCompilationDate(const char * compilation_date);
+
+  /// <summary>
+  /// Returns the year at the time the code was build.
   /// Usefull for copyright messages.
   /// </summary>
   /// <returns>Returns the year when the function was compiled.</returns>
-  int GetCopyrightYear();
+  inline int GetCopyrightYear() { return GetYearFromCompilationDate(__DATE__); }
 
   /// <summary>
   /// Portable function to calculate the elapsed time with microseconds resolution.

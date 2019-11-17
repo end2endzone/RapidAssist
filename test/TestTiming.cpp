@@ -56,7 +56,7 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetCopyrightYear) {
-    int year = GetCopyrightYear();
+    int year = ra::timing::GetCopyrightYear();
     DateTime now = ToDateTime(GetLocalTime());
     ASSERT_GT(year, 2016); //assert value is not default value
     ASSERT_LE(year, now.year);

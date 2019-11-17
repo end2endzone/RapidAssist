@@ -354,13 +354,15 @@ _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
 #endif
   }
 
-  int GetCopyrightYear() {
+  int GetYearFromCompilationDate(const char * compilation_date) {
     static const int DEFAULT_YEAR = 2016;
-    std::string compilation_date = __DATE__;
-    size_t last_space_index = compilation_date.find_last_of(" ");
+    if (compilation_date == NULL)
+      return DEFAULT_YEAR;
+    std::string compilation_date_str = __DATE__;
+    size_t last_space_index = compilation_date_str.find_last_of(" ");
     if (last_space_index == std::string::npos)
       return DEFAULT_YEAR;
-    const char * yearStr = &compilation_date[last_space_index + 1];
+    const char * yearStr = &compilation_date_str[last_space_index + 1];
     int year = atoi(yearStr);
     return year;
   }
