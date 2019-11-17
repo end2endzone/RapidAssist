@@ -1,3 +1,8 @@
+Changes for 0.8.0:
+
+N/A
+
+
 Changes for 0.7.0:
  
 **This version of RapidAssist contains breaking changes!**
@@ -12,6 +17,7 @@ Changes for 0.7.0:
 * Fixed issue #44: Remove usage of the word 'folder' for functions in ra::filesystem namespace.
 * Fixed issue #45: Deprecate functions from ra::testing namespace that are available in other namespaces.
 * Fixed issue #47: Move ra::environment::IsConfigurationDebug() implementation in header file.
+
 
 Changes for 0.6.0:
 
@@ -38,6 +44,7 @@ Changes for 0.6.0:
 * Fixed issue #41: ra::process::getExitCode(pid) and ra::process::waitExit(pid).
 * Fixed issue #42: ra::console::waitKeyPress().
 
+
 Changes for 0.5.0:
 
 * New feature: Implemented ra::strings::trim() and ra::strings::reverse().
@@ -56,9 +63,11 @@ Changes for 0.5.0:
 * Fixed issue #13: Rename `parseValue()` to `parse()`.
 * Fixed issue #14: Rename `splitString()` to `split()` and `joinString()` to `join()`.
 
+
 Changes for 0.4.1:
 
 * Fixed Travis CI scripts which was using `mkdir` to use the `-p` argument to not fail in directory already exists.
+
 
 Changes for 0.4.0:
 
@@ -69,15 +78,18 @@ Changes for 0.4.0:
 * New feature: Create build option for disabling dependency to GTest (issue #3)
 * New feature: License header in all files (issue #4)
 
+
 Changes for 0.3.4:
 
 * Fixed incorrect product version in v0.3.3
+
 
 Changes for 0.3.3:
 
 * Fixed a bug in ra::string::removeEOL() where some cases were not properly handled.
 * Added build option flag RAPIDASSIST_BUILD_TEST which generates RapidAssist unit tests when set to ON.
 * Fixed googletest submodule path to 'lib/googletest'
+
 
 Changes for 0.3.2:
 
@@ -86,15 +98,18 @@ Changes for 0.3.2:
 * Using 'c++ best practices' file structure (/include /src /lib /test)
 * Fixed project include_directories() when RapidAssist is used in other project.
 
+
 Changes for 0.3.1:
 
 * Fixed issue #1 - Use GOOGLETEST_HOME environment variable.
+
 
 Changes for 0.3.0:
 
 * New microseconds and milliseconds timers.
 * Moved all methods of class gTestHelper to ra::gtesthelp namespace.
 * New filesystem apis: normalizePath(), findFiles(), createFolder(), deleteFolder(), deleteFile(), hasReadAccess() and hasWriteAccess()
+
 
 Changes for 0.2.0:
 
@@ -103,6 +118,7 @@ Changes for 0.2.0:
 * Source code in nativefunc is now under time namespace.
 * Removed duplicated code from gtesthelper class. Code moved to random and strings namespaces.
 * Added new classes to the library: random
+
 
 Changes for 0.1.0:
 
