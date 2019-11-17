@@ -29,12 +29,13 @@
 #include <gtest/gtest.h>
 
 #include "rapidassist/testing.h"
+#include "rapidassist/environment.h"
 
 int main(int argc, char **argv) {
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
-  outputXml += (ra::testing::IsProcessorX86() ? ".x86" : ".x64");
-  outputXml += (ra::testing::IsDebugCode() ? ".debug" : ".release");
+  outputXml += (ra::environment::IsProcess32Bit() ? ".x86" : ".x64");
+  outputXml += (ra::environment::IsConfigurationDebug() ? ".debug" : ".release");
   outputXml += ".xml";
   ::testing::GTEST_FLAG(output) = outputXml;
 

@@ -157,10 +157,10 @@ namespace ra { namespace testing {
   // Description
   //  Returns true if the specified processor flag is enabled
   //
-  bool IsProcessorX86();
-  bool IsProcessorX64();
-  bool IsDebugCode();
-  bool IsReleaseCode();
+  DEPRECATED bool IsProcessorX86();
+  DEPRECATED bool IsProcessorX64();
+  DEPRECATED bool IsDebugCode();
+  DEPRECATED bool IsReleaseCode();
 
   //
   // Description
