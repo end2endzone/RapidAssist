@@ -73,5 +73,5 @@ namespace ra { namespace logging {
     }
   }
 
-} //namespace environment
+} //namespace logging
 } //namespace ra

@@ -58,7 +58,7 @@ namespace ra { namespace logging {
   /// <param name="iFormat">The format of the given argument. Same as printf's format.</param>
   void Log(LoggerLevel iLevel, const char * iFormat, ...);
 
-} //namespace environment
+} //namespace logging
 } //namespace ra
 
 #endif //RA_LOGGING_H
