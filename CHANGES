@@ -1,6 +1,6 @@
 Changes for 0.8.0:
 
-N/A
+* Fixed issue #49: Create ra::unicode namespace to wrap functions that provide support to unicode.
 
 
 Changes for 0.7.0:

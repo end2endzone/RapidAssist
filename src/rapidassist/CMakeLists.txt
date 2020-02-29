@@ -13,6 +13,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/timing.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/unicode.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
 )
 
@@ -43,6 +44,7 @@ add_library(rapidassist STATIC
   random.cpp
   strings.cpp
   timing.cpp
+  unicode.cpp
   user.cpp
 )
 
