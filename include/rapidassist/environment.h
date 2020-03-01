@@ -53,7 +53,7 @@ namespace ra { namespace environment {
   /// <param name="iName">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
   /// <remarks>On Linux, this function delegates to GetEnvironmentVariable(). It provides cross-platform compatibility for Windows users.</remarks>
-  inline bool GetEnvironmentVariableUtf8(const char * iName) { return GetEnvironmentVariable(iName); }
+  inline std::string GetEnvironmentVariableUtf8(const char * iName) { return GetEnvironmentVariable(iName); }
 #endif // UTF-8
 
   /// <summary>
