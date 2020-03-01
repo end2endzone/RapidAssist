@@ -147,6 +147,9 @@ namespace ra { namespace environment { namespace test
 
       ASSERT_EQ("1.7", environment::GetEnvironmentVariable(name));
     }
+
+    //delete variable for next tests
+    ASSERT_TRUE(environment::SetEnvironmentVariable(name, ""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testSetEnvironmentVariableUtf8) {
@@ -191,6 +194,9 @@ namespace ra { namespace environment { namespace test
 
       ASSERT_EQ("copyright_\xC2\xA9_copyright", environment::GetEnvironmentVariableUtf8(name));
     }
+
+    //delete variable for next tests
+    ASSERT_TRUE(environment::SetEnvironmentVariable(name, ""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testProcessXXBit) {
@@ -310,6 +316,9 @@ namespace ra { namespace environment { namespace test
         found = true;
     }
     ASSERT_TRUE( found );
+
+    //delete variable for next tests
+    ASSERT_TRUE(environment::SetEnvironmentVariable(name, ""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testExpand) {
@@ -358,6 +367,9 @@ namespace ra { namespace environment { namespace test
     ASSERT_NE(expanded, tmp);
 
     ASSERT_EQ(expanded, "<psi_\xCE\xA8_psi>") << "expanded=" << expanded.c_str();
+
+    //delete variable for next tests
+    ASSERT_TRUE(environment::SetEnvironmentVariable(name, ""));
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
