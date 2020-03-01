@@ -35,10 +35,12 @@ namespace ra { namespace unicode {
 
   bool IsAscii(const char * str)
   {
+    //printf("IsAscii(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
-      if (str[offset] < 0) //if bit7 is set
+      //printf("str[%d]=%d\n", offset, (int)str[offset]);
+      if (str[offset] < 0 || (int)str[offset] > 127) //if bit7 is set
         return false;
 
       //next byte
@@ -69,10 +71,12 @@ namespace ra { namespace unicode {
 
   bool IsValidIso8859_1(const char * str)
   {
+    //printf("IsValidIso8859_1(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
       const char & c = str[offset];
+      //printf("str[%d]=%d\n", offset, (int)str[offset]);
       if (0x00 <= c && c <= 0x1F)
         return false;
       if (0x7F <= c && c <= 0x9F)
