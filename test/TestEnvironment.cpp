@@ -149,6 +149,50 @@ namespace ra { namespace environment { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testSetEnvironmentVariableUtf8) {
+    const char * name = "RAPIDASSIST_FOO";
+
+    //test basic set
+    {
+      //make sure the variable **is not** defined
+      std::string actual = environment::GetEnvironmentVariableUtf8(name);
+      ASSERT_EQ("", actual);
+
+      ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "psi_\xCE\xA8_psi"));
+      ASSERT_EQ("psi_\xCE\xA8_psi", environment::GetEnvironmentVariableUtf8(name));
+      ASSERT_NE("psi_\xCE\xA8_psi", environment::GetEnvironmentVariable(name)); //assert the value is really utf-8 encoded
+    }
+
+    //test delete
+    {
+      //make sure the variable **is** defined
+      std::string actual = environment::GetEnvironmentVariableUtf8(name);
+      ASSERT_NE("", actual);
+
+      ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, ""));
+      ASSERT_EQ("", environment::GetEnvironmentVariableUtf8(name));
+    }
+
+    //test NULL
+    {
+      ASSERT_FALSE(environment::SetEnvironmentVariableUtf8((const char *)(NULL), (const char *)(NULL)));
+      ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, (const char *)(NULL)));
+    }
+
+    //test empty string
+    {
+      ASSERT_FALSE(environment::SetEnvironmentVariableUtf8("", (const char *)(NULL)));
+    }
+
+    //test override
+    {
+      ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "psi_\xCE\xA8_psi"));
+      ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "copyright_\xC2\xA9_copyright"));
+
+      ASSERT_EQ("copyright_\xC2\xA9_copyright", environment::GetEnvironmentVariableUtf8(name));
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testProcessXXBit) {
     if (environment::IsProcess32Bit()) {
       ASSERT_FALSE(environment::IsProcess64Bit());
@@ -166,9 +210,9 @@ namespace ra { namespace environment { namespace test
     ASSERT_TRUE(!std::string(separator).empty());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testGetEnvironmentVariables) {
+  TEST_F(TestEnvironment, testGetEnvironmentVariablesSearch) {
     ra::strings::StringVector variables = environment::GetEnvironmentVariables();
-    ASSERT_GT(variables.size(), 0);
+    ASSERT_GT(variables.size(), (size_t)0);
 
     //find 3 expected names in the list
     bool found1 = false;
@@ -203,7 +247,69 @@ namespace ra { namespace environment { namespace test
     ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();
     ASSERT_TRUE(found2) << "The environment variable '" << variable2 << "' was not found in the list of variables:\n" << variable_list.c_str();
     ASSERT_TRUE(found3) << "The environment variable '" << variable3 << "' was not found in the list of variables:\n" << variable_list.c_str();
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testGetEnvironmentVariablesUtf8Search) {
+    ra::strings::StringVector variables = environment::GetEnvironmentVariablesUtf8();
+    ASSERT_GT(variables.size(), (size_t)0);
 
+    //find 3 expected names in the list
+    bool found1 = false;
+    bool found2 = false;
+    bool found3 = false;
+#ifdef _WIN32
+    static const char * variable1 = "USERNAME";
+    static const char * variable2 = "TEMP";
+    static const char * variable3 = "Path";
+#else
+    static const char * variable1 = "USER";
+    static const char * variable2 = "HOME";
+    static const char * variable3 = "PATH";
+#endif
+    std::string variable_list; //build a list of all found variables in case of a failure.
+    for (size_t i = 0; i < variables.size(); i++) {
+      const std::string & value = variables[i];
+
+      //build a list of all found variables in case of a failure.
+      if (!variable_list.empty())
+        variable_list += "\n";
+      variable_list += ra::strings::ToString(i) + "=" + value;
+
+      //look for expected names
+      if (value == variable1)  found1 = true;
+      if (value == variable2)  found2 = true;
+
+      //Note: In a windows console, the variable is named 'Path' but when unit tests are launched from Visual Studio, the name is 'PATH'.
+      if (value == variable3 || value == ra::strings::Uppercase(variable3)) found3 = true;
+    }
+
+    ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();
+    ASSERT_TRUE(found2) << "The environment variable '" << variable2 << "' was not found in the list of variables:\n" << variable_list.c_str();
+    ASSERT_TRUE(found3) << "The environment variable '" << variable3 << "' was not found in the list of variables:\n" << variable_list.c_str();
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testGetEnvironmentVariablesUtf8) {
+    //assert number of variables is identical.
+    ra::strings::StringVector variables = environment::GetEnvironmentVariablesUtf8();
+    ra::strings::StringVector tmp = environment::GetEnvironmentVariables();
+    ASSERT_GT(variables.size(), (size_t)0);
+    ASSERT_EQ(variables.size(), tmp.size());
+
+    //set an utf-8 variable
+    const char * name = "RAPIDASSIST_FOO";
+    ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "psi_\xCE\xA8_psi"));
+
+    //assert it can be found in list of variables
+    variables = environment::GetEnvironmentVariablesUtf8(); //refresh to get the new variable
+    bool found = false;
+    for(size_t i=0; i<variables.size(); i++)
+    {
+      const std::string & name_utf8 = variables[i];
+      std::string value_utf8 = environment::GetEnvironmentVariableUtf8(name_utf8.c_str());
+      if (name_utf8 == name && value_utf8 == "psi_\xCE\xA8_psi")
+        found = true;
+    }
+    ASSERT_TRUE( found );
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testExpand) {
@@ -230,6 +336,28 @@ namespace ra { namespace environment { namespace test
     ASSERT_NE(raw_string2, expanded_string2) << "raw_string2=" << raw_string2.c_str();
     ASSERT_NE(raw_string3, expanded_string3) << "raw_string3=" << raw_string3.c_str();
 
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestEnvironment, testExpandUtf8) {
+    //set an utf-8 variable
+    const char * name = "RAPIDASSIST_FOO";
+    ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "psi_\xCE\xA8_psi"));
+
+#ifdef _WIN32
+    static const char * variable1 = "%RAPIDASSIST_FOO%";
+#else
+    static const char * variable1 = "$RAPIDASSIST_FOO";
+#endif
+
+    std::string content = std::string("<") + variable1 + ">";
+
+    std::string expanded = ra::environment::ExpandUtf8(content);
+    std::string tmp = ra::environment::Expand(content);
+
+    //assert that expanded strings are not identical
+    ASSERT_NE(expanded, tmp);
+
+    ASSERT_EQ(expanded, "<psi_\xCE\xA8_psi>") << "expanded=" << expanded.c_str();
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
