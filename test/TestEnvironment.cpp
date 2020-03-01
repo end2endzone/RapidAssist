@@ -163,7 +163,10 @@ namespace ra { namespace environment { namespace test
 
       ASSERT_TRUE(environment::SetEnvironmentVariableUtf8(name, "psi_\xCE\xA8_psi"));
       ASSERT_EQ("psi_\xCE\xA8_psi", environment::GetEnvironmentVariableUtf8(name));
+#ifdef _WIN32
+      //this assertion can only be done on system where GetEnvironmentVariable() and GetEnvironmentVariableUtf8() are different.
       ASSERT_NE("psi_\xCE\xA8_psi", environment::GetEnvironmentVariable(name)); //assert the value is really utf-8 encoded
+#endif
     }
 
     //test delete
@@ -364,7 +367,10 @@ namespace ra { namespace environment { namespace test
     std::string tmp = ra::environment::Expand(content);
 
     //assert that expanded strings are not identical
+#ifdef _WIN32
+    //this assertion can only be done on system where Expand() and ExpandUtf8() are different.
     ASSERT_NE(expanded, tmp);
+#endif
 
     ASSERT_EQ(expanded, "<psi_\xCE\xA8_psi>") << "expanded=" << expanded.c_str();
 
