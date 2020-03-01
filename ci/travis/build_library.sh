@@ -18,7 +18,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/install -DCMAKE_PREFIX_PATH=$TRAV
 echo ============================================================================
 echo Compiling...
 echo ============================================================================
-cmake --build . --parallel
+cmake --build .
 echo
 
 echo ============================================================================
