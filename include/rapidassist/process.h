@@ -65,11 +65,47 @@ namespace ra { namespace process {
   /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
   std::string GetCurrentProcessPath();
 
+#ifdef _WIN32 // UTF-8
+  /// <summary>
+  /// Provides the file path of the current executing process.
+  /// </summary>
+  /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
+  std::string GetCurrentProcessPathUtf8();
+#elif __linux__
+  /// <summary>
+  /// Provides the file path of the current executing process.
+  /// </summary>
+  /// <returns>Returns the file path of the current process. Returns an empty string on error.</returns>
+  /// <remarks>
+  /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
+  /// It provides cross-platform compatibility for Windows users.
+  /// </remarks>
+  inline std::string GetCurrentProcessPathUtf8() { return GetCurrentProcessPath(); }
+#endif // UTF-8
+
   /// <summary>
   /// Provides the directory of the current executing process.
   /// </summary>
   /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
   std::string GetCurrentProcessDir();
+
+#ifdef _WIN32 // UTF-8
+  /// <summary>
+  /// Provides the directory of the current executing process.
+  /// </summary>
+  /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
+  std::string GetCurrentProcessDirUtf8();
+#elif __linux__
+  /// <summary>
+  /// Provides the directory of the current executing process.
+  /// </summary>
+  /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
+  /// <remarks>
+  /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
+  /// It provides cross-platform compatibility for Windows users.
+  /// </remarks>
+  inline std::string GetCurrentProcessDirUtf8() { return GetCurrentProcessDir(); }
+#endif // UTF-8
 
   /// <summary>
   /// Get the list of all running processes of the system.
