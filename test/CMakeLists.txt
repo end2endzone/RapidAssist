@@ -15,6 +15,8 @@ add_executable(rapidassist_unittest
   ${RAPIDASSIST_CONFIG_HEADER}
   ${RAPIDASSIST_TESTING_TEST_FILES}
   ${UNITTEST_TEST_FILES}
+  CommandLineMgr.cpp
+  CommandLineMgr.h
   main.cpp
   TestCli.cpp
   TestCli.h

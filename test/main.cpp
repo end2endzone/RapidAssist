@@ -28,10 +28,23 @@
 
 #include <gtest/gtest.h>
 
+#include "rapidassist/cli.h"
 #include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
 
+#include "CommandLineMgr.h"
+
 int main(int argc, char **argv) {
+
+  //validate --OutputProcessProperties
+  std::string tmp;
+  bool found = ra::cli::ParseArgument("OutputProcessProperties", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputProcessProperties();
+    return 0;
+  }
+
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
   outputXml += (ra::environment::IsProcess32Bit() ? ".x86" : ".x64");
