@@ -47,22 +47,6 @@ namespace ra { namespace environment {
     return std::string(value);
   }
 
-#ifdef _WIN32 // UTF-8
-  std::string GetEnvironmentVariableUtf8(const char * iName) {
-    if (iName == NULL)
-      return std::string();
-
-    std::wstring nameW = ra::unicode::Utf8ToUnicode(iName);
-
-    const wchar_t * value = _wgetenv(nameW.c_str());
-    if (value == NULL)
-      return std::string();
-
-    std::string value_utf8 = ra::unicode::UnicodeToUtf8(value);
-    return value_utf8;
-  }
-#endif // UTF-8
-
   bool SetEnvironmentVariable(const char * iName, const char * iValue) {
     //validate invalid inputs
     if (iName == NULL || strlen(iName) == 0) {
@@ -106,29 +90,6 @@ namespace ra { namespace environment {
     const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
     return SetEnvironmentVariable(iName, tmp.c_str());
   }
-
-#ifdef _WIN32 // UTF-8
-  bool SetEnvironmentVariableUtf8(const char * iName, const char * iValue) {
-    //validate invalid inputs
-    if (iName == NULL || strlen(iName) == 0) {
-      return false;
-    }
-
-    std::wstring nameW  = ra::unicode::Utf8ToUnicode(iName);
-
-    std::wstring commandW;
-    commandW.append(nameW);
-    commandW.append(L"=");
-    if (iValue) {
-      std::wstring valueW = ra::unicode::Utf8ToUnicode(iValue);
-      commandW.append(valueW);
-    }
-    int result = _wputenv(commandW.c_str());
-
-    bool success = (result == 0);
-    return success;
-  }
-#endif // UTF-8
 
   bool IsProcess32Bit() {
 #if defined(_WIN32) && !defined(_WIN64) //Windows
@@ -193,38 +154,6 @@ namespace ra { namespace environment {
     return vars;
   }
   
-#ifdef _WIN32 // UTF-8
-  ra::strings::StringVector GetEnvironmentVariablesUtf8() {
-    ra::strings::StringVector vars;
-
-    wchar_t *s = *_wenviron;
-
-    int i = 0;
-    s = *(_wenviron + i);
-
-    while (s) {
-      std::wstring definition = s;
-      size_t offset = definition.find('=');
-      if (offset != std::string::npos) {
-        std::wstring nameW = definition.substr(0, offset);
-        std::wstring valueW = definition.substr(offset + 1);
-        int a = 0;
-
-        std::string name_utf8  = ra::unicode::UnicodeToUtf8(nameW);
-        std::string value_utf8 = ra::unicode::UnicodeToUtf8(valueW);
-
-        vars.push_back(name_utf8);
-      }
-
-      //next var
-      i++;
-      s = *(_wenviron + i);
-    }
-
-    return vars;
-  }
-#endif // UTF-8
-
   std::string Expand(const std::string & iValue) {
     std::string output = iValue;
 
@@ -265,43 +194,6 @@ namespace ra { namespace environment {
 
     return output;
   }
-
-#ifdef _WIN32 // UTF-8
-  std::string ExpandUtf8(const std::string & iValue) {
-    std::string output = iValue;
-
-    ra::strings::StringVector variables = GetEnvironmentVariablesUtf8();
-    for (size_t i = 0; i < variables.size(); i++) {
-      const std::string & name = variables[i];
-
-      std::string pattern = std::string("%") + name + std::string("%");
-      std::string value = ra::environment::GetEnvironmentVariableUtf8(name.c_str());
-
-      //process with search and replace
-      ra::strings::Replace(output, pattern, value);
-
-      //On Windows, the expansion is not case sensitive.
-      //also look for case insensitive replacement
-      std::string pattern_uppercase = ra::strings::Uppercase(pattern);
-      std::string output_uppercase = ra::strings::Uppercase(output);
-      size_t pattern_pos = output_uppercase.find(pattern_uppercase);
-      while (pattern_pos != std::string::npos) {
-        //extract the pattern from the value.
-        //ie: the value contains %systemdrive% instead of the official %SystemDrive%
-        std::string pattern2 = output.substr(pattern_pos, pattern.size());
-
-        //process with search and replace using the unofficial pattern
-        ra::strings::Replace(output, pattern2, value);
-
-        //search again for next pattern
-        output_uppercase = ra::strings::Uppercase(output);
-        pattern_pos = output_uppercase.find(pattern_uppercase);
-      }
-    }
-
-    return output;
-  }
-#endif // UTF-8
 
 } //namespace environment
 } //namespace ra

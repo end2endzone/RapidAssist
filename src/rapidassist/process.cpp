@@ -415,29 +415,6 @@ namespace ra { namespace process {
     return path;
   }
 
-#ifdef _WIN32 // UTF-8
-  std::string GetCurrentProcessPathUtf8() {
-    std::string path;
-
-    HMODULE hModule = GetModuleHandleW(NULL);
-    if (hModule == NULL) {
-      int ret = GetLastError();
-      return path; //failure
-    }
-    //get the path of this process
-    wchar_t buffer[MAX_PATH] = { 0 };
-    if (!GetModuleFileNameW(hModule, buffer, sizeof(buffer))) {
-      int ret = GetLastError();
-      return path; //failure
-    }
-
-    std::wstring pathW = buffer;
-    path = ra::unicode::UnicodeToUtf8(pathW);
-
-    return path;
-  }
-#endif // UTF-8
-
   ProcessIdList GetProcesses() {
     ProcessIdList processes;
 
@@ -513,17 +490,6 @@ namespace ra { namespace process {
     dir = ra::filesystem::GetParentPath(exec_path);
     return dir;
   }
-
-#ifdef _WIN32 // UTF-8
-  std::string GetCurrentProcessDirUtf8() {
-    std::string dir;
-    std::string exec_path = GetCurrentProcessPathUtf8();
-    if (exec_path.empty())
-      return dir; //failure
-    dir = ra::filesystem::GetParentPath(exec_path);
-    return dir;
-  }
-#endif // UTF-8
 
   processid_t StartProcess(const std::string & iExecPath) {
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
