@@ -24,6 +24,7 @@
 
 #include "rapidassist/environment.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/random.h"
 #include "rapidassist/process.h"
 #include "rapidassist/unicode.h"
@@ -953,6 +954,10 @@ namespace ra { namespace filesystem {
 
   bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
     size_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
+    if (force_win32_utf8)
+    {
+      file_size = ra::filesystem::GetFileSizeUtf8(source_path.c_str());
+    }
 
     FILE* fin = NULL;
     if (!force_win32_utf8)
@@ -975,7 +980,7 @@ namespace ra { namespace filesystem {
     if (force_win32_utf8)
     {
       std::wstring destination_w = ra::unicode::Utf8ToUnicode(destination_path);
-      fout = _wfopen(destination_w.c_str(), L"rb");
+      fout = _wfopen(destination_w.c_str(), L"wb");
     }
 #endif // UTF-8
     
