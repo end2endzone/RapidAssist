@@ -31,6 +31,10 @@
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/user.h"
 
+#ifdef __linux__
+#include <sys/wait.h>
+#endif
+
 namespace ra { namespace process { namespace test
 {
   ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2) {
@@ -549,37 +553,50 @@ namespace ra { namespace process { namespace test
 
     const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
-    //Create a working directory that matches test name
+    //Create a working directory that matches current test name
     std::string test_dir_name = ra::testing::GetTestQualifiedName();
     std::string test_dir_path = ra::process::GetCurrentProcessDir() + separator + test_dir_name;
     bool success = filesystem::CreateDirectory(test_dir_path.c_str());
     ASSERT_TRUE(success);
 
     //clone current process executable into another process which name contains an utf8 character.
-    std::string new_process_name = ra::testing::GetTestQualifiedName() + std::string(".psi_\xCE\xA8_psi.exe");
+    std::string new_process_filename = ra::testing::GetTestQualifiedName() + std::string(".psi_\xCE\xA8_psi.exe");
     std::string current_process_path = ra::process::GetCurrentProcessPath();
-    std::string new_process_path_utf8 = test_dir_path + separator + new_process_name;
+    std::string new_process_path_utf8 = test_dir_path + separator + new_process_filename;
     bool copied = ra::filesystem::CopyFileUtf8(current_process_path, new_process_path_utf8);
     ASSERT_TRUE(copied);
 
 #ifdef _WIN32
-    //On Windows, we can't launch the process unless we use a utf-8 proof ra::process::StartProcess() function.
+    //The current RapidAssist does not provide a StartProcessUtf8() api yet.
+    //We cannot launch a process from the command prompt if the process filename have an utf-8 character.
     //To get around this, we look for the 8.3 filename and use this filename for testing.
-    std::string short_new_process_filename = ra::filesystem::GetShortPathForm(new_process_name);
+    std::string short_new_process_filename = ra::filesystem::GetShortPathForm(new_process_filename);
     std::string short_new_process_path = test_dir_path + separator + short_new_process_filename;
     bool short_full_path_found = ra::filesystem::FileExists(short_new_process_path.c_str());
     ASSERT_TRUE(short_full_path_found);
 
-    //Run this process
+    //Run the new process and log the output
     std::string command;
     command.append("cd /d \"");
     command.append(test_dir_path);
     command.append("\" & ");
     command.append(short_new_process_filename);
-    command.append(" --OutputProcessProperties");
+    command.append(" --OutputGetCurrentProcessPathUtf8");
     command.append(">");
     command.append(log_filename);
     int exit_code = system(command.c_str());
+    ASSERT_EQ(0, exit_code);
+#elif __linux__
+    //Run the new process and log the output
+    std::string command;
+    command.append("cd \"");
+    command.append(test_dir_path);
+    command.append("\" && ");
+    command.append(new_process_filename);
+    command.append(" --OutputGetCurrentProcessPathUtf8");
+    command.append(">");
+    command.append(log_filename);
+    int exit_code = WEXITSTATUS( system(command.c_str()) );
     ASSERT_EQ(0, exit_code);
 #endif //_WIN32
 

@@ -30,12 +30,14 @@
 namespace ra { namespace test
 {
   //--------------------------------------------------------------------------------------------------
-  void OutputProcessProperties() {
+  void OutputGetCurrentProcessPathUtf8() {
     std::string current_process_path_utf8 = ra::process::GetCurrentProcessPathUtf8();
+    printf("%s\n", current_process_path_utf8.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  void OutputGetCurrentProcessDirUtf8() {
     std::string current_process_dir_utf8 = ra::process::GetCurrentProcessDirUtf8();
-
-    printf("current_process_path_utf8=%s\n", current_process_path_utf8.c_str());
-    printf("current_process_dir_utf8=%s\n", current_process_dir_utf8.c_str());
+    printf("%s\n", current_process_dir_utf8.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

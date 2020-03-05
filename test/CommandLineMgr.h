@@ -28,7 +28,7 @@
 namespace ra { namespace test
 {
 
-  void OutputProcessProperties();
+  void OutputGetCurrentProcessPathUtf8();
 
 } //namespace test
 } //namespace ra

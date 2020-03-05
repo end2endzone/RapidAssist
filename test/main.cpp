@@ -36,12 +36,12 @@
 
 int main(int argc, char **argv) {
 
-  //validate --OutputProcessProperties
+  //validate --OutputGetCurrentProcessPathUtf8
   std::string tmp;
-  bool found = ra::cli::ParseArgument("OutputProcessProperties", tmp, argc, argv);
+  bool found = ra::cli::ParseArgument("OutputGetCurrentProcessPathUtf8", tmp, argc, argv);
   if (found)
   {
-    ra::test::OutputProcessProperties();
+    ra::test::OutputGetCurrentProcessPathUtf8();
     return 0;
   }
 
