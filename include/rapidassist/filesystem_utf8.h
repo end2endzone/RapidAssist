@@ -275,7 +275,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline uint32_t GetFileSizeUtf8(const char * iPath) { return GetFileSize(iName); }
+  inline uint32_t GetFileSizeUtf8(const char * iPath) { return GetFileSize(iPath); }
 
   /// <summary>
   /// Determine if a file exists.
