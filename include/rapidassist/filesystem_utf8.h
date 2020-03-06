@@ -324,6 +324,14 @@ namespace ra { namespace filesystem {
   inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) { return FindFiles(oFiles, iPath, iDepth); }
 
   /// <summary>
+  /// Find files in a directory / subdirectory.
+  /// </summary>
+  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="iPath">An valid directory path.</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
+  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath) { return FindFilesUtf8(oFiles, iPath, -1); }
+
+  /// <summary>
   /// Finds a file using the PATH environment variable.
   /// </summary>
   /// <param name="filename">The filename that we are searching for.</param>
