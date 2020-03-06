@@ -23,10 +23,12 @@
  *********************************************************************************/
 
 #include "rapidassist/environment.h"
+#include "rapidassist/environment_utf8.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/random.h"
 #include "rapidassist/process.h"
+#include "rapidassist/process_utf8.h"
 #include "rapidassist/unicode.h"
 
 #include <algorithm>  //for std::transform(), sort()

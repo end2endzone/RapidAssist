@@ -24,6 +24,7 @@
 
 #include "TestEnvironment.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/environment_utf8.h"
 
 namespace ra { namespace environment { namespace test
 {

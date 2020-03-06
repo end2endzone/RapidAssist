@@ -28,7 +28,6 @@
 #include <string>
 #include <stdint.h>
 
-#include "rapidassist/environment_utf8.h"
 #include "rapidassist/strings.h"
 
 namespace ra { namespace environment {

@@ -36,7 +36,6 @@
 #endif
 
 #include "rapidassist/strings.h"
-#include "rapidassist/process_utf8.h"
 
 namespace ra { namespace process {
 
