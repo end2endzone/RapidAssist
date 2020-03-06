@@ -286,7 +286,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool FileExistsUtf8(const char * iPath) { return FileExists(iName); }
+  inline bool FileExistsUtf8(const char * iPath) { return FileExists(iPath); }
 
   /// <summary>
   /// Determine if the current process has read access to a given file.
@@ -297,7 +297,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasReadAccessUtf8(const char * iPath) { return HasReadAccess(iName); }
+  inline bool HasReadAccessUtf8(const char * iPath) { return HasReadAccess(iPath); }
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
@@ -308,7 +308,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasWriteAccessUtf8(const char * iPath) { return HasWriteAccess(iName); }
+  inline bool HasWriteAccessUtf8(const char * iPath) { return HasWriteAccess(iPath); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
