@@ -30,6 +30,8 @@ add_executable(rapidassist_unittest
   TestErrors.h
   TestFilesystem.cpp
   TestFilesystem.h
+  TestFilesystemUtf8.cpp
+  TestFilesystemUtf8.h
   TestGenerics.cpp
   TestGenerics.h
   TestLogging.cpp
