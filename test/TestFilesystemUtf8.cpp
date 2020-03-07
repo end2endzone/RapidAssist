@@ -187,6 +187,68 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::DeleteDirectoryUtf8(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testCreateDirectoryUtf8) {
+    //create utf-8 directory
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    const std::string process_dir_path = ra::process::GetCurrentProcessDir();
+    const std::string test_dir_name = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega";
+    std::string new_dir_path = process_dir_path + separator + test_dir_name;
+    bool created = ra::filesystem::CreateDirectoryUtf8(new_dir_path.c_str());
+    ASSERT_TRUE(created);
+ 
+    bool exists = ra::filesystem::DirectoryExistsUtf8(new_dir_path.c_str());
+    ASSERT_TRUE(exists);
+
+#ifdef _WIN32
+    //On Windows, the DirectoryExists() function should not be able to find the directory.
+    bool have_dir_win32 = ra::filesystem::DirectoryExists(new_dir_path.c_str());
+    ASSERT_FALSE(have_dir_win32);
+#endif
+ 
+    //cleanup
+    ra::filesystem::DeleteDirectoryUtf8(new_dir_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testDeleteDirectoryUtf8) {
+    //create utf-8 directory
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    const std::string process_dir_path = ra::process::GetCurrentProcessDir();
+    const std::string test_dir_name = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega";
+    const std::string new_dir_path = process_dir_path + separator + test_dir_name;
+    bool created = ra::filesystem::CreateDirectoryUtf8(new_dir_path.c_str());
+    ASSERT_TRUE(created);
+ 
+    bool exists = ra::filesystem::DirectoryExistsUtf8(new_dir_path.c_str());
+    ASSERT_TRUE(exists);
+ 
+    //do the actual deletion
+    bool deleted = ra::filesystem::DeleteDirectoryUtf8(new_dir_path.c_str());
+    ASSERT_TRUE(deleted);
+ 
+    exists = ra::filesystem::DirectoryExistsUtf8(new_dir_path.c_str());
+    ASSERT_FALSE(exists);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testDeleteFileUtf8) {
+    //create utf-8 file
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    const std::string process_dir_path = ra::process::GetCurrentProcessDir();
+    const std::string test_file_name = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega.txt";
+    const std::string test_file_path = process_dir_path + separator + test_file_name;
+    bool file_write = ra::filesystem::WriteTextFileUtf8(test_file_path, std::string(300, '1'));
+    ASSERT_TRUE(file_write);
+
+#ifdef _WIN32
+    //On Windows, the DeleteFile() function should not be able to delete the file
+    bool deleted_win32 = ra::filesystem::DeleteFile(test_file_path.c_str());
+    ASSERT_FALSE(deleted_win32);
+#endif
+
+    //do the actual file deletion
+    bool deleted = ra::filesystem::DeleteFileUtf8(test_file_path.c_str());
+    ASSERT_TRUE(deleted);
+  }
+  //--------------------------------------------------------------------------------------------------
 } //namespace test
 } //namespace filesystem
 } //namespace ra

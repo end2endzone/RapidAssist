@@ -560,7 +560,10 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(success);
 
     //clone current process executable into another process which name contains an utf8 character.
-    std::string new_process_filename = ra::testing::GetTestQualifiedName() + std::string(".psi_\xCE\xA8_psi.exe");
+    std::string new_process_filename = ra::testing::GetTestQualifiedName() + std::string(".psi_\xCE\xA8_psi");
+#ifdef _WIN32
+    new_process_filename.append(".exe");
+#endif
     std::string current_process_path = ra::process::GetCurrentProcessPath();
     std::string new_process_path_utf8 = test_dir_path + separator + new_process_filename;
     bool copied = ra::filesystem::CopyFileUtf8(current_process_path, new_process_path_utf8);
