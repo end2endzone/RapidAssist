@@ -599,7 +599,8 @@ namespace ra { namespace process { namespace test
     command.append(" --OutputGetCurrentProcessPathUtf8");
     command.append(">");
     command.append(log_filename);
-    int exit_code = WEXITSTATUS( system(command.c_str()) );
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
     ASSERT_EQ(0, exit_code);
 #endif //_WIN32
 
