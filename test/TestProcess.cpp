@@ -603,7 +603,7 @@ namespace ra { namespace process { namespace test
     command.append(log_filename);
     int system_result = system(command.c_str());
     int exit_code = WEXITSTATUS( system_result );
-    ASSERT_EQ(0, exit_code) << "Failed running command: " <<  << command;
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
 #endif //_WIN32
 
     //Search the log file for a valid utf-8 encoded path
