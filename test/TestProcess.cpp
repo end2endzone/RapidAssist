@@ -587,9 +587,8 @@ namespace ra { namespace process { namespace test
     command.append(" --OutputGetCurrentProcessPathUtf8");
     command.append(">");
     command.append(log_filename);
-    printf("Running command: %s\n", command.c_str());
     int exit_code = system(command.c_str());
-    ASSERT_EQ(0, exit_code) << command;
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
 #elif __linux__
     //Run the new process and log the output
     std::string command;
@@ -597,15 +596,14 @@ namespace ra { namespace process { namespace test
     command.append(test_dir_path);
     command.append("\" && chmod 777 ");
     command.append(new_process_filename);
-    command.append(" && ");
+    command.append(" && ./");
     command.append(new_process_filename);
     command.append(" --OutputGetCurrentProcessPathUtf8");
     command.append(">");
     command.append(log_filename);
-    printf("Running command: %s\n", command.c_str());
     int system_result = system(command.c_str());
     int exit_code = WEXITSTATUS( system_result );
-    ASSERT_EQ(0, exit_code) << command;
+    ASSERT_EQ(0, exit_code) << "Failed running command: " <<  << command;
 #endif //_WIN32
 
     //Search the log file for a valid utf-8 encoded path
