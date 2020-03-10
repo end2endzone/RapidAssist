@@ -35,13 +35,22 @@
 #include "CommandLineMgr.h"
 
 int main(int argc, char **argv) {
+  std::string tmp;
+  bool found = false;
 
   //validate --OutputGetCurrentProcessPathUtf8
-  std::string tmp;
-  bool found = ra::cli::ParseArgument("OutputGetCurrentProcessPathUtf8", tmp, argc, argv);
+  found = ra::cli::ParseArgument("OutputGetCurrentProcessPathUtf8", tmp, argc, argv);
   if (found)
   {
     ra::test::OutputGetCurrentProcessPathUtf8();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentDirectoryUtf8
+  found = ra::cli::ParseArgument("OutputGetCurrentDirectoryUtf8", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentDirectoryUtf8();
     return 0;
   }
 

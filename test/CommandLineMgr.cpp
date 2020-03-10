@@ -26,6 +26,7 @@
 
 #include "rapidassist/cli.h"
 #include "rapidassist/process_utf8.h"
+#include "rapidassist/filesystem_utf8.h"
 
 namespace ra { namespace test
 {
@@ -38,6 +39,11 @@ namespace ra { namespace test
   void OutputGetCurrentProcessDirUtf8() {
     std::string current_process_dir_utf8 = ra::process::GetCurrentProcessDirUtf8();
     printf("%s\n", current_process_dir_utf8.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  void OutputGetCurrentDirectoryUtf8() {
+    std::string current_dir_utf8 = ra::filesystem::GetCurrentDirectoryUtf8();
+    printf("%s\n", current_dir_utf8.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

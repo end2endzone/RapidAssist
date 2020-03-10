@@ -25,6 +25,7 @@
 #include "TestFilesystemUtf8.h"
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/testing.h"
+#include "rapidassist/timing.h"
 #include "rapidassist/process.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/environment_utf8.h"
@@ -247,6 +248,105 @@ namespace ra { namespace filesystem { namespace test
     //do the actual file deletion
     bool deleted = ra::filesystem::DeleteFileUtf8(test_file_path.c_str());
     ASSERT_TRUE(deleted);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testGetFileModifiedDateUtf8) {
+    //assert that unit of return value is seconds
+    {
+      //synchronize to the beginning of a new second on wall-clock.
+      ra::timing::WaitNextSecond();
+
+      static const uint64_t EXPECTED = 3;
+      const std::string filename1 = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega.txt";
+      const std::string filename2 = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.txt";
+      bool file_write1 = ra::filesystem::WriteTextFileUtf8(filename1.c_str(), std::string(200, '1'));
+      ASSERT_TRUE(file_write1);
+      //allow 3 seconds between the files
+      for (uint64_t i = 0; i < EXPECTED; i++) {
+        ra::timing::WaitNextSecond();
+      }
+      bool file_write2 = ra::filesystem::WriteTextFileUtf8(filename2.c_str(), std::string(75, '1'));
+      ASSERT_TRUE(file_write2);
+
+      uint64_t time1 = filesystem::GetFileModifiedDateUtf8(filename1);
+      uint64_t time2 = filesystem::GetFileModifiedDateUtf8(filename2);
+      uint64_t diff = time2 - time1;
+      ASSERT_GE(diff, EXPECTED);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testGetCurrentDirectoryUtf8) {
+    std::string log_filename = ra::testing::GetTestQualifiedName() + ".log";
+
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+    //Create a working directory that matches current test name with an utf-8 character
+    std::string test_dir_name_utf8 = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi";
+    std::string test_dir_path_utf8 = ra::process::GetCurrentProcessDir() + separator + test_dir_name_utf8;
+    bool success = filesystem::CreateDirectoryUtf8(test_dir_path_utf8.c_str());
+    ASSERT_TRUE(success);
+
+    //clone current process executable into another process which name contains an utf8 character.
+    std::string duplicate_process_filename = ra::testing::GetTestQualifiedName();
+#ifdef _WIN32
+    duplicate_process_filename.append(".exe");
+#endif
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    std::string duplicate_process_path_utf8 = test_dir_path_utf8 + separator + duplicate_process_filename;
+    bool copied = ra::filesystem::CopyFileUtf8(current_process_path, duplicate_process_path_utf8);
+    ASSERT_TRUE(copied);
+
+#ifdef _WIN32
+    //The current RapidAssist does not provide a StartProcessUtf8() api yet.
+    //We cannot launch a process from the command prompt if the process directory have an utf-8 character.
+    //To get around this, we look for the 8.3 directory name and use this name for reaching the file.
+    std::string test_dir_name_short = ra::filesystem::GetShortPathForm(test_dir_name_utf8);
+    std::string test_dir_path_short = ra::process::GetCurrentProcessDir() + separator + test_dir_name_short;
+    bool test_dir_path_short_found = ra::filesystem::DirectoryExists(test_dir_path_short.c_str());
+    ASSERT_TRUE(test_dir_path_short_found);
+
+    //Run the new process and log the output
+    std::string command;
+    command.append("cd /d \"");
+    command.append(test_dir_path_short);
+    command.append("\" & ");
+    command.append(duplicate_process_filename);
+    command.append(" --OutputGetCurrentDirectoryUtf8");
+    command.append(">");
+    command.append(log_filename);
+    int exit_code = system(command.c_str());
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#elif __linux__
+    //Run the new process and log the output
+    std::string command;
+    command.append("cd \"");
+    command.append(test_dir_path_utf8);
+    command.append("\" && chmod 777 ");
+    command.append(duplicate_process_filename);
+    command.append(" && ./");
+    command.append(duplicate_process_filename);
+    command.append(" --OutputGetCurrentDirectoryUtf8");
+    command.append(">");
+    command.append(log_filename);
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#endif //_WIN32
+
+    //Search the log file for a valid utf-8 encoded path
+    std::string log_path_utf8 = test_dir_path_utf8 + separator + log_filename;
+    bool log_found = ra::filesystem::FileExistsUtf8(log_path_utf8.c_str());
+    ASSERT_TRUE(log_found);
+
+    std::string file_content;
+    bool file_readed = ra::filesystem::ReadTextFileUtf8(log_path_utf8, file_content);
+    ASSERT_TRUE(file_readed);
+
+    bool found_path = (file_content.find(test_dir_path_utf8) != std::string::npos);
+    ASSERT_TRUE(found_path);
+
+    //cleanup
+    ra::filesystem::DeleteDirectoryUtf8(test_dir_path_utf8.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

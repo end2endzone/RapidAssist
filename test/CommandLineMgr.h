@@ -29,6 +29,7 @@ namespace ra { namespace test
 {
 
   void OutputGetCurrentProcessPathUtf8();
+  void OutputGetCurrentDirectoryUtf8();
 
 } //namespace test
 } //namespace ra
