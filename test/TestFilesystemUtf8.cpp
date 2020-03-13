@@ -275,7 +275,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemUtf8, testGetCurrentDirectoryUtf8) {
+  TEST_F(TestFilesystemUtf8, DISABLED_testGetCurrentDirectoryUtf8) {
     std::string log_filename = ra::testing::GetTestQualifiedName() + ".log";
 
     const std::string separator = ra::filesystem::GetPathSeparatorStr();
