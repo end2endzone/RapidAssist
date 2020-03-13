@@ -56,11 +56,14 @@ namespace ra { namespace testing {
       close();
     }
 
-    bool isEOF() {
-      if (file_pointer_ == NULL)
+    static bool isEOF(FILE * f) {
+      if (f == NULL)
         return true;
       //http://www.cplusplus.com/reference/cstdio/feof/
-      return (feof(file_pointer_) != 0);
+      return (feof(f) != 0);
+    }
+    bool isEOF() {
+      return FileWrapper::isEOF(file_pointer_);
     }
 
     void close() {
@@ -270,7 +273,6 @@ namespace ra { namespace testing {
   }
 
   bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences) {
-    
     //Compare by size
     long size1 = ra::filesystem::GetFileSize(iFile1);
     long size2 = ra::filesystem::GetFileSize(iFile2);
@@ -283,8 +285,6 @@ namespace ra { namespace testing {
     }
 
     //Compare content
-    fclose(iFile1);
-    fclose(iFile2);
     std::vector<FileDiff> differences;
     bool success = GetFileDifferences(iFile1, iFile2, differences, iMaxDifferences + 1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
     if (!success) {
@@ -294,6 +294,7 @@ namespace ra { namespace testing {
 
     if (differences.size() == 0) {
       //no diffences. Files are identicals
+      oReason.clear();
       return true;
     }
 
@@ -330,13 +331,6 @@ namespace ra { namespace testing {
     return result;
   }
 
-  bool isEOF(FILE * f) {
-    if (f == NULL)
-      return true;
-    //http://www.cplusplus.com/reference/cstdio/feof/
-    return (feof(f) != 0);
-  }
-
   bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
     //Check by size
     long size1 = ra::filesystem::GetFileSize(iFile1);
@@ -352,7 +346,7 @@ namespace ra { namespace testing {
     size_t offsetRead = 0;
 
     //while there is data to read in files
-    while (!isEOF(iFile1) && !isEOF(iFile2)) {
+    while (!FileWrapper::isEOF(iFile1) && !FileWrapper::isEOF(iFile2)) {
       size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, iFile1);
       size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, iFile2);
       if (readSize1 != readSize2) {
