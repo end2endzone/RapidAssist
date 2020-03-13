@@ -21,12 +21,18 @@ set(RAPIDASSIST_HEADER_FILES ""
 )
 
 if(RAPIDASSIST_BUILD_TESTING)
-  # add another header file
-  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES} ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h)
+  # add other header files
+  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES}
+    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h
+    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing_utf8.h
+  )
 
   find_package(GTest)
 
-  set(RAPIDASSIST_TESTING_SOURCE_FILES testing.cpp)
+  set(RAPIDASSIST_TESTING_SOURCE_FILES ""
+    testing.cpp
+    testing_utf8.cpp
+  )
 endif()
 
 add_library(rapidassist STATIC
