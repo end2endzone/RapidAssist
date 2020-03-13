@@ -25,6 +25,7 @@
 #include "TestDemo.h"
 #include "rapidassist/testing.h"
 #include "rapidassist/strings.h"
+#include "rapidassist/filesystem.h"
 
 namespace ra { namespace test {
   void TestDemo::SetUp() {
@@ -33,6 +34,9 @@ namespace ra { namespace test {
   }
 
   void TestDemo::TearDown() {
+    //cleanup
+    ra::filesystem::DeleteFile("demo1.tmp");
+    ra::filesystem::DeleteFile("demo2.tmp");
   }
 
   std::string generateTestFile() {
@@ -65,6 +69,9 @@ namespace ra { namespace test {
     //execute search and replace in strings
     std::string whoiam = "My name is Antoine and I am a superhero.";
     int numReplaced = ra::strings::Replace(whoiam, "hero", "vilan"); //returns 1
+
+    //cleanup
+    ra::filesystem::DeleteFile(path.c_str());
   }
 
 } //namespace test

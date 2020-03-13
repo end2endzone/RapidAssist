@@ -619,7 +619,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(found_path);
 
     //cleanup
-    ra::filesystem::DeleteDirectory(test_dir_path.c_str());
+    ra::filesystem::DeleteDirectoryUtf8(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
