@@ -24,7 +24,7 @@
 
 #include "TestFilesystemUtf8.h"
 #include "rapidassist/filesystem_utf8.h"
-#include "rapidassist/testing.h"
+#include "rapidassist/testing_utf8.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/process.h"
 #include "rapidassist/environment.h"
@@ -347,6 +347,29 @@ namespace ra { namespace filesystem { namespace test
 
     //cleanup
     ra::filesystem::DeleteDirectoryUtf8(test_dir_path_utf8.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testGetFileModifiedDateUtf8) {
+    //assert that unit of return value is seconds
+    {
+      //synchronize to the beginning of a new second on wall-clock.
+      ra::timing::WaitNextSecond();
+
+      static const uint64_t EXPECTED = 3;
+      const std::string filename1 = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.1.txt";
+      const std::string filename2 = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega.2.txt";
+      ASSERT_TRUE(ra::testing::CreateFileUtf8(filename1.c_str()));
+      //allow 3 seconds between the files
+      for (uint64_t i = 0; i < EXPECTED; i++) {
+        ra::timing::WaitNextSecond();
+      }
+      ASSERT_TRUE(ra::testing::CreateFileUtf8(filename2.c_str()));
+
+      uint64_t time1 = filesystem::GetFileModifiedDateUtf8(filename1);
+      uint64_t time2 = filesystem::GetFileModifiedDateUtf8(filename2);
+      uint64_t diff = time2 - time1;
+      ASSERT_GE(diff, EXPECTED);
+    }
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
