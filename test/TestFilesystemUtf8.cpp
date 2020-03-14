@@ -26,7 +26,7 @@
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/testing_utf8.h"
 #include "rapidassist/timing.h"
-#include "rapidassist/process.h"
+#include "rapidassist/process_utf8.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/environment_utf8.h"
 
@@ -349,6 +349,107 @@ namespace ra { namespace filesystem { namespace test
 
     //cleanup
     ra::filesystem::DeleteDirectoryUtf8(test_dir_path_utf8.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testCopyFileBasicUtf8) {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::GetCurrentProcessPathUtf8();
+    const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::GetTemporaryDirectoryUtf8();
+    const std::string output_filename = ra::testing::GetTestQualifiedName() + "." + process_filename + ".psi_\xCE\xA8_psi.tmp";
+    const std::string output_path = temp_dir + ra::filesystem::GetPathSeparator() + output_filename;
+
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(process_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::DirectoryExistsUtf8(temp_dir.c_str()));
+
+    bool copied = ra::filesystem::CopyFileUtf8(process_path, output_path);
+    ASSERT_TRUE(copied) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(output_path.c_str())) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::GetFileSizeUtf8(process_path.c_str());
+    uint32_t target_size = ra::filesystem::GetFileSizeUtf8(output_path.c_str());
+    ASSERT_EQ(source_size, target_size);
+  }
+  //--------------------------------------------------------------------------------------------------
+  static bool gProgressBeginUtf8 = false;
+  static bool gProgressEndUtf8 = false;
+  void myCopyFileCallbackFunctionUtf8(double progress) {
+    //remember first and last callbacks
+    if (progress == 0.0)
+      gProgressBeginUtf8 = true;
+    if (progress == 1.0)
+      gProgressEndUtf8 = true;
+
+    printf("%s(%.2f)\n", __FUNCTION__, progress);
+  }
+  TEST_F(TestFilesystemUtf8, testCopyFileCallbackFunctionUtf8) {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::GetCurrentProcessPathUtf8();
+    const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::GetTemporaryDirectoryUtf8();
+    const std::string output_filename = ra::testing::GetTestQualifiedName() + "." + process_filename + ".omega_\xCE\xA9_omega.tmp";
+    const std::string output_path = temp_dir + ra::filesystem::GetPathSeparator() + output_filename;
+
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(process_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::DirectoryExistsUtf8(temp_dir.c_str()));
+
+    gProgressBeginUtf8 = false;
+    gProgressEndUtf8 = false;
+    bool copied = ra::filesystem::CopyFileUtf8(process_path, output_path, &myCopyFileCallbackFunctionUtf8);
+    ASSERT_TRUE(copied) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(output_path.c_str())) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::GetFileSizeUtf8(process_path.c_str());
+    uint32_t target_size = ra::filesystem::GetFileSizeUtf8(output_path.c_str());
+    ASSERT_EQ(source_size, target_size);
+
+    //assert that first and last progress was received
+    ASSERT_TRUE(gProgressBeginUtf8);
+    ASSERT_TRUE(gProgressEndUtf8);
+  }
+  //--------------------------------------------------------------------------------------------------
+  class CopyFileCallbackFunctorUtf8 : public virtual ra::filesystem::IProgressReport {
+  public:
+    CopyFileCallbackFunctorUtf8() : progress_begin_(false), progress_end_(false) {};
+    virtual ~CopyFileCallbackFunctorUtf8() {};
+    virtual void OnProgressReport(double progress) {
+      //remember first and last callbacks
+      if (progress == 0.0)
+        progress_begin_ = true;
+      if (progress == 1.0)
+        progress_end_ = true;
+
+      printf("%s(%.2f)\n", __FUNCTION__, progress);
+    }
+    bool hasProgressBegin() { return progress_begin_; }
+    bool hasProgressEnd() { return progress_end_; }
+  private:
+    bool progress_begin_;
+    bool progress_end_;
+  };
+  TEST_F(TestFilesystemUtf8, testCopyFileCallbackFunctorUtf8) {
+    //copy this process executable to another file
+    const std::string process_path = ra::process::GetCurrentProcessPathUtf8();
+    const std::string process_filename = ra::filesystem::GetFilename(process_path.c_str());
+    const std::string temp_dir = filesystem::GetTemporaryDirectoryUtf8();
+    const std::string output_filename = ra::testing::GetTestQualifiedName() + "." + process_filename + ".psi_\xCE\xA8_psi.tmp";
+    const std::string output_path = temp_dir + ra::filesystem::GetPathSeparator() + output_filename;
+
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(process_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::DirectoryExistsUtf8(temp_dir.c_str()));
+
+    CopyFileCallbackFunctorUtf8 functor;
+    bool copied = ra::filesystem::CopyFileUtf8(process_path, output_path, &functor);
+    ASSERT_TRUE(copied) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";
+    ASSERT_TRUE(ra::filesystem::FileExistsUtf8(output_path.c_str())) << "File '" << output_path.c_str() << "' not found.";
+
+    uint32_t source_size = ra::filesystem::GetFileSizeUtf8(process_path.c_str());
+    uint32_t target_size = ra::filesystem::GetFileSizeUtf8(output_path.c_str());
+    ASSERT_EQ(source_size, target_size);
+
+    //assert that first and last progress was received
+    ASSERT_TRUE(functor.hasProgressBegin());
+    ASSERT_TRUE(functor.hasProgressEnd());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
