@@ -24,9 +24,9 @@
 
 #include "rapidassist/propertiesfile.h"
 
-#include "rapidassist/strings.h"
-#include "rapidassist/filesystem.h"
+#include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/testing.h"
+#include "rapidassist/unicode.h"
 
 #include <stdint.h>
 #include <algorithm>    // std::min
@@ -109,6 +109,25 @@ namespace ra { namespace filesystem {
   PropertiesFile::~PropertiesFile() {
   }
 
+  bool PropertiesFile::LoadUtf8(const std::string & file_path) {
+    if (file_path.empty())
+      return false;
+ 
+    if (!ra::filesystem::FileExistsUtf8(file_path.c_str()))
+      return false;
+ 
+    Clear();
+ 
+    // TODO: process file open here
+    ra::strings::StringVector lines;
+    bool loaded = ra::filesystem::ReadTextFileUtf8(file_path.c_str(), lines);
+    if (!loaded)
+      return false;
+ 
+    loaded = Load(lines);
+    return loaded;
+  }
+
   bool PropertiesFile::Load(const std::string & file_path) {
     if (file_path.empty())
       return false;
@@ -124,6 +143,11 @@ namespace ra { namespace filesystem {
     if (!loaded)
       return false;
 
+    loaded = Load(lines);
+    return loaded;
+  }
+
+  bool PropertiesFile::Load(const ra::strings::StringVector & lines) {
     std::string multiline_key;
     std::string multiline_value; //accumulator for multiline values
 
@@ -220,11 +244,31 @@ namespace ra { namespace filesystem {
     return true;
   }
 
+  bool PropertiesFile::SaveUtf8(const std::string & file_path) {
+#ifdef _WIN32 // UTF-8
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(file_path);
+    FILE * f = _wfopen(pathW.c_str(), L"w");
+#elif __linux__
+    FILE * f = fopen(file_path.c_str(), "w");
+#endif // UTF-8
+
+    if (!f)
+      return false;
+ 
+    bool saved = Save(f);
+    return saved;
+  }
+ 
   bool PropertiesFile::Save(const std::string & file_path) {
     FILE * f = fopen(file_path.c_str(), "w");
     if (!f)
       return false;
-
+ 
+    bool saved = Save(f);
+    return saved;
+  }
+ 
+  bool PropertiesFile::Save(FILE * f) {
     //for each properties
     for (PropertyMap::const_iterator propertyIt = properties_.begin(); propertyIt != properties_.end(); propertyIt++) {
       std::string key = propertyIt->first;

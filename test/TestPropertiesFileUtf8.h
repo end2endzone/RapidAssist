@@ -22,40 +22,21 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_PROPERTIESFILE_H
-#define RA_PROPERTIESFILE_H
+#ifndef TEST_PROPERTIESFILEUTF8_H
+#define TEST_PROPERTIESFILEUTF8_H
 
-#include "rapidassist/strings.h"
-#include <map>
+#include <gtest/gtest.h>
 
-namespace ra { namespace filesystem {
-
-  class PropertiesFile {
+namespace ra { namespace filesystem { namespace test
+{
+  class TestPropertiesFileUtf8 : public ::testing::Test {
   public:
-    PropertiesFile();
-    virtual ~PropertiesFile();
-
-    virtual bool Load(const std::string & file_path);
-    virtual bool Save(const std::string & file_path);
-    virtual bool LoadUtf8(const std::string & file_path);
-    virtual bool SaveUtf8(const std::string & file_path);
-
-    virtual bool Clear();
-    virtual bool HasKey(const std::string & key) const;
-    virtual bool DeleteKey(const std::string & key);
-    virtual bool GetValue(const std::string & key, std::string & value) const;
-    virtual bool SetValue(const std::string & key, const std::string & value);
-
-  private:
-    bool Load(const ra::strings::StringVector & lines);
-    bool Save(FILE * f);
-
-  private:
-    typedef std::map<std::string /*keyname*/, std::string /*value*/> PropertyMap;
-    PropertyMap properties_;
+    virtual void SetUp();
+    virtual void TearDown();
   };
 
+} //namespace test
 } //namespace filesystem
 } //namespace ra
 
-#endif //RA_PROPERTIESFILE_H
+#endif //TEST_PROPERTIESFILEUTF8_H

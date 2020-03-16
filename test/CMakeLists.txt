@@ -7,6 +7,8 @@ endif()
 set(UNITTEST_TEST_FILES ""
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testLoad.txt
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testSave.expected.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFileUtf8.testLoadUtf8.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFileUtf8.testSaveUtf8.expected.txt
 )
 
 add_executable(rapidassist_unittest
@@ -40,6 +42,8 @@ add_executable(rapidassist_unittest
   TestProcess.h
   TestPropertiesFile.cpp
   TestPropertiesFile.h
+  TestPropertiesFileUtf8.cpp
+  TestPropertiesFileUtf8.h
   TestRandom.cpp
   TestRandom.h
   TestString.cpp

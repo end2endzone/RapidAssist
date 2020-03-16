@@ -1,0 +1,5 @@
+website = https://en.wikipedia.org/
+language = English
+key\ with\ spaces = this is the value of "key with spaces".
+key\=with\=equals = this is the value of "key=with=equals".
+key\:with\:colons = this is the value of "key:with:colons".
