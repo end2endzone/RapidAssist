@@ -22,21 +22,21 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_RA_FILESYSTEM_UTF8_H
-#define TEST_RA_FILESYSTEM_UTF8_H
+#ifndef TEST_RA_ENVIRONMENT_UTF8_H
+#define TEST_RA_ENVIRONMENT_UTF8_H
 
 #include <gtest/gtest.h>
 
-namespace ra { namespace filesystem { namespace test
+namespace ra { namespace environment { namespace test
 {
-  class TestFilesystemUtf8 : public ::testing::Test {
+  class TestEnvironmentUtf8 : public ::testing::Test {
   public:
     virtual void SetUp();
     virtual void TearDown();
   };
 
 } //namespace test
-} //namespace filesystem
+} //namespace environment
 } //namespace ra
 
-#endif //TEST_RA_FILESYSTEM_UTF8_H
+#endif //TEST_RA_ENVIRONMENT_UTF8_H

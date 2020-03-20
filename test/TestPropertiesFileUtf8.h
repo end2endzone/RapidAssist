@@ -22,8 +22,8 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef TEST_PROPERTIESFILEUTF8_H
-#define TEST_PROPERTIESFILEUTF8_H
+#ifndef TEST_PROPERTIESFILE_UTF8_H
+#define TEST_PROPERTIESFILE_UTF8_H
 
 #include <gtest/gtest.h>
 
@@ -39,4 +39,4 @@ namespace ra { namespace filesystem { namespace test
 } //namespace filesystem
 } //namespace ra
 
-#endif //TEST_PROPERTIESFILEUTF8_H
+#endif //TEST_PROPERTIESFILE_UTF8_H
