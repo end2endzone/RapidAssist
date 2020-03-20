@@ -18,6 +18,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/timing.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/unicode.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/user_utf8.h
 )
 
 if(RAPIDASSIST_BUILD_TESTING)
@@ -58,6 +59,7 @@ add_library(rapidassist STATIC
   timing.cpp
   unicode.cpp
   user.cpp
+  user_utf8.cpp
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest

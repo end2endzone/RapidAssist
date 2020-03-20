@@ -58,6 +58,8 @@ add_executable(rapidassist_unittest
   TestUnicode.h
   TestUser.cpp
   TestUser.h
+  TestUserUtf8.cpp
+  TestUserUtf8.h
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest
