@@ -54,7 +54,7 @@ namespace ra { namespace process {
   /// <returns>Returns the directory path of the current process. Returns an empty string on error.</returns>
   std::string GetCurrentProcessDirUtf8();
 
-#elif __linux__
+#elif __linux__ // UTF-8
 
   /// <summary>
   /// Provides the file path of the current executing process.

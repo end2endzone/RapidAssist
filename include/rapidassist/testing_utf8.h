@@ -31,7 +31,7 @@
 
 namespace ra { namespace testing {
 
-#ifdef _WIN32
+#ifdef _WIN32 // UTF-8
 
   //
   // Description:
@@ -96,7 +96,7 @@ namespace ra { namespace testing {
   // 
   void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue);
 
-#elif __linux__
+#elif __linux__ // UTF-8
 
   //
   // Description:
@@ -160,8 +160,7 @@ namespace ra { namespace testing {
   // 
   inline void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue) { ChangeFileContent(iFilePath, iOffset, iValue); }
 
-
-#endif
+#endif // UTF-8
 
 } //namespace testing
 } //namespace ra

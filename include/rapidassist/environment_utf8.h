@@ -32,7 +32,7 @@
 
 namespace ra { namespace environment {
 
-#ifdef _WIN32
+#ifdef _WIN32 // UTF-8
   /// <summary>
   /// Returns the current value of an environment variable.
   /// </summary>
@@ -64,7 +64,7 @@ namespace ra { namespace environment {
   /// <returns>Returns a new string with the expanded strings.</returns>
   std::string ExpandUtf8(const std::string & iValue);
 
-#elif __linux__
+#elif __linux__ // UTF-8
 
   /// <summary>
   /// Returns the current value of an environment variable.
@@ -101,7 +101,7 @@ namespace ra { namespace environment {
   /// <remarks>On Linux, this function delegates to Expand(). It provides cross-platform compatibility for Windows users.</remarks>
   inline std::string ExpandUtf8(const std::string & iValue) { return Expand(iValue); }
 
-#endif
+#endif // UTF-8
 
 } //namespace environment
 } //namespace ra
