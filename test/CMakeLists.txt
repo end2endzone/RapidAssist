@@ -1,7 +1,12 @@
 find_package(GTest)
 
 if(RAPIDASSIST_BUILD_TESTING)
-  set(RAPIDASSIST_TESTING_TEST_FILES TestTesting.cpp TestTesting.h)
+  set(RAPIDASSIST_TESTING_TEST_FILES
+    TestTesting.cpp
+    TestTesting.h
+    TestTestingUtf8.cpp
+    TestTestingUtf8.h
+  )
 endif()
 
 set(UNITTEST_TEST_FILES ""
