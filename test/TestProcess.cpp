@@ -67,13 +67,222 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessPath) {
+    std::string log_filename = ra::testing::GetTestQualifiedName() + ".log";
+
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+    //Create a working directory that matches current test name
+    std::string test_dir_name = ra::testing::GetTestQualifiedName();
+    std::string test_dir_path = ra::process::GetCurrentProcessDir() + separator + test_dir_name;
+    bool success = filesystem::CreateDirectory(test_dir_path.c_str());
+    ASSERT_TRUE(success);
+
+    //clone current process executable into another process which name contains an utf8 character.
+    std::string new_process_filename = ra::testing::GetTestQualifiedName();
+#ifdef _WIN32
+    new_process_filename.append(".exe");
+#endif
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    std::string new_process_path_utf8 = test_dir_path + separator + new_process_filename;
+    bool copied = ra::filesystem::CopyFile(current_process_path, new_process_path_utf8);
+    ASSERT_TRUE(copied);
+
+#ifdef _WIN32
+    //The current RapidAssist does not provide a StartProcessUtf8() api yet.
+    //We cannot launch a process from the command prompt if the process filename have an utf-8 character.
+    //To get around this, we look for the 8.3 filename and use this filename for testing.
+    std::string short_new_process_filename = ra::filesystem::GetShortPathForm(new_process_filename);
+    std::string short_new_process_path = test_dir_path + separator + short_new_process_filename;
+    bool short_full_path_found = ra::filesystem::FileExists(short_new_process_path.c_str());
+    ASSERT_TRUE(short_full_path_found);
+
+    //Run the new process and log the output
+    std::string command;
+    command.append("cd /d \"");
+    command.append(test_dir_path);
+    command.append("\" & ");
+    command.append(short_new_process_filename);
+    command.append(" --OutputGetCurrentProcessPath");
+    command.append(">");
+    command.append(log_filename);
+    int exit_code = system(command.c_str());
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#elif __linux__
+    //Run the new process and log the output
+    std::string command;
+    command.append("cd \"");
+    command.append(test_dir_path);
+    command.append("\" && chmod 777 ");
+    command.append(new_process_filename);
+    command.append(" && ./");
+    command.append(new_process_filename);
+    command.append(" --OutputGetCurrentProcessPath");
+    command.append(">");
+    command.append(log_filename);
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#endif //_WIN32
+
+    //Search the log file for a valid utf-8 encoded path
+    std::string log_path = test_dir_path + separator + log_filename;
+    bool log_found = ra::filesystem::FileExists(log_path.c_str());
+    ASSERT_TRUE(log_found);
+
+    std::string file_content;
+    bool file_readed = ra::filesystem::ReadTextFile(log_path, file_content);
+    ASSERT_TRUE(file_readed);
+
+    bool found_path = (file_content.find(new_process_path_utf8) != std::string::npos);
+    ASSERT_TRUE(found_path);
+
+    //cleanup
+    ra::filesystem::DeleteDirectory(test_dir_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testGetCurrentProcessDir) {
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+    //Create a working directory that matches current test name and contains an utf8 character.
+    std::string test_dir_name = ra::testing::GetTestQualifiedName();
+    std::string test_dir_path = ra::process::GetCurrentProcessDir() + separator + test_dir_name;
+    bool success = filesystem::CreateDirectory(test_dir_path.c_str());
+    ASSERT_TRUE(success);
+
+    //clone current process executable into another process which name contains an utf8 character.
+    std::string new_process_filename = ra::testing::GetTestQualifiedName();
+#ifdef _WIN32
+    new_process_filename.append(".exe");
+#endif
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    std::string new_process_path_utf8 = test_dir_path + separator + new_process_filename;
+    bool copied = ra::filesystem::CopyFile(current_process_path, new_process_path_utf8);
+    ASSERT_TRUE(copied);
+
+#ifdef __linux__
+    //Set new process as executable
+    {
+      std::string command;
+      command.append("chmod 777 ");
+      command.append(new_process_path_utf8);
+      int system_result = system(command.c_str());
+      int exit_code = WEXITSTATUS( system_result );
+      ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+    }
+#endif //__linux__
+
+    //Run the new executable
+#ifdef _WIN32
+    std::string arguments = "--SaveGetCurrentProcessDir";
+    processid_t pid = StartProcess(new_process_path_utf8, test_dir_path, arguments);
+#elif __linux__
+    ra::strings::StringVector arguments;
+    arguments.push_back("--SaveGetCurrentProcessDir");
+    processid_t pid = StartProcess(new_process_path_utf8, test_dir_path, arguments);
+#endif
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+
+    //wait for the process to complete
+    int exitcode = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    ASSERT_TRUE(wait_ok);
+
+    //Search for the generated output file
+    std::string expected_output_file_path = test_dir_path + separator + "SaveGetCurrentProcessDir.txt";
+    ASSERT_TRUE( ra::filesystem::FileExists(expected_output_file_path.c_str()) );
+
+    //Read the file
+    std::string content;
+    bool readed = ra::filesystem::ReadTextFile(expected_output_file_path, content);
+    ASSERT_TRUE( readed );
+
+    //ASSERT
+    ASSERT_EQ(test_dir_path, content);
+
+    //cleanup
+    ra::filesystem::DeleteFile(expected_output_file_path.c_str());
+    ra::filesystem::DeleteDirectory(test_dir_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testGetCurrentDirectory) {
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+    //Create a working directory (1) that matches current test name and contains an utf8 character.
+    std::string test_dir_name1 = ra::testing::GetTestQualifiedName() + ".1";
+    std::string test_dir_path1 = ra::process::GetCurrentProcessDir() + separator + test_dir_name1;
+    bool success = filesystem::CreateDirectory(test_dir_path1.c_str());
+    ASSERT_TRUE(success);
+
+    //Create a working directory (2) that matches current test name and contains an utf8 character.
+    std::string test_dir_name2 = ra::testing::GetTestQualifiedName() + ".2";
+    std::string test_dir_path2 = ra::process::GetCurrentProcessDir() + separator + test_dir_name2;
+    success = filesystem::CreateDirectory(test_dir_path2.c_str());
+    ASSERT_TRUE(success);
+
+    //clone current process executable into another process which name contains an utf8 character.
+    std::string new_process_filename = ra::testing::GetTestQualifiedName();
+#ifdef _WIN32
+    new_process_filename.append(".exe");
+#endif
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    std::string new_process_path_utf8 = test_dir_path1 + separator + new_process_filename;
+    bool copied = ra::filesystem::CopyFile(current_process_path, new_process_path_utf8);
+    ASSERT_TRUE(copied);
+
+#ifdef __linux__
+    //Set new process as executable
+    {
+      std::string command;
+      command.append("chmod 777 ");
+      command.append(new_process_path_utf8);
+      int system_result = system(command.c_str());
+      int exit_code = WEXITSTATUS( system_result );
+      ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+    }
+#endif //__linux__
+
+    //Run the new executable from test_dir_path2
+#ifdef _WIN32
+    std::string arguments = "--SaveGetCurrentDirectory";
+    processid_t pid = StartProcess(new_process_path_utf8, test_dir_path2, arguments);
+#elif __linux__
+    ra::strings::StringVector arguments;
+    arguments.push_back("--SaveGetCurrentDirectory");
+    processid_t pid = StartProcess(new_process_path_utf8, test_dir_path2, arguments);
+#endif
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+
+    //wait for the process to complete
+    int exitcode = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    ASSERT_TRUE(wait_ok);
+
+    //Search for the generated output file
+    std::string expected_output_file_path = test_dir_path1 + separator + "SaveGetCurrentDirectory.txt";
+    ASSERT_TRUE( ra::filesystem::FileExists(expected_output_file_path.c_str()) );
+
+    //Read the file
+    std::string content;
+    bool readed = ra::filesystem::ReadTextFile(expected_output_file_path, content);
+    ASSERT_TRUE( readed );
+
+    //ASSERT
+    ASSERT_EQ(test_dir_path2, content);
+
+    //cleanup
+    ra::filesystem::DeleteFile(expected_output_file_path.c_str());
+    ra::filesystem::DeleteDirectory(test_dir_path1.c_str());
+    ra::filesystem::DeleteDirectory(test_dir_path2.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testGetCurrentProcessPath2) {
     std::string path = ra::process::GetCurrentProcessPath();
     printf("Process path: %s\n", path.c_str());
     ASSERT_TRUE(!path.empty());
     ASSERT_TRUE(ra::filesystem::FileExists(path.c_str()));
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestProcess, testGetCurrentProcessDir) {
+  TEST_F(TestProcess, testGetCurrentProcessDir2) {
     std::string dir = ra::process::GetCurrentProcessDir();
     printf("Process dir: %s\n", dir.c_str());
     ASSERT_TRUE(!dir.empty());

@@ -22,8 +22,8 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/process.h"
-#include "rapidassist/filesystem.h"
+#include "rapidassist/process_utf8.h"
+#include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/unicode.h"
 
@@ -81,6 +81,95 @@ namespace ra { namespace process {
       return dir; //failure
     dir = ra::filesystem::GetParentPath(exec_path);
     return dir;
+  }
+
+  processid_t StartProcessUtf8(const std::string & iExecPath) {
+    std::string curr_dir = ra::filesystem::GetCurrentDirectoryUtf8();
+
+    // Launch the process from the current process current directory
+    processid_t pid = StartProcessUtf8(iExecPath, curr_dir);
+    return pid;
+  }
+
+  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory) {
+    // Launch the process with no arguments
+    processid_t pid = StartProcessUtf8(iExecPath, iDefaultDirectory, "");
+    return pid;
+  }
+
+  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
+    //build the full command line
+    std::string command;
+
+    //handle iExecPath
+    if (!iExecPath.empty()) {
+      if (iExecPath.find(" ") != std::string::npos) {
+        command += "\"";
+        command += iExecPath;
+        command += "\"";
+      }
+      else
+        command += iExecPath;
+    }
+
+    if (!command.empty()) {
+      command += " ";
+      command += iCommandLine;
+    }
+
+    const std::wstring commandW = ra::unicode::Utf8ToUnicode(command);
+    const std::wstring defaultDirectoryW = ra::unicode::Utf8ToUnicode(iDefaultDirectory);
+
+    //launch a new process with the command line
+    PROCESS_INFORMATION process_info = { 0 };
+    STARTUPINFOW startup_info = { 0 };
+    startup_info.cb = sizeof(STARTUPINFOW);
+    startup_info.dwFlags = STARTF_USESHOWWINDOW;
+    startup_info.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
+    static const DWORD creation_flags = 0; //EXTENDED_STARTUPINFO_PRESENT
+    bool success = (CreateProcessW(NULL, (wchar_t*)commandW.c_str(), NULL, NULL, FALSE, creation_flags, NULL, defaultDirectoryW.c_str(), &startup_info, &process_info) != 0);
+    if (success) {
+      //Wait for the application to initialize properly
+      WaitForInputIdle(process_info.hProcess, INFINITE);
+
+      //Extract the program id
+      DWORD process_id = process_info.dwProcessId;
+
+      //return the process id
+      processid_t pId = static_cast<processid_t>(process_id);
+      return pId;
+    }
+    return INVALID_PROCESS_ID;
+  }
+
+  bool OpenDocumentUtf8(const std::string & iPath) {
+    if (!ra::filesystem::FileExistsUtf8(iPath.c_str()))
+      return false; //file not found
+
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+
+    SHELLEXECUTEINFOW info = { 0 };
+
+    info.cbSize = sizeof(SHELLEXECUTEINFOW);
+
+    info.fMask |= SEE_MASK_NOCLOSEPROCESS;
+    info.fMask |= SEE_MASK_NOASYNC;
+    info.fMask |= SEE_MASK_FLAG_DDEWAIT;
+
+    info.hwnd = HWND_DESKTOP;
+    info.nShow = SW_SHOWDEFAULT;
+    info.lpVerb = L"open";
+    info.lpFile = pathW.c_str();
+    info.lpParameters = NULL; //arguments
+    info.lpDirectory = NULL; // default directory
+
+    BOOL success = ShellExecuteExW(&info);
+    if (success) {
+      HANDLE hProcess = info.hProcess;
+      DWORD pid = GetProcessId(hProcess);
+      return true;
+    }
+    return false;
   }
 
 #endif // UTF-8

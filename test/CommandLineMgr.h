@@ -29,7 +29,20 @@ namespace ra { namespace test
 {
 
   void OutputGetCurrentProcessPathUtf8();
+  void OutputGetCurrentProcessDirUtf8();
   void OutputGetCurrentDirectoryUtf8();
+
+  void OutputGetCurrentProcessPath();
+  void OutputGetCurrentProcessDir();
+  void OutputGetCurrentDirectory();
+
+  bool SaveGetCurrentProcessPathUtf8();
+  bool SaveGetCurrentProcessDirUtf8();
+  bool SaveGetCurrentDirectoryUtf8();
+
+  bool SaveGetCurrentProcessPath();
+  bool SaveGetCurrentProcessDir();
+  bool SaveGetCurrentDirectory();
 
 } //namespace test
 } //namespace ra

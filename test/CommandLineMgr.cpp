@@ -30,6 +30,17 @@
 
 namespace ra { namespace test
 {
+  static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+  std::string GetFunctionNameWithoutNamespace(const char * full_name) {
+    ra::strings::StringVector values;
+    ra::strings::Split(values, full_name, ":");
+    if (values.empty())
+      return "";
+    const std::string & last = values[values.size()-1];
+    return last;
+  }
+
   //--------------------------------------------------------------------------------------------------
   void OutputGetCurrentProcessPathUtf8() {
     std::string current_process_path_utf8 = ra::process::GetCurrentProcessPathUtf8();
@@ -46,5 +57,63 @@ namespace ra { namespace test
     printf("%s\n", current_dir_utf8.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  void OutputGetCurrentProcessPath() {
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    printf("%s\n", current_process_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  void OutputGetCurrentProcessDir() {
+    std::string current_process_dir = ra::process::GetCurrentProcessDir();
+    printf("%s\n", current_process_dir.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  void OutputGetCurrentDirectory() {
+    std::string current_dir = ra::filesystem::GetCurrentDirectory();
+    printf("%s\n", current_dir.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentProcessPathUtf8() {
+    const std::string file_path = ra::process::GetCurrentProcessDirUtf8() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_process_path_utf8 = ra::process::GetCurrentProcessPathUtf8();
+    bool saved = ra::filesystem::WriteTextFileUtf8(file_path, current_process_path_utf8);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentProcessDirUtf8() {
+    const std::string file_path = ra::process::GetCurrentProcessDirUtf8() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_process_dir_utf8 = ra::process::GetCurrentProcessDirUtf8();
+    bool saved = ra::filesystem::WriteTextFileUtf8(file_path, current_process_dir_utf8);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentDirectoryUtf8() {
+    const std::string file_path = ra::process::GetCurrentProcessDirUtf8() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_dir_utf8 = ra::filesystem::GetCurrentDirectoryUtf8();
+    bool saved = ra::filesystem::WriteTextFileUtf8(file_path, current_dir_utf8);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentProcessPath() {
+    const std::string file_path = ra::process::GetCurrentProcessDir() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_process_path_ = ra::process::GetCurrentProcessPath();
+    bool saved = ra::filesystem::WriteTextFile(file_path, current_process_path_);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentProcessDir() {
+    const std::string file_path = ra::process::GetCurrentProcessDir() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_process_dir_ = ra::process::GetCurrentProcessDir();
+    bool saved = ra::filesystem::WriteTextFile(file_path, current_process_dir_);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  bool SaveGetCurrentDirectory() {
+    const std::string file_path = ra::process::GetCurrentProcessDir() + separator + GetFunctionNameWithoutNamespace(__FUNCTION__) + ".txt";
+    const std::string current_dir_ = ra::filesystem::GetCurrentDirectory();
+    bool saved = ra::filesystem::WriteTextFile(file_path, current_dir_);
+    return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+
 } //namespace test
 } //namespace ra
