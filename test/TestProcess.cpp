@@ -94,6 +94,11 @@ namespace ra { namespace process { namespace test
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
+    //wait for the process to complete
+    int exitcode = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    ASSERT_TRUE(wait_ok);
+
     //Search for the generated output file
     std::string expected_output_file_path = test_dir_path + separator + "SaveGetCurrentProcessPath.txt";
     ASSERT_TRUE( ra::filesystem::FileExists(expected_output_file_path.c_str()) );
@@ -108,6 +113,7 @@ namespace ra { namespace process { namespace test
 
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
+    ra::filesystem::DeleteFile(new_process_path.c_str());
     ra::filesystem::DeleteDirectory(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
@@ -152,6 +158,7 @@ namespace ra { namespace process { namespace test
 
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
+    ra::filesystem::DeleteFile(new_process_path.c_str());
     ra::filesystem::DeleteDirectory(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
@@ -203,6 +210,7 @@ namespace ra { namespace process { namespace test
 
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
+    ra::filesystem::DeleteFile(new_process_path.c_str());
     ra::filesystem::DeleteDirectory(test_dir_path1.c_str());
     ra::filesystem::DeleteDirectory(test_dir_path2.c_str());
   }
