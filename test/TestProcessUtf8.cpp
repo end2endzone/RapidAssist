@@ -31,10 +31,6 @@
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/user.h"
 
-#ifdef __linux__
-#include <sys/wait.h>
-#endif
-
 namespace ra { namespace test
 {
   extern bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  

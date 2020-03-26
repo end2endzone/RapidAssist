@@ -29,6 +29,11 @@
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/testing_utf8.h"
 
+#include <stdlib.h> //for system()
+#ifdef __linux__
+#include <sys/wait.h> //for WEXITSTATUS
+#endif
+
 namespace ra { namespace test
 {
   static const std::string separator = ra::filesystem::GetPathSeparatorStr();
