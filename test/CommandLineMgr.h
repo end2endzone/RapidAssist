@@ -25,8 +25,11 @@
 #ifndef TEST_RA_COMMANDLINEMGR_H
 #define TEST_RA_COMMANDLINEMGR_H
 
+#include <string>
+
 namespace ra { namespace test
 {
+  bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
 
   void OutputGetCurrentProcessPathUtf8();
   void OutputGetCurrentProcessDirUtf8();
