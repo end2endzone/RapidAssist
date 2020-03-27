@@ -36,6 +36,10 @@ namespace ra { namespace test {
   }
 
   void TestTesting::TearDown() {
+    //cleanup
+    ra::filesystem::DeleteFile("text1.tmp");
+    ra::filesystem::DeleteFile("text2.tmp");
+    ra::filesystem::DeleteFile("binary1.tmp");
   }
 
   TEST_F(TestTesting, testFile1NotFound) {
@@ -68,6 +72,10 @@ namespace ra { namespace test {
     bool equals = ra::testing::IsFileEquals(file1.c_str(), file2.c_str(), msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is smaller than Second file"), std::string::npos) << msg.c_str();
+
+    //cleanup
+    ra::filesystem::DeleteFile(file1.c_str());
+    ra::filesystem::DeleteFile(file2.c_str());
   }
 
   TEST_F(TestTesting, testFile1Bigger) {
@@ -81,6 +89,10 @@ namespace ra { namespace test {
     bool equals = ra::testing::IsFileEquals(file1.c_str(), file2.c_str(), msg);
     ASSERT_FALSE(equals) << msg.c_str();
     ASSERT_NE(msg.find("First file is bigger than Second file"), std::string::npos) << msg.c_str();
+
+    //cleanup
+    ra::filesystem::DeleteFile(file1.c_str());
+    ra::filesystem::DeleteFile(file2.c_str());
   }
 
   TEST_F(TestTesting, testBigFileEquals) {
@@ -92,6 +104,10 @@ namespace ra { namespace test {
     bool equals = ra::testing::IsFileEquals(file1, file2, msg);
     ASSERT_TRUE(equals) << msg.c_str();
     ASSERT_EQ(msg, "") << msg.c_str();
+
+    //cleanup
+    ra::filesystem::DeleteFile(file1);
+    ra::filesystem::DeleteFile(file2);
   }
 
   TEST_F(TestTesting, testSmallFileEquals) {
@@ -132,6 +148,10 @@ namespace ra { namespace test {
 
     //assert more than 3 errors found
     ASSERT_NE(msg.find("..."), std::string::npos) << msg.c_str();
+
+    //cleanup
+    ra::filesystem::DeleteFile(file1);
+    ra::filesystem::DeleteFile(file2);
   }
 
   TEST_F(TestTesting, testFileDiffAll) {
@@ -160,6 +180,10 @@ namespace ra { namespace test {
 
     //assert not more than 4 errors found
     ASSERT_EQ(msg.find("..."), std::string::npos) << msg.c_str();
+
+    //cleanup
+    ra::filesystem::DeleteFile(file1);
+    ra::filesystem::DeleteFile(file2);
   }
 
 } //namespace test

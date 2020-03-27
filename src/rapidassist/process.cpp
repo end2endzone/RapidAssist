@@ -25,6 +25,7 @@
 #include "rapidassist/process.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/timing.h"
+#include "rapidassist/unicode.h"
 
 #include <string>
 

@@ -24,8 +24,10 @@
 
 #include "rapidassist/environment.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/random.h"
 #include "rapidassist/process.h"
+#include "rapidassist/unicode.h"
 
 #include <algorithm>  //for std::transform(), sort()
 #include <string.h>   //for strdup()
@@ -166,14 +168,19 @@ namespace ra { namespace filesystem {
     return false;
   }
 
+  extern bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
+
   //shared cross-platform code for FindFiles().
-  bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth) {
+  bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth, bool use_utf8) {
     //is it a valid item ?
     if (iFilename != "." && iFilename != "..") {
       //build full path
       std::string full_filename = iDirectoryPath;
       NormalizePath(full_filename);
-      full_filename << GetPathSeparatorStr() << iFilename;
+      full_filename.append(GetPathSeparatorStr());
+      full_filename.append(iFilename);
+
+      //add this path to the list
       oFiles.push_back(full_filename);
 
       //should we recurse on directory ?
@@ -184,7 +191,11 @@ namespace ra { namespace filesystem {
           sub_depth = -1;
 
         //find children
-        bool result = FindFiles(oFiles, full_filename.c_str(), sub_depth);
+        bool result = false;
+        if (!use_utf8)
+          result = FindFiles(oFiles, full_filename.c_str(), sub_depth);
+        else
+          result = FindFilesUtf8(oFiles, full_filename.c_str(), sub_depth);
         if (!result) {
           return false;
         }
@@ -193,7 +204,6 @@ namespace ra { namespace filesystem {
 
     return true;
   }
-
 
   bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) {
     if (iPath == NULL)
@@ -215,7 +225,7 @@ namespace ra { namespace filesystem {
     std::string filename = find_data.cFileName;
     bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
     bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-    bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
+    bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth, false);
     if (!result) {
       //Warning: Current user is not able to browse this directory.
       //For instance:
@@ -234,7 +244,7 @@ namespace ra { namespace filesystem {
       filename = find_data.cFileName;
       bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
       bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth, false);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
@@ -252,7 +262,7 @@ namespace ra { namespace filesystem {
       std::string filename = dirp->d_name;
 
       bool is_directory = (dirp->d_type == DT_DIR);
-      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth);
+      bool result = processDirectoryEntry(oFiles, iPath, filename, is_directory, iDepth, false);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
@@ -405,7 +415,7 @@ namespace ra { namespace filesystem {
     if (!found)
       return false;
 
-    //soft files in reverse order
+    //sort files in reverse order
     //this allows deleting sub-directories and sub-files first
     std::sort(files.begin(), files.end(), greater());
 
@@ -942,14 +952,38 @@ namespace ra { namespace filesystem {
     return resolved;
   }
 
-  bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function) {
+  bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
     size_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
+    if (force_win32_utf8)
+    {
+      file_size = ra::filesystem::GetFileSizeUtf8(source_path.c_str());
+    }
 
-    FILE* fin = fopen(source_path.c_str(), "rb");
+    FILE* fin = NULL;
+    if (!force_win32_utf8)
+      fin = fopen(source_path.c_str(), "rb");
+#ifdef _WIN32 // UTF-8
+    if (force_win32_utf8)
+    {
+      std::wstring source_path_w = ra::unicode::Utf8ToUnicode(source_path);
+      fin = _wfopen(source_path_w.c_str(), L"rb");
+    }
+#endif // UTF-8
+
     if (!fin)
       return false;
 
-    FILE* fout = fopen(destination_path.c_str(), "wb");
+    FILE* fout = NULL;
+    if (!force_win32_utf8)
+      fout = fopen(destination_path.c_str(), "wb");
+#ifdef _WIN32 // UTF-8
+    if (force_win32_utf8)
+    {
+      std::wstring destination_w = ra::unicode::Utf8ToUnicode(destination_path);
+      fout = _wfopen(destination_w.c_str(), L"wb");
+    }
+#endif // UTF-8
+    
     if (!fout) {
       fclose(fin);
       return false;
@@ -1001,15 +1035,15 @@ namespace ra { namespace filesystem {
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path) {
-    return copyFileInternal(source_path, destination_path, NULL, NULL);
+    return copyFileInternal(source_path, destination_path, NULL, NULL, false);
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor) {
-    return copyFileInternal(source_path, destination_path, progress_functor, NULL);
+    return copyFileInternal(source_path, destination_path, progress_functor, NULL, false);
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function) {
-    return copyFileInternal(source_path, destination_path, NULL, progress_function);
+    return copyFileInternal(source_path, destination_path, NULL, progress_function, false);
   }
 
   bool PeekFile(const std::string & path, size_t size, std::string & data) {
@@ -1020,7 +1054,7 @@ namespace ra { namespace filesystem {
     if (!ra::filesystem::FileExists(path.c_str()))
       return false;
 
-    //allocate a buffer which can hold the data of the file
+    //allocate a buffer which can hold the data of the peek size
     size_t file_size = ra::filesystem::GetFileSize(path.c_str());
     size_t max_read_size = (file_size < size ? file_size : size);
 

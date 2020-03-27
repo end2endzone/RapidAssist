@@ -22,40 +22,30 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#ifndef RA_PROPERTIESFILE_H
-#define RA_PROPERTIESFILE_H
+#ifndef TEST_RA_COMMANDLINEMGR_H
+#define TEST_RA_COMMANDLINEMGR_H
 
-#include "rapidassist/strings.h"
-#include <map>
+#include <string>
 
-namespace ra { namespace filesystem {
+namespace ra { namespace test
+{
+  void OutputGetCurrentProcessPathUtf8();
+  void OutputGetCurrentProcessDirUtf8();
+  void OutputGetCurrentDirectoryUtf8();
 
-  class PropertiesFile {
-  public:
-    PropertiesFile();
-    virtual ~PropertiesFile();
+  void OutputGetCurrentProcessPath();
+  void OutputGetCurrentProcessDir();
+  void OutputGetCurrentDirectory();
 
-    virtual bool Load(const std::string & file_path);
-    virtual bool Save(const std::string & file_path);
-    virtual bool LoadUtf8(const std::string & file_path);
-    virtual bool SaveUtf8(const std::string & file_path);
+  bool SaveGetCurrentProcessPathUtf8();
+  bool SaveGetCurrentProcessDirUtf8();
+  bool SaveGetCurrentDirectoryUtf8();
 
-    virtual bool Clear();
-    virtual bool HasKey(const std::string & key) const;
-    virtual bool DeleteKey(const std::string & key);
-    virtual bool GetValue(const std::string & key, std::string & value) const;
-    virtual bool SetValue(const std::string & key, const std::string & value);
+  bool SaveGetCurrentProcessPath();
+  bool SaveGetCurrentProcessDir();
+  bool SaveGetCurrentDirectory();
 
-  private:
-    bool Load(const ra::strings::StringVector & lines);
-    bool Save(FILE * f);
-
-  private:
-    typedef std::map<std::string /*keyname*/, std::string /*value*/> PropertyMap;
-    PropertyMap properties_;
-  };
-
-} //namespace filesystem
+} //namespace test
 } //namespace ra
 
-#endif //RA_PROPERTIESFILE_H
+#endif //TEST_RA_CLI_H

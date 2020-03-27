@@ -35,10 +35,13 @@ namespace ra { namespace unicode {
 
   bool IsAscii(const char * str)
   {
+    const unsigned char * unsigned_str = (const unsigned char *)str;
+    //printf("IsAscii(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
-      if (str[offset] < 0) //if bit7 is set
+      //printf("str[%d]=%d\n", offset, (int)unsigned_str[offset]);
+      if (unsigned_str[offset] > 127) //if bit7 is set
         return false;
 
       //next byte
@@ -49,10 +52,13 @@ namespace ra { namespace unicode {
 
   bool IsValidCp1252(const char * str)
   {
+    const unsigned char * unsigned_str = (const unsigned char *)str;
+    //printf("IsValidCp1252(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
-      const char & c = str[offset];
+      //printf("str[%d]=%d\n", offset, (int)unsigned_str[offset]);
+      const unsigned char & c = unsigned_str[offset];
       if (
         c == 0x81 ||
         c == 0x8D ||
@@ -69,10 +75,13 @@ namespace ra { namespace unicode {
 
   bool IsValidIso8859_1(const char * str)
   {
+    const unsigned char * unsigned_str = (const unsigned char *)str;
+    //printf("IsValidIso8859_1(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
-      const char & c = str[offset];
+      //printf("str[%d]=%d\n", offset, (int)unsigned_str[offset]);
+      const unsigned char & c = unsigned_str[offset];
       if (0x00 <= c && c <= 0x1F)
         return false;
       if (0x7F <= c && c <= 0x9F)
@@ -86,13 +95,16 @@ namespace ra { namespace unicode {
 
   bool IsValidUtf8(const char * str)
   {
+    const unsigned char * unsigned_str = (const unsigned char *)str;
+    //printf("IsValidUtf8(%s)\n", str);
     int offset = 0;
     while (str[offset] != '\0')
     {
-      const char & c1 = str[offset + 0];
-      char c2 = str[offset + 1];
-      char c3 = str[offset + 2];
-      char c4 = str[offset + 3];
+      //printf("str[%d]=%d\n", offset, (int)unsigned_str[offset]);
+      const unsigned char & c1 = unsigned_str[offset + 0];
+      unsigned char c2 = unsigned_str[offset + 1];
+      unsigned char c3 = unsigned_str[offset + 2];
+      unsigned char c4 = unsigned_str[offset + 3];
     
       //prevent going outside of the string
       if (c1 == '\0')

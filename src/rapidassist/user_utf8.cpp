@@ -22,8 +22,9 @@
  * SOFTWARE.
  *********************************************************************************/
 
-#include "rapidassist/user.h"
-#include "rapidassist/environment.h"
+#include "rapidassist/user_utf8.h"
+#include "rapidassist/environment_utf8.h"
+#include "rapidassist/unicode.h"
 
 #ifdef WIN32
 #   include <Shlobj.h>
@@ -40,8 +41,8 @@
 
 namespace ra { namespace user {
 
-#ifdef _WIN32
-  inline std::string getWin32Directory(int csidl) {
+#ifdef _WIN32 // UTF-8
+  inline std::string getWin32DirectoryUtf8(int csidl) {
     // https://stackoverflow.com/questions/18493484/shgetfolderpath-deprecated-what-is-alternative-to-retrieve-path-for-windows-fol
     // https://superuser.com/questions/150012/what-is-the-difference-between-local-and-roaming-folders
     // CSIDL_PROFILE          matches "C:\Users\JohnSmith"
@@ -50,103 +51,52 @@ namespace ra { namespace user {
     // CSIDL_LOCAL_APPDATA    matches "C:\Users\JohnSmith\AppData\Local"
     // CSIDL_COMMON_APPDATA   matches "C:\ProgramData"
     // CSIDL_COMMON_DOCUMENTS matches "C:\Users\Public\Documents"
-    char path[MAX_PATH];
-    if (SUCCEEDED(SHGetSpecialFolderPath(NULL, path, csidl, FALSE))) {
-      return path;
+    wchar_t path[MAX_PATH];
+    if (SUCCEEDED(SHGetSpecialFolderPathW(NULL, path, csidl, FALSE))) {
+      std::string path_utf8 = ra::unicode::UnicodeToUtf8(path); //convert from Wide character (Unicode) to UTF-8
+      return path_utf8;
     }
     return "";
   }
-#endif
 
-  std::string GetHomeDirectory() {
-#ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_PROFILE);
+  std::string GetHomeDirectoryUtf8() {
+    const std::string & dir = getWin32DirectoryUtf8(CSIDL_PROFILE);
     return dir;
-#else
-    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
-    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
-    struct passwd pwd;
-    struct passwd *result = NULL;
-    char buf[1024];
-    uid_t uid = geteuid();
-    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
-      if (result != NULL)
-        return result->pw_dir;
-    }
-
-    //fallback to HOME env variable
-    std::string env_home = ra::environment::GetEnvironmentVariable("HOME");
-    if (!env_home.empty())
-      return env_home;
-
-    //failure
-    return "~";
-#endif
   }
 
-  std::string GetApplicationsDataDirectory() {
-#ifdef _WIN32
-   const std::string & dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
+  std::string GetApplicationsDataDirectoryUtf8() {
+    const std::string & dir = getWin32DirectoryUtf8(CSIDL_LOCAL_APPDATA);
     return dir;
-#else
-    return "/usr/share";
-#endif
   }
 
-  std::string GetDocumentsDirectory() {
-#ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_PERSONAL);
+  std::string GetDocumentsDirectoryUtf8() {
+    const std::string & dir = getWin32DirectoryUtf8(CSIDL_PERSONAL);
     return dir;
-#else
-    return std::string(GetHomeDirectory()) + "/Documents";
-#endif
   }
 
-  std::string GetDesktopDirectory() {
-#ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
+  std::string GetDesktopDirectoryUtf8() {
+    const std::string & dir = getWin32DirectoryUtf8(CSIDL_DESKTOPDIRECTORY);
     return dir;
-#else
-    return std::string(GetHomeDirectory()) + "/Desktop";
-#endif
   }
 
-  std::string GetUsername() {
-#ifdef _WIN32
-    char username[UNLEN + 1] = { 0 };
+  std::string GetUsernameUtf8() {
+    wchar_t username[UNLEN + 1] = { 0 };
     DWORD size = UNLEN + 1;
-    if (SUCCEEDED(GetUserName(username, &size))) {
-      return username;
+    if (SUCCEEDED(GetUserNameW(username, &size))) {
+      std::string username_utf8 = ra::unicode::UnicodeToUtf8(username); //convert from Wide character (Unicode) to UTF-8
+      return username_utf8;
     }
 
     //fallback to USERNAME env variable
-    std::string env_username = ra::environment::GetEnvironmentVariable("USERNAME");
+    std::string env_username = ra::environment::GetEnvironmentVariableUtf8("USERNAME");
     if (!env_username.empty())
       return env_username;
 
     //failure
     return "";
-#else
-    //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
-    //https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
-    struct passwd pwd;
-    struct passwd *result = NULL;
-    char buf[1024];
-    uid_t uid = geteuid();
-    if (getpwuid_r(uid, &pwd, buf, sizeof(buf), &result) == 0) {
-      if (result != NULL)
-        return result->pw_name;
-    }
-
-    //fallback to LOGNAME env variable
-    std::string env_logname = ra::environment::GetEnvironmentVariable("LOGNAME");
-    if (!env_logname.empty())
-      return env_logname;
-
-    //failure
-    return "";
-#endif
   }
+
+#endif // UTF-8
 
 } //namespace user
 } //namespace ra

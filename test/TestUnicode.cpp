@@ -39,7 +39,10 @@ namespace ra { namespace unicode { namespace test
     ASSERT_TRUE ( ra::unicode::IsAscii("foobar") );
     ASSERT_TRUE ( ra::unicode::IsAscii("\b\t\n\r\\\"!/$%?&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") );
 
-    ASSERT_FALSE( ra::unicode::IsAscii("école") );   //school in french
+#ifdef _WIN32    
+    ASSERT_FALSE( ra::unicode::IsAscii("école") );    //school in french
+#endif
+    ASSERT_FALSE( ra::unicode::IsAscii("\202cole") ); //school in french, encoded in Windows CP 1252.
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUnicode, testIsValidCp1252)
@@ -48,8 +51,12 @@ namespace ra { namespace unicode { namespace test
     ASSERT_TRUE ( IsValidCp1252("\\\b\t\n\r\"")); //control characters
     ASSERT_TRUE ( IsValidCp1252("!/$%?&*()_+"));  //symbols
     ASSERT_TRUE ( IsValidCp1252("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") );
+#ifdef _WIN32    
     ASSERT_TRUE ( IsValidCp1252("español") );     //spanish
     ASSERT_TRUE ( IsValidCp1252("école") );       //school in french
+#endif
+    ASSERT_TRUE ( IsValidCp1252("espa\244ol") );  //spanish, encoded in Windows CP 1252.
+    ASSERT_TRUE ( IsValidCp1252("\202cole") );    //school in french, encoded in Windows CP 1252.
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUnicode, testIsValidIso8859_1)
@@ -57,11 +64,15 @@ namespace ra { namespace unicode { namespace test
     ASSERT_TRUE ( IsValidIso8859_1("foobar") );
     ASSERT_TRUE ( IsValidIso8859_1("!/$%?&*()_+"));  //symbols
     ASSERT_TRUE ( IsValidIso8859_1("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") );
+#ifdef _WIN32    
     ASSERT_TRUE ( IsValidIso8859_1("español") );     //spanish
     ASSERT_TRUE ( IsValidIso8859_1("école") );       //school in french
+#endif
+    ASSERT_TRUE ( IsValidIso8859_1("espa\244ol") );  //spanish, encoded in Windows CP 1252.
+    ASSERT_FALSE( IsValidIso8859_1("\202cole") );    //school in french, encoded in Windows CP 1252.
 
     ASSERT_FALSE( IsValidIso8859_1("\\\b\t\n\r\"")); //control characters
-    ASSERT_FALSE( IsValidIso8859_1("\x0d\x0a") );   //CRLF, ISO-8859-1 have no control character
+    ASSERT_FALSE( IsValidIso8859_1("\x0d\x0a") );    //CRLF, ISO-8859-1 have no control character
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestUnicode, testIsValidUtf8)
@@ -72,8 +83,8 @@ namespace ra { namespace unicode { namespace test
     ASSERT_TRUE ( IsValidUtf8("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") );
 
     //accent letters from Windows CP1252 encoding
-    ASSERT_TRUE ( IsValidUtf8("espa" "\xC3\xB1" "ol") );  //spanish, U+00F1
-    ASSERT_TRUE ( IsValidUtf8("\xC3\xA9" "cole") );       //school in french
+    ASSERT_TRUE ( IsValidUtf8("espa" "\xC3\xB1" "ol") );  //spanish, encoded in UTF-8, U+00F1
+    ASSERT_TRUE ( IsValidUtf8("\xC3\xA9" "cole") );       //school in french, encoded in UTF-8
 
     ASSERT_TRUE ( IsValidUtf8("\x0d\x0a") );    //CRLF
   }

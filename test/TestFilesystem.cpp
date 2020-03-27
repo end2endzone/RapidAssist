@@ -176,6 +176,9 @@ namespace ra { namespace filesystem { namespace test
       size = filesystem::GetFileSize(ptr);
       fclose(ptr);
       ASSERT_EQ(EXPECTED, size);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
     }
 
   }
@@ -261,6 +264,9 @@ namespace ra { namespace filesystem { namespace test
 
       bool exists = filesystem::FileExists(filename.c_str());
       ASSERT_TRUE(exists);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -395,6 +401,9 @@ namespace ra { namespace filesystem { namespace test
         "Found the following elements: \n" <<
         strings::Join(files, "\n").c_str();
     }
+
+    //cleanup
+    ra::filesystem::DeleteDirectory(basePath.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFindFileFromPaths) {
@@ -468,22 +477,23 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_TRUE(success);
 
       //cleanup
-      DeleteDirectory(path.c_str());
+      filesystem::DeleteDirectory(path.c_str());
     }
 
     //test subdirectories
     {
       //build path with subdirectories
       char separator[] = { GetPathSeparator(), '\0' };
-      std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
-      path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
+      std::string base_path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
+      std::string full_path = base_path;
+      full_path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
-      success = filesystem::CreateDirectory(path.c_str());
+      success = filesystem::CreateDirectory(full_path.c_str());
       ASSERT_TRUE(success);
 
       //cleanup
-      DeleteDirectory(path.c_str());
+      filesystem::DeleteDirectory(base_path.c_str());
     }
 
     //test issue #27
@@ -492,15 +502,16 @@ namespace ra { namespace filesystem { namespace test
 
       //build path with subdirectories
       const char * separator = GetPathSeparatorStr();
-      std::string path = temp_dir + separator + ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
-      path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
+      std::string base_path = temp_dir + separator + ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
+      std::string full_path = base_path;
+      full_path << separator << "1" << separator << "2" << separator << "3" << separator << "4" << separator << "5";
 
       bool success = false;
-      success = filesystem::CreateDirectory(path.c_str());
+      success = filesystem::CreateDirectory(full_path.c_str());
       ASSERT_TRUE(success);
 
       //cleanup
-      DeleteDirectory(path.c_str());
+      filesystem::DeleteDirectory(base_path.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1074,6 +1085,10 @@ namespace ra { namespace filesystem { namespace test
       uint64_t time2 = filesystem::GetFileModifiedDate(filename2);
       uint64_t diff = time2 - time1;
       ASSERT_GE(diff, EXPECTED);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename1.c_str());
+      ra::filesystem::DeleteFile(filename2.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------

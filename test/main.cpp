@@ -28,10 +28,112 @@
 
 #include <gtest/gtest.h>
 
+#include "rapidassist/cli.h"
 #include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
 
+#include "CommandLineMgr.h"
+
 int main(int argc, char **argv) {
+  std::string tmp;
+  bool found = false;
+
+  //validate --OutputGetCurrentProcessPathUtf8
+  found = ra::cli::ParseArgument("OutputGetCurrentProcessPathUtf8", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentProcessPathUtf8();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentDirectoryUtf8
+  found = ra::cli::ParseArgument("OutputGetCurrentDirectoryUtf8", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentDirectoryUtf8();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentDirectoryUtf8
+  found = ra::cli::ParseArgument("OutputGetCurrentDirectoryUtf8", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentDirectoryUtf8();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentProcessPath
+  found = ra::cli::ParseArgument("OutputGetCurrentProcessPath", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentProcessPath();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentDirectory
+  found = ra::cli::ParseArgument("OutputGetCurrentDirectory", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentDirectory();
+    return 0;
+  }
+
+  //validate --OutputGetCurrentDirectory
+  found = ra::cli::ParseArgument("OutputGetCurrentDirectory", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::OutputGetCurrentDirectory();
+    return 0;
+  }
+
+  //validate --SaveGetCurrentProcessPathUtf8
+  found = ra::cli::ParseArgument("SaveGetCurrentProcessPathUtf8", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentProcessPathUtf8();
+    return (saved ? 0 : 1);
+  }
+
+  //validate --SaveGetCurrentProcessDirUtf8
+  found = ra::cli::ParseArgument("SaveGetCurrentProcessDirUtf8", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentProcessDirUtf8();
+    return (saved ? 0 : 1);
+  }
+
+  //validate --SaveGetCurrentDirectoryUtf8
+  found = ra::cli::ParseArgument("SaveGetCurrentDirectoryUtf8", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentDirectoryUtf8();
+    return (saved ? 0 : 1);
+  }
+  
+  //validate --SaveGetCurrentProcessPath
+  found = ra::cli::ParseArgument("SaveGetCurrentProcessPath", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentProcessPath();
+    return (saved ? 0 : 1);
+  }
+
+  //validate --SaveGetCurrentProcessDir
+  found = ra::cli::ParseArgument("SaveGetCurrentProcessDir", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentProcessDir();
+    return (saved ? 0 : 1);
+  }
+
+  //validate --SaveGetCurrentDirectory
+  found = ra::cli::ParseArgument("SaveGetCurrentDirectory", tmp, argc, argv);
+  if (found)
+  {
+    bool saved = ra::test::SaveGetCurrentDirectory();
+    return (saved ? 0 : 1);
+  }
+
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
   outputXml += (ra::environment::IsProcess32Bit() ? ".x86" : ".x64");

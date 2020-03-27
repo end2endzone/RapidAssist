@@ -3,27 +3,37 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/console.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/code_cpp.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/environment.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/environment_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/errors.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/generics.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/propertiesfile.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/logging.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/macros.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/process.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/process_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/timing.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/unicode.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/user_utf8.h
 )
 
 if(RAPIDASSIST_BUILD_TESTING)
-  # add another header file
-  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES} ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h)
+  # add other header files
+  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES}
+    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h
+    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing_utf8.h
+  )
 
   find_package(GTest)
 
-  set(RAPIDASSIST_TESTING_SOURCE_FILES testing.cpp)
+  set(RAPIDASSIST_TESTING_SOURCE_FILES ""
+    testing.cpp
+    testing_utf8.cpp
+  )
 endif()
 
 add_library(rapidassist STATIC
@@ -36,16 +46,20 @@ add_library(rapidassist STATIC
   cli.cpp
   code_cpp.cpp
   environment.cpp
+  environment_utf8.cpp
   errors.cpp
   filesystem.cpp
+  filesystem_utf8.cpp
   propertiesfile.cpp
   logging.cpp
   process.cpp
+  process_utf8.cpp
   random.cpp
   strings.cpp
   timing.cpp
   unicode.cpp
   user.cpp
+  user_utf8.cpp
 )
 
 # Unit test projects requires to link with pthread if also linking with gtest

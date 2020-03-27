@@ -33,7 +33,7 @@
 namespace ra { namespace environment {
 
   /// <summary>
-  /// Returns value of an environment variable.
+  /// Returns the current value of an environment variable.
   /// </summary>
   /// <param name="iName">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
@@ -46,7 +46,7 @@ namespace ra { namespace environment {
   /// <param name="iName">Name of the variable</param>
   /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
   /// <returns>Returns true when successful. Returns false otherwise.</returns>
-  bool SetEnvironmentVariable(const char * iName, const char * iValue);
+  bool SetEnvironmentVariable(const char * iName, const     char * iValue);
   bool SetEnvironmentVariable(const char * iName, const   int8_t & iValue);
   bool SetEnvironmentVariable(const char * iName, const  uint8_t & iValue);
   bool SetEnvironmentVariable(const char * iName, const  int16_t & iValue);

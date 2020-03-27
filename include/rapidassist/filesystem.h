@@ -37,6 +37,7 @@ namespace ra { namespace filesystem {
   /// Normalizes a path.
   /// </summary>
   /// <param name="path">An valid file or directory path.</param>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   void NormalizePath(std::string & path);
 
   /// <summary>
@@ -58,6 +59,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">An valid file path.</param>
   /// <returns>Returns the filename of the given path.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string GetFilename(const char * iPath);
 
   /// <summary>
@@ -65,6 +67,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">The file path of a file.</param>
   /// <returns>Returns the file name without the extension.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string GetFilenameWithoutExtension(const char * iPath);
 
   /// <summary>
@@ -93,7 +96,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
   /// <param name="iPath">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories). </param>
+  /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories).</param>
   /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
   bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
   inline bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath) { return FindFiles(oFiles, iPath, -1); }
@@ -145,6 +148,7 @@ namespace ra { namespace filesystem {
   /// Returns the file name of a tempporary file.
   /// </summary>
   /// <returns>Returns the file name of a tempporary file.</returns>
+  /// <remarks>This function returns an ASCII encoded string.</remarks>
   std::string GetTemporaryFileName();
 
   /// <summary>
@@ -164,6 +168,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">The input path to get the parent.</param>
   /// <returns>Returns the parent element of the given path.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string GetParentPath(const std::string & iPath);
 
   /// <summary>
@@ -181,6 +186,7 @@ namespace ra { namespace filesystem {
   /// <param name="iPath">The input path to split.</param>
   /// <param name="oDirectory">The output directory of the given path.</param>
   /// <param name="oFilename">The output file of the given path.</param>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   void SplitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename);
 
   /// <summary>
@@ -188,6 +194,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">The input path to split.</param>
   /// <param name="oElements">The output list which contains all path elements.</param>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   void SplitPath(const std::string & iPath, std::vector<std::string> & oElements);
 
   /// <summary>
@@ -196,6 +203,7 @@ namespace ra { namespace filesystem {
   /// <param name="base_path">The base path from which the relate path is constructed.</param>
   /// <param name="test_path">The full path that must be converted.</param>
   /// <returns>Returns a relative path from 'base_path' to 'test_path'. Returns an empty string on failure.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string MakeRelativePath(const std::string & base_path, const std::string & test_path);
 
   /// <summary>
@@ -216,6 +224,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">The valid path to a file.</param>
   /// <returns>Returns the extension of a file.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string GetFileExtention(const std::string & iPath);
 
   enum FileSizeEnum { BYTES, KILOBYTES, MEGABYTES, GIGABYTES, TERABYTES };
@@ -248,6 +257,7 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">An valid file or directory path.</param>
   /// <returns>Returns true if the given path is absolute. Returns false otherwise.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   bool IsAbsolutePath(const std::string & iPath);
 
   /// <summary>
@@ -259,6 +269,7 @@ namespace ra { namespace filesystem {
   /// </remarks>
   /// <param name="iPath">An valid file or directory path.</param>
   /// <returns>Returns true if the given path is a root directory. Returns false otherwise.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   bool IsRootDirectory(const std::string & iPath);
 
   /// <summary>
@@ -270,6 +281,7 @@ namespace ra { namespace filesystem {
   /// </remarks>
   /// <param name="iPath">An valid relative file or directory path.</param>
   /// <returns>Returns the resolved path.</returns>
+  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   std::string ResolvePath(const std::string & iPath);
 
   /// <summary>

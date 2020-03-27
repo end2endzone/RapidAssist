@@ -18,5 +18,5 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR/third_par
 echo ============================================================================
 echo Compiling...
 echo ============================================================================
-cmake --build .
+cmake --build . -- -j4
 echo

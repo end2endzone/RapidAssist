@@ -27,7 +27,7 @@ mkdir build >NUL 2>NUL
 cd build
 cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\third_parties\googletest\install -Dgtest_force_shared_crt=ON -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON ..
 if %errorlevel% neq 0 exit /b %errorlevel%
-cmake --build . --config %Configuration%
+cmake --build . --config %Configuration% -- -maxcpucount /m
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
 

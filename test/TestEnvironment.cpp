@@ -147,6 +147,9 @@ namespace ra { namespace environment { namespace test
 
       ASSERT_EQ("1.7", environment::GetEnvironmentVariable(name));
     }
+
+    //delete variable for next tests
+    ASSERT_TRUE(environment::SetEnvironmentVariable(name, ""));
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testProcessXXBit) {
@@ -166,9 +169,9 @@ namespace ra { namespace environment { namespace test
     ASSERT_TRUE(!std::string(separator).empty());
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestEnvironment, testGetEnvironmentVariables) {
+  TEST_F(TestEnvironment, testGetEnvironmentVariablesSearch) {
     ra::strings::StringVector variables = environment::GetEnvironmentVariables();
-    ASSERT_GT(variables.size(), 0);
+    ASSERT_GT(variables.size(), (size_t)0);
 
     //find 3 expected names in the list
     bool found1 = false;
@@ -203,7 +206,6 @@ namespace ra { namespace environment { namespace test
     ASSERT_TRUE(found1) << "The environment variable '" << variable1 << "' was not found in the list of variables:\n" << variable_list.c_str();
     ASSERT_TRUE(found2) << "The environment variable '" << variable2 << "' was not found in the list of variables:\n" << variable_list.c_str();
     ASSERT_TRUE(found3) << "The environment variable '" << variable3 << "' was not found in the list of variables:\n" << variable_list.c_str();
-
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testExpand) {

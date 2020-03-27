@@ -37,6 +37,10 @@
 
 namespace ra { namespace testing {
 
+  //predeclarations
+  bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences);
+  bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
+
   //
   // Description:
   //  Wrapper class for FILE* instance.
@@ -52,11 +56,14 @@ namespace ra { namespace testing {
       close();
     }
 
-    bool isEOF() {
-      if (file_pointer_ == NULL)
+    static bool isEOF(FILE * f) {
+      if (f == NULL)
         return true;
       //http://www.cplusplus.com/reference/cstdio/feof/
-      return (feof(file_pointer_) != 0);
+      return (feof(f) != 0);
+    }
+    bool isEOF() {
+      return FileWrapper::isEOF(file_pointer_);
     }
 
     void close() {
@@ -245,68 +252,58 @@ namespace ra { namespace testing {
     return test_list;
   }
 
-  bool IsFileEquals(const char* iFile1, const char* iFile2) {
-    std::string reason;
-    return IsFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/);
-  }
-
-  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason) {
-    return IsFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/);
-  }
-
   bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences) {
     //Build basic message
-    oReason = "";
-    std::stringstream ss;
-    ss << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
+    oReason.clear();
+    oReason << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
 
     FileWrapper f1(iFile1, "rb");
     if (f1.file_pointer_ == NULL) {
-      ss << "First file is not found.";
-      oReason = ss.str();
+      oReason << "First file is not found.";
       return false;
     }
     FileWrapper f2(iFile2, "rb");
     if (f2.file_pointer_ == NULL) {
-      ss << "Second file is not found.";
-      oReason = ss.str();
+      oReason << "Second file is not found.";
       return false;
     }
 
+    bool result = IsFileEquals(f1.file_pointer_, f2.file_pointer_, oReason, iMaxDifferences);
+    return result;
+  }
+
+  bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences) {
     //Compare by size
-    long size1 = ra::filesystem::GetFileSize(f1.file_pointer_);
-    long size2 = ra::filesystem::GetFileSize(f2.file_pointer_);
+    int32_t size1 = (int32_t)ra::filesystem::GetFileSize(iFile1);
+    int32_t size2 = (int32_t)ra::filesystem::GetFileSize(iFile2);
     if (size1 != size2) {
       if (size1 < size2)
-        ss << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
+        oReason << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
       else
-        ss << "First file is bigger than Second file: " << size1 << " vs " << size2 << ".";
-      oReason = ss.str();
+        oReason << "First file is bigger than Second file: " << size1 << " vs " << size2 << ".";
       return false;
     }
 
     //Compare content
-    f1.close();
-    f2.close();
     std::vector<FileDiff> differences;
     bool success = GetFileDifferences(iFile1, iFile2, differences, iMaxDifferences + 1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
     if (!success) {
-      ss << "Unable to determine if content is identical...";
-      oReason = ss.str();
+      oReason << "Unable to determine if content is identical...";
       return false;
     }
 
     if (differences.size() == 0) {
       //no diffences. Files are identicals
+      oReason.clear();
       return true;
     }
 
     //Build error message from differences
-    ss << "Content is different: ";
+    oReason << "Content is different: ";
     for (size_t i = 0; i < differences.size() && i < iMaxDifferences; i++) {
       const FileDiff & d = differences[i];
       if (i >= 1)
-        ss << ", ";
+        oReason << ", ";
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
 #ifdef _WIN32
@@ -314,12 +311,11 @@ namespace ra { namespace testing {
 #else
       sprintf(buffer, "{address %zu(0x%zX) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
 #endif
-      ss << buffer;
-      //ss << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
+      oReason << buffer;
+      //oReason << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
     }
     if (differences.size() > iMaxDifferences)
-      ss << ", ...";
-    oReason = ss.str();
+      oReason << ", ...";
     return false;
   }
 
@@ -331,9 +327,14 @@ namespace ra { namespace testing {
     if (f2.file_pointer_ == NULL)
       return false;
 
+    bool result = GetFileDifferences(f1.file_pointer_, f2.file_pointer_, oDifferences, iMaxDifferences);
+    return result;
+  }
+
+  bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
     //Check by size
-    long size1 = ra::filesystem::GetFileSize(f1.file_pointer_);
-    long size2 = ra::filesystem::GetFileSize(f2.file_pointer_);
+    long size1 = ra::filesystem::GetFileSize(iFile1);
+    long size2 = ra::filesystem::GetFileSize(iFile2);
     if (size1 != size2) {
       return false; //unsupported
     }
@@ -345,9 +346,9 @@ namespace ra { namespace testing {
     size_t offsetRead = 0;
 
     //while there is data to read in files
-    while (!f1.isEOF() && !f2.isEOF()) {
-      size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, f1.file_pointer_);
-      size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, f2.file_pointer_);
+    while (!FileWrapper::isEOF(iFile1) && !FileWrapper::isEOF(iFile2)) {
+      size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, iFile1);
+      size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, iFile2);
       if (readSize1 != readSize2) {
         //this should not happend since both files are identical in length.
         return false; //failed
@@ -416,6 +417,7 @@ namespace ra { namespace testing {
     FILE * f = fopen(iFilePath, "wb");
     if (!f)
       return false;
+
     for (size_t i = 0; i < iSize; i++) {
       unsigned int value = (i % 256);
       fwrite(&value, 1, 1, f);
@@ -441,6 +443,7 @@ namespace ra { namespace testing {
     FILE * f = fopen(iFilePath, "rb");
     if (!f)
       return;
+
     long size = ra::filesystem::GetFileSize(f);
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)

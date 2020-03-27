@@ -26,7 +26,7 @@ echo ===========================================================================
 mkdir -p build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/third_parties/googletest/install -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON ..
-cmake --build .
+cmake --build . -- -j4
 echo
 
 echo ============================================================================

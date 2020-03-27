@@ -46,11 +46,12 @@ namespace ra { namespace testing {
   //   iFile1:          The path of the first  file.
   //   iFile2:          The path of the second file.
   //   oReason:         A textual reason why the files are not identical. Empty if files are identical.
-  //   iMaxDifferences: The maximum number of textual differences.
+  //   iMaxDifferences: The maximum number of textual differences. Use -1 for finding all differences. Use 1 to return as soon as a difference is found.
   // 
-  bool IsFileEquals(const char* iFile1, const char* iFile2);
-  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason);
   bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences);
+
+  inline bool IsFileEquals(const char* iFile1, const char* iFile2) { std::string reason; return IsFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/); }
+  inline bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason) { return IsFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/); }
 
   //
   // Description:

@@ -24,6 +24,7 @@
 
 #include "rapidassist/environment.h"
 #include "rapidassist/strings.h"
+#include "rapidassist/unicode.h"
 #include <cstdlib>  //for getenv()
 #include <cstring>  //for strlen()
 #include <stdlib.h> //for setenv(), unsetenv()
@@ -43,8 +44,7 @@ namespace ra { namespace environment {
     const char * value = getenv(iName);
     if (value == NULL)
       return std::string();
-    else
-      return std::string(value);
+    return std::string(value);
   }
 
   bool SetEnvironmentVariable(const char * iName, const char * iValue) {
@@ -153,7 +153,7 @@ namespace ra { namespace environment {
 
     return vars;
   }
-
+  
   std::string Expand(const std::string & iValue) {
     std::string output = iValue;
 
