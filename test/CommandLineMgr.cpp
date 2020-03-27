@@ -99,7 +99,7 @@ namespace ra { namespace test
     int exit_code = WEXITSTATUS( system_result );
     if (exit_code != 0)
     {
-      error_message = "Failed running command: " << command;
+      error_message = "Failed running command: " + command;
       return false;
     }
 #endif //__linux__

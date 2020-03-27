@@ -274,8 +274,8 @@ namespace ra { namespace testing {
 
   bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences) {
     //Compare by size
-    long size1 = ra::filesystem::GetFileSize(iFile1);
-    long size2 = ra::filesystem::GetFileSize(iFile2);
+    int32_t size1 = (int32_t)ra::filesystem::GetFileSize(iFile1);
+    int32_t size2 = (int32_t)ra::filesystem::GetFileSize(iFile2);
     if (size1 != size2) {
       if (size1 < size2)
         oReason << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
