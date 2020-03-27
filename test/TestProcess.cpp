@@ -28,13 +28,13 @@
 #include "rapidassist/testing.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/user.h"
 
-namespace ra { namespace test
-{
-  extern bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
-} //namespace test
-} //namespace ra
+#include <stdlib.h> //for system()
+#ifdef __linux__
+#include <sys/wait.h> //for WEXITSTATUS
+#endif
 
 namespace ra { namespace process { namespace test
 {
@@ -60,6 +60,65 @@ namespace ra { namespace process { namespace test
 
     return processes;
   }
+  //--------------------------------------------------------------------------------------------------
+  bool CloneProcess(std::string & working_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message) {
+    working_dir_path = "";
+    new_process_path = "";
+    
+    const std::string separator = ra::filesystem::GetPathSeparatorStr();
+
+    //Create a working directory that matches current test name and contains an utf8 character.
+    std::string test_dir_name = ra::testing::GetTestQualifiedName();
+    if (support_utf8)
+      test_dir_name.append(".psi_\xCE\xA8_psi");
+    working_dir_path = ra::process::GetCurrentProcessDir() + separator + test_dir_name;
+    bool created = false;
+    if (support_utf8)
+      created = ra::filesystem::CreateDirectoryUtf8(working_dir_path.c_str());
+    else
+      created = ra::filesystem::CreateDirectory(working_dir_path.c_str());
+    if (!created)
+    {
+      error_message = "Failed creating directory '" + working_dir_path + "'.";
+      return false;
+    }
+
+    //clone current process executable into another process which name contains an utf8 character.
+    std::string new_process_filename = ra::testing::GetTestQualifiedName();
+    if (support_utf8)
+      new_process_filename.append(".omega_\xCE\xA9_omega");
+#ifdef _WIN32
+    new_process_filename.append(".exe");
+#endif
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    new_process_path = working_dir_path + separator + new_process_filename;
+    bool copied = false;
+    if (support_utf8)
+      copied = ra::filesystem::CopyFileUtf8(current_process_path, new_process_path);
+    else
+      copied = ra::filesystem::CopyFile(current_process_path, new_process_path);
+    if (!copied)
+    {
+      error_message = "Failed copying file '" + current_process_path + "' to '" + new_process_path + "'.";
+      return false;
+    }
+
+#ifdef __linux__
+    //Set new process as executable
+    std::string command;
+    command.append("chmod 777 ");
+    command.append(new_process_path);
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    if (exit_code != 0)
+    {
+      error_message = "Failed running command: " + command;
+      return false;
+    }
+#endif //__linux__
+
+    return true;
+  }
 
   //--------------------------------------------------------------------------------------------------
   void TestProcess::SetUp() {
@@ -76,7 +135,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 
@@ -121,7 +180,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 
@@ -166,7 +225,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path1;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 

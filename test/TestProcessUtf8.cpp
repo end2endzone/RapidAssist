@@ -31,15 +31,10 @@
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/user.h"
 
-namespace ra { namespace test
-{
-  extern bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
-} //namespace test
-} //namespace ra
-
 namespace ra { namespace process { namespace test
 {
   extern ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2);
+  extern bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
 
   //--------------------------------------------------------------------------------------------------
   void TestProcessUtf8::SetUp() {
@@ -56,7 +51,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 
@@ -101,7 +96,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 
@@ -146,7 +141,7 @@ namespace ra { namespace process { namespace test
     std::string test_dir_path1;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = ra::test::CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
+    bool cloned = CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
     if (!cloned)
       FAIL() << error_message;
 

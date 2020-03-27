@@ -29,8 +29,6 @@
 
 namespace ra { namespace test
 {
-  bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
-
   void OutputGetCurrentProcessPathUtf8();
   void OutputGetCurrentProcessDirUtf8();
   void OutputGetCurrentDirectoryUtf8();
