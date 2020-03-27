@@ -83,10 +83,6 @@ namespace ra { namespace testing {
     return tmp;
   }
 
-  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter) {
-    return MergeFilter(iPositiveFilter, iNegativeFilter, NULL);
-  }
-
   std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv) {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
