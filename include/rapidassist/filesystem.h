@@ -55,6 +55,13 @@ namespace ra { namespace filesystem {
   uint32_t GetFileSize(FILE * f);
 
   /// <summary>
+  /// Returns the size of the given file path in bytes.
+  /// </summary>
+  /// <param name="iPath">An valid file path.</param>
+  /// <returns>Returns the size of the given file path in bytes.</returns>
+  uint64_t GetFileSize64(const char * iPath);
+
+  /// <summary>
   /// Returns the filename of the given path.
   /// </summary>
   /// <param name="iPath">An valid file path.</param>

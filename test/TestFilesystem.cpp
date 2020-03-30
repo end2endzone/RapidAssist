@@ -180,7 +180,75 @@ namespace ra { namespace filesystem { namespace test
       //cleanup
       ra::filesystem::DeleteFile(filename.c_str());
     }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetFileSize64) {
+    //test NULL
+    {
+      const char * path = NULL;
+      uint64_t size = filesystem::GetFileSize64(path);
+      ASSERT_EQ(0, size);
+    }
 
+    //test actual value
+    {
+      //create dummy file
+      std::string filename = ra::testing::GetTestQualifiedName();
+      ASSERT_TRUE(ra::testing::CreateFile(filename.c_str()));
+
+#ifdef WIN32
+      static const uint64_t EXPECTED = 14;
+#elif __linux__
+      static const uint64_t EXPECTED = 11;
+#endif
+
+      uint64_t size = filesystem::GetFileSize64(filename.c_str());
+      ASSERT_EQ(EXPECTED, size);
+      size = 0;
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
+
+    //test large values
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      std::string filename = ra::testing::GetTestQualifiedName();
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * iFilename) : mFilename(iFilename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      uint64_t actual_size = filesystem::GetFileSize64(filename.c_str());
+      ASSERT_EQ(expected_size, actual_size);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetFilename) {
@@ -1578,7 +1646,7 @@ namespace ra { namespace filesystem { namespace test
 
       //assert write success
       const bool found = ra::filesystem::FileExists(file_path.c_str());
-      const size_t write_size = ra::filesystem::GetFileSize(file_path.c_str());
+      const uint32_t write_size = ra::filesystem::GetFileSize(file_path.c_str());
       ASSERT_EQ(content_size, write_size);
 
       //cleanup
@@ -1594,7 +1662,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE(success);
 
     //assert write success
-    const size_t write_size = ra::filesystem::GetFileSize(file_path.c_str());
+    const uint32_t write_size = ra::filesystem::GetFileSize(file_path.c_str());
     ASSERT_EQ(content_size, write_size);
 
     std::string content_read;
@@ -1681,11 +1749,11 @@ namespace ra { namespace filesystem { namespace test
 
     //assert file size
 #ifdef _WIN32
-    const size_t expected_file_size = 52;
+    const uint32_t expected_file_size = 52;
 #else
-    const size_t expected_file_size = 52 - 8; // 1 byte per newline less than windows version
+    const uint32_t expected_file_size = 52 - 8; // 1 byte per newline less than windows version
 #endif
-    const size_t file_size = ra::filesystem::GetFileSize(file_path.c_str());
+    const uint32_t file_size = ra::filesystem::GetFileSize(file_path.c_str());
     ASSERT_EQ(expected_file_size, file_size);
 
     //cleanup
@@ -1716,8 +1784,8 @@ namespace ra { namespace filesystem { namespace test
 
     //assert file size
     {
-      const size_t expected_file_size = 36;
-      const size_t file_size = ra::filesystem::GetFileSize(file_path1.c_str());
+      const uint32_t expected_file_size = 36;
+      const uint32_t file_size = ra::filesystem::GetFileSize(file_path1.c_str());
       ASSERT_EQ(expected_file_size, file_size);
     }
 
@@ -1732,8 +1800,8 @@ namespace ra { namespace filesystem { namespace test
 
     //assert newline between words
     {
-      const size_t minimum_file_size = 40;
-      const size_t file_size = ra::filesystem::GetFileSize(file_path2.c_str());
+      const uint32_t minimum_file_size = 40;
+      const uint32_t file_size = ra::filesystem::GetFileSize(file_path2.c_str());
       ASSERT_GT(file_size, minimum_file_size);
     }
 
@@ -1799,8 +1867,8 @@ namespace ra { namespace filesystem { namespace test
 
     //peek bigger than the file's size
     {
-      const size_t file_size = (size_t)ra::filesystem::GetFileSize(file_path.c_str());
-      const size_t peek_size = file_size + 10000;
+      const uint32_t file_size = (size_t)ra::filesystem::GetFileSize(file_path.c_str());
+      const uint32_t peek_size = file_size + 10000;
       bool peek_ok = ra::filesystem::PeekFile(file_path, peek_size, buffer);
       ASSERT_TRUE(peek_ok);
       ASSERT_EQ(file_size, buffer.size());

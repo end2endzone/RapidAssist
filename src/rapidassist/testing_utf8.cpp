@@ -26,6 +26,16 @@
 #include "rapidassist/unicode.h"
 #include "rapidassist/filesystem_utf8.h"
 
+#ifdef _WIN32
+#include <Windows.h> //for CreateFile()
+#undef GetEnvironmentVariable
+#undef CreateFile
+#undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
+#endif
+
 namespace ra { namespace testing {
 
 #ifdef _WIN32 // UTF-8
@@ -152,6 +162,32 @@ namespace ra { namespace testing {
     return true;
   }
 
+  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize) {
+    //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
+
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
+
+    LARGE_INTEGER large_integer;
+    large_integer.QuadPart = iSize;
+
+    HANDLE hFile = ::CreateFileW(pathW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+    if (hFile == INVALID_HANDLE_VALUE)
+      return false;
+    if (SetFilePointerEx(hFile, large_integer, 0, FILE_BEGIN) == 0)
+    {
+      CloseHandle(hFile);
+      return false;
+    }
+    if (SetEndOfFile(hFile) == 0)
+    {
+      CloseHandle(hFile);
+      return false;
+    }
+    if (CloseHandle(hFile) == 0)
+      return false;
+    return true;
+  }
+
   void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue) {
     //read
     std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
@@ -159,7 +195,7 @@ namespace ra { namespace testing {
     if (!f)
       return;
 
-    long size = ra::filesystem::GetFileSize(f);
+    uint32_t size = ra::filesystem::GetFileSize(f);
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;

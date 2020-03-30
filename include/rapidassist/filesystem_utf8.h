@@ -44,6 +44,13 @@ namespace ra { namespace filesystem {
   uint32_t GetFileSizeUtf8(const char * iPath);
 
   /// <summary>
+  /// Returns the size of the given file path in bytes.
+  /// </summary>
+  /// <param name="iPath">An valid file path.</param>
+  /// <returns>Returns the size of the given file path in bytes.</returns>
+  uint64_t GetFileSize64Utf8(const char * iPath);
+
+  /// <summary>
   /// Determine if a file exists.
   /// </summary>
   /// <param name="iPath">An valid file path.</param>
@@ -276,6 +283,17 @@ namespace ra { namespace filesystem {
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
   inline uint32_t GetFileSizeUtf8(const char * iPath) { return GetFileSize(iPath); }
+
+  /// <summary>
+  /// Returns the size of the given file path in bytes.
+  /// </summary>
+  /// <param name="iPath">An valid file path.</param>
+  /// <returns>Returns the size of the given file path in bytes.</returns>
+  /// <remarks>
+  /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
+  /// It provides cross-platform compatibility for Windows users.
+  /// </remarks>
+  inline uint64_t GetFileSize64Utf8(const char * iPath) { return GetFileSize64(iPath); }
 
   /// <summary>
   /// Determine if a file exists.

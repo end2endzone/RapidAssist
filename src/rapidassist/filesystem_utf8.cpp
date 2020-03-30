@@ -40,6 +40,7 @@
 
 #ifdef _WIN32
 #define stat _stat
+#define stat64 _stat64
 #define __getcwd _getcwd
 #define __chdir _chdir
 #define __rmdir _rmdir
@@ -76,6 +77,20 @@ namespace ra { namespace filesystem {
 
     struct _stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
+      return sb.st_size;
+    }
+
+    return 0;
+  }
+
+  uint64_t GetFileSize64Utf8(const char * iPath) {
+    if (iPath == NULL || iPath[0] == '\0')
+      return 0;
+
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+
+    struct _stat64 sb;
+    if (_wstat64(pathW.c_str(), &sb) == 0) {
       return sb.st_size;
     }
 
@@ -435,8 +450,8 @@ namespace ra { namespace filesystem {
       return false;
 
     //allocate a buffer which can hold the data of the peek size
-    size_t file_size = ra::filesystem::GetFileSizeUtf8(path.c_str());
-    size_t max_read_size = (file_size < size ? file_size : size);
+    uint32_t file_size = ra::filesystem::GetFileSizeUtf8(path.c_str());
+    uint32_t max_read_size = (file_size < size ? file_size : size);
 
     //validates empty files 
     if (max_read_size == 0)

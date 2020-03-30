@@ -34,6 +34,17 @@
 #include "rapidassist/strings.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/cli.h"
+#include "rapidassist/process.h"
+
+#ifdef _WIN32
+#include <Windows.h> //for CreateFile()
+#undef GetEnvironmentVariable
+#undef CreateFile
+#undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
+#endif
 
 namespace ra { namespace testing {
 
@@ -270,8 +281,8 @@ namespace ra { namespace testing {
 
   bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences) {
     //Compare by size
-    int32_t size1 = (int32_t)ra::filesystem::GetFileSize(iFile1);
-    int32_t size2 = (int32_t)ra::filesystem::GetFileSize(iFile2);
+    uint32_t size1 = ra::filesystem::GetFileSize(iFile1);
+    uint32_t size2 = ra::filesystem::GetFileSize(iFile2);
     if (size1 != size2) {
       if (size1 < size2)
         oReason << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
@@ -329,8 +340,8 @@ namespace ra { namespace testing {
 
   bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
     //Check by size
-    long size1 = ra::filesystem::GetFileSize(iFile1);
-    long size2 = ra::filesystem::GetFileSize(iFile2);
+    uint32_t size1 = ra::filesystem::GetFileSize(iFile1);
+    uint32_t size2 = ra::filesystem::GetFileSize(iFile2);
     if (size1 != size2) {
       return false; //unsupported
     }
@@ -434,13 +445,77 @@ namespace ra { namespace testing {
     return true;
   }
 
+  bool CreateFileSparse(const char * iFilePath, uint64_t iSize) {
+#ifdef _WIN32
+    //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
+
+    LARGE_INTEGER large_integer;
+    large_integer.QuadPart = iSize;
+
+    HANDLE hFile = ::CreateFileA(iFilePath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+    if (hFile == INVALID_HANDLE_VALUE)
+      return false;
+    if (SetFilePointerEx(hFile, large_integer, 0, FILE_BEGIN) == 0)
+    {
+      CloseHandle(hFile);
+      return false;
+    }
+    if (SetEndOfFile(hFile) == 0)
+    {
+      CloseHandle(hFile);
+      return false;
+    }
+    if (CloseHandle(hFile) == 0)
+      return false;
+    return true;
+#else
+    //https://stackoverflow.com/questions/257844/quickly-create-a-large-file-on-a-linux-system
+    //Valid commands are:
+    //  truncate -s 10737418240 10Gigfile.img
+    //  fallocate -l 10737418240 10Gigfile.img
+    //
+    // truncate command creates a sparse file. The file does use actual space on the disk.
+    // In other words, you can allocate a 100gb file even if the disk only have 1mb of freespace.
+    //
+    // fallocate commands creates a real file. It requires enough freespace to create a file.
+    // It can be used to quickly fill a hard disk to know how a software handle "hardisk full" errors.
+    // An error is returned if the file with the expected size cannot be created.
+
+    std::string fallocate_path = ra::filesystem::FindFileFromPaths("fallocate");
+    if (fallocate_path.empty())
+      return false;
+
+    std::string current_dir = ra::filesystem::GetCurrentDirectory();
+
+    //Run the new executable
+    ra::strings::StringVector arguments;
+    arguments.push_back("-l");
+    arguments.push_back(ra::strings::ToString(iSize));
+    arguments.push_back(iFilePath);
+
+    ra::process::processid_t pid = ra::process::StartProcess(fallocate_path, current_dir, arguments);
+    if (pid == ra::process::INVALID_PROCESS_ID)
+      return false;
+
+    //wait for the process to complete
+    int exitcode = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    if (!wait_ok)
+      return false;
+
+    if (exit_code != 0)
+      return false;
+    return true;
+#endif
+  }
+
   void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue) {
     //read
     FILE * f = fopen(iFilePath, "rb");
     if (!f)
       return;
 
-    long size = ra::filesystem::GetFileSize(f);
+    uint32_t size = ra::filesystem::GetFileSize(f);
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;

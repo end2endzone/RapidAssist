@@ -82,6 +82,18 @@ namespace ra { namespace testing {
   bool CreateFileUtf8(const char * iFilePath);
 
   /// <summary>
+  /// Creates a large file.
+  /// </summary>
+  /// <remarks>
+  /// https://en.wikipedia.org/wiki/Sparse_file
+  /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
+  /// </remarks>
+  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="iSize">The size of the file, in bytes.</param>
+  /// <returns>Returns true on success. Returns false otherwise.</returns>
+  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize);
+
+  /// <summary>
   /// Modify a given byte with the specified value.
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
@@ -137,6 +149,18 @@ namespace ra { namespace testing {
   /// <param name="iFilePath">The path of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
   inline bool CreateFileUtf8(const char * iFilePath) { return CreateFile(iFilePath); }
+
+  /// <summary>
+  /// Creates a large file.
+  /// </summary>
+  /// <remarks>
+  /// https://en.wikipedia.org/wiki/Sparse_file
+  /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
+  /// </remarks>
+  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="iSize">The size of the file, in bytes.</param>
+  /// <returns>Returns true on success. Returns false otherwise.</returns>
+  inline bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize) { return CreateFileSparse(iFilePath, iSize); }
 
   /// <summary>
   /// Modify a given byte with the specified value.

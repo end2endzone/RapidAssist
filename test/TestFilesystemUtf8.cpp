@@ -85,6 +85,75 @@ namespace ra { namespace filesystem { namespace test
     ra::filesystem::DeleteFileUtf8(filename.c_str());
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testGetFileSize64Utf8) {
+    //test NULL
+    {
+      const char * path = NULL;
+      uint64_t size = filesystem::GetFileSize64Utf8(path);
+      ASSERT_EQ(0, size);
+    }
+
+    //test actual value
+    {
+      //create dummy file
+      std::string filename = ra::testing::GetTestQualifiedName();
+      ASSERT_TRUE(ra::testing::CreateFileUtf8(filename.c_str()));
+
+#ifdef WIN32
+      static const uint64_t EXPECTED = 14;
+#elif __linux__
+      static const uint64_t EXPECTED = 11;
+#endif
+
+      uint64_t size = filesystem::GetFileSize64Utf8(filename.c_str());
+      ASSERT_EQ(EXPECTED, size);
+      size = 0;
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
+
+    //test large values
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      std::string filename = ra::testing::GetTestQualifiedName();
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * iFilename) : mFilename(iFilename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFileUtf8(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      uint64_t actual_size = filesystem::GetFileSize64Utf8(filename.c_str());
+      ASSERT_EQ(expected_size, actual_size);
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, testHasReadWriteAccessUtf8) {
     std::string filename = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.txt";
 

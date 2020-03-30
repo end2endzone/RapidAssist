@@ -38,6 +38,7 @@
 
 #ifdef _WIN32
 #define stat _stat
+#define stat64 _stat64
 #define __getcwd _getcwd
 #define __chdir _chdir
 #define __rmdir _rmdir
@@ -103,6 +104,18 @@ namespace ra { namespace filesystem {
     long size = ftell(f);
     fseek(f, initPos, SEEK_SET);
     return size;
+  }
+
+  uint64_t GetFileSize64(const char * iPath) {
+    if (iPath == NULL || iPath[0] == '\0')
+      return 0;
+
+    struct stat64 sb;
+    if (stat64(iPath, &sb) == 0) {
+      return sb.st_size;
+    }
+
+    return 0;
   }
 
   std::string GetFilename(const char * iPath) {
@@ -953,7 +966,7 @@ namespace ra { namespace filesystem {
   }
 
   bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
-    size_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
+    uint32_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
     if (force_win32_utf8)
     {
       file_size = ra::filesystem::GetFileSizeUtf8(source_path.c_str());
@@ -1055,8 +1068,8 @@ namespace ra { namespace filesystem {
       return false;
 
     //allocate a buffer which can hold the data of the peek size
-    size_t file_size = ra::filesystem::GetFileSize(path.c_str());
-    size_t max_read_size = (file_size < size ? file_size : size);
+    uint32_t file_size = ra::filesystem::GetFileSize(path.c_str());
+    uint32_t max_read_size = (file_size < size ? file_size : size);
 
     //validates empty files 
     if (max_read_size == 0)

@@ -94,11 +94,23 @@ namespace ra { namespace testing {
   bool CreateFile(const char * iFilePath, size_t iSize);
 
   /// <summary>
-  /// Creates text file.
+  /// Creates a text file.
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
   bool CreateFile(const char * iFilePath);
+
+  /// <summary>
+  /// Creates a large file.
+  /// </summary>
+  /// <remarks>
+  /// https://en.wikipedia.org/wiki/Sparse_file
+  /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
+  /// </remarks>
+  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="iSize">The size of the file, in bytes.</param>
+  /// <returns>Returns true on success. Returns false otherwise.</returns>
+  bool CreateFileSparse(const char * iFilePath, uint64_t iSize);
 
   /// <summary>
   /// Modify a given byte with the specified value.
