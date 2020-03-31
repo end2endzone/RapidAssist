@@ -33,6 +33,10 @@
 namespace ra { namespace filesystem { namespace test
 {
 
+#ifdef __linux__
+  extern bool Truncate(const char * iFilePath, uint64_t iSize);
+#endif
+
   //--------------------------------------------------------------------------------------------------
   void TestFilesystemUtf8::SetUp() {
   }
@@ -144,6 +148,15 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+#ifdef __linux__
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
       ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
 
       uint64_t actual_size = filesystem::GetFileSize64Utf8(filename.c_str());

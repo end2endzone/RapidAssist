@@ -487,19 +487,20 @@ namespace ra { namespace testing {
 
     std::string current_dir = ra::filesystem::GetCurrentDirectory();
 
-    //Run the new executable
+    //Prepare command arguments
     ra::strings::StringVector arguments;
     arguments.push_back("-l");
     arguments.push_back(ra::strings::ToString(iSize));
     arguments.push_back(iFilePath);
 
+    //Run the new executable
     ra::process::processid_t pid = ra::process::StartProcess(fallocate_path, current_dir, arguments);
     if (pid == ra::process::INVALID_PROCESS_ID)
       return false;
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     if (!wait_ok)
       return false;
 

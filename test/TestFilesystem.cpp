@@ -102,6 +102,39 @@ namespace ra { namespace filesystem { namespace test
     return true;
   }
 
+#ifdef __linux__
+  bool Truncate(const char * iFilePath, uint64_t iSize) {
+    //truncate -s 10737418240 10Gigfile.img
+    
+    std::string truncate_path = ra::filesystem::FindFileFromPaths("truncate");
+    if (truncate_path.empty())
+      return false;
+
+    std::string current_dir = ra::filesystem::GetCurrentDirectory();
+
+    //Prepare command arguments
+    ra::strings::StringVector arguments;
+    arguments.push_back("-s");
+    arguments.push_back(ra::strings::ToString(iSize));
+    arguments.push_back(iFilePath);
+
+    //Run the new executable
+    ra::process::processid_t pid = ra::process::StartProcess(truncate_path, current_dir, arguments);
+    if (pid == ra::process::INVALID_PROCESS_ID)
+      return false;
+
+    //wait for the process to complete
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
+    if (!wait_ok)
+      return false;
+
+    if (exit_code != 0)
+      return false;
+    return true;
+  }
+#endif
+  
   //--------------------------------------------------------------------------------------------------
   void TestFilesystem::SetUp() {
   }
@@ -241,6 +274,15 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#ifdef __linux__
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
       ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
 
       uint64_t actual_size = filesystem::GetFileSize64(filename.c_str());
