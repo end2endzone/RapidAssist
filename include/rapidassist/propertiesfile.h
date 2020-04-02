@@ -25,8 +25,10 @@
 #ifndef RA_PROPERTIESFILE_H
 #define RA_PROPERTIESFILE_H
 
-#include "rapidassist/strings.h"
 #include <map>
+
+#include "rapidassist/config.h"
+#include "rapidassist/strings.h"
 
 namespace ra { namespace filesystem {
 

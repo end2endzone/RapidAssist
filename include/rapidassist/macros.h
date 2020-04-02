@@ -25,6 +25,7 @@
 #ifndef RA_MACROS_H
 #define RA_MACROS_H
 
+#include "rapidassist/config.h"
 
 #define SAFE_DELETE(var)        {if (var) delete   var; var = NULL;}
 #define SAFE_DELETE_ARRAY(var)  {if (var) delete[] var; var = NULL;}

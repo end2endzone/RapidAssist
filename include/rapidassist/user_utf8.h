@@ -26,6 +26,8 @@
 #define RA_USER_UTF8_H
 
 #include <string>
+
+#include "rapidassist/config.h"
 #include "rapidassist/user.h"
 
 namespace ra { namespace user {

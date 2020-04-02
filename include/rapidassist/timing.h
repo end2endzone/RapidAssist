@@ -28,6 +28,8 @@
 #include <stdint.h>
 #include <ctime> //for struct tm
 
+#include "rapidassist/config.h"
+
 namespace ra { namespace timing {
 
   /// <summary>

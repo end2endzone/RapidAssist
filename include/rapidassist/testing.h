@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "rapidassist/config.h"
 #include "rapidassist/macros.h"
 #include "rapidassist/strings.h"
 

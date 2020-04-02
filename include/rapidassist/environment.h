@@ -28,6 +28,7 @@
 #include <string>
 #include <stdint.h>
 
+#include "rapidassist/config.h"
 #include "rapidassist/strings.h"
 
 namespace ra { namespace environment {

@@ -27,6 +27,8 @@
 
 #include <string>
 
+#include "rapidassist/config.h"
+
 namespace ra { namespace logging {
 
   /// <summary>

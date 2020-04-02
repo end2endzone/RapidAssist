@@ -30,6 +30,8 @@
 #include <vector>
 #include <stdio.h>
 
+#include "rapidassist/config.h"
+
 namespace ra { namespace strings {
 
   typedef std::vector<std::string> StringVector;

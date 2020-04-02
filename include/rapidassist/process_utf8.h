@@ -35,6 +35,7 @@
 #include <unistd.h>
 #endif
 
+#include "rapidassist/config.h"
 #include "rapidassist/strings.h"
 #include "rapidassist/process.h"
 

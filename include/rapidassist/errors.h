@@ -28,6 +28,8 @@
 #include <string>
 #include <stdint.h>
 
+#include "rapidassist/config.h"
+
 namespace ra { namespace errors {
 
   /// <summary>

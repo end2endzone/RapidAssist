@@ -31,6 +31,8 @@
 #include <set>
 #include <algorithm>
 
+#include "rapidassist/config.h"
+
 namespace ra { namespace generics {
 
   static const size_t INVALID_INDEX = (size_t)-1;

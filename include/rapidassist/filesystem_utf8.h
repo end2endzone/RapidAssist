@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include "rapidassist/config.h"
 #include "rapidassist/strings.h"
 #include "rapidassist/filesystem.h"
 

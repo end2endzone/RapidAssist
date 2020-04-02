@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 
+#include "rapidassist/config.h"
 #include "rapidassist/strings.h"
 #include "rapidassist/environment.h"
 

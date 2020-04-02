@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 
+#include "rapidassist/config.h"
 #include "rapidassist/testing.h"
 
 namespace ra { namespace testing {

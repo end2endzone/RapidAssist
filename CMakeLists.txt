@@ -123,7 +123,7 @@ endif()
 # The specified values will not be exported.
 set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include )
 include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header files, for source code.
-                    ${CMAKE_BINARY_DIR}/include/rapidassist   # for ${RAPIDASSIST_VERSION_HEADER} and ${RAPIDASSIST_CONFIG_HEADER} generated files.
+                    ${CMAKE_BINARY_DIR}/include               # for ${RAPIDASSIST_VERSION_HEADER} and ${RAPIDASSIST_CONFIG_HEADER} generated files.
 )
 
 # Subprojects
