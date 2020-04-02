@@ -1069,7 +1069,7 @@ namespace ra { namespace filesystem {
 
     //allocate a buffer which can hold the data of the peek size
     uint32_t file_size = ra::filesystem::GetFileSize(path.c_str());
-    uint32_t max_read_size = (file_size < size ? file_size : size);
+    uint32_t max_read_size = (file_size < (uint32_t)size ? file_size : (uint32_t)size);
 
     //validates empty files 
     if (max_read_size == 0)

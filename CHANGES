@@ -1,6 +1,6 @@
 Changes for 0.8.1:
 
-N/A
+* Fixed issue #53: Warning C4267 (possible loss of data) in filesystem.cpp when building in 64 bit.
 
 
 Changes for 0.8.0:
