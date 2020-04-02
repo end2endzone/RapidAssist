@@ -2,6 +2,16 @@
 cmake_minimum_required(VERSION 3.4.3 FATAL_ERROR)
 project(RapidAssist)
 
+find_package(GTest)
+
+if (GTEST_FOUND)
+  set(RAPIDASSIST_HAVE_GTEST 1)
+else()
+  set(RAPIDASSIST_HAVE_GTEST)
+  set(GTEST_INCLUDE_DIR "")
+  set(GTEST_LIBRARIES "")
+endif()
+
 ##############################################################################################################################################
 # Standard CMake variables
 ##############################################################################################################################################
@@ -78,12 +88,11 @@ configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/version.h.in ${RAPIDASSIST_V
 set(RAPIDASSIST_CONFIG_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/config.h)
 message("Generating ${RAPIDASSIST_CONFIG_HEADER}...")
 if (BUILD_SHARED_LIBS)
-  set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE "#define RAPIDASSIST_BUILT_AS_SHARED")
+  set(RAPIDASSIST_BUILT_AS_SHARED 1)
 else()
-  set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE "#define RAPIDASSIST_BUILT_AS_STATIC")
+  set(RAPIDASSIST_BUILT_AS_STATIC 1)
 endif()
 configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/config.h.in ${RAPIDASSIST_CONFIG_HEADER} )
-set(RAPIDASSIST_BUILD_TYPE_CPP_DEFINE)
 
 # Define installation directories
 set(RAPIDASSIST_INSTALL_BIN_DIR      "bin")
@@ -96,7 +105,6 @@ set(RAPIDASSIST_INSTALL_CMAKE_DIR    ${RAPIDASSIST_INSTALL_LIB_DIR}) # CMake fil
 ##############################################################################################################################################
 
 # Build options
-option(RAPIDASSIST_BUILD_TESTING "Build the Google Test helper functions." ON)
 option(RAPIDASSIST_BUILD_TEST "Build all RapidAssist's unit tests" OFF)
 
 # Force a debug postfix if none specified.
@@ -118,20 +126,15 @@ include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header fi
                     ${CMAKE_BINARY_DIR}/include/rapidassist   # for ${RAPIDASSIST_VERSION_HEADER} and ${RAPIDASSIST_CONFIG_HEADER} generated files.
 )
 
-# unit tests
-if(RAPIDASSIST_BUILD_TEST)
-  if(NOT RAPIDASSIST_BUILD_TESTING)
-    # force RAPIDASSIST_BUILD_TESTING=ON
-    message(WARNING "Forcing RAPIDASSIST_BUILD_TESTING to ON because RAPIDASSIST_BUILD_TEST is enabled.")
-    set(RAPIDASSIST_BUILD_TESTING ON)
-  endif()
-endif()
-
 # Subprojects
 add_subdirectory(src/rapidassist)
 
 if(RAPIDASSIST_BUILD_TEST)
-  add_subdirectory(test)
+  if (GTEST_FOUND)
+    add_subdirectory(test)
+  else()
+    message(WARNING "RAPIDASSIST_BUILD_TEST is enabled but gtest library is not found. Unit tests wont be added to the project.")
+  endif()
 endif()
 
 ##############################################################################################################################################

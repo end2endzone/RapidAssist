@@ -120,6 +120,7 @@ namespace ra { namespace testing {
   /// <param name="iValue">The value of the replacement.</param>
   void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue);
 
+#ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>
   /// This function build a GTEST filter automatically based on a given positive and a negative filter.
   /// The result filter format is the following:
@@ -162,6 +163,7 @@ namespace ra { namespace testing {
   /// <param name="iTestCasePath">Path to the GTest compatible executable file.</param>
   /// <returns>Returns a list of all runnable test cases in a gTest compatible test. Returns an empty string if no test was found.</returns>
   ra::strings::StringVector GetTestList(const char * iTestCasePath);
+#endif //RAPIDASSIST_HAVE_GTEST
 
   /// <summary>
   /// Returns true if the specified processor flag is enabled.
@@ -191,6 +193,7 @@ namespace ra { namespace testing {
   /// <returns>Returns true if running on Jenkins. Returns false otherwise.</returns>
   bool IsJenkins();
 
+#ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>
   /// Returns the name of the current Test Suite name. ie "TestFooClass"
   /// </summary>
@@ -208,6 +211,7 @@ namespace ra { namespace testing {
   /// </summary>
   /// <returns>Returns the fully qualified name of the current test case name.</returns>
   std::string GetTestQualifiedName();
+#endif //RAPIDASSIST_HAVE_GTEST
 
 } //namespace testing
 } //namespace ra

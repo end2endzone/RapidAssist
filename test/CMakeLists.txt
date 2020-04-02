@@ -1,14 +1,3 @@
-find_package(GTest)
-
-if(RAPIDASSIST_BUILD_TESTING)
-  set(RAPIDASSIST_TESTING_TEST_FILES
-    TestTesting.cpp
-    TestTesting.h
-    TestTestingUtf8.cpp
-    TestTestingUtf8.h
-  )
-endif()
-
 set(UNITTEST_TEST_FILES ""
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testLoad.txt
   ${CMAKE_CURRENT_SOURCE_DIR}/test_files/TestPropertiesFile.testSave.expected.txt
@@ -20,7 +9,6 @@ add_executable(rapidassist_unittest
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
-  ${RAPIDASSIST_TESTING_TEST_FILES}
   ${UNITTEST_TEST_FILES}
   CommandLineMgr.cpp
   CommandLineMgr.h
@@ -57,6 +45,10 @@ add_executable(rapidassist_unittest
   TestRandom.h
   TestString.cpp
   TestString.h
+  TestTesting.cpp
+  TestTesting.h
+  TestTestingUtf8.cpp
+  TestTestingUtf8.h
   TestTiming.cpp
   TestTiming.h
   TestUnicode.cpp

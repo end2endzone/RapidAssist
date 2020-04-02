@@ -25,7 +25,7 @@ This section explains how to compile and build the software and how to get a dev
 ### Software Requirements ###
 The following software must be installed on the system for compiling source code:
 
-* [Google C++ Testing Framework v1.8.0](https://github.com/google/googletest/tree/release-1.8.0)
+* [Google C++ Testing Framework v1.8.0](https://github.com/google/googletest/tree/release-1.8.0), required for unit tests.
 * [CMake](http://www.cmake.org/) v3.4.3 (or newer)
 
 

@@ -15,33 +15,19 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/process_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/random.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/strings.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/testing_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/timing.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/unicode.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user_utf8.h
 )
 
-if(RAPIDASSIST_BUILD_TESTING)
-  # add other header files
-  set(RAPIDASSIST_HEADER_FILES ${RAPIDASSIST_HEADER_FILES}
-    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h
-    ${CMAKE_SOURCE_DIR}/include/rapidassist/testing_utf8.h
-  )
-
-  find_package(GTest)
-
-  set(RAPIDASSIST_TESTING_SOURCE_FILES ""
-    testing.cpp
-    testing_utf8.cpp
-  )
-endif()
-
 add_library(rapidassist STATIC
   ${RAPIDASSIST_HEADER_FILES}
   ${RAPIDASSIST_EXPORT_HEADER}
   ${RAPIDASSIST_VERSION_HEADER}
   ${RAPIDASSIST_CONFIG_HEADER}
-  ${RAPIDASSIST_TESTING_SOURCE_FILES}
   console.cpp
   cli.cpp
   code_cpp.cpp
@@ -56,6 +42,8 @@ add_library(rapidassist STATIC
   process_utf8.cpp
   random.cpp
   strings.cpp
+  testing.cpp
+  testing_utf8.cpp
   timing.cpp
   unicode.cpp
   user.cpp

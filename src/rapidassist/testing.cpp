@@ -28,7 +28,9 @@
 #include <iostream> //for std::hex
 #include <cstdio> //for remove()
 
+#ifdef RAPIDASSIST_HAVE_GTEST
 #include <gtest/gtest.h>
+#endif
 
 #include "rapidassist/filesystem.h"
 #include "rapidassist/strings.h"
@@ -94,6 +96,7 @@ namespace ra { namespace testing {
     return tmp;
   }
 
+#ifdef RAPIDASSIST_HAVE_GTEST
   std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv) {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
@@ -258,6 +261,7 @@ namespace ra { namespace testing {
 
     return test_list;
   }
+#endif //RAPIDASSIST_HAVE_GTEST
 
   bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences) {
     //Build basic message
@@ -563,6 +567,7 @@ namespace ra { namespace testing {
     return !environment::GetEnvironmentVariable("JENKINS_URL").empty();
   }
 
+#ifdef RAPIDASSIST_HAVE_GTEST
   std::string GetTestSuiteName() {
     std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();
     return name;
@@ -584,6 +589,7 @@ namespace ra { namespace testing {
 
     return name;
   }
+#endif //RAPIDASSIST_HAVE_GTEST
 
 } //namespace testing
 } //namespace ra
