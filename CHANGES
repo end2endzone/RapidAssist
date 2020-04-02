@@ -3,6 +3,7 @@ Changes for 0.8.0:
 * Fixed issue #49: Create ra::unicode namespace to wrap functions that provide support to unicode.
 * Fixed issue #50: Support for Windows Unicode (a.k.a. UTF-16).
 * Fixed issue #51: Function in `ra::testing` namespace are lacking documentation.
+* Fixed issue #52: Enable functions in `ra::testing` even if gtest library is not available.
 
 
 Changes for 0.7.0:
