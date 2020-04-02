@@ -1,3 +1,8 @@
+Changes for 0.8.1:
+
+N/A
+
+
 Changes for 0.8.0:
 
 * Fixed issue #49: Create ra::unicode namespace to wrap functions that provide support to unicode.
