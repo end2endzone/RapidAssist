@@ -5,7 +5,8 @@ os:
 - linux
 branches:
   only:
-  - master
+    - master
+    - 0.8.x
 
 script:
 - cd $TRAVIS_BUILD_DIR/ci/travis;
