@@ -7,6 +7,8 @@ set APPVEYOR_BUILD_FOLDER=%cd%
 set Configuration=Debug
 set Platform=Win32
 set PlatformToolset=v100
+REM set Platform=x64
+REM set PlatformToolset=Windows7.1SDK
 
 echo Emulating appveyor's environment.
 echo APPVEYOR_BUILD_FOLDER set to '%APPVEYOR_BUILD_FOLDER%'

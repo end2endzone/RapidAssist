@@ -1,3 +1,8 @@
+Changes for 0.8.1:
+
+* Fixed issue #53: Warning C4267 (possible loss of data) in filesystem.cpp when building in 64 bit.
+
+
 Changes for 0.8.0:
 
 * Fixed issue #49: Create ra::unicode namespace to wrap functions that provide support to unicode.

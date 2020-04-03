@@ -227,12 +227,12 @@ namespace ra { namespace process {
     if (hProcess) {
       ProcessIdList thread_ids;
       if (GetThreadIds(pid, thread_ids)) {
-        size_t num_threads = thread_ids.size();
+        DWORD num_threads = (DWORD)thread_ids.size();
         if (num_threads >= 1) {
           if (iTimeoutMS != INFINITE) {
 
             //Call WM_CLOSE & WM_QUIT on all the threads
-            size_t thread_timeout_ms = iTimeoutMS / num_threads;
+            DWORD thread_timeout_ms = iTimeoutMS / num_threads;
             for (size_t thread_index = 0; thread_index < num_threads && !success; thread_index++) {
               DWORD thread_id = thread_ids[thread_index];
               bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
