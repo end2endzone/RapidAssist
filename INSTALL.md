@@ -53,11 +53,13 @@ The RapidAssist library uses the CMake build system to generate a platform-speci
 
 To build the software, execute the following steps:
 
-1) Get a copy of the source code by using one of the following methods:
+1) Build and install all software prerequisites before building this software.
+
+2) Get a copy of the source code by using one of the following methods:
    * Download the source code of the project from an existing [tags](http://github.com/end2endzone/RapidAssist) and extract the downloaded zip file to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
    * Clone the github repository by running `git clone "https://github.com/end2endzone/RapidAssist"`.
 
-2) Generate the project files for your build system. From your source code directory, enter the following commands:
+3) Generate the project files for your build system. From your source code directory, enter the following commands:
 ```
 mkdir build
 cd build
@@ -66,9 +68,39 @@ cmake ..
 
 Note: See [CMake Quick Tips](#cmake-quick-tips) section for more details on building the library.
 
-3) Build the source code:
+4) Build the source code:
    1) On Windows, run `cmake --build . --config Release` or open the generated `.sln` file with Visual Studio.
    2) On Linux, run `make` command.
+
+
+
+### Building scripts for Linux ###
+
+The project provides scripts to facilitate the build process. The scripts can be found in [ci/travis](https://github.com/end2endzone/RapidAssist/tree/master/ci/travis) directory. There are 2 scripts, one for gtest dependency and a final script for building the library. The scripts are named
+
+1) install_googletest.sh
+2) build_library.sh
+
+They are designed to be executed on [Travis CI](https://travis-ci.org/github/end2endzone/RapidAssist) and requires the environment variable `TRAVIS_BUILD_DIR` to be set to the location where you cloned the RapidAssist repository or extracted the source code. Once the environment variable is set, you should be able to execute each script one by one. 
+
+During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `$TRAVIS_BUILD_DIR/third_parties/googletest`. At the end of the build process, RapidAssist library will be located in directory `$TRAVIS_BUILD_DIR/build/bin`.
+
+You can see the latest build log example on [Travis CI RapidAssist page](https://travis-ci.org/github/end2endzone/RapidAssist).
+
+
+
+### Building scripts for Windows ###
+
+The project provides scripts to facilitate the build process. The scripts can be found in [ci/appveyor](https://github.com/end2endzone/RapidAssist/tree/master/ci/appveyor) directory. There are 2 scripts, one for gtest dependency and a final script for building the library. The scripts are named
+
+1) install_googletest.bat
+2) build_library.bat
+
+They are designed to be executed on [AppVeyor](https://ci.appveyor.com/project/end2endzone/RapidAssist) and requires the environment variable `APPVEYOR_BUILD_FOLDER` to be set to the location where you cloned the RapidAssist repository or extracted the source code. The environment variable `CONFIGURATION` must also be set to the value `Release`. Once the environment variables are set, you should be able to execute each script one by one. 
+
+During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `%APPVEYOR_BUILD_FOLDER%\third_parties\googletest`). At the end of the build process, RapidAssist library will be located in directory `%APPVEYOR_BUILD_FOLDER%\build\bin\%CONFIGURATION%`.
+
+You can see the latest build log example on [AppVeyor RapidAssist page](https://ci.appveyor.com/project/end2endzone/RapidAssist).
 
 
 

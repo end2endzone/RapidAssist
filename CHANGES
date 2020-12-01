@@ -1,6 +1,7 @@
 Changes for 0.8.2:
 
 * Fixed issue #54: Exception when calling ra::environment::GetEnvironmentVariablesUtf8()
+* Fixed issue #57: Updated INSTALL documentation for using the build scripts.
 
 
 Changes for 0.8.1:
