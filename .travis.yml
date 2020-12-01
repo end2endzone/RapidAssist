@@ -8,16 +8,12 @@ branches:
   - master
 
 script:
-- cd $TRAVIS_BUILD_DIR/ci/travis;
-  ./install_googletest.sh;
-- cd $TRAVIS_BUILD_DIR/ci/travis;
-  ./build_library.sh;
-- cd $TRAVIS_BUILD_DIR/ci/travis;
-  ./build_client.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;  ./install_googletest.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;  ./build_library.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;  ./build_client.sh;
 - mkdir ~/Documents   #required for TestUser.testFoldersExisting() because /home/travis/Documents does not exists!
 - mkdir ~/Desktop     #required for TestUser.testFoldersExisting() because /home/travis/Desktop   does not exists!
-- cd $TRAVIS_BUILD_DIR/ci/travis;
-  ./test_script.sh;
+- cd $TRAVIS_BUILD_DIR/ci/travis;  ./test_script.sh;
 
 after_success:
 - echo AFTER SUCCESS!
