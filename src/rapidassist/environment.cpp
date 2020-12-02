@@ -31,9 +31,17 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-#else
-  //for GetEnvironmentVariables()
-  extern char **environ;
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+#endif /* WIN32_LEAN_AND_MEAN */
+#include <Windows.h> //for GetEnvironmentStrings()
+#undef SetEnvironmentVariable
+#undef GetEnvironmentVariable
+#undef CreateFile
+#undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
 #endif
 
 namespace ra { namespace environment {
@@ -130,26 +138,38 @@ namespace ra { namespace environment {
   ra::strings::StringVector GetEnvironmentVariables() {
     ra::strings::StringVector vars;
 
-    char *s = *environ;
+    // Get a pointer to the environment block.
+    LPCH lpvEnv = GetEnvironmentStrings();
 
-    int i = 0;
-    s = *(environ + i);
+    // If the returned pointer is NULL, exit.
+    if (lpvEnv == NULL)
+      return vars;
+ 
+    // Variable strings are separated by NULL byte, and the block is terminated by a NULL byte. 
+    LPSTR lpvTmp = (LPSTR)lpvEnv;
+    while (*lpvTmp)
+    {
+      std::string definition = lpvTmp;
 
-    while (s) {
-      std::string definition = s;
-      size_t offset = definition.find('=');
-      if (offset != std::string::npos) {
-        std::string name = definition.substr(0, offset);
-        std::string value = definition.substr(offset + 1);
-        int a = 0;
+      // Skip "current directory" and drive environment variables:
+      //  "=::=::\"
+      //  "=C:=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE"
+      //  "=G:=G:\Temp\temp3"
+      if (!definition.empty() && definition[0] != '=')
+      {
+        size_t offset = definition.find('=');
+        if (offset != std::string::npos) {
+          std::string name = definition.substr(0, offset);
+          //std::string value = definition.substr(offset + 1);
 
-        vars.push_back(name);
+          vars.push_back(name);
+        }
       }
 
-      //next var
-      i++;
-      s = *(environ + i);
+      //next definition
+      lpvTmp += lstrlen(lpvTmp) + 1;
     }
+    FreeEnvironmentStrings(lpvEnv);
 
     return vars;
   }

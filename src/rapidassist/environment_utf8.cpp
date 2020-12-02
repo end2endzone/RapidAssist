@@ -30,6 +30,20 @@
 #include <stdlib.h> //for setenv(), unsetenv()
 #include <stdio.h>
 
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+#endif /* WIN32_LEAN_AND_MEAN */
+#include <Windows.h> //for GetEnvironmentStringsW()
+#undef SetEnvironmentVariable
+#undef GetEnvironmentVariable
+#undef CreateFile
+#undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
+#endif
+
 namespace ra { namespace environment {
 
 #ifdef _WIN32 // UTF-8
@@ -72,29 +86,41 @@ namespace ra { namespace environment {
   ra::strings::StringVector GetEnvironmentVariablesUtf8() {
     ra::strings::StringVector vars;
 
-    wchar_t *s = *_wenviron;
+    // Get a pointer to the environment block.
+    LPWCH lpvEnv = GetEnvironmentStringsW();
 
-    int i = 0;
-    s = *(_wenviron + i);
+    // If the returned pointer is NULL, exit.
+    if (lpvEnv == NULL)
+      return vars;
+ 
+    // Variable strings are separated by NULL byte, and the block is terminated by a NULL byte. 
+    LPWSTR lpvTmp = (LPWSTR)lpvEnv;
+    while (*lpvTmp)
+    {
+      std::wstring definition = lpvTmp;
 
-    while (s) {
-      std::wstring definition = s;
-      size_t offset = definition.find('=');
-      if (offset != std::string::npos) {
-        std::wstring nameW = definition.substr(0, offset);
-        std::wstring valueW = definition.substr(offset + 1);
-        int a = 0;
+      // Skip "current directory" and drive environment variables:
+      //  "=::=::\"
+      //  "=C:=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE"
+      //  "=G:=G:\Temp\temp3"
+      if (!definition.empty() && definition[0] != '=')
+      {
+        size_t offset = definition.find('=');
+        if (offset != std::string::npos) {
+          std::wstring nameW = definition.substr(0, offset);
+          //std::wstring valueW = definition.substr(offset + 1);
 
-        std::string name_utf8  = ra::unicode::UnicodeToUtf8(nameW);
-        std::string value_utf8 = ra::unicode::UnicodeToUtf8(valueW);
+          std::string name_utf8  = ra::unicode::UnicodeToUtf8(nameW);
+          //std::string value_utf8 = ra::unicode::UnicodeToUtf8(valueW);
 
-        vars.push_back(name_utf8);
+          vars.push_back(name_utf8);
+        }
       }
 
-      //next var
-      i++;
-      s = *(_wenviron + i);
+      //next definition
+      lpvTmp += lstrlenW(lpvTmp) + 1;
     }
+    FreeEnvironmentStringsW(lpvEnv);
 
     return vars;
   }
