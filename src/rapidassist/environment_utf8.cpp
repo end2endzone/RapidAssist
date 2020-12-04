@@ -31,17 +31,17 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
-#endif /* WIN32_LEAN_AND_MEAN */
-#include <Windows.h> //for GetEnvironmentStringsW()
-#undef SetEnvironmentVariable
-#undef GetEnvironmentVariable
-#undef CreateFile
-#undef DeleteFile
-#undef CreateDirectory
-#undef GetCurrentDirectory
-#undef CopyFile
+  #ifndef WIN32_LEAN_AND_MEAN
+  #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+  #endif /* WIN32_LEAN_AND_MEAN */
+  #include <Windows.h> //for GetEnvironmentStringsW()
+  #undef SetEnvironmentVariable
+  #undef GetEnvironmentVariable
+  #undef CreateFile
+  #undef DeleteFile
+  #undef CreateDirectory
+  #undef GetCurrentDirectory
+  #undef CopyFile
 #endif
 
 namespace ra { namespace environment {
@@ -86,6 +86,7 @@ namespace ra { namespace environment {
   ra::strings::StringVector GetEnvironmentVariablesUtf8() {
     ra::strings::StringVector vars;
 
+#ifdef _WIN32
     // Get a pointer to the environment block.
     LPWCH lpvEnv = GetEnvironmentStringsW();
 
@@ -121,7 +122,31 @@ namespace ra { namespace environment {
       lpvTmp += lstrlenW(lpvTmp) + 1;
     }
     FreeEnvironmentStringsW(lpvEnv);
+#else
+    wchar_t *s = *_wenviron;
 
+    int i = 0;
+    s = *(_wenviron + i);
+
+    while (s) {
+      std::wstring definition = s;
+      size_t offset = definition.find('=');
+      if (offset != std::string::npos) {
+        std::wstring nameW = definition.substr(0, offset);
+        std::wstring valueW = definition.substr(offset + 1);
+        int a = 0;
+
+        std::string name_utf8  = ra::unicode::UnicodeToUtf8(nameW);
+        std::string value_utf8 = ra::unicode::UnicodeToUtf8(valueW);
+
+        vars.push_back(name_utf8);
+      }
+
+      //next var
+      i++;
+      s = *(_wenviron + i);
+    }
+#endif
     return vars;
   }
 
