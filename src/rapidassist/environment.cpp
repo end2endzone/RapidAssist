@@ -31,17 +31,20 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
-#endif /* WIN32_LEAN_AND_MEAN */
-#include <Windows.h> //for GetEnvironmentStrings()
-#undef SetEnvironmentVariable
-#undef GetEnvironmentVariable
-#undef CreateFile
-#undef DeleteFile
-#undef CreateDirectory
-#undef GetCurrentDirectory
-#undef CopyFile
+  #ifndef WIN32_LEAN_AND_MEAN
+  #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+  #endif /* WIN32_LEAN_AND_MEAN */
+  #include <Windows.h> //for GetEnvironmentStrings()
+  #undef SetEnvironmentVariable
+  #undef GetEnvironmentVariable
+  #undef CreateFile
+  #undef DeleteFile
+  #undef CreateDirectory
+  #undef GetCurrentDirectory
+  #undef CopyFile
+#else
+  //for GetEnvironmentVariables()
+  extern char **environ;
 #endif
 
 namespace ra { namespace environment {
@@ -138,6 +141,7 @@ namespace ra { namespace environment {
   ra::strings::StringVector GetEnvironmentVariables() {
     ra::strings::StringVector vars;
 
+#ifdef _WIN32
     // Get a pointer to the environment block.
     LPCH lpvEnv = GetEnvironmentStrings();
 
@@ -170,7 +174,28 @@ namespace ra { namespace environment {
       lpvTmp += lstrlen(lpvTmp) + 1;
     }
     FreeEnvironmentStrings(lpvEnv);
+#else
+    char *s = *environ;
 
+    int i = 0;
+    s = *(environ + i);
+
+    while (s) {
+      std::string definition = s;
+      size_t offset = definition.find('=');
+      if (offset != std::string::npos) {
+        std::string name = definition.substr(0, offset);
+        std::string value = definition.substr(offset + 1);
+        int a = 0;
+
+        vars.push_back(name);
+      }
+
+      //next var
+      i++;
+      s = *(environ + i);
+    }
+#endif
     return vars;
   }
   

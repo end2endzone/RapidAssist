@@ -1,3 +1,8 @@
+Changes for 0.8.3:
+
+* Fixed issue #58: Compilation fail: environment.cpp:142:5: error: ‘LPCH’ was not declared in this scope #58
+
+
 Changes for 0.8.2:
 
 * Fixed issue #54: Exception when calling ra::environment::GetEnvironmentVariablesUtf8()
