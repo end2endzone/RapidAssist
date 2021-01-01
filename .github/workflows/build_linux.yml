@@ -19,20 +19,20 @@ jobs:
         git submodule update --init --recursive
 
     - name: Install Google Test
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./$GITHUB_WORKSPACE/ci/github/install_googletest.sh
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      run: ./install_googletest.sh
 
     - name: Build library
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./$GITHUB_WORKSPACE/ci/github/build_library.sh
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      run: ./build_library.sh
 
     - name: Build client
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./$GITHUB_WORKSPACE/ci/github/build_client.sh
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      run: ./build_client.sh
 
     - name: Run unit tests
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./$GITHUB_WORKSPACE/ci/github/test_script.sh
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      run: ./test_script.sh
 
     - name: Archive test results
       uses: actions/upload-artifact@v2
