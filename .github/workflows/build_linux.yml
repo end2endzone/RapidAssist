@@ -18,6 +18,18 @@ jobs:
         git config --global advice.detachedHead false
         git submodule update --init --recursive
 
+    - name: Test current directory
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      run: pwd
+
+    - name: List environment variables
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: env
+
+    - name: List files in directory 'github'.
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: ls
+
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
       run: ./install_googletest.sh
