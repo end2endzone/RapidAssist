@@ -13,11 +13,21 @@ env:
 
 jobs:
   build:
+    # For a list of available runner types, refer to
+    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: windows-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
+    - name: Configure GIT
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
+      run: |
+        git config --global core.autocrlf true
+        git config --global advice.detachedHead false
+        git submodule update --init --recursive
 
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -33,6 +43,11 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: call ci\github\build_client.bat
+
+    - name: Run unit tests
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
+      run: call ci\github\test_script.bat
 
     - name: Archive test results
       uses: actions/upload-artifact@v2
