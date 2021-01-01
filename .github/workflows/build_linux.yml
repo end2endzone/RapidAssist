@@ -14,36 +14,44 @@ jobs:
 
     - name: Configure GIT
       working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
       run: |
         git config --global advice.detachedHead false
         git submodule update --init --recursive
 
     - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
-      run: pwd
+      shell: bash
+      run: /usr/bin/pwd
 
     - name: List environment variables
       working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
       run: env
 
     - name: List files in directory 'github'.
       working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
       run: ls
 
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      shell: bash
       run: ./install_googletest.sh
 
     - name: Build library
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      shell: bash
       run: ./build_library.sh
 
     - name: Build client
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      shell: bash
       run: ./build_client.sh
 
     - name: Run unit tests
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      shell: bash
       run: ./test_script.sh
 
     - name: Archive test results
