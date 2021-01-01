@@ -1,0 +1,38 @@
+name: Build and Test - Windows
+
+on: [push]
+
+env:
+  PlatformToolset: v140
+
+  # build platform, i.e. x86, x64, Any CPU. This setting is optional.
+  Platform: Win32
+
+  # build Configuration, i.e. Debug, Release, etc.
+  Configuration: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Google Test
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: call ci\github\install_googletest.bat
+
+    - name: Build library
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: call ci\github\build_library.bat
+
+    - name: Build client
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: call ci\github\build_client.bat
+
+    - name: Archive test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: unit-test-results
+        path: build\bin\${{env.Configuration}}\rapidassist_unittest*.xml
