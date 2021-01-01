@@ -567,6 +567,10 @@ namespace ra { namespace testing {
     return !environment::GetEnvironmentVariable("JENKINS_URL").empty();
   }
 
+  bool IsGitHub() {
+    return !environment::GetEnvironmentVariable("GITHUB_SERVER_URL").empty();
+  }
+
 #ifdef RAPIDASSIST_HAVE_GTEST
   std::string GetTestSuiteName() {
     std::string name = ::testing::UnitTest::GetInstance()->current_test_info()->test_case_name();

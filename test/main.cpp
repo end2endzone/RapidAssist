@@ -144,25 +144,32 @@ int main(int argc, char **argv) {
   ::testing::GTEST_FLAG(filter) = "*";
   ::testing::InitGoogleTest(&argc, argv);
 
-  //Disable TestTiming.testGetUtcTime() on AppVeyor or Travis CI
-  if (ra::testing::IsAppVeyor() || ra::testing::IsTravis()) {
+  //Disable tests that does not run properly on Continuous Integration (CI) server
+  if (ra::testing::IsAppVeyor() ||
+      ra::testing::IsTravis() ||
+      ra::testing::IsGitHub()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
+    printf("*** Running unit tests on a Continuous Integration (CI) server ***\n");
+
+    //Most CI framework runs in timezone +0 which is not expected by the test.
+    printf("*** Disabling TestTiming.testGetUtcTime unit tests ***\n");
     std::string newFilter = ra::testing::MergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
     //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::GetCursorPos', line 79.
     //I guess that it is because standard output is beeing redirected for the purpose of logging the program output.
     //
-    //Travis does not like console tests either. The program hang or enters an infinite loop. Don't really know.
+    //Travis CI does not like console tests either. The program hang or enters an infinite loop. Don't really know.
     //Travis reported failure: 
     //    No output has been received in the last 10m0s, this potentially indicates a stalled build or something wrong with the build itself.
     //    Check the details on how to adjust your build configuration on: https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
     //    The build has been terminated
     //
+    //GitHub does not like console tests either. The program outputs the following error when calling GetCursorPos:
+    //    GetConsoleScreenBufferInfo() error: (6), function 'ra::console::GetCursorPos', line 76
+    //
     //Disabling all console tests.
-    printf("*** Running unit test on AppVeyor/Travis CI ***\n");
     printf("*** Disabling TestConsole.* unit tests ***\n");
     newFilter = ra::testing::MergeFilter("", "TestConsole.*", newFilter.c_str());
 

@@ -194,6 +194,12 @@ namespace ra { namespace testing {
   /// <returns>Returns true if running on Jenkins. Returns false otherwise.</returns>
   bool IsJenkins();
 
+  /// <summary>
+  /// Returns true if the specified continuous integration server is running.
+  /// </summary>
+  /// <returns>Returns true if running on Github. Returns false otherwise.</returns>
+  bool IsGitHub();
+
 #ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>
   /// Returns the name of the current Test Suite name. ie "TestFooClass"
