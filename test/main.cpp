@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
     printf("*** Running unit tests on a Continuous Integration (CI) server ***\n");
 
     //Most CI framework runs in timezone +0 which is not expected by the test.
-    printf("*** Disabling TestTiming.testGetUtcTime unit tests ***\n");
+    printf("*** Disabling TestTiming.testGetUtcTime unit test ***\n");
     std::string newFilter = ra::testing::MergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
