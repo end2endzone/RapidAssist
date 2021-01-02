@@ -2,6 +2,10 @@ name: Build on Linux
 
 on: [push, pull_request]
 
+env:
+  # build Configuration, i.e. Debug, Release, etc.
+  Configuration: Release
+
 jobs:
   build:
     # For a list of available runner types, refer to
@@ -12,13 +16,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    #   - name: Configure GIT
-    #     working-directory: ${{env.GITHUB_WORKSPACE}}
-    #     shell: bash
-    #     run: |
-    #       git config --global advice.detachedHead false
-    #       git submodule update --init --recursive
-    #       pwd
+    - name: Configure GIT
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
+      run: |
+        git config --global advice.detachedHead false
+        git submodule update --init --recursive
+        pwd
 
     - name: Test list environment variables
       shell: bash
@@ -41,8 +45,14 @@ jobs:
       shell: bash
       run: pwd
 
-    - name: Test current directory
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+    - name: Test current directory 1
+      working-directory: $GITHUB_WORKSPACE
+      shell: bash
+      run: |
+        pwd
+
+    - name: Test current directory 2
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: |
         pwd
