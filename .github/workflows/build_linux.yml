@@ -18,6 +18,7 @@ jobs:
       run: |
         git config --global advice.detachedHead false
         git submodule update --init --recursive
+        pwd
 
     - name: Test list environment variables
       shell: bash
@@ -30,6 +31,15 @@ jobs:
     - name: Test with echo 2
       shell: bash
       run: echo test WORKSPACE=${{env.GITHUB_WORKSPACE}}
+
+    - name: Test with echo 3
+      shell: bash
+      run: echo test runner.workspace=${{runner.workspace}}
+
+    - name: Test with echo 4
+      working-directory: ${{runner.workspace}}
+      shell: bash
+      run: pwd
 
     - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
