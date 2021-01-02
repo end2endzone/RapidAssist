@@ -19,10 +19,13 @@ jobs:
     #        git config --global advice.detachedHead false
     #        git submodule update --init --recursive
 
-    - name: Test with echo
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+    - name: Test with echo 1
       shell: bash
-      run: echo Publishing
+      run: echo test
+
+    - name: Test with echo 2
+      shell: bash
+      run: echo test WORKSPACE=${{env.GITHUB_WORKSPACE}}
 
     - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
