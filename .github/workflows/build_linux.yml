@@ -19,13 +19,13 @@ jobs:
         git config --global advice.detachedHead false
         git submodule update --init --recursive
 
-    - name: Test with echo 1
-      shell: bash
-      run: echo test
-
     - name: Test list environment variables
       shell: bash
       run: env
+
+    - name: Test with echo 1
+      shell: bash
+      run: echo test WORKSPACE=$GITHUB_WORKSPACE
 
     - name: Test with echo 2
       shell: bash
