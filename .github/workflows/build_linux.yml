@@ -22,64 +22,26 @@ jobs:
       run: |
         git config --local advice.detachedHead false
         git submodule update --init --recursive
-        pwd
-
-    - name: Test list environment variables
-      shell: bash
-      run: env
-
-    - name: Test with echo 1
-      shell: bash
-      run: echo test GITHUB_WORKSPACE=$GITHUB_WORKSPACE
-
-    - name: Test with echo 2
-      shell: bash
-      run: echo test env.GITHUB_WORKSPACE=${{env.GITHUB_WORKSPACE}}
-
-    - name: Test with echo 3
-      shell: bash
-      run: echo test runner.workspace=${{runner.workspace}}
-
-    - name: Test with echo 4
-      working-directory: ${{runner.workspace}}
-      shell: bash
-      run: pwd
-
-    - name: Test current directory
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: bash
-      run: |
-        pwd
-
-    - name: List environment variables
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: bash
-      run: env
-
-    - name: List files in directory 'github'.
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: bash
-      run: ls
 
     - name: Install Google Test
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
-      run: ./install_googletest.sh
+      run: ./ci/github/install_googletest.sh
 
     - name: Build library
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
-      run: ./build_library.sh
+      run: ./ci/github/build_library.sh
 
     - name: Build client
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
-      run: ./build_client.sh
+      run: ./ci/github/build_client.sh
 
     - name: Run unit tests
-      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
-      run: ./test_script.sh
+      run: ./ci/github/test_script.sh
 
     - name: Archive test results
       uses: actions/upload-artifact@v2
