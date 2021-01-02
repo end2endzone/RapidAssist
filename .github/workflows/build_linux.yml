@@ -20,6 +20,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: |
+        git config --local core.autocrlf true
         git config --local advice.detachedHead false
         git submodule update --init --recursive
 

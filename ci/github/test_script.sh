@@ -8,11 +8,13 @@ if [ "$GITHUB_WORKSPACE" = "" ]; then
 fi
 
 echo ============================================================================
-echo Testing project
+echo Running unit tests...
 echo ============================================================================
 cd $GITHUB_WORKSPACE/build/bin;
-./rapidassist_unittest || true; #do not fail build even if a test fails.
+./rapidassist_unittest
 
-#Debug TestProcess filters:
-#./rapidassist_unittest --gtest_filter=TestFilesystem.testNormalizePath:TestProcess.testIsRunning:TestProcess.testProcesses*:TestProcess.testGetExitCode*:TestProcess.testWaitExit:TestString.testIsNumeric
-#./rapidassist_unittest --gtest_filter=TestProcess.testGetExitCode*:TestProcess.testWaitExit
+# Note:
+#  GitHub Action do not support uploading test results in a nice GUI. There is no build-in way to detect a failed test.
+#  Do not reset the error returned by unit test execution. This will actually fail the build and will indicate in GitHub that a test has failed.
+# 
+# || true; #do not fail build even if a test fails.
