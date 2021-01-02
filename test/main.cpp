@@ -31,8 +31,30 @@
 #include "rapidassist/cli.h"
 #include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/process.h"
+#include "rapidassist/filesystem.h"
 
 #include "CommandLineMgr.h"
+
+const char * GetCompilationConfiguration()
+{
+  if (ra::environment::IsConfigurationDebug())
+    return "debug";
+  else if (ra::environment::IsConfigurationRelease())
+    return "release";
+  else
+    return "unknown";
+}
+
+int GetProcessBitMode()
+{
+  if (ra::environment::IsProcess64Bit())
+    return 64;
+  else if (ra::environment::IsProcess32Bit())
+    return 32;
+  else
+    return 0;
+}
 
 int main(int argc, char **argv) {
   std::string tmp;
@@ -143,6 +165,12 @@ int main(int argc, char **argv) {
 
   ::testing::GTEST_FLAG(filter) = "*";
   ::testing::InitGoogleTest(&argc, argv);
+
+  printf("Executable: %s\n", ra::process::GetCurrentProcessPath().c_str());
+  printf("Configuration: %s\n", GetCompilationConfiguration());
+  printf("Process bit mode: %d bit\n", GetProcessBitMode());
+  printf("Current directory: %s\n", ra::filesystem::GetCurrentDirectory().c_str());
+  printf("\n");
 
   //Disable tests that does not run properly on Continuous Integration (CI) server
   if (ra::testing::IsAppVeyor() ||
