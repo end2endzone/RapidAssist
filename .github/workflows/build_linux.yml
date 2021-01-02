@@ -12,12 +12,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Configure GIT
-      working-directory: ${{env.GITHUB_WORKSPACE}}
+    #    - name: Configure GIT
+    #      working-directory: ${{env.GITHUB_WORKSPACE}}
+    #      shell: bash
+    #      run: |
+    #        git config --global advice.detachedHead false
+    #        git submodule update --init --recursive
+
+    - name: Test with echo
+      working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
       shell: bash
-      run: |
-        git config --global advice.detachedHead false
-        git submodule update --init --recursive
+      run: echo Publishing
 
     - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
