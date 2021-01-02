@@ -56,20 +56,17 @@ namespace ra { namespace environment { namespace test
       ASSERT_EQ(EXPECTED, actual);
     }
 
+    //test a known variable
 #ifdef WIN32
-    //test TEMP
-    {
-      std::string actual = environment::GetEnvironmentVariable("TEMP");
-      ASSERT_NE("", actual);
-    }
+    std::string actual = environment::GetEnvironmentVariable("TEMP");
 #elif __linux__
-    //test SHELL
-    {
-      std::string actual = environment::GetEnvironmentVariable("SHELL");
-      ASSERT_NE("", actual);
-    }
+    //Note: "SHELL" variable is not supported in Github Actions.
+    //Possible candidates are: LANG, HOME, USER
+    std::string actual = environment::GetEnvironmentVariable("LANG");
 #endif
+    ASSERT_NE("", actual);
   }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestEnvironment, testSetEnvironmentVariable) {
     const char * name = "RAPIDASSIST_FOO";
 
