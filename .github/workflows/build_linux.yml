@@ -24,6 +24,13 @@ jobs:
         git config --local advice.detachedHead false
         git submodule update --init --recursive
 
+    - name: Configure user profile and directories
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
+      run: |
+        mkdir ~/Documents   #required for TestUser.testFoldersExisting() because /home/travis/Documents does not exists!
+        mkdir ~/Desktop     #required for TestUser.testFoldersExisting() because /home/travis/Desktop   does not exists!
+        
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
