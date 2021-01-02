@@ -29,17 +29,23 @@ jobs:
         git config --local advice.detachedHead false
         git submodule update --init --recursive
 
+    - name: List environment variables for debugging
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
+      run: |
+        set
+
     - name: Find readonly files in c:\
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: |
-        cd c:\ && attrib
+        cd /d c:\ && attrib
 
     - name: Find readonly files in c:\windows
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: |
-        cd c:\windows && attrib
+        cd /d c:\windows && attrib
 
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}

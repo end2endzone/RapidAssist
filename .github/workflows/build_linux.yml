@@ -27,6 +27,12 @@ jobs:
         git config --local advice.detachedHead false
         git submodule update --init --recursive
 
+    - name: List environment variables for debugging
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: bash
+      run: |
+        env
+
     - name: Configure user profile and directories
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
