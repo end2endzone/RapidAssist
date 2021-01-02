@@ -12,13 +12,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Configure GIT
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: bash
-      run: |
-        git config --global advice.detachedHead false
-        git submodule update --init --recursive
-        pwd
+    #   - name: Configure GIT
+    #     working-directory: ${{env.GITHUB_WORKSPACE}}
+    #     shell: bash
+    #     run: |
+    #       git config --global advice.detachedHead false
+    #       git submodule update --init --recursive
+    #       pwd
 
     - name: Test list environment variables
       shell: bash
