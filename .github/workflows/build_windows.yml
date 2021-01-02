@@ -25,8 +25,8 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: |
-        git config --global core.autocrlf true
-        git config --global advice.detachedHead false
+        git config --local core.autocrlf true
+        git config --local advice.detachedHead false
         git submodule update --init --recursive
 
     - name: Install Google Test

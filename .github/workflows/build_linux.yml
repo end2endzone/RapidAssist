@@ -20,7 +20,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: |
-        git config --global advice.detachedHead false
+        git config --local advice.detachedHead false
         git submodule update --init --recursive
         pwd
 
@@ -30,11 +30,11 @@ jobs:
 
     - name: Test with echo 1
       shell: bash
-      run: echo test WORKSPACE=$GITHUB_WORKSPACE
+      run: echo test GITHUB_WORKSPACE=$GITHUB_WORKSPACE
 
     - name: Test with echo 2
       shell: bash
-      run: echo test WORKSPACE=${{env.GITHUB_WORKSPACE}}
+      run: echo test env.GITHUB_WORKSPACE=${{env.GITHUB_WORKSPACE}}
 
     - name: Test with echo 3
       shell: bash
@@ -45,13 +45,7 @@ jobs:
       shell: bash
       run: pwd
 
-    - name: Test current directory 1
-      working-directory: $GITHUB_WORKSPACE
-      shell: bash
-      run: |
-        pwd
-
-    - name: Test current directory 2
+    - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: |
