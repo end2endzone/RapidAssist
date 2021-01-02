@@ -1248,8 +1248,8 @@ namespace ra { namespace filesystem { namespace test
       std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::CreateFile(path.c_str()));
 
-      bool hasWrite = filesystem::HasWriteAccess(path.c_str());
-      ASSERT_TRUE(hasWrite);
+      bool has_write = filesystem::HasWriteAccess(path.c_str());
+      ASSERT_TRUE(has_write);
 
       //cleanup
       filesystem::DeleteFile(path.c_str());
@@ -1257,14 +1257,18 @@ namespace ra { namespace filesystem { namespace test
 
     //test no write access
     {
+      std::string path;
 #ifdef _WIN32
-      const char * path = "C:\\bootmgr"; //premission denied file. Could also use `C:\Users\All Users\ntuser.pol'`
+      //On Windows 7 and Windows 10, use "C:\\bootmgr"
+      //On Github Actions, "C:\\bootmgr" is not available. Use "C:\Windows\WindowsShell.Manifest" instead.
+      if (path.empty() && ra::filesystem::FileExists("C:\\bootmgr")) path = "C:\\bootmgr";
+      if (path.empty() && ra::filesystem::FileExists("C:\\Windows\\WindowsShell.Manifest")) path = "C:\\Windows\\WindowsShell.Manifest";
 #else
-      const char * path = "/proc/cpuinfo"; //permission denied file
+      path = "/proc/cpuinfo"; //permission denied file
 #endif
-      ASSERT_TRUE(filesystem::FileExists(path));
-      bool hasWrite = filesystem::HasWriteAccess(path);
-      ASSERT_FALSE(hasWrite);
+      ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasWriteAccess().";
+      bool has_write = filesystem::HasWriteAccess(path.c_str());
+      ASSERT_FALSE(has_write);
     }
   }
   //--------------------------------------------------------------------------------------------------
