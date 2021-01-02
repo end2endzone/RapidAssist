@@ -22,7 +22,8 @@ jobs:
     - name: Test current directory
       working-directory: ${{env.GITHUB_WORKSPACE}}/ci/github
       shell: bash
-      run: /usr/bin/pwd
+      run: |
+        pwd
 
     - name: List environment variables
       working-directory: ${{env.GITHUB_WORKSPACE}}
