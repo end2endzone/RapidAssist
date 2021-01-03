@@ -9,9 +9,6 @@ branches:
   - feature-issue60
 
 script:
-- echo =====================================================================================================
-- env
-- echo =====================================================================================================
 - cd $TRAVIS_BUILD_DIR/ci/travis;  ./install_googletest.sh;
 - cd $TRAVIS_BUILD_DIR/ci/travis;  ./build_library.sh;
 - cd $TRAVIS_BUILD_DIR/ci/travis;  ./build_client.sh;
