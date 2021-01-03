@@ -31,8 +31,30 @@
 #include "rapidassist/cli.h"
 #include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
+#include "rapidassist/process.h"
+#include "rapidassist/filesystem.h"
 
 #include "CommandLineMgr.h"
+
+const char * GetCompilationConfiguration()
+{
+  if (ra::environment::IsConfigurationDebug())
+    return "debug";
+  else if (ra::environment::IsConfigurationRelease())
+    return "release";
+  else
+    return "unknown";
+}
+
+int GetProcessBitMode()
+{
+  if (ra::environment::IsProcess64Bit())
+    return 64;
+  else if (ra::environment::IsProcess32Bit())
+    return 32;
+  else
+    return 0;
+}
 
 int main(int argc, char **argv) {
   std::string tmp;
@@ -144,25 +166,38 @@ int main(int argc, char **argv) {
   ::testing::GTEST_FLAG(filter) = "*";
   ::testing::InitGoogleTest(&argc, argv);
 
-  //Disable TestTiming.testGetUtcTime() on AppVeyor or Travis CI
-  if (ra::testing::IsAppVeyor() || ra::testing::IsTravis()) {
+  printf("Executable: %s\n", ra::process::GetCurrentProcessPath().c_str());
+  printf("Configuration: %s\n", GetCompilationConfiguration());
+  printf("Process bit mode: %d bit\n", GetProcessBitMode());
+  printf("Current directory: %s\n", ra::filesystem::GetCurrentDirectory().c_str());
+  printf("\n");
+
+  //Disable tests that does not run properly on Continuous Integration (CI) server
+  if (ra::testing::IsAppVeyor() ||
+      ra::testing::IsTravis() ||
+      ra::testing::IsGitHubActions()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    //AppVeyor and Travis CI runs in timezone +0 which is not expected by the test.
+    printf("*** Running unit tests on a Continuous Integration (CI) server ***\n");
+
+    //Most CI framework runs in timezone +0 which is not expected by the test.
+    printf("*** Disabling TestTiming.testGetUtcTime unit test ***\n");
     std::string newFilter = ra::testing::MergeFilter("", "TestTiming.testGetUtcTime", basefilter.c_str());
 
     //AppVeyor does not like console tests. They must be not executing inside a console.
     //AppVeyor reported failure: GetConsoleScreenBufferInfo() error: (6), function 'ra::console::GetCursorPos', line 79.
     //I guess that it is because standard output is beeing redirected for the purpose of logging the program output.
     //
-    //Travis does not like console tests either. The program hang or enters an infinite loop. Don't really know.
+    //Travis CI does not like console tests either. The program hang or enters an infinite loop. Don't really know.
     //Travis reported failure: 
     //    No output has been received in the last 10m0s, this potentially indicates a stalled build or something wrong with the build itself.
     //    Check the details on how to adjust your build configuration on: https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
     //    The build has been terminated
     //
+    //GitHub does not like console tests either. The program outputs the following error when calling GetCursorPos:
+    //    GetConsoleScreenBufferInfo() error: (6), function 'ra::console::GetCursorPos', line 76
+    //
     //Disabling all console tests.
-    printf("*** Running unit test on AppVeyor/Travis CI ***\n");
     printf("*** Disabling TestConsole.* unit tests ***\n");
     newFilter = ra::testing::MergeFilter("", "TestConsole.*", newFilter.c_str());
 
