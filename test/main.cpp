@@ -175,7 +175,7 @@ int main(int argc, char **argv) {
   //Disable tests that does not run properly on Continuous Integration (CI) server
   if (ra::testing::IsAppVeyor() ||
       ra::testing::IsTravis() ||
-      ra::testing::IsGitHub()) {
+      ra::testing::IsGitHubActions()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
     printf("*** Running unit tests on a Continuous Integration (CI) server ***\n");

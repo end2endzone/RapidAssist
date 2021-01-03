@@ -567,8 +567,11 @@ namespace ra { namespace testing {
     return !environment::GetEnvironmentVariable("JENKINS_URL").empty();
   }
 
-  bool IsGitHub() {
-    return !environment::GetEnvironmentVariable("GITHUB_SERVER_URL").empty();
+  bool IsGitHubActions() {
+    //From https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables:
+    //  GITHUB_ACTIONS is always set to true when GitHub Actions is running the workflow.
+    //  You can use this variable to differentiate when tests are being run locally or by GitHub Actions.
+    return !environment::GetEnvironmentVariable("GITHUB_ACTIONS").empty();
   }
 
 #ifdef RAPIDASSIST_HAVE_GTEST

@@ -198,7 +198,7 @@ namespace ra { namespace testing {
   /// Returns true if the specified continuous integration server is running.
   /// </summary>
   /// <returns>Returns true if running on Github. Returns false otherwise.</returns>
-  bool IsGitHub();
+  bool IsGitHubActions();
 
 #ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>
