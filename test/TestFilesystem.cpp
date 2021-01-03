@@ -1184,6 +1184,7 @@ namespace ra { namespace filesystem { namespace test
 
       //synchronize to the beginning of a new second on wall-clock.
       ra::timing::WaitNextSecond();
+      ra::timing::Millisleep(100); // wait a little before trying to make a time based operation
 
       //create first file
       ASSERT_TRUE(ra::testing::CreateFile(filename1.c_str()));
@@ -1191,6 +1192,7 @@ namespace ra { namespace filesystem { namespace test
       //allow 3 seconds between the files
       for (uint64_t i = 0; i < EXPECTED; i++) {
         ra::timing::WaitNextSecond();
+        ra::timing::Millisleep(100); // wait a little before trying to make a time based operation
       }
 
       //create second file

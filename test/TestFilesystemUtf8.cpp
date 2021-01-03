@@ -335,17 +335,24 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestFilesystemUtf8, testGetFileModifiedDateUtf8) {
     //assert that unit of return value is seconds
     {
-      //synchronize to the beginning of a new second on wall-clock.
-      ra::timing::WaitNextSecond();
-
       static const uint64_t EXPECTED = 3;
       const std::string filename1 = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.1.txt";
       const std::string filename2 = ra::testing::GetTestQualifiedName() + ".omega_\xCE\xA9_omega.2.txt";
+
+      //synchronize to the beginning of a new second on wall-clock.
+      ra::timing::WaitNextSecond();
+      ra::timing::Millisleep(100); // wait a little before trying to make a time based operation
+
+      //create first file
       ASSERT_TRUE(ra::testing::CreateFileUtf8(filename1.c_str()));
+
       //allow 3 seconds between the files
       for (uint64_t i = 0; i < EXPECTED; i++) {
         ra::timing::WaitNextSecond();
+        ra::timing::Millisleep(100); // wait a little before trying to make a time based operation
       }
+
+      //create second file
       ASSERT_TRUE(ra::testing::CreateFileUtf8(filename2.c_str()));
 
       uint64_t time1 = filesystem::GetFileModifiedDateUtf8(filename1);
