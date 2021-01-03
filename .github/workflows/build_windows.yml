@@ -35,18 +35,6 @@ jobs:
       run: |
         set
 
-    - name: Find readonly files in c:\
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: cmd
-      run: |
-        cd /d c:\ && attrib
-
-    - name: Find readonly files in c:\windows
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: cmd
-      run: |
-        cd /d c:\windows && attrib
-
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
