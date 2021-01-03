@@ -472,11 +472,7 @@ namespace ra { namespace process { namespace test
     ra::filesystem::DeleteFile(cache_path.c_str());
   }
 #endif
-  TEST_F(TestProcess, testKillAndTerminate) {
-#ifndef _WIN32
-    resetconsolestate();
-#endif
-
+  TEST_F(TestProcess, DISABLED_testKillAndTerminate) {
     //create a text file
     const std::string newline = ra::environment::GetLineSeparator();
     const std::string content =
