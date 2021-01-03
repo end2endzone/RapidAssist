@@ -1178,17 +1178,22 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestFilesystem, testGetFileModifiedDate) {
     //assert that unit of return value is seconds
     {
-      //synchronize to the beginning of a new second on wall-clock.
-      ra::timing::WaitNextSecond();
-
       static const uint64_t EXPECTED = 3;
       const std::string filename1 = ra::testing::GetTestQualifiedName() + ".1.txt";
       const std::string filename2 = ra::testing::GetTestQualifiedName() + ".2.txt";
+
+      //synchronize to the beginning of a new second on wall-clock.
+      ra::timing::WaitNextSecond();
+
+      //create first file
       ASSERT_TRUE(ra::testing::CreateFile(filename1.c_str()));
+
       //allow 3 seconds between the files
       for (uint64_t i = 0; i < EXPECTED; i++) {
         ra::timing::WaitNextSecond();
       }
+
+      //create second file
       ASSERT_TRUE(ra::testing::CreateFile(filename2.c_str()));
 
       uint64_t time1 = filesystem::GetFileModifiedDate(filename1);
