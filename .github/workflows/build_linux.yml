@@ -7,7 +7,7 @@ env:
   Configuration: Release
 
   # Required for Github Action. Unit test TestProcess.testKillAndTerminate fails to start /bin/nano with the following error: "Error opening terminal: unknown."
-  TERM: xterm-256color
+  TERM: xterm
 
 jobs:
   build:
