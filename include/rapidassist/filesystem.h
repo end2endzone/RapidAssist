@@ -160,7 +160,7 @@ namespace ra { namespace filesystem {
   std::string GetTemporaryFileName();
 
   /// <summary>
-  /// Returns the path of a tempporary file.
+  /// Returns the path of a temporary file.
   /// </summary>
   /// <returns>Returns the path of a tempporary file.</returns>
   std::string GetTemporaryFilePath();
