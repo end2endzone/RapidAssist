@@ -186,5 +186,89 @@ namespace ra { namespace test {
     ra::filesystem::DeleteFile(file2);
   }
 
+  TEST_F(TestTesting, testCloneExecutableFileInvalidPath) {
+    //Build a temporary file path
+    std::string temp_dir = ra::filesystem::GetTemporaryDirectory();
+    std::string path_separator = ra::filesystem::GetPathSeparatorStr();
+    std::string filename = ra::testing::GetTestQualifiedName();
+    std::string file_path = temp_dir + path_separator + filename;
+
+    std::string invalid_path = file_path + path_separator + "foo" + path_separator + "bar" + path_separator + "invalid";
+#ifdef _WIN32
+    invalid_path.append(".exe");  //Executables ends with the .exe file extension
+#endif
+
+    std::string error_message;
+    bool process_file_cloned = ra::testing::CloneExecutableFile(invalid_path, error_message);
+    
+    ASSERT_FALSE(process_file_cloned) << "error_message=" << error_message;
+    ASSERT_FALSE(error_message.empty());
+  }
+
+  TEST_F(TestTesting, testCloneExecutableFile) {
+    //Build a temporary file path
+    std::string temp_dir = ra::filesystem::GetTemporaryDirectory();
+    std::string path_separator = ra::filesystem::GetPathSeparatorStr();
+    std::string filename = ra::testing::GetTestQualifiedName();
+    std::string file_path = temp_dir + path_separator + filename;
+
+#ifdef _WIN32
+    //Executables ends with the .exe file extension
+    file_path.append(".exe");
+#endif
+
+    std::string error_message;
+    bool process_file_cloned = ra::testing::CloneExecutableFile(file_path, error_message);
+    ASSERT_TRUE(process_file_cloned) << "error_message=" << error_message;
+    ASSERT_TRUE(error_message.empty());
+
+    //Try to execute the copied file.
+    printf("Running the cloned executable which should output the path of the copied process on the console...\n");
+    std::string command;
+    command.append(file_path);
+    command.append(" ");
+    command.append(" --OutputGetCurrentProcessPath");
+#ifdef _WIN32
+    int exit_code = system(command.c_str());
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#elif __linux__
+    //Run the new process and log the output
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#endif //_WIN32
+
+    //Cleanup
+    ra::filesystem::DeleteFile(file_path.c_str());
+  }
+
+  TEST_F(TestTesting, testCloneExecutableTempFile) {
+    std::string file_path;
+    std::string error_message;
+    bool process_file_cloned = ra::testing::CloneExecutableTempFile(file_path, error_message);
+    ASSERT_TRUE(process_file_cloned) << "error_message=" << error_message;
+    ASSERT_TRUE(!file_path.empty());
+    ASSERT_TRUE(error_message.empty());
+
+    //Try to execute the copied file.
+    printf("Running the cloned executable which should output the path of the copied process on the console...\n");
+    std::string command;
+    command.append(file_path);
+    command.append(" ");
+    command.append(" --OutputGetCurrentProcessPath");
+#ifdef _WIN32
+    int exit_code = system(command.c_str());
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#elif __linux__
+    //Run the new process and log the output
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
+#endif //_WIN32
+
+    //Cleanup
+    ra::filesystem::DeleteFile(file_path.c_str());
+  }
+
 } //namespace test
 } //namespace ra
