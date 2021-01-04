@@ -637,6 +637,8 @@ namespace ra { namespace testing {
 
   bool CloneExecutableTempFile(std::string & output_path, std::string & error_message)
   {
+    output_path.clear();
+    
     //Build a temporary filename
     std::string temp_path = ra::filesystem::GetTemporaryFilePath();
 

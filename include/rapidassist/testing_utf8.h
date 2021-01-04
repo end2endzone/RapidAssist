@@ -102,6 +102,22 @@ namespace ra { namespace testing {
   /// <param name="iValue">The value of the replacement.</param>
   void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue);
 
+  /// <summary>
+  /// Copy the file of the current process to another file.
+  /// </summary>
+  /// <param name="target_path">Target file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  bool CloneExecutableFileUtf8(const std::string & target_path, std::string & error_message);
+
+  /// <summary>
+  /// Copy the file of the current process to a temporary file.
+  /// </summary>
+  /// <param name="output_path">Output file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  bool CloneExecutableTempFileUtf8(std::string & output_path, std::string & error_message);
+
 #elif __linux__ // UTF-8
 
   /// <summary>
@@ -170,6 +186,22 @@ namespace ra { namespace testing {
   /// <param name="iOffset">The offset of the modified byte.</param>
   /// <param name="iValue">The value of the replacement.</param>
   inline void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue) { ChangeFileContent(iFilePath, iOffset, iValue); }
+
+  /// <summary>
+  /// Copy the file of the current process to another file.
+  /// </summary>
+  /// <param name="target_path">Target file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  inline bool CloneExecutableFileUtf8(const std::string & target_path, std::string & error_message) { return CloneExecutableFile(target_path, error_message); }
+
+  /// <summary>
+  /// Copy the file of the current process to a temporary file.
+  /// </summary>
+  /// <param name="output_path">Output file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  bool CloneExecutableTempFileUtf8(std::string & output_path, std::string & error_message) { return CloneExecutableTempFile(target_path, error_message); }
 
 #endif // UTF-8
 
