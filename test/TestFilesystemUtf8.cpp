@@ -412,7 +412,7 @@ namespace ra { namespace filesystem { namespace test
     std::string command;
     command.append("cd \"");
     command.append(test_dir_path_utf8);
-    command.append("\" && chmod 777 ");
+    command.append("\" && chmod +x ");
     command.append(duplicate_process_filename);
     command.append(" && ./");
     command.append(duplicate_process_filename);
