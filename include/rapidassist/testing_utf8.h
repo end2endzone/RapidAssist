@@ -201,7 +201,7 @@ namespace ra { namespace testing {
   /// <param name="output_path">Output file path of the duplicated process.</param>
   /// <param name="error_message">A non empty error description message if the function has failed.</param>
   /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
-  bool CloneExecutableTempFileUtf8(std::string & output_path, std::string & error_message) { return CloneExecutableTempFile(target_path, error_message); }
+  bool CloneExecutableTempFileUtf8(std::string & output_path, std::string & error_message) { return CloneExecutableTempFile(output_path, error_message); }
 
 #endif // UTF-8
 
