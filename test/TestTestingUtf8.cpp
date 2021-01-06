@@ -26,8 +26,18 @@
 #include "rapidassist/testing_utf8.h"
 #include "rapidassist/environment_utf8.h"
 #include "rapidassist/filesystem_utf8.h"
+#include "rapidassist/unicode.h"
 
 namespace ra { namespace test {
+
+#ifdef _WIN32
+    int system_utf8(const std::string & command_utf8)
+    {
+      std::wstring command = ra::unicode::Utf8ToUnicode(command_utf8);
+      int exit_code = _wsystem(command.c_str());
+      return exit_code;
+    }
+#endif
 
   void TestTestingUtf8::SetUp() {
     ASSERT_TRUE(ra::testing::CreateFileUtf8("text1.psi_\xCE\xA8_psi.tmp"));
@@ -238,7 +248,7 @@ namespace ra { namespace test {
     command.append(" ");
     command.append(" --OutputGetCurrentProcessPath");
 #ifdef _WIN32
-    int exit_code = system(command.c_str());
+    int exit_code = system_utf8(command.c_str());
     ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
 #elif __linux__
     //Run the new process and log the output

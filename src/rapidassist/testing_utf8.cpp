@@ -256,11 +256,15 @@ namespace ra { namespace testing {
   {
     output_path.clear();
     
-    //Build a temporary filename
-    std::string temp_path = ra::filesystem::GetTemporaryFilePathUtf8();
+    static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
+    //Get the temporary directory
+    std::string temp_dir = ra::filesystem::GetTemporaryDirectoryUtf8();
+
+    //Build a temporary filename with an utf8 character
+    std::string temp_path = temp_dir + separator + ra::filesystem::GetTemporaryFileName();
+    temp_path.append(".psi_\xCE\xA8_psi");
 #ifdef _WIN32
-    //Executables ends with the .exe file extension
     temp_path.append(".exe");
 #endif
 
