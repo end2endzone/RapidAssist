@@ -61,66 +61,6 @@ namespace ra { namespace process { namespace test
     return processes;
   }
   //--------------------------------------------------------------------------------------------------
-  bool CloneProcess(std::string & working_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message) {
-    working_dir_path = "";
-    new_process_path = "";
-    
-    const std::string separator = ra::filesystem::GetPathSeparatorStr();
-
-    //Create a working directory that matches current test name and contains an utf8 character.
-    std::string test_dir_name = ra::testing::GetTestQualifiedName();
-    if (support_utf8)
-      test_dir_name.append(".psi_\xCE\xA8_psi");
-    working_dir_path = ra::process::GetCurrentProcessDir() + separator + test_dir_name;
-    bool created = false;
-    if (support_utf8)
-      created = ra::filesystem::CreateDirectoryUtf8(working_dir_path.c_str());
-    else
-      created = ra::filesystem::CreateDirectory(working_dir_path.c_str());
-    if (!created)
-    {
-      error_message = "Failed creating directory '" + working_dir_path + "'.";
-      return false;
-    }
-
-    //clone current process executable into another process which name contains an utf8 character.
-    std::string new_process_filename = ra::testing::GetTestQualifiedName();
-    if (support_utf8)
-      new_process_filename.append(".omega_\xCE\xA9_omega");
-#ifdef _WIN32
-    new_process_filename.append(".exe");
-#endif
-    std::string current_process_path = ra::process::GetCurrentProcessPath();
-    new_process_path = working_dir_path + separator + new_process_filename;
-    bool copied = false;
-    if (support_utf8)
-      copied = ra::filesystem::CopyFileUtf8(current_process_path, new_process_path);
-    else
-      copied = ra::filesystem::CopyFile(current_process_path, new_process_path);
-    if (!copied)
-    {
-      error_message = "Failed copying file '" + current_process_path + "' to '" + new_process_path + "'.";
-      return false;
-    }
-
-#ifdef __linux__
-    //Set new process as executable
-    std::string command;
-    command.append("chmod 777 ");
-    command.append(new_process_path);
-    int system_result = system(command.c_str());
-    int exit_code = WEXITSTATUS( system_result );
-    if (exit_code != 0)
-    {
-      error_message = "Failed running command: " + command;
-      return false;
-    }
-#endif //__linux__
-
-    return true;
-  }
-
-  //--------------------------------------------------------------------------------------------------
   void TestProcess::SetUp() {
   }
   //--------------------------------------------------------------------------------------------------
@@ -128,16 +68,15 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessPath) {
-    static const bool support_utf8 = false;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path = ra::filesystem::GetParentPath(new_process_path);
 
     //Run the new executable
     ra::strings::StringVector arguments;
@@ -169,20 +108,18 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
     ra::filesystem::DeleteFile(new_process_path.c_str());
-    ra::filesystem::DeleteDirectory(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessDir) {
-    static const bool support_utf8 = false;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path = ra::filesystem::GetParentPath(new_process_path);
 
     //Run the new executable
     ra::strings::StringVector arguments;
@@ -214,20 +151,18 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
     ra::filesystem::DeleteFile(new_process_path.c_str());
-    ra::filesystem::DeleteDirectory(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentDirectory) {
-    static const bool support_utf8 = false;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path1;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path1 = ra::filesystem::GetParentPath(new_process_path);
 
     //Create a temporary working directory that matches current test name and contains an utf8 character.
     std::string test_dir_name2 = ra::testing::GetTestQualifiedName() + ".2";
@@ -266,7 +201,6 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFile(expected_output_file_path.c_str());
     ra::filesystem::DeleteFile(new_process_path.c_str());
-    ra::filesystem::DeleteDirectory(test_dir_path1.c_str());
     ra::filesystem::DeleteDirectory(test_dir_path2.c_str());
   }
   //--------------------------------------------------------------------------------------------------

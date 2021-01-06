@@ -25,7 +25,7 @@
 #include "TestProcessUtf8.h"
 #include "rapidassist/process_utf8.h"
 #include "rapidassist/environment.h"
-#include "rapidassist/testing.h"
+#include "rapidassist/testing_utf8.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/filesystem.h"
 #include "rapidassist/filesystem_utf8.h"
@@ -34,7 +34,6 @@
 namespace ra { namespace process { namespace test
 {
   extern ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2);
-  extern bool CloneProcess(std::string & output_dir_path, std::string & new_process_path, const bool support_utf8, std::string & error_message);  
 
   //--------------------------------------------------------------------------------------------------
   void TestProcessUtf8::SetUp() {
@@ -44,16 +43,15 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcessUtf8, testGetCurrentProcessPathUtf8) {
-    static const bool support_utf8 = true;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFileUtf8(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path = ra::filesystem::GetParentPath(new_process_path);
 
     //Run the new executable
     ra::strings::StringVector arguments;
@@ -85,20 +83,18 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFileUtf8(expected_output_file_path.c_str());
     ra::filesystem::DeleteFileUtf8(new_process_path.c_str());
-    ra::filesystem::DeleteDirectoryUtf8(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcessUtf8, testGetCurrentProcessDirUtf8) {
-    static const bool support_utf8 = true;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFileUtf8(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path = ra::filesystem::GetParentPath(new_process_path);
 
     //Run the new executable
     ra::strings::StringVector arguments;
@@ -130,20 +126,18 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFileUtf8(expected_output_file_path.c_str());
     ra::filesystem::DeleteFileUtf8(new_process_path.c_str());
-    ra::filesystem::DeleteDirectoryUtf8(test_dir_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcessUtf8, testGetCurrentDirectoryUtf8) {
-    static const bool support_utf8 = true;
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
 
     //clone current process executable into another process.
-    std::string test_dir_path1;
     std::string new_process_path;
     std::string error_message;
-    bool cloned = CloneProcess(test_dir_path1, new_process_path, support_utf8, error_message);  
-    if (!cloned)
-      FAIL() << error_message;
+    bool cloned = ra::testing::CloneExecutableTempFileUtf8(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    std::string test_dir_path1 = ra::filesystem::GetParentPath(new_process_path);
 
     //Create a temporary working directory that matches current test name and contains an utf8 character.
     std::string test_dir_name2 = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.2";
@@ -182,7 +176,6 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFileUtf8(expected_output_file_path.c_str());
     ra::filesystem::DeleteFile(new_process_path.c_str());
-    ra::filesystem::DeleteDirectoryUtf8(test_dir_path1.c_str());
     ra::filesystem::DeleteDirectoryUtf8(test_dir_path2.c_str());
   }
   //--------------------------------------------------------------------------------------------------
