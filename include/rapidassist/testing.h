@@ -220,6 +220,22 @@ namespace ra { namespace testing {
   std::string GetTestQualifiedName();
 #endif //RAPIDASSIST_HAVE_GTEST
 
+  /// <summary>
+  /// Copy the file of the current process to another file.
+  /// </summary>
+  /// <param name="target_path">Target file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  bool CloneExecutableFile(const std::string & target_path, std::string & error_message);
+
+  /// <summary>
+  /// Copy the file of the current process to a temporary file.
+  /// </summary>
+  /// <param name="output_path">Output file path of the duplicated process.</param>
+  /// <param name="error_message">A non empty error description message if the function has failed.</param>
+  /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
+  bool CloneExecutableTempFile(std::string & output_path, std::string & error_message);
+
 } //namespace testing
 } //namespace ra
 

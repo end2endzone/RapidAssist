@@ -204,6 +204,16 @@ int main(int argc, char **argv) {
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
 
+  //Disable TestProcess.testOpenDocument on Linux platforms.
+  if (ra::testing::IsGitHubActions() || ra::testing::IsTravis()) {
+    std::string basefilter = ::testing::GTEST_FLAG(filter);
+
+    printf("*** Disabling TestTiming.testOpenDocument unit test ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "TestTiming.testOpenDocument", basefilter.c_str());
+
+    ::testing::GTEST_FLAG(filter) = newFilter;
+  }
+
   int wResult = RUN_ALL_TESTS(); //Find and run all tests
   return wResult; // returns 0 if all the tests are successful, or 1 otherwise
 }

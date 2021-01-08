@@ -598,5 +598,61 @@ namespace ra { namespace testing {
   }
 #endif //RAPIDASSIST_HAVE_GTEST
 
+  bool CloneExecutableFile(const std::string & target_path, std::string & error_message)
+  {
+    error_message.clear();
+
+    //Find current executable's path
+    std::string current_process_path = ra::process::GetCurrentProcessPath();
+    if (current_process_path.empty() || !ra::filesystem::FileExists(current_process_path.c_str()))
+    {
+      error_message = "Unable to identify current process file path.";
+      return false;
+    }
+
+    //Copy executable file to target path
+    bool copied = ra::filesystem::CopyFile(current_process_path, target_path);
+    if (!copied)
+    {
+      error_message = "Failed copying file '" + current_process_path + "' to '" + target_path + "'.";
+      return false;
+    }
+
+#ifdef __linux__
+    //On Linux, the execute flag must be set on the target file
+    std::string command;
+    command.append("chmod +x ");
+    command.append(target_path);
+    int system_result = system(command.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+    if (exit_code != 0)
+    {
+      error_message = "Failed running command: " + command;
+      return false;
+    }
+#endif //__linux__
+
+    return true;
+  }
+
+  bool CloneExecutableTempFile(std::string & output_path, std::string & error_message)
+  {
+    output_path.clear();
+    
+    //Build a temporary filename
+    std::string temp_path = ra::filesystem::GetTemporaryFilePath();
+
+#ifdef _WIN32
+    //Executables ends with the .exe file extension
+    temp_path.append(".exe");
+#endif
+
+    bool cloned = CloneExecutableFile(temp_path, error_message);
+    if (cloned)
+      output_path = temp_path;
+    
+    return cloned;
+  }
+
 } //namespace testing
 } //namespace ra
