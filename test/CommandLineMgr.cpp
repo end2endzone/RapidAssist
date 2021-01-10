@@ -98,11 +98,12 @@ namespace ra { namespace test
 
 #ifdef _WIN32
   #define IDT_TIMER1 24
-  int counter = 0;
+  int timer_counter = 0;
 
   LRESULT __stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg)   {
     case WM_CREATE:
+      timer_counter = 0;
       SetTimer(hWnd,              // handle to main window 
           IDT_TIMER1,             // timer identifier 
           500,                    // 0.5-second interval 
@@ -115,9 +116,9 @@ namespace ra { namespace test
     case WM_TIMER:
       switch (wParam) {
       case IDT_TIMER1:
-        if (counter%2==0)
-          printf("Counting: %d\n", counter);
-        counter++;
+        if (timer_counter%2 == 0)
+          printf("Counting: %d\n", timer_counter);
+        timer_counter++;
         return 0;
       }
       break;
@@ -267,9 +268,10 @@ namespace ra { namespace test
     DisableConsoleInterruptSignals();
   
     printf("Waiting for KILL signal...\n");
+    int loop_counter = 0;
     while(true) {
-      printf("Counting: %d\n", counter);
-      counter++;
+      printf("Counting: %d\n", loop_counter);
+      loop_counter++;
 
       //Sleep 1 second
       ra::timing::Millisleep(1000);
