@@ -377,39 +377,6 @@ namespace ra { namespace process { namespace test
     ra::filesystem::DeleteDirectory(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-#ifndef _WIN32
-  void resetconsolestate() {
-    //after killing nano, the console may be in a weird configuration.
-    //reset the console in a "sane" configuration.
-    //https://unix.stackexchange.com/questions/492809/my-bash-shell-doesnt-start-a-new-line-upon-return-and-doesnt-show-typed-comma
-    //https://unix.stackexchange.com/questions/58951/accidental-nano-somefile-uniq-renders-the-shell-unresponsive
-    //Note:
-    //  use '/bin/stty' instead of '/usr/bin/reset' because reset will actually erase the content of the console
-    //  and we do not want to loose the the previous test results and details.
-
-    ra::strings::StringVector args;
-    args.push_back("sane");
-    const std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    ra::process::processid_t pid = ra::process::StartProcess("/bin/stty", curr_dir, args);
-
-    //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
-
-    printf("\n");
-    fflush(NULL);
-  }
-  void deletenanocache(const std::string & file_path) {
-    //for a filename named        "TestProcess.testProcesses.txt",
-    //nano's cache file is named ".TestProcess.testProcesses.txt.swp".
-
-    std::string parent_dir, filename;
-    ra::filesystem::SplitPath(file_path, parent_dir, filename);
-
-    const std::string cache_path = parent_dir + ra::filesystem::GetPathSeparatorStr() + "." + filename + ".swp";
-    ra::filesystem::DeleteFile(cache_path.c_str());
-  }
-#endif
   TEST_F(TestProcess, testTerminate) {
     //clone current process executable into another process.
     std::string new_process_path;
@@ -547,7 +514,7 @@ namespace ra { namespace process { namespace test
 
     //try to identify the new process
     ProcessIdList process_after = ra::process::GetProcesses();
-    ProcessIdList new_pids = getNewProcesses(process_before, process_after);
+    ProcessIdList new_pids = GetNewProcesses(process_before, process_after);
     if (new_pids.size() == 1) {
       //found the new process that opened the document
 
