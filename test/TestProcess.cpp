@@ -301,80 +301,67 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testStartProcessWithDirectory) {
-    printf("Note:\n"
-      "This test must be manually validated.\n"
-      "The test runs the same executable twice but from different directories.\n"
-      "The output from the executable is expected to be different since it is run from different locations.\n");
-    printf("\n");
-    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
 
-    //keep the current directory to verify if it has not changed
-    const std::string curr_dir1 = ra::filesystem::GetCurrentDirectory();
+    std::string process_dir = ra::filesystem::GetParentPath(new_process_path);
 
-    //will run the process from user's home directory
-    const std::string home_dir = ra::user::GetHomeDirectory();
-    ASSERT_TRUE(ra::filesystem::DirectoryExists(home_dir.c_str()));
-
-    //will also run the process from a custom directory
-    const std::string custom_dir = curr_dir1 + ra::filesystem::GetPathSeparatorStr() + ra::testing::GetTestQualifiedName() + ".dir";
-    bool created = ra::filesystem::CreateDirectory(custom_dir.c_str());
-    ASSERT_TRUE(created);
-
-    //create a text file in user's home directory
-    const std::string newline = ra::environment::GetLineSeparator();
-    const std::string content = ra::testing::GetTestQualifiedName();
-    const std::string home_file_path = home_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_home_directory.txt";
-    bool success = ra::filesystem::WriteFile(home_file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //create a text file in custom directory
-    const std::string custom_file_path = custom_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_a_custom_directory.txt";
-    success = ra::filesystem::WriteFile(custom_file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //define a command that lists the files in the current directory
+    //define the argument 
 #ifdef _WIN32
-    const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
-    const std::string arguments = "/c dir";
+    const std::string arguments = "--SaveGetCurrentDirectory";
 #else
     ra::strings::StringVector arguments;
-    const std::string exec_path = "/bin/ls";
+    arguments.push_back(new_process_path);
+    arguments.push_back("--SaveGetCurrentDirectory");
 #endif
 
-    //build a list of directory to launch exec_path
-    ra::strings::StringVector dirs;
-    dirs.push_back(home_dir);
-    dirs.push_back(custom_dir);
+    static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    static const std::string output_filename = "SaveGetCurrentDirectory.txt";
 
-    //for each directory
-    for (size_t i = 0; i < dirs.size(); i++) {
-      const std::string & mydir = dirs[i];
-      printf("Launching process '%s' from directory '%s':\n", exec_path.c_str(), mydir.c_str());
-      printf("{\n");
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    //Define a list of test directories
+    ra::strings::StringVector directories;
+    directories.push_back(ra::filesystem::GetCurrentDirectory());     // current directory
+    directories.push_back(ra::filesystem::GetTemporaryDirectory());   // temp directory
+    directories.push_back(ra::user::GetHomeDirectory());              // user's home directory
+
+    //Test process from each directory
+    for(size_t i=0; i<directories.size(); i++)
+    {
+      const std::string & test_dir = directories[i];
+
+      //Compute the command's expected output filename
+      std::string output_file_path = process_dir + separator + output_filename;
+      if (ra::filesystem::FileExists(output_file_path.c_str()))
+        ra::filesystem::DeleteFile(output_file_path.c_str());
 
       //start the process
-      ra::process::processid_t pid = ra::process::StartProcess(exec_path, mydir, arguments);
+      ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
       ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
-      //wait for the process to complete
-      int exitcode = 0;
-      bool wait_ok = ra::process::WaitExit(pid, exitcode);
-      ASSERT_TRUE(wait_ok);
+      //Wait for the process to exit naturally.
+      ASSERT_TRUE(ra::process::WaitExit(pid));
 
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-      printf("}\n");
-      printf("\n");
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+      //Check process successful exit code.
+      int exit_code = -1;
+      ASSERT_TRUE(ra::process::GetExitCode(pid, exit_code));
+      ASSERT_EQ(0, exit_code);
+
+      //Assert the generated file is found
+      ASSERT_TRUE(ra::filesystem::FileExists(output_file_path.c_str())) << "The expected generated file '" << output_file_path.c_str() << "' was not found.";
+
+      //Read the content of the file
+      std::string file_content;
+      ASSERT_TRUE(ra::filesystem::ReadTextFile(output_file_path.c_str(), file_content));
+
+      //The content of the file should be the process' starting directory
+      ASSERT_EQ(test_dir, file_content);
+
+      //Cleanup
+      ra::filesystem::DeleteFile(output_file_path.c_str());
     }
-
-    //assert that current directory is not affected by the launched processes 
-    const std::string curr_dir2 = ra::filesystem::GetCurrentDirectory();
-    ASSERT_EQ(curr_dir1, curr_dir2);
-
-    //cleanup
-    ra::filesystem::DeleteFile(home_file_path.c_str());
-    ra::filesystem::DeleteDirectory(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testTerminate) {
