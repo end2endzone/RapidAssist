@@ -406,48 +406,30 @@ namespace ra { namespace process { namespace test
     ra::filesystem::DeleteFile(cache_path.c_str());
   }
 #endif
-  TEST_F(TestProcess, DISABLED_testKillAndTerminate) {
-    //create a text file
-    const std::string newline = ra::environment::GetLineSeparator();
-    const std::string content =
-      ra::testing::GetTestQualifiedName() + newline +
-      "The" + newline +
-      "quick" + newline +
-      "brown" + newline +
-      "fox" + newline +
-      "jumps" + newline +
-      "over" + newline +
-      "the" + newline +
-      "lazy" + newline +
-      "dog.";
-    const std::string file_path = ra::process::GetCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::GetTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //define the command 
-#ifdef _WIN32
-    const std::string arguments = "\"" + file_path + "\"";
-    const std::string exec_path = "c:\\windows\\notepad.exe";
-#else
-    ra::strings::StringVector arguments;
-    arguments.push_back(file_path);
-    const std::string exec_path = "/bin/nano";
-#endif
+  TEST_F(TestProcess, testTerminate) {
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
 
     //run the process from the current directory
     const std::string test_dir = ra::process::GetCurrentProcessDir();
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
-#ifndef _WIN32
-    //delete nano's cache before launching nano
-    deletenanocache(file_path);
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    
+    //define the argument 
+#ifdef _WIN32
+    const std::string arguments = "--WaitForTerminateSignal";
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(new_process_path);
+    arguments.push_back("--WaitForTerminateSignal");
 #endif
 
-    printf("Launching '%s'...\n", exec_path.c_str());
-    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-
     //start the process
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, test_dir, arguments);
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     printf("Created process with pid=%d\n", (int)pid);
@@ -459,61 +441,74 @@ namespace ra { namespace process { namespace test
     bool started = ra::process::IsRunning(pid);
     ASSERT_TRUE(started) << "The process with pid " << pid << " does not seems to be running anymore.";
 
+    printf("Killing '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-    printf("Killing '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
+
+    //try to terminate the process
+    bool killed = ra::process::Terminate(pid);
+    ASSERT_TRUE(killed) << "The process with pid " << pid << " was not terminated.";
+
+    printf("Process terminated...\n");
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+
+    //assert the process is not running anymore
+    started = ra::process::IsRunning(pid);
+    ASSERT_FALSE(started);
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
+  }
+  TEST_F(TestProcess, testKill) {
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string test_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    
+    //define the argument 
+#ifdef _WIN32
+    const std::string arguments = "--WaitForKillSignal";
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(new_process_path);
+    arguments.push_back("--WaitForKillSignal");
+#endif
+
+    //start the process
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+
+    printf("Created process with pid=%d\n", (int)pid);
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+
+    ra::timing::Millisleep(5000); //allow time for the process to start properly.
+
+    //assert the process is started
+    bool started = ra::process::IsRunning(pid);
+    ASSERT_TRUE(started) << "The process with pid " << pid << " does not seems to be running anymore.";
+
+    printf("Killing '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //try to kill the process
     bool killed = ra::process::Kill(pid);
     ASSERT_TRUE(killed) << "The process with pid " << pid << " was not killed.";
 
-#ifndef _WIN32
-    resetconsolestate();
-#endif
-
-    printf("Killed...\n");
+    printf("Process killed...\n");
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
-    //assert the process is not found
-    started = ra::process::IsRunning(pid);
-    ASSERT_FALSE(started);
-
-#ifndef _WIN32
-    //delete nano's cache before launching nano (again)
-    deletenanocache(file_path);
-#endif
-
-    printf("Launching '%s' (again)...\n", exec_path.c_str());
-
-    //start the process (again)
-    pid = ra::process::StartProcess(exec_path, test_dir, arguments);
-    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
-
-    ra::timing::Millisleep(5000); //allow time for the process to start properly (again).
-
-    //assert the process is started (again)
-    started = ra::process::IsRunning(pid);
-    ASSERT_TRUE(started);
-
-    printf("Terminating '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
-
-    //try to terimnate the process
-    bool terminated = ra::process::Terminate(pid);
-    ASSERT_TRUE(terminated);
-
-#ifndef _WIN32
-    //delete nano's cache (cleanup)
-    deletenanocache(file_path);
-#endif
-
-    printf("Terminated...\n");
-
-    //assert the process is not found
+    //assert the process is not running anymore
     started = ra::process::IsRunning(pid);
     ASSERT_FALSE(started);
 
     //cleanup
-    ra::filesystem::DeleteFile(file_path.c_str());
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument) {
