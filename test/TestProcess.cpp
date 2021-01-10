@@ -38,7 +38,7 @@
 
 namespace ra { namespace process { namespace test
 {
-  ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2) {
+  ProcessIdList GetNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2) {
     ProcessIdList processes;
 
     //try to identify the new process
@@ -278,22 +278,26 @@ namespace ra { namespace process { namespace test
 
     //test with a random process id
     processid_t fake_pid = 12345678;
-    ASSERT_FALSE(ra::process::IsRunning(fake_pid));
+    ASSERT_FALSE(ra::process::IsRunning(fake_pid)) << "The process with a process id " << fake_pid << " is running which is unexpected!";
 
     //expect all existing processes are running
     printf("Getting the list of active processes...\n");
-    ProcessIdList processes = GetProcesses();
+    ProcessIdList processes = ra::process::GetProcesses();
     ASSERT_NE(0, processes.size());
 
-    printf("Note:\n"
-      "Asserting that received processes are running...\n"
+    printf(
+      "Asserting that processes from ra::process::GetProcesses() are running...\n"
       "Some process might be terminated by the time we validate the returned list of process ids.\n"
       "This is normal but it should not happend often.\n");
 
+    //Expect that all processes retreived from GetProcesses() are all runnings
+    ProcessIdList stopped_processes;
     for (size_t i = 0; i < processes.size(); i++) {
       processid_t pid = processes[i];
-      EXPECT_TRUE(ra::process::IsRunning(pid)) << "The process with pid " << pid << " does not appears to be running.";
+      if (!ra::process::IsRunning(pid))
+        stopped_processes.push_back(pid);
     }
+    ASSERT_LE(stopped_processes.size(), 2) << "There is " << stopped_processes.size() << " processes from the list that are not running. This is more than expected. The following process ids were not running: " << ra::process::ToString(stopped_processes);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testStartProcessWithDirectory) {
