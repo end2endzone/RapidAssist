@@ -156,6 +156,22 @@ int main(int argc, char **argv) {
     return (saved ? 0 : 1);
   }
 
+  //validate --WaitForTerminateSignal
+  found = ra::cli::ParseArgument("WaitForTerminateSignal", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::WaitForTerminateSignal();
+    return 0;
+  }
+
+  //validate --WaitForKillSignal
+  found = ra::cli::ParseArgument("WaitForKillSignal", tmp, argc, argv);
+  if (found)
+  {
+    ra::test::WaitForKillSignal();
+    return 0;
+  }
+
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
   outputXml += (ra::environment::IsProcess32Bit() ? ".x86" : ".x64");
