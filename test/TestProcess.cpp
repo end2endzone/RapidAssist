@@ -393,13 +393,13 @@ namespace ra { namespace process { namespace test
     printf("Created process with pid=%d\n", (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
-    ra::timing::Millisleep(5000); //allow time for the process to start properly.
+    ra::timing::Millisleep(3000); //allow time for the process to start properly.
 
     //assert the process is started
     bool started = ra::process::IsRunning(pid);
     ASSERT_TRUE(started) << "The process with pid " << pid << " does not seems to be running anymore.";
 
-    printf("Killing '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
+    printf("Terminating '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //try to terminate the process
@@ -416,6 +416,7 @@ namespace ra { namespace process { namespace test
     //cleanup
     ra::filesystem::DeleteFile(new_process_path.c_str());
   }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testKill) {
     //clone current process executable into another process.
     std::string new_process_path;
@@ -445,7 +446,7 @@ namespace ra { namespace process { namespace test
     printf("Created process with pid=%d\n", (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
-    ra::timing::Millisleep(5000); //allow time for the process to start properly.
+    ra::timing::Millisleep(3000); //allow time for the process to start properly.
 
     //assert the process is started
     bool started = ra::process::IsRunning(pid);

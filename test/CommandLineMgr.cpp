@@ -117,7 +117,10 @@ namespace ra { namespace test
       switch (wParam) {
       case IDT_TIMER1:
         if (timer_counter%2 == 0)
+        {
           printf("Counting: %d\n", timer_counter);
+          fflush(NULL);
+        }
         timer_counter++;
         return 0;
       }
@@ -139,6 +142,7 @@ namespace ra { namespace test
     window_class.lpszClassName   = "WindowClass";
 
     printf("Waiting for TERM signal...\n");
+    fflush(NULL);
 
     if(RegisterClassExA(&window_class))
     {
@@ -155,12 +159,14 @@ namespace ra { namespace test
     }
 
     printf("Leaving...\n");
+    fflush(NULL);
   }
 #elif __linux__
   volatile bool is_interrupted;
 
   void term_handler(int signum) {
     printf("Caught SIGTERM!\n");
+    fflush(NULL);
     is_interrupted = true;
   }
 
@@ -176,9 +182,11 @@ namespace ra { namespace test
     sigaction(SIGTERM, &act, NULL);  
     
     printf("Waiting for TERM signal...\n");
+    fflush(NULL);
     int counter = 0;
     while(!is_interrupted) {
       printf("Counting: %d\n", counter);
+      fflush(NULL);
       counter++;
 
       //Sleep 1 second, in small increments
@@ -188,6 +196,7 @@ namespace ra { namespace test
       }
     }
     printf("Leaving...\n");
+    fflush(NULL);
   }
 #endif
 
@@ -268,15 +277,18 @@ namespace ra { namespace test
     DisableConsoleInterruptSignals();
   
     printf("Waiting for KILL signal...\n");
+    fflush(NULL);
     int loop_counter = 0;
     while(true) {
       printf("Counting: %d\n", loop_counter);
+      fflush(NULL);
       loop_counter++;
 
       //Sleep 1 second
       ra::timing::Millisleep(1000);
     }
     printf("Leaving...\n");
+    fflush(NULL);
   }
   //--------------------------------------------------------------------------------------------------
 
