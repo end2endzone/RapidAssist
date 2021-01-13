@@ -608,34 +608,48 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testWaitExit) {
-    //define the sleep x seconds command
-    const std::string sleep_time = "5";
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL);
+    
+    //define the sleep x seconds command arguments
+    const std::string sleep_time = "5000";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
-    const std::string arguments = sleep_time;
+    const std::string arguments = "--SleepTime=" + sleep_time;
 #else
     ra::strings::StringVector arguments;
     arguments.push_back(sleep_time);
-    const std::string exec_path = "/bin/sleep";
+    arguments.push_back(std::string("--SleepTime=") + sleep_time);
 #endif
-
-    //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //remember which time it is
     double time_start = ra::timing::GetMillisecondsTimer();
 
     //start the process
-    const std::string curr_dir = ra::process::GetCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
-
-    //assert that process was launched
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, curr_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
+    //assert that process was launched and running
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+    ASSERT_TRUE(ra::process::IsRunning(pid));
+
     //wait for the process to complete
+    printf("Waiting for the sleep process to exit...\n", new_process_path.c_str());
+    fflush(NULL);
     int exitcode = 0;
     bool wait_ok = ra::process::WaitExit(pid, exitcode);
     ASSERT_TRUE(wait_ok);
+
+    //assert the process is not running anymore
+    ASSERT_FALSE(ra::process::IsRunning(pid));
 
     //compute elapsed time
     double time_end = ra::timing::GetMillisecondsTimer();
@@ -644,6 +658,9 @@ namespace ra { namespace process { namespace test
     //assert elapsed time matches expected time based on the argument
     //test runtime should be bigger than sleep time
     ASSERT_GE(elapsed_seconds, 4.9);
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
