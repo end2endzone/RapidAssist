@@ -48,6 +48,8 @@ namespace ra { namespace test
   void WaitForTerminateSignal();
   void WaitForKillSignal();
 
+  void SleepTime(int sleep_time_ms);
+
 } //namespace test
 } //namespace ra
 

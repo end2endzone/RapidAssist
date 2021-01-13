@@ -291,6 +291,15 @@ namespace ra { namespace test
     fflush(NULL);
   }
   //--------------------------------------------------------------------------------------------------
+  void SleepTime(int sleep_time_ms)
+  {
+    printf("Sleeping for %d milliseconds...\n", sleep_time_ms);
+    fflush(NULL);
+    ra::timing::Millisleep(sleep_time_ms);
+    printf("Done sleeping!\n");
+    fflush(NULL);
+  }
+  //--------------------------------------------------------------------------------------------------
 
 } //namespace test
 } //namespace ra

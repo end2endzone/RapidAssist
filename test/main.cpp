@@ -172,6 +172,15 @@ int main(int argc, char **argv) {
     return 0;
   }
 
+  //validate --SleepTime
+  int sleep_time_ms = 0;
+  found = ra::cli::ParseArgument("SleepTime", sleep_time_ms, argc, argv);
+  if (found)
+  {
+    ra::test::SleepTime(sleep_time_ms);
+    return 0;
+  }
+
   //define default values for xml output report
   std::string outputXml = "xml:" "rapidassist_unittest";
   outputXml += (ra::environment::IsProcess32Bit() ? ".x86" : ".x64");
