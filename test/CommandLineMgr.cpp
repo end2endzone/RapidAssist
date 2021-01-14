@@ -300,6 +300,15 @@ namespace ra { namespace test
     fflush(NULL);
   }
   //--------------------------------------------------------------------------------------------------
+  int ExitCode(int exit_code)
+  {
+    //Sleep to simulate process execution
+    SleepTime(5000);
+    printf("Exiting with code %d...\n", exit_code);
+    fflush(NULL);
+    return exit_code;
+  }
+  //--------------------------------------------------------------------------------------------------
 
 } //namespace test
 } //namespace ra

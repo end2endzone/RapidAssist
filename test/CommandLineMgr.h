@@ -49,6 +49,7 @@ namespace ra { namespace test
   void WaitForKillSignal();
 
   void SleepTime(int sleep_time_ms);
+  int ExitCode(int exit_code);
 
 } //namespace test
 } //namespace ra
