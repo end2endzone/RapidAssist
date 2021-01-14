@@ -523,23 +523,31 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCode) {
-    //define the sleep x seconds command
-    const std::string sleep_time = "2";
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL);
+    
+    //define the sleep x seconds command arguments
+    const std::string sleep_time = "3000";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
-    const std::string arguments = sleep_time;
+    const std::string arguments = "--SleepTime=" + sleep_time;
 #else
     ra::strings::StringVector arguments;
     arguments.push_back(sleep_time);
-    const std::string exec_path = "/bin/sleep";
+    arguments.push_back(std::string("--SleepTime=") + sleep_time);
 #endif
 
-    //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
-
     //start the process
-    const std::string curr_dir = ra::process::GetCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, curr_dir, arguments);
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //assert that process is started
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -547,28 +555,33 @@ namespace ra { namespace process { namespace test
     //wait a little to be in the middle of execution of the process
     ra::timing::Millisleep(500);
 
-    printf("calling ra::process::GetExitCode() while process is running...\n");
+    printf("Calling ra::process::GetExitCode() while process is running...\n");
+    fflush(NULL);
     int code = 0;
     bool success = ra::process::GetExitCode(pid, code);
 
     //assert GetExitCode fails while the process is running
     ASSERT_FALSE(success);
 
-    printf("call failed which is expected.\n");
-    printf("waiting for the process to exit gracefully...\n");
+    printf("Call failed which is expected.\n");
+    printf("Waiting for the process to exit gracefully...\n");
+    fflush(NULL);
 
     //wait for the program to exit
     success = ra::process::WaitExit(pid);
     ASSERT_TRUE(success);
 
     //try again
-    printf("calling ra::process::GetExitCode() again...\n");
+    printf("Calling ra::process::GetExitCode() again...\n");
     success = ra::process::GetExitCode(pid, code);
 
     ASSERT_TRUE(success);
     ASSERT_EQ(0, code); //assert application exit code is SUCCESS.
 
-    printf("received expected exit code\n");
+    printf("Received expected exit code\n");
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCodeSpecific) {
