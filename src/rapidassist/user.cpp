@@ -28,7 +28,7 @@
 #ifdef WIN32
 #   include <Shlobj.h>
 #   include <windows.h>
-#   undef GetEnvironmentVariable
+#   include "rapidassist/undef_windows_macros.h"
 #   include <Lmcons.h>
 #else
 #   include <stdlib.h>

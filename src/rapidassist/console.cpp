@@ -34,7 +34,7 @@
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #endif /* WIN32_LEAN_AND_MEAN */
 #include <Windows.h>
-#undef GetEnvironmentVariable
+#include "rapidassist/undef_windows_macros.h"
 
 #elif __linux__
 
