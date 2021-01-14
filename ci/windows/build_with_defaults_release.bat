@@ -18,11 +18,11 @@ cd /d %~dp0
 
 :: Call appveyor's scripts one by one.
 call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\install_googletest.bat
-if %errorlevel% neq 0 exit /b %errorlevel%
+if %errorlevel% neq 0 pause && exit /b %errorlevel%
 call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_library.bat
-if %errorlevel% neq 0 exit /b %errorlevel%
+if %errorlevel% neq 0 pause && exit /b %errorlevel%
 call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\build_client.bat
-if %errorlevel% neq 0 exit /b %errorlevel%
+if %errorlevel% neq 0 pause && exit /b %errorlevel%
 
 :: Press a key to continue
 pause
