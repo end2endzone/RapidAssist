@@ -46,11 +46,7 @@
 #define __rmdir _rmdir
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
-#undef GetEnvironmentVariable
-#undef DeleteFile
-#undef CreateDirectory
-#undef GetCurrentDirectory
-#undef CopyFile
+#include "rapidassist/undef_windows_macros.h"
 #elif __linux__
 #define __chdir chdir
 #define __getcwd getcwd

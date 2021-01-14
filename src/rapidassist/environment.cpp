@@ -34,14 +34,8 @@
   #ifndef WIN32_LEAN_AND_MEAN
   #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
   #endif /* WIN32_LEAN_AND_MEAN */
-  #include <Windows.h> //for GetEnvironmentStrings()
-  #undef SetEnvironmentVariable
-  #undef GetEnvironmentVariable
-  #undef CreateFile
-  #undef DeleteFile
-  #undef CreateDirectory
-  #undef GetCurrentDirectory
-  #undef CopyFile
+  #include <Windows.h>
+  #include "rapidassist/undef_windows_macros.h"
 #else
   //for GetEnvironmentVariables()
   extern char **environ;

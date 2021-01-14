@@ -27,6 +27,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#include "rapidassist/undef_windows_macros.h"
 #else
 #include <cmath>    //for std::log
 #endif
@@ -54,7 +55,7 @@ namespace ra { namespace errors { namespace test
 #ifdef _WIN32
     {
       const char * file_path = "c:\\foo\\bar\\baz\\create_file_not_found\\myfile.dat";
-      HANDLE hFile = CreateFile(
+      HANDLE hFile = CreateFileA(
         file_path,              // name of the write
         GENERIC_WRITE,          // open for writing
         0,                      // do not share

@@ -34,7 +34,7 @@
 //#   define WIN32_LEAN_AND_MEAN 1
 //#   endif
 #   include <windows.h> // for GetModuleHandleEx()
-#   undef GetCurrentDirectory
+#   include "rapidassist/undef_windows_macros.h"
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
 #   include <Tlhelp32.h>

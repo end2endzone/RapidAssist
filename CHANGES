@@ -3,6 +3,7 @@ Changes for 0.9.0:
 * Fixed issue #60: Migrate CI/CD services to GitHub Actions.
 * Fixed issue #61: ra::testing::CloneProcessFile()
 * Fixed issue #62: Refactor how unit test TestProcess.testKillAndTerminate is implemented.
+* Fixed issue #64: Include of windows.h conflicts with RapidAssist function names.
 
 
 Changes for 0.8.3:

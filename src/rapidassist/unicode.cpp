@@ -26,6 +26,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#include "rapidassist/undef_windows_macros.h"
 #endif
 
 namespace ra { namespace unicode {

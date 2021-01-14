@@ -27,6 +27,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#include "rapidassist/undef_windows_macros.h"
 #else
 #include <errno.h>    // for errno
 #include <cerrno>     // for errno

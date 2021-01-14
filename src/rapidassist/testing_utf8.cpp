@@ -29,12 +29,7 @@
 
 #ifdef _WIN32
 #include <Windows.h> //for CreateFile()
-#undef GetEnvironmentVariable
-#undef CreateFile
-#undef DeleteFile
-#undef CreateDirectory
-#undef GetCurrentDirectory
-#undef CopyFile
+#include "rapidassist/undef_windows_macros.h"
 #endif
 
 namespace ra { namespace testing {

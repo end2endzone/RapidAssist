@@ -502,7 +502,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
         //fix for multiple Windows system (including AppVeyor) which has 'windir' defined as 'C:\windows' instead of 'C:\Windows'.
-        if (pattern == "C:\\windows") {
+        if (pattern == "C:\\windows" || pattern == "C:\\WINDOWS") {
           found |= (file == "C:\\Windows");
         }
 #endif

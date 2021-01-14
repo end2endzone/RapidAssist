@@ -31,8 +31,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #endif
 #include <windows.h> // for Sleep()
-#undef min
-#undef max
+#include "rapidassist/undef_windows_macros.h"
 #elif _POSIX_C_SOURCE >= 199309L
 #include <time.h>   // for nanosleep()
 #else

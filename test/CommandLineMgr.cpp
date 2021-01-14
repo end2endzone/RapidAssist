@@ -32,13 +32,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-#undef SetEnvironmentVariable
-#undef GetEnvironmentVariable
-#undef CreateFile
-#undef DeleteFile
-#undef CreateDirectory
-#undef GetCurrentDirectory
-#undef CopyFile
+#include "rapidassist/undef_windows_macros.h"
 #include <signal.h>
 #elif __linux__
 #include <stdio.h>
