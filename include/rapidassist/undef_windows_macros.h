@@ -25,10 +25,6 @@
 #ifndef RA_UNDEF_WINDOWS_MACROS_H
 #define RA_UNDEF_WINDOWS_MACROS_H
 
-#ifdef GetEnvironmentVariable
-#undef GetEnvironmentVariable
-#endif
-
 #ifdef CopyFile
 #undef CopyFile
 #endif
