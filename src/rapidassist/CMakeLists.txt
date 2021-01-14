@@ -18,6 +18,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/testing.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/testing_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/timing.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/undef_windows_macros.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/unicode.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/user_utf8.h
