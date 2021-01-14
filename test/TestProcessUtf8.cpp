@@ -33,7 +33,7 @@
 
 namespace ra { namespace process { namespace test
 {
-  extern ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2);
+  extern ProcessIdList GetNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2);
 
   //--------------------------------------------------------------------------------------------------
   void TestProcessUtf8::SetUp() {
@@ -211,7 +211,7 @@ namespace ra { namespace process { namespace test
 
     //try to identify the new process
     ProcessIdList process_after = ra::process::GetProcesses();
-    ProcessIdList new_pids = getNewProcesses(process_before, process_after);
+    ProcessIdList new_pids = GetNewProcesses(process_before, process_after);
     if (new_pids.size() == 1) {
       //found the new process that opened the document
 

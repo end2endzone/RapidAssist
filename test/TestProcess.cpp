@@ -38,7 +38,7 @@
 
 namespace ra { namespace process { namespace test
 {
-  ProcessIdList getNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2) {
+  ProcessIdList GetNewProcesses(const ProcessIdList & p1, const ProcessIdList & p2) {
     ProcessIdList processes;
 
     //try to identify the new process
@@ -278,242 +278,196 @@ namespace ra { namespace process { namespace test
 
     //test with a random process id
     processid_t fake_pid = 12345678;
-    ASSERT_FALSE(ra::process::IsRunning(fake_pid));
+    ASSERT_FALSE(ra::process::IsRunning(fake_pid)) << "The process with a process id " << fake_pid << " is running which is unexpected!";
 
     //expect all existing processes are running
     printf("Getting the list of active processes...\n");
-    ProcessIdList processes = GetProcesses();
+    ProcessIdList processes = ra::process::GetProcesses();
     ASSERT_NE(0, processes.size());
 
-    printf("Note:\n"
-      "Asserting that received processes are running...\n"
+    printf(
+      "Asserting that processes from ra::process::GetProcesses() are running...\n"
       "Some process might be terminated by the time we validate the returned list of process ids.\n"
       "This is normal but it should not happend often.\n");
 
+    //Expect that all processes retreived from GetProcesses() are all runnings
+    ProcessIdList stopped_processes;
     for (size_t i = 0; i < processes.size(); i++) {
       processid_t pid = processes[i];
-      EXPECT_TRUE(ra::process::IsRunning(pid)) << "The process with pid " << pid << " does not appears to be running.";
+      if (!ra::process::IsRunning(pid))
+        stopped_processes.push_back(pid);
     }
+    ASSERT_LE(stopped_processes.size(), 2) << "There is " << stopped_processes.size() << " processes from the list that are not running. This is more than expected. The following process ids were not running: " << ra::process::ToString(stopped_processes);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testStartProcessWithDirectory) {
-    printf("Note:\n"
-      "This test must be manually validated.\n"
-      "The test runs the same executable twice but from different directories.\n"
-      "The output from the executable is expected to be different since it is run from different locations.\n");
-    printf("\n");
-    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
 
-    //keep the current directory to verify if it has not changed
-    const std::string curr_dir1 = ra::filesystem::GetCurrentDirectory();
+    std::string process_dir = ra::filesystem::GetParentPath(new_process_path);
 
-    //will run the process from user's home directory
-    const std::string home_dir = ra::user::GetHomeDirectory();
-    ASSERT_TRUE(ra::filesystem::DirectoryExists(home_dir.c_str()));
-
-    //will also run the process from a custom directory
-    const std::string custom_dir = curr_dir1 + ra::filesystem::GetPathSeparatorStr() + ra::testing::GetTestQualifiedName() + ".dir";
-    bool created = ra::filesystem::CreateDirectory(custom_dir.c_str());
-    ASSERT_TRUE(created);
-
-    //create a text file in user's home directory
-    const std::string newline = ra::environment::GetLineSeparator();
-    const std::string content = ra::testing::GetTestQualifiedName();
-    const std::string home_file_path = home_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_home_directory.txt";
-    bool success = ra::filesystem::WriteFile(home_file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //create a text file in custom directory
-    const std::string custom_file_path = custom_dir + ra::filesystem::GetPathSeparatorStr() + "This_file_is_in_a_custom_directory.txt";
-    success = ra::filesystem::WriteFile(custom_file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //define a command that lists the files in the current directory
+    //define the argument 
 #ifdef _WIN32
-    const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
-    const std::string arguments = "/c dir";
+    const std::string arguments = "--SaveGetCurrentDirectory";
 #else
     ra::strings::StringVector arguments;
-    const std::string exec_path = "/bin/ls";
+    arguments.push_back(new_process_path);
+    arguments.push_back("--SaveGetCurrentDirectory");
 #endif
 
-    //build a list of directory to launch exec_path
-    ra::strings::StringVector dirs;
-    dirs.push_back(home_dir);
-    dirs.push_back(custom_dir);
+    static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    static const std::string output_filename = "SaveGetCurrentDirectory.txt";
 
-    //for each directory
-    for (size_t i = 0; i < dirs.size(); i++) {
-      const std::string & mydir = dirs[i];
-      printf("Launching process '%s' from directory '%s':\n", exec_path.c_str(), mydir.c_str());
-      printf("{\n");
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    //Define a list of test directories
+    ra::strings::StringVector directories;
+    directories.push_back(ra::filesystem::GetCurrentDirectory());     // current directory
+    directories.push_back(ra::filesystem::GetTemporaryDirectory());   // temp directory
+    directories.push_back(ra::user::GetHomeDirectory());              // user's home directory
+
+    //Test process from each directory
+    for(size_t i=0; i<directories.size(); i++)
+    {
+      const std::string & test_dir = directories[i];
+
+      //Compute the command's expected output filename
+      std::string output_file_path = process_dir + separator + output_filename;
+      if (ra::filesystem::FileExists(output_file_path.c_str()))
+        ra::filesystem::DeleteFile(output_file_path.c_str());
 
       //start the process
-      ra::process::processid_t pid = ra::process::StartProcess(exec_path, mydir, arguments);
+      ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
       ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
-      //wait for the process to complete
-      int exitcode = 0;
-      bool wait_ok = ra::process::WaitExit(pid, exitcode);
-      ASSERT_TRUE(wait_ok);
+      //Wait for the process to exit naturally.
+      ASSERT_TRUE(ra::process::WaitExit(pid));
 
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-      printf("}\n");
-      printf("\n");
-      fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+      //Check process successful exit code.
+      int exit_code = -1;
+      ASSERT_TRUE(ra::process::GetExitCode(pid, exit_code));
+      ASSERT_EQ(0, exit_code);
+
+      //Assert the generated file is found
+      ASSERT_TRUE(ra::filesystem::FileExists(output_file_path.c_str())) << "The expected generated file '" << output_file_path.c_str() << "' was not found.";
+
+      //Read the content of the file
+      std::string file_content;
+      ASSERT_TRUE(ra::filesystem::ReadTextFile(output_file_path.c_str(), file_content));
+
+      //The content of the file should be the process' starting directory
+      ASSERT_EQ(test_dir, file_content);
+
+      //Cleanup
+      ra::filesystem::DeleteFile(output_file_path.c_str());
     }
-
-    //assert that current directory is not affected by the launched processes 
-    const std::string curr_dir2 = ra::filesystem::GetCurrentDirectory();
-    ASSERT_EQ(curr_dir1, curr_dir2);
-
-    //cleanup
-    ra::filesystem::DeleteFile(home_file_path.c_str());
-    ra::filesystem::DeleteDirectory(custom_dir.c_str());
   }
   //--------------------------------------------------------------------------------------------------
-#ifndef _WIN32
-  void resetconsolestate() {
-    //after killing nano, the console may be in a weird configuration.
-    //reset the console in a "sane" configuration.
-    //https://unix.stackexchange.com/questions/492809/my-bash-shell-doesnt-start-a-new-line-upon-return-and-doesnt-show-typed-comma
-    //https://unix.stackexchange.com/questions/58951/accidental-nano-somefile-uniq-renders-the-shell-unresponsive
-    //Note:
-    //  use '/bin/stty' instead of '/usr/bin/reset' because reset will actually erase the content of the console
-    //  and we do not want to loose the the previous test results and details.
-
-    ra::strings::StringVector args;
-    args.push_back("sane");
-    const std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    ra::process::processid_t pid = ra::process::StartProcess("/bin/stty", curr_dir, args);
-
-    //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
-
-    printf("\n");
-    fflush(NULL);
-  }
-  void deletenanocache(const std::string & file_path) {
-    //for a filename named        "TestProcess.testProcesses.txt",
-    //nano's cache file is named ".TestProcess.testProcesses.txt.swp".
-
-    std::string parent_dir, filename;
-    ra::filesystem::SplitPath(file_path, parent_dir, filename);
-
-    const std::string cache_path = parent_dir + ra::filesystem::GetPathSeparatorStr() + "." + filename + ".swp";
-    ra::filesystem::DeleteFile(cache_path.c_str());
-  }
-#endif
-  TEST_F(TestProcess, DISABLED_testKillAndTerminate) {
-    //create a text file
-    const std::string newline = ra::environment::GetLineSeparator();
-    const std::string content =
-      ra::testing::GetTestQualifiedName() + newline +
-      "The" + newline +
-      "quick" + newline +
-      "brown" + newline +
-      "fox" + newline +
-      "jumps" + newline +
-      "over" + newline +
-      "the" + newline +
-      "lazy" + newline +
-      "dog.";
-    const std::string file_path = ra::process::GetCurrentProcessDir() + ra::filesystem::GetPathSeparatorStr() + ra::testing::GetTestQualifiedName() + ".txt";
-    bool success = ra::filesystem::WriteFile(file_path, content); //write the file as a binary file
-    ASSERT_TRUE(success);
-
-    //define the command 
-#ifdef _WIN32
-    const std::string arguments = "\"" + file_path + "\"";
-    const std::string exec_path = "c:\\windows\\notepad.exe";
-#else
-    ra::strings::StringVector arguments;
-    arguments.push_back(file_path);
-    const std::string exec_path = "/bin/nano";
-#endif
+  TEST_F(TestProcess, testTerminate) {
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
 
     //run the process from the current directory
     const std::string test_dir = ra::process::GetCurrentProcessDir();
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
-#ifndef _WIN32
-    //delete nano's cache before launching nano
-    deletenanocache(file_path);
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    
+    //define the argument 
+#ifdef _WIN32
+    const std::string arguments = "--WaitForTerminateSignal";
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(new_process_path);
+    arguments.push_back("--WaitForTerminateSignal");
 #endif
 
-    printf("Launching '%s'...\n", exec_path.c_str());
-    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-
     //start the process
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, test_dir, arguments);
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     printf("Created process with pid=%d\n", (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
-    ra::timing::Millisleep(5000); //allow time for the process to start properly.
+    ra::timing::Millisleep(3000); //allow time for the process to start properly.
 
     //assert the process is started
     bool started = ra::process::IsRunning(pid);
     ASSERT_TRUE(started) << "The process with pid " << pid << " does not seems to be running anymore.";
 
+    printf("Terminating '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
-    printf("Killing '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
+
+    //try to terminate the process
+    bool killed = ra::process::Terminate(pid);
+    ASSERT_TRUE(killed) << "The process with pid " << pid << " was not terminated.";
+
+    printf("Process terminated...\n");
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+
+    //assert the process is not running anymore
+    started = ra::process::IsRunning(pid);
+    ASSERT_FALSE(started);
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestProcess, testKill) {
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string test_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+    
+    //define the argument 
+#ifdef _WIN32
+    const std::string arguments = "--WaitForKillSignal";
+#else
+    ra::strings::StringVector arguments;
+    arguments.push_back(new_process_path);
+    arguments.push_back("--WaitForKillSignal");
+#endif
+
+    //start the process
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, test_dir, arguments);
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+
+    printf("Created process with pid=%d\n", (int)pid);
+    fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
+
+    ra::timing::Millisleep(3000); //allow time for the process to start properly.
+
+    //assert the process is started
+    bool started = ra::process::IsRunning(pid);
+    ASSERT_TRUE(started) << "The process with pid " << pid << " does not seems to be running anymore.";
+
+    printf("Killing '%s' with pid=%d...\n", new_process_path.c_str(), (int)pid);
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
     //try to kill the process
     bool killed = ra::process::Kill(pid);
     ASSERT_TRUE(killed) << "The process with pid " << pid << " was not killed.";
 
-#ifndef _WIN32
-    resetconsolestate();
-#endif
-
-    printf("Killed...\n");
+    printf("Process killed...\n");
     fflush(NULL); //flush output buffer. This is required to get expected output on appveyor's .
 
-    //assert the process is not found
-    started = ra::process::IsRunning(pid);
-    ASSERT_FALSE(started);
-
-#ifndef _WIN32
-    //delete nano's cache before launching nano (again)
-    deletenanocache(file_path);
-#endif
-
-    printf("Launching '%s' (again)...\n", exec_path.c_str());
-
-    //start the process (again)
-    pid = ra::process::StartProcess(exec_path, test_dir, arguments);
-    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
-
-    ra::timing::Millisleep(5000); //allow time for the process to start properly (again).
-
-    //assert the process is started (again)
-    started = ra::process::IsRunning(pid);
-    ASSERT_TRUE(started);
-
-    printf("Terminating '%s' with pid=%d...\n", exec_path.c_str(), (int)pid);
-
-    //try to terimnate the process
-    bool terminated = ra::process::Terminate(pid);
-    ASSERT_TRUE(terminated);
-
-#ifndef _WIN32
-    //delete nano's cache (cleanup)
-    deletenanocache(file_path);
-#endif
-
-    printf("Terminated...\n");
-
-    //assert the process is not found
+    //assert the process is not running anymore
     started = ra::process::IsRunning(pid);
     ASSERT_FALSE(started);
 
     //cleanup
-    ra::filesystem::DeleteFile(file_path.c_str());
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testOpenDocument) {
@@ -548,7 +502,7 @@ namespace ra { namespace process { namespace test
 
     //try to identify the new process
     ProcessIdList process_after = ra::process::GetProcesses();
-    ProcessIdList new_pids = getNewProcesses(process_before, process_after);
+    ProcessIdList new_pids = GetNewProcesses(process_before, process_after);
     if (new_pids.size() == 1) {
       //found the new process that opened the document
 
@@ -569,23 +523,31 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCode) {
-    //define the sleep x seconds command
-    const std::string sleep_time = "2";
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL);
+    
+    //define the sleep x seconds command arguments
+    const std::string sleep_time = "3000";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
-    const std::string arguments = sleep_time;
+    const std::string arguments = "--SleepTime=" + sleep_time;
 #else
     ra::strings::StringVector arguments;
     arguments.push_back(sleep_time);
-    const std::string exec_path = "/bin/sleep";
+    arguments.push_back(std::string("--SleepTime=") + sleep_time);
 #endif
 
-    //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
-
     //start the process
-    const std::string curr_dir = ra::process::GetCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, curr_dir, arguments);
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //assert that process is started
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -593,28 +555,33 @@ namespace ra { namespace process { namespace test
     //wait a little to be in the middle of execution of the process
     ra::timing::Millisleep(500);
 
-    printf("calling ra::process::GetExitCode() while process is running...\n");
+    printf("Calling ra::process::GetExitCode() while process is running...\n");
+    fflush(NULL);
     int code = 0;
     bool success = ra::process::GetExitCode(pid, code);
 
     //assert GetExitCode fails while the process is running
     ASSERT_FALSE(success);
 
-    printf("call failed which is expected.\n");
-    printf("waiting for the process to exit gracefully...\n");
+    printf("Call failed which is expected.\n");
+    printf("Waiting for the process to exit gracefully...\n");
+    fflush(NULL);
 
     //wait for the program to exit
     success = ra::process::WaitExit(pid);
     ASSERT_TRUE(success);
 
     //try again
-    printf("calling ra::process::GetExitCode() again...\n");
+    printf("Calling ra::process::GetExitCode() again...\n");
     success = ra::process::GetExitCode(pid, code);
 
     ASSERT_TRUE(success);
     ASSERT_EQ(0, code); //assert application exit code is SUCCESS.
 
-    printf("received expected exit code\n");
+    printf("Received expected exit code\n");
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetExitCodeSpecific) {
@@ -654,34 +621,48 @@ namespace ra { namespace process { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testWaitExit) {
-    //define the sleep x seconds command
-    const std::string sleep_time = "5";
+    //clone current process executable into another process.
+    std::string new_process_path;
+    std::string error_message;
+    bool cloned = ra::testing::CloneExecutableTempFile(new_process_path, error_message);  
+    ASSERT_TRUE(cloned) << error_message;
+
+    //run the process from the current directory
+    const std::string curr_dir = ra::process::GetCurrentProcessDir();
+
+    printf("Launching '%s'...\n", new_process_path.c_str());
+    fflush(NULL);
+    
+    //define the sleep x seconds command arguments
+    const std::string sleep_time = "5000";
 #ifdef _WIN32
-    const std::string exec_path = ra::filesystem::FindFileFromPaths("sleep.exe");
-    const std::string arguments = sleep_time;
+    const std::string arguments = "--SleepTime=" + sleep_time;
 #else
     ra::strings::StringVector arguments;
     arguments.push_back(sleep_time);
-    const std::string exec_path = "/bin/sleep";
+    arguments.push_back(std::string("--SleepTime=") + sleep_time);
 #endif
-
-    //assert that given process exists
-    ASSERT_TRUE(ra::filesystem::FileExists(exec_path.c_str()));
 
     //remember which time it is
     double time_start = ra::timing::GetMillisecondsTimer();
 
     //start the process
-    const std::string curr_dir = ra::process::GetCurrentProcessDir();
-    ra::process::processid_t pid = ra::process::StartProcess(exec_path, curr_dir, arguments);
-
-    //assert that process was launched
+    ra::process::processid_t pid = ra::process::StartProcess(new_process_path, curr_dir, arguments);
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
+    //assert that process was launched and running
+    ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
+    ASSERT_TRUE(ra::process::IsRunning(pid));
+
     //wait for the process to complete
+    printf("Waiting for the sleep process to exit...\n", new_process_path.c_str());
+    fflush(NULL);
     int exitcode = 0;
     bool wait_ok = ra::process::WaitExit(pid, exitcode);
     ASSERT_TRUE(wait_ok);
+
+    //assert the process is not running anymore
+    ASSERT_FALSE(ra::process::IsRunning(pid));
 
     //compute elapsed time
     double time_end = ra::timing::GetMillisecondsTimer();
@@ -690,6 +671,9 @@ namespace ra { namespace process { namespace test
     //assert elapsed time matches expected time based on the argument
     //test runtime should be bigger than sleep time
     ASSERT_GE(elapsed_seconds, 4.9);
+
+    //cleanup
+    ra::filesystem::DeleteFile(new_process_path.c_str());
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

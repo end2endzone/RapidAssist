@@ -45,6 +45,12 @@ namespace ra { namespace test
   bool SaveGetCurrentProcessDir();
   bool SaveGetCurrentDirectory();
 
+  void WaitForTerminateSignal();
+  void WaitForKillSignal();
+
+  void SleepTime(int sleep_time_ms);
+  int ExitCode(int exit_code);
+
 } //namespace test
 } //namespace ra
 

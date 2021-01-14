@@ -28,6 +28,27 @@
 #include "rapidassist/process_utf8.h"
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/testing_utf8.h"
+#include "rapidassist/timing.h"
+
+#ifdef _WIN32
+#include <Windows.h>
+#undef SetEnvironmentVariable
+#undef GetEnvironmentVariable
+#undef CreateFile
+#undef DeleteFile
+#undef CreateDirectory
+#undef GetCurrentDirectory
+#undef CopyFile
+#include <signal.h>
+#elif __linux__
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <iostream>
+#include <signal.h>
+#include <string>
+#include <cstring>
+#endif
 
 namespace ra { namespace test
 {
@@ -41,6 +62,143 @@ namespace ra { namespace test
     const std::string & last = values[values.size()-1];
     return last;
   }
+
+  //DisableConsoleInterruptSignals()
+#ifdef _WIN32
+  BOOL WINAPI ConsoleCtrlHandler(DWORD dwCtrlType) {
+    switch (dwCtrlType) {
+    case CTRL_C_EVENT:
+    case CTRL_BREAK_EVENT:
+    case CTRL_CLOSE_EVENT:
+    default:
+      return FALSE; //Do not exit program
+    }
+    return TRUE;
+  }
+  void DisableConsoleInterruptSignals() {
+    signal(SIGINT, SIG_IGN);    //Disable CTRL+C
+    signal(SIGBREAK, SIG_IGN);  //Disable CTRL+BREAK
+    SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE);
+  }
+#elif __linux__
+  void DisableConsoleInterruptSignals() {
+    //Ignore all signals except KILL and STOP
+    struct sigaction act;
+    memset(&act, 0, sizeof(act));
+    act.sa_handler = SIG_IGN;
+    for(int i = 1 ; i < 65 ; i++) {
+      // 9 and 19 cannot be caught or ignored
+      // 32 and 33 do not exist
+      if((i != SIGKILL) && (i != SIGSTOP) && (i != 32) && (i != 33)) {
+        sigaction(i, &act, NULL);
+      }
+    }
+  }
+#endif
+
+#ifdef _WIN32
+  #define IDT_TIMER1 24
+  int timer_counter = 0;
+
+  LRESULT __stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch(msg)   {
+    case WM_CREATE:
+      timer_counter = 0;
+      SetTimer(hWnd,              // handle to main window 
+          IDT_TIMER1,             // timer identifier 
+          500,                    // 0.5-second interval 
+          (TIMERPROC) NULL);      // no timer callback 
+      break;
+    case WM_DESTROY:
+      KillTimer(hWnd, IDT_TIMER1);
+      PostQuitMessage(0);
+      return 0;
+    case WM_TIMER:
+      switch (wParam) {
+      case IDT_TIMER1:
+        if (timer_counter%2 == 0)
+        {
+          printf("Counting: %d\n", timer_counter);
+          fflush(NULL);
+        }
+        timer_counter++;
+        return 0;
+      }
+      break;
+    default:
+      return DefWindowProcA(hWnd, msg, wParam, lParam);
+    }
+    return 0;
+  };
+
+  void WaitForTerminateSignal() {
+    DisableConsoleInterruptSignals();
+
+    WNDCLASSEXA window_class = {0};
+    window_class.cbSize          = sizeof(window_class);
+    window_class.style           = CS_DBLCLKS;
+    window_class.lpfnWndProc     = WndProc;
+    window_class.hInstance       = GetModuleHandle(NULL);
+    window_class.lpszClassName   = "WindowClass";
+
+    printf("Waiting for TERM signal...\n");
+    fflush(NULL);
+
+    if(RegisterClassExA(&window_class))
+    {
+      HWND WindowHandle = CreateWindowExA(0, "WindowClass", "Window Title", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 500, NULL, NULL, GetModuleHandle(NULL), NULL);
+      if(WindowHandle)
+      {
+        MSG msg = {NULL};
+        while(GetMessageA(&msg, NULL, 0, 0))
+        {
+          TranslateMessage(&msg);
+          DispatchMessageA(&msg);
+        }
+      }
+    }
+
+    printf("Leaving...\n");
+    fflush(NULL);
+  }
+#elif __linux__
+  volatile bool is_interrupted;
+
+  void term_handler(int signum) {
+    printf("Caught SIGTERM!\n");
+    fflush(NULL);
+    is_interrupted = true;
+  }
+
+  void WaitForTerminateSignal() {
+    is_interrupted = false;
+  
+    DisableConsoleInterruptSignals();
+
+    //Register our custom TERM signal handler
+    struct sigaction act;
+    memset(&act, 0, sizeof(act));
+    act.sa_handler = term_handler;
+    sigaction(SIGTERM, &act, NULL);  
+    
+    printf("Waiting for TERM signal...\n");
+    fflush(NULL);
+    int counter = 0;
+    while(!is_interrupted) {
+      printf("Counting: %d\n", counter);
+      fflush(NULL);
+      counter++;
+
+      //Sleep 1 second, in small increments
+      static const unsigned int MILLI_TO_MICRO = 1000;
+      for(int j=0; j<10 && !is_interrupted; j++) {
+        usleep(100 * MILLI_TO_MICRO);
+      }
+    }
+    printf("Leaving...\n");
+    fflush(NULL);
+  }
+#endif
 
   //--------------------------------------------------------------------------------------------------
   void OutputGetCurrentProcessPathUtf8() {
@@ -113,6 +271,42 @@ namespace ra { namespace test
     const std::string current_dir_ = ra::filesystem::GetCurrentDirectory();
     bool saved = ra::filesystem::WriteTextFile(file_path, current_dir_);
     return saved;
+  }
+  //--------------------------------------------------------------------------------------------------
+  void WaitForKillSignal() {
+    DisableConsoleInterruptSignals();
+  
+    printf("Waiting for KILL signal...\n");
+    fflush(NULL);
+    int loop_counter = 0;
+    while(true) {
+      printf("Counting: %d\n", loop_counter);
+      fflush(NULL);
+      loop_counter++;
+
+      //Sleep 1 second
+      ra::timing::Millisleep(1000);
+    }
+    printf("Leaving...\n");
+    fflush(NULL);
+  }
+  //--------------------------------------------------------------------------------------------------
+  void SleepTime(int sleep_time_ms)
+  {
+    printf("Sleeping for %d milliseconds...\n", sleep_time_ms);
+    fflush(NULL);
+    ra::timing::Millisleep(sleep_time_ms);
+    printf("Done sleeping!\n");
+    fflush(NULL);
+  }
+  //--------------------------------------------------------------------------------------------------
+  int ExitCode(int exit_code)
+  {
+    //Sleep to simulate process execution
+    SleepTime(5000);
+    printf("Exiting with code %d...\n", exit_code);
+    fflush(NULL);
+    return exit_code;
   }
   //--------------------------------------------------------------------------------------------------
 
