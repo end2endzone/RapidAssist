@@ -153,7 +153,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasReadAccess(const char * iPath) {
+  bool HasFileReadAccess(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -165,7 +165,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasWriteAccess(const char * iPath) {
+  bool HasFileWriteAccess(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 

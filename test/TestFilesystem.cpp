@@ -1209,10 +1209,10 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testHasReadAccess) {
+  TEST_F(TestFilesystem, testHasFileReadAccess) {
     //test NULL
     {
-      bool result = filesystem::HasReadAccess(NULL);
+      bool result = filesystem::HasFileReadAccess(NULL);
       ASSERT_FALSE(result);
     }
 
@@ -1221,7 +1221,7 @@ namespace ra { namespace filesystem { namespace test
       std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::CreateFile(path.c_str()));
 
-      bool hasRead = filesystem::HasReadAccess(path.c_str());
+      bool hasRead = filesystem::HasFileReadAccess(path.c_str());
       ASSERT_TRUE(hasRead);
 
       //cleanup
@@ -1237,16 +1237,16 @@ namespace ra { namespace filesystem { namespace test
 #else
       const char * path = "/proc/sysrq-trigger"; //permission denied file
       ASSERT_TRUE(filesystem::FileExists(path));
-      bool hasRead = filesystem::HasReadAccess(path);
+      bool hasRead = filesystem::HasFileReadAccess(path);
       ASSERT_FALSE(hasRead);
 #endif
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystem, testHasWriteAccess) {
+  TEST_F(TestFilesystem, testHasFileWriteAccess) {
     //test NULL
     {
-      bool result = filesystem::HasWriteAccess(NULL);
+      bool result = filesystem::HasFileWriteAccess(NULL);
       ASSERT_FALSE(result);
     }
 
@@ -1255,7 +1255,7 @@ namespace ra { namespace filesystem { namespace test
       std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::CreateFile(path.c_str()));
 
-      bool has_write = filesystem::HasWriteAccess(path.c_str());
+      bool has_write = filesystem::HasFileWriteAccess(path.c_str());
       ASSERT_TRUE(has_write);
 
       //cleanup
@@ -1273,8 +1273,8 @@ namespace ra { namespace filesystem { namespace test
 #else
       path = "/proc/cpuinfo"; //permission denied file
 #endif
-      ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasWriteAccess().";
-      bool has_write = filesystem::HasWriteAccess(path.c_str());
+      ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasFileWriteAccess().";
+      bool has_write = filesystem::HasFileWriteAccess(path.c_str());
       ASSERT_FALSE(has_write);
     }
   }

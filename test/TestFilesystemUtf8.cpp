@@ -184,9 +184,9 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
     //On Windows, the HasReadAccessUtf8() and HasWriteAccessUtf8() should not be working
-    bool have_read_win32 = ra::filesystem::HasReadAccess(filename.c_str());
+    bool have_read_win32 = ra::filesystem::HasFileReadAccess(filename.c_str());
     ASSERT_FALSE(have_read_win32);
-    bool have_write_win32 = ra::filesystem::HasWriteAccess(filename.c_str());
+    bool have_write_win32 = ra::filesystem::HasFileWriteAccess(filename.c_str());
     ASSERT_FALSE(have_write_win32);
 #endif
 
