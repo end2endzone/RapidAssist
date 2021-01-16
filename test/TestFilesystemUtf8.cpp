@@ -251,7 +251,9 @@ namespace ra { namespace filesystem { namespace test
 #ifdef _WIN32
       dir_path = ra::environment::GetEnvironmentVariable("windir");
       if (!ra::filesystem::DirectoryExists(dir_path.c_str()))
+      {
         dir_path = "C:\\Windows";
+      }
 #else
       dir_path = "/proc"; //permission denied file directory
 #endif
