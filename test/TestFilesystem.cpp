@@ -1216,19 +1216,19 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_FALSE(result);
     }
 
-    //test read access
+    //test for read access
     {
       std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::CreateFile(path.c_str()));
 
-      bool hasRead = filesystem::HasFileReadAccess(path.c_str());
-      ASSERT_TRUE(hasRead);
+      bool has_read = filesystem::HasFileReadAccess(path.c_str());
+      ASSERT_TRUE(has_read);
 
       //cleanup
       filesystem::DeleteFile(path.c_str());
     }
 
-    //test no read access
+    //test read access denied
     {
 #ifdef _WIN32
       //not supported. Cannot find a file that exists but cannot be read.
@@ -1250,7 +1250,7 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_FALSE(result);
     }
 
-    //test write access
+    //test for write access
     {
       std::string path = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
       ASSERT_TRUE(ra::testing::CreateFile(path.c_str()));
@@ -1262,7 +1262,7 @@ namespace ra { namespace filesystem { namespace test
       filesystem::DeleteFile(path.c_str());
     }
 
-    //test no write access
+    //test write access denied
     {
       std::string path;
 #ifdef _WIN32
@@ -1275,6 +1275,55 @@ namespace ra { namespace filesystem { namespace test
 #endif
       ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasFileWriteAccess().";
       bool has_write = filesystem::HasFileWriteAccess(path.c_str());
+      ASSERT_FALSE(has_write);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasDirectoryReadAccess) {
+    //test NULL
+    {
+      bool result = filesystem::HasDirectoryReadAccess(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test for read access
+    {
+      std::string curr_dir = ra::filesystem::GetCurrentDirectory();
+      bool has_read = filesystem::HasDirectoryReadAccess(curr_dir.c_str());
+      ASSERT_TRUE(has_read);
+    }
+
+    //No test for read denied access
+    //Not supported. Cannot find a directory that exists but cannot be read.
+
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasDirectoryWriteAccess) {
+    //test NULL
+    {
+      bool result = filesystem::HasDirectoryWriteAccess(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test for write access
+    {
+      std::string temp_dir = ra::filesystem::GetTemporaryDirectory();
+      bool has_write = filesystem::HasDirectoryWriteAccess(temp_dir.c_str());
+      ASSERT_TRUE(has_write);
+    }
+
+    //test write access denied
+    {
+      std::string dir_path;
+#ifdef _WIN32
+      dir_path = ra::environment::GetEnvironmentVariable("windir");
+      if (!ra::filesystem::DirectoryExists(dir_path.c_str()))
+        dir_path = "C:\\Windows";
+#else
+      dir_path = "/proc"; //permission denied file directory
+#endif
+      ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccess().";
+      bool has_write = filesystem::HasDirectoryWriteAccess(dir_path.c_str());
       ASSERT_FALSE(has_write);
     }
   }

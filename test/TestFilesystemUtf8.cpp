@@ -167,7 +167,7 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestFilesystemUtf8, testHasReadWriteAccessUtf8) {
+  TEST_F(TestFilesystemUtf8, testHasFileReadWriteAccessUtf8) {
     std::string filename = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.txt";
 
     uint32_t file_length = 365;
@@ -176,14 +176,14 @@ namespace ra { namespace filesystem { namespace test
     bool file_write = ra::filesystem::WriteTextFileUtf8(filename, content);
     ASSERT_TRUE(file_write);
 
-    bool have_read = ra::filesystem::HasReadAccessUtf8(filename.c_str());
+    bool have_read = ra::filesystem::HasFileReadAccessUtf8(filename.c_str());
     ASSERT_TRUE(have_read);
 
-    bool have_write = ra::filesystem::HasWriteAccessUtf8(filename.c_str());
+    bool have_write = ra::filesystem::HasFileWriteAccessUtf8(filename.c_str());
     ASSERT_TRUE(have_write);
 
 #ifdef _WIN32
-    //On Windows, the HasReadAccessUtf8() and HasWriteAccessUtf8() should not be working
+    //On Windows, the non-utf8 functions HasReadAccess() and HasWriteAccess() should not be working
     bool have_read_win32 = ra::filesystem::HasFileReadAccess(filename.c_str());
     ASSERT_FALSE(have_read_win32);
     bool have_write_win32 = ra::filesystem::HasFileWriteAccess(filename.c_str());
@@ -192,6 +192,73 @@ namespace ra { namespace filesystem { namespace test
 
     //cleanup
     ra::filesystem::DeleteFileUtf8(filename.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testHasDirectoryReadAccessUtf8) {
+    //test NULL
+    {
+      bool result = filesystem::HasDirectoryReadAccessUtf8(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test for read access
+    {
+      std::string temp_dir = ra::filesystem::GetTemporaryDirectoryUtf8();
+
+      static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+      std::string new_path = temp_dir + separator + ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi";
+      bool created = ra::filesystem::CreateDirectoryUtf8(new_path.c_str());
+      ASSERT_TRUE(created);
+
+      bool has_read = filesystem::HasDirectoryReadAccessUtf8(new_path.c_str());
+      ASSERT_TRUE(has_read);
+
+      //cleanup
+      bool deleted = ra::filesystem::DeleteDirectoryUtf8(new_path.c_str());
+    }
+
+    //No test for read denied access
+    //Not supported. Cannot find a directory that exists but cannot be read.
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testHasDirectoryWriteAccessUtf8) {
+    //test NULL
+    {
+      bool result = filesystem::HasDirectoryWriteAccess(NULL);
+      ASSERT_FALSE(result);
+    }
+
+    //test for write access
+    {
+      std::string temp_dir = ra::filesystem::GetTemporaryDirectoryUtf8();
+      bool has_write = filesystem::HasDirectoryWriteAccessUtf8(temp_dir.c_str());
+
+      static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+      std::string new_path = temp_dir + separator + ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi";
+      bool created = ra::filesystem::CreateDirectoryUtf8(new_path.c_str());
+      ASSERT_TRUE(created);
+
+      has_write = filesystem::HasDirectoryWriteAccessUtf8(new_path.c_str());
+      ASSERT_TRUE(has_write);
+
+      //cleanup
+      bool deleted = ra::filesystem::DeleteDirectoryUtf8(new_path.c_str());
+    }
+
+    //test write access denied
+    {
+      std::string dir_path;
+#ifdef _WIN32
+      dir_path = ra::environment::GetEnvironmentVariable("windir");
+      if (!ra::filesystem::DirectoryExists(dir_path.c_str()))
+        dir_path = "C:\\Windows";
+#else
+      dir_path = "/proc"; //permission denied file directory
+#endif
+      ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccessUtf8().";
+      bool has_write = filesystem::HasDirectoryWriteAccessUtf8(dir_path.c_str());
+      ASSERT_FALSE(has_write);
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, testFindFilesUtf8) {

@@ -107,7 +107,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasReadAccessUtf8(const char * iPath) {
+  bool HasFileReadAccessUtf8(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -121,7 +121,7 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasWriteAccessUtf8(const char * iPath) {
+  bool HasFileWriteAccessUtf8(const char * iPath) {
     if (iPath == NULL || iPath[0] == '\0')
       return false;
 
@@ -133,6 +133,45 @@ namespace ra { namespace filesystem {
         return true;
     }
     return false;
+  }
+
+  bool HasDirectoryReadAccessUtf8(const char * path)
+  {
+    //Check if the directory already exists
+    if (!ra::filesystem::DirectoryExistsUtf8(path))
+        return false; //Directory not found. Denied read access.
+
+    //Search for files in directory (not recursive)
+    ra::strings::StringVector files;
+    bool success = ra::filesystem::FindFilesUtf8(files, path, 0);
+    if (!success)
+      return false;
+
+    return true;
+  }
+
+  bool HasDirectoryWriteAccessUtf8(const char * path)
+  {
+    //Check if the directory already exists
+    if (!ra::filesystem::DirectoryExistsUtf8(path))
+        return false; //Directory not found. Denied write access.
+
+    //Generate a random filename to use as a "temporary file".
+    std::string filename = ra::filesystem::GetTemporaryFileName();
+
+    //Try to create a file. This will validate that we have write access to the directory.
+    std::string file_path = std::string(path) + ra::filesystem::GetPathSeparatorStr() + filename;
+    static const std::string data = __FUNCTION__;
+    bool file_created = ra::filesystem::WriteFileUtf8(file_path, data);
+    if (!file_created)
+      return false; //Write is denied
+
+    //Write is granted
+
+    //Cleaning up
+    bool deleted = ra::filesystem::DeleteFileUtf8(file_path.c_str());
+
+    return true;
   }
 
   //declared in filesystem.cpp
