@@ -370,7 +370,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasDirectoryReadAccessUtf8(const char * path) { return HasDirectoryReadAccess(iPath); }
+  inline bool HasDirectoryReadAccessUtf8(const char * path) { return HasDirectoryReadAccess(path); }
 
   /// <summary>
   /// Determine if the current process has write access to a given directory.
@@ -382,7 +382,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasDirectoryWriteAccessUtf8(const char * path) { return HasDirectoryWriteAccess(iPath); }
+  inline bool HasDirectoryWriteAccessUtf8(const char * path) { return HasDirectoryWriteAccess(path); }
 
   /// <summary>
   /// DEPRECATED. Use HasFileReadAccessUtf8() instead.
