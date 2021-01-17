@@ -35,6 +35,13 @@ jobs:
       run: |
         set
 
+    - name: Find permissions of files and directories in C:\
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
+      run: |
+        call ci\github\install_sysinternals.bat
+        ci\github\bin\accesschk64.exe -d -nobanner /accepteula "%USERNAME%" c:\*.*
+
     - name: Install Google Test
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd

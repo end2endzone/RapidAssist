@@ -31,6 +31,7 @@
 
 #include "rapidassist/config.h"
 #include "rapidassist/strings.h"
+#include "rapidassist/macros.h"
 
 namespace ra { namespace filesystem {
 
@@ -90,14 +91,45 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  bool HasReadAccess(const char * iPath);
+  bool HasFileReadAccess(const char * iPath);
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
   /// </summary>
   /// <param name="iPath">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  bool HasWriteAccess(const char * iPath);
+  bool HasFileWriteAccess(const char * iPath);
+
+  /// <summary>
+  /// Determine if the current process has read access to a given directory.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
+  bool HasDirectoryReadAccess(const char * path);
+
+  /// <summary>
+  /// Determine if the current process has write access to a given directory.
+  /// Note: the only way to detect if write access is available is to actually write a file.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
+  bool HasDirectoryWriteAccess(const char * path);
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileReadAccess() instead.
+  /// Determine if the current process has read access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasReadAccess(const char * iPath) { return HasFileReadAccess(iPath); }
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileWriteAccess() instead.
+  /// Determine if the current process has write access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasWriteAccess(const char * iPath) { return HasFileWriteAccess(iPath); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.

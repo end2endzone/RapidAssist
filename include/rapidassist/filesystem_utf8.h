@@ -32,6 +32,7 @@
 #include "rapidassist/config.h"
 #include "rapidassist/strings.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/macros.h"
 
 namespace ra { namespace filesystem {
 
@@ -63,14 +64,45 @@ namespace ra { namespace filesystem {
   /// </summary>
   /// <param name="iPath">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  bool HasReadAccessUtf8(const char * iPath);
+  bool HasFileReadAccessUtf8(const char * iPath);
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
   /// </summary>
   /// <param name="iPath">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  bool HasWriteAccessUtf8(const char * iPath);
+  bool HasFileWriteAccessUtf8(const char * iPath);
+
+  /// <summary>
+  /// Determine if the current process has read access to a given directory.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
+  bool HasDirectoryReadAccessUtf8(const char * path);
+
+  /// <summary>
+  /// Determine if the current process has write access to a given directory.
+  /// Note: the only way to detect if write access is available is to actually write a file.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
+  bool HasDirectoryWriteAccessUtf8(const char * path);
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileReadAccessUtf8() instead.
+  /// Determine if the current process has read access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasReadAccessUtf8(const char * iPath) { return HasFileReadAccessUtf8(iPath); }
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileWriteAccessUtf8() instead.
+  /// Determine if the current process has write access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasWriteAccessUtf8(const char * iPath) { return HasFileWriteAccessUtf8(iPath); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
@@ -316,7 +348,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasReadAccessUtf8(const char * iPath) { return HasReadAccess(iPath); }
+  inline bool HasFileReadAccessUtf8(const char * iPath) { return HasFileReadAccess(iPath); }
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
@@ -327,7 +359,46 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasWriteAccessUtf8(const char * iPath) { return HasWriteAccess(iPath); }
+  inline bool HasFileWriteAccessUtf8(const char * iPath) { return HasFileWriteAccess(iPath); }
+
+  /// <summary>
+  /// Determine if the current process has read access to a given directory.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
+  /// <remarks>
+  /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
+  /// It provides cross-platform compatibility for Windows users.
+  /// </remarks>
+  inline bool HasDirectoryReadAccessUtf8(const char * path) { return HasDirectoryReadAccess(path); }
+
+  /// <summary>
+  /// Determine if the current process has write access to a given directory.
+  /// Note: the only way to detect if write access is available is to actually write a file.
+  /// </summary>
+  /// <param name="iPath">A valid directory path.</param>
+  /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
+  /// <remarks>
+  /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
+  /// It provides cross-platform compatibility for Windows users.
+  /// </remarks>
+  inline bool HasDirectoryWriteAccessUtf8(const char * path) { return HasDirectoryWriteAccess(path); }
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileReadAccessUtf8() instead.
+  /// Determine if the current process has read access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasReadAccessUtf8(const char * iPath) { return HasFileReadAccessUtf8(iPath); }
+
+  /// <summary>
+  /// DEPRECATED. Use HasFileWriteAccessUtf8() instead.
+  /// Determine if the current process has write access to a given file.
+  /// </summary>
+  /// <param name="iPath">A valid file path.</param>
+  /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
+  DEPRECATED inline bool HasWriteAccessUtf8(const char * iPath) { return HasFileWriteAccessUtf8(iPath); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.

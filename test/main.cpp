@@ -247,6 +247,22 @@ int main(int argc, char **argv) {
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
 
+  //Disable TestFilesystem.testHasDirectoryWriteAccess and TestFilesystemUtf8.testHasDirectoryWriteAccessUtf8 on Github Actions, Windows platform.
+  //Running user has read and write access to all directories in C:\, including the following directories:
+  //  c:\MSOCache
+  //  c:\PerfLogs
+  //  c:\Recovery
+  //  c:\System Volume Information
+  //which are normally read denied on a "normal" Windows 7 os.
+  if (ra::testing::IsGitHubActions()) {
+    std::string basefilter = ::testing::GTEST_FLAG(filter);
+
+    printf("*** Disabling TestFilesystem.testHasDirectoryWriteAccess and TestFilesystemUtf8.testHasDirectoryWriteAccessUtf8 unit test ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "*testHasDirectoryWriteAccess*", basefilter.c_str());
+
+    ::testing::GTEST_FLAG(filter) = newFilter;
+  }
+
   int wResult = RUN_ALL_TESTS(); //Find and run all tests
   return wResult; // returns 0 if all the tests are successful, or 1 otherwise
 }
