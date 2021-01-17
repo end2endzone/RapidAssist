@@ -771,7 +771,7 @@ namespace ra { namespace filesystem {
 
     std::string friendly_size;
 
-    //Convert iSize to a formatted_size
+    //Convert size to a formatted_size
     double formatted_size = 0.0;
     switch (iUnit) {
     case BYTES:

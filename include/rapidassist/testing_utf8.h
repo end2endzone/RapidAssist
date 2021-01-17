@@ -71,9 +71,9 @@ namespace ra { namespace testing {
   /// Creates a file of the given size. All bytes are sequential.
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
-  /// <param name="iSize">The size in bytes of the file.</param>
+  /// <param name="size">The size in bytes of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  bool CreateFileUtf8(const char * iFilePath, size_t iSize);
+  bool CreateFileUtf8(const char * iFilePath, size_t size);
 
   /// <summary>
   /// Creates text file.
@@ -90,9 +90,9 @@ namespace ra { namespace testing {
   /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
   /// </remarks>
   /// <param name="iFilePath">The path of the file.</param>
-  /// <param name="iSize">The size of the file, in bytes.</param>
+  /// <param name="size">The size of the file, in bytes.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize);
+  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t size);
 
   /// <summary>
   /// Modify a given byte with the specified value.
@@ -156,9 +156,9 @@ namespace ra { namespace testing {
   /// Creates a file of the given size. All bytes are sequential.
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
-  /// <param name="iSize">The size in bytes of the file.</param>
+  /// <param name="size">The size in bytes of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  inline bool CreateFileUtf8(const char * iFilePath, size_t iSize) { return CreateFile(iFilePath, iSize); }
+  inline bool CreateFileUtf8(const char * iFilePath, size_t size) { return CreateFile(iFilePath, size); }
 
   /// <summary>
   /// Creates text file.
@@ -175,9 +175,9 @@ namespace ra { namespace testing {
   /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
   /// </remarks>
   /// <param name="iFilePath">The path of the file.</param>
-  /// <param name="iSize">The size of the file, in bytes.</param>
+  /// <param name="size">The size of the file, in bytes.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  inline bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize) { return CreateFileSparse(iFilePath, iSize); }
+  inline bool CreateFileSparseUtf8(const char * iFilePath, uint64_t size) { return CreateFileSparse(iFilePath, size); }
 
   /// <summary>
   /// Modify a given byte with the specified value.

@@ -193,8 +193,8 @@ namespace ra { namespace strings {
   /// <summary>
   /// Removes occurance of unix/windows LF, CR or CRLF into the given string.
   /// </summary>
-  /// <param name="iBuffer">The given buffer to modify.</param>
-  void RemoveEol(char * iBuffer);
+  /// <param name="buffer">The given buffer to modify.</param>
+  void RemoveEol(char * buffer);
 
   /// <summary>
   /// Splits an input string into multiple string based on the given splitting character.

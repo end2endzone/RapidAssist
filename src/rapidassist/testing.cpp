@@ -419,12 +419,12 @@ namespace ra { namespace testing {
     return success;
   }
 
-  bool CreateFile(const char * iFilePath, size_t iSize) {
+  bool CreateFile(const char * iFilePath, size_t size) {
     FILE * f = fopen(iFilePath, "wb");
     if (!f)
       return false;
 
-    for (size_t i = 0; i < iSize; i++) {
+    for (size_t i = 0; i < size; i++) {
       unsigned int value = (i % 256);
       fwrite(&value, 1, 1, f);
     }
@@ -444,12 +444,12 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFileSparse(const char * iFilePath, uint64_t iSize) {
+  bool CreateFileSparse(const char * iFilePath, uint64_t size) {
 #ifdef _WIN32
     //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
 
     LARGE_INTEGER large_integer;
-    large_integer.QuadPart = iSize;
+    large_integer.QuadPart = size;
 
     HANDLE hFile = ::CreateFileA(iFilePath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
     if (hFile == INVALID_HANDLE_VALUE)
@@ -489,7 +489,7 @@ namespace ra { namespace testing {
     //Prepare command arguments
     ra::strings::StringVector arguments;
     arguments.push_back("-l");
-    arguments.push_back(ra::strings::ToString(iSize));
+    arguments.push_back(ra::strings::ToString(size));
     arguments.push_back(iFilePath);
 
     //Run the new executable

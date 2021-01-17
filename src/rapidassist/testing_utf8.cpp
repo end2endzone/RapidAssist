@@ -131,13 +131,13 @@ namespace ra { namespace testing {
     return false;
   }
 
-  bool CreateFileUtf8(const char * iFilePath, size_t iSize) {
+  bool CreateFileUtf8(const char * iFilePath, size_t size) {
     std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
     FILE * f = _wfopen(pathW.c_str(), L"wb");
     if (!f)
       return false;
 
-    for (size_t i = 0; i < iSize; i++) {
+    for (size_t i = 0; i < size; i++) {
       unsigned int value = (i % 256);
       fwrite(&value, 1, 1, f);
     }
@@ -158,13 +158,13 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t iSize) {
+  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t size) {
     //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
 
     std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
 
     LARGE_INTEGER large_integer;
-    large_integer.QuadPart = iSize;
+    large_integer.QuadPart = size;
 
     HANDLE hFile = ::CreateFileW(pathW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
     if (hFile == INVALID_HANDLE_VALUE)

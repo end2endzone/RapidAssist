@@ -94,10 +94,10 @@ namespace ra { namespace code { namespace cpp {
   /// Other characters are printed using their octal representation.
   /// </summary>
   /// <remarks>For a shorter string literal, see other ToOctString() API with iDisableWarningC4125 set to false.</remarks>
-  /// <param name="iBuffer">The input buffer to convert</param>
-  /// <param name="iSize">The size in bytes of the given buffer</param>
+  /// <param name="buffer">The input buffer to convert</param>
+  /// <param name="size">The size in bytes of the given buffer</param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string ToOctString(const unsigned char * iBuffer, size_t iSize);
+  std::string ToOctString(const unsigned char * buffer, size_t size);
 
   /// <summary>
   /// Converts the given buffer to a c++ string literals.
@@ -105,15 +105,15 @@ namespace ra { namespace code { namespace cpp {
   /// Characters that matches a known escaped sequence are properly escaped.
   /// Other characters are printed using their octal representation.
   /// </summary>
-  /// <param name="iBuffer">The input buffer to convert</param>
-  /// <param name="iSize">The size in bytes of the given buffer</param>
+  /// <param name="buffer">The input buffer to convert</param>
+  /// <param name="size">The size in bytes of the given buffer</param>
   /// <param name="iDisableWarningC4125">
   /// Disable generation of code which could generate compilation warning C4125 (decimal digit terminates octal escape sequence)
   /// The following string would generate warning C4125: const char * buffer = "foo\12345bar";
   /// Allowing C4125 warning result in a shorter string literal.
   /// </param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string ToOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125);
+  std::string ToOctString(const unsigned char * buffer, size_t size, bool iDisableWarningC4125);
 
   /// <summary>
   /// Converts the given buffer to a c++ string literals.
@@ -121,20 +121,20 @@ namespace ra { namespace code { namespace cpp {
   /// Characters that matches a known escaped sequence are properly escaped.
   /// Other characters are printed using their hexadecimal representation.
   /// </summary>
-  /// <param name="iBuffer">The input buffer to convert</param>
-  /// <param name="iSize">The size in bytes of the given buffer</param>
+  /// <param name="buffer">The input buffer to convert</param>
+  /// <param name="size">The size in bytes of the given buffer</param>
   /// <returns>Returns the string literals of the given buffer</returns>
-  std::string ToHexString(const unsigned char * iBuffer, size_t iSize);
+  std::string ToHexString(const unsigned char * buffer, size_t size);
 
   /// <summary>
   /// Converts the given buffer to an array of characters.
   /// All printable characters are printed in the array as characters (ie 'a').
   /// Other characters are printed using their hexadecimal representation.
   /// </summary>
-  /// <param name="iBuffer">The input buffer to convert</param>
-  /// <param name="iSize">The size in bytes of the given buffer</param>
+  /// <param name="buffer">The input buffer to convert</param>
+  /// <param name="size">The size in bytes of the given buffer</param>
   /// <returns>Returns a string representating an array of bytes which matches the given buffer</returns>
-  std::string ToCppCharactersArray(const unsigned char * iBuffer, size_t iSize);
+  std::string ToCppCharactersArray(const unsigned char * buffer, size_t size);
 
 } //namespace cpp
 } //namespace code

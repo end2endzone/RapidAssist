@@ -34,7 +34,7 @@ namespace ra { namespace filesystem { namespace test
 {
 
 #ifdef __linux__
-  extern bool Truncate(const char * iFilePath, uint64_t iSize);
+  extern bool Truncate(const char * iFilePath, uint64_t size);
 #endif
 
   //--------------------------------------------------------------------------------------------------

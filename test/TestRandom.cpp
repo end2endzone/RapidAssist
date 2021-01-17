@@ -44,8 +44,8 @@ namespace ra { namespace random { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  bool isAllTrue(bool * iArray, size_t iSize) {
-    for (size_t i = 0; i < iSize; i++) {
+  bool isAllTrue(bool * iArray, size_t size) {
+    for (size_t i = 0; i < size; i++) {
       if (iArray[i] == false)
         return false;
     }

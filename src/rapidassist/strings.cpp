@@ -423,20 +423,20 @@ namespace ra { namespace strings {
     return copy;
   }
 
-  void RemoveEol(char * iBuffer) {
-    if (iBuffer == NULL)
+  void RemoveEol(char * buffer) {
+    if (buffer == NULL)
       return;
 
     int index = 0;
-    while (iBuffer[index] != '\0') {
-      if (iBuffer[index] == '\n' && iBuffer[index + 1] == '\r' && iBuffer[index + 2] == '\0') //Windows
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\r' && iBuffer[index + 1] == '\n' && iBuffer[index + 2] == '\0') //Windows
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\n' && iBuffer[index + 1] == '\0') // UNIX
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\r' && iBuffer[index + 1] == '\0') // OLD MAC
-        iBuffer[index] = '\0';
+    while (buffer[index] != '\0') {
+      if (buffer[index] == '\n' && buffer[index + 1] == '\r' && buffer[index + 2] == '\0') //Windows
+        buffer[index] = '\0';
+      else if (buffer[index] == '\r' && buffer[index + 1] == '\n' && buffer[index + 2] == '\0') //Windows
+        buffer[index] = '\0';
+      else if (buffer[index] == '\n' && buffer[index + 1] == '\0') // UNIX
+        buffer[index] = '\0';
+      else if (buffer[index] == '\r' && buffer[index + 1] == '\0') // OLD MAC
+        buffer[index] = '\0';
 
       index++;
     }

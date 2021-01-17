@@ -103,7 +103,7 @@ namespace ra { namespace filesystem { namespace test
   }
 
 #ifdef __linux__
-  bool Truncate(const char * iFilePath, uint64_t iSize) {
+  bool Truncate(const char * iFilePath, uint64_t size) {
     //truncate -s 10737418240 10Gigfile.img
     
     std::string truncate_path = ra::filesystem::FindFileFromPaths("truncate");
@@ -115,7 +115,7 @@ namespace ra { namespace filesystem { namespace test
     //Prepare command arguments
     ra::strings::StringVector arguments;
     arguments.push_back("-s");
-    arguments.push_back(ra::strings::ToString(iSize));
+    arguments.push_back(ra::strings::ToString(size));
     arguments.push_back(iFilePath);
 
     //Run the new executable
