@@ -2,3 +2,5 @@
 /install
 /third_parties
 /client/build
+/ci/github/bin
+/ci/github/SysinternalsSuite.zip
