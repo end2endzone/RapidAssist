@@ -106,7 +106,7 @@ namespace ra { namespace testing {
     return result;
   }
 
-  bool FindInFileUtf8(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) {
+  bool FindInFileUtf8(const char* iFilename, const char* value, int & oLine, int & oCharacter) {
     if (!ra::filesystem::FileExistsUtf8(iFilename))
       return false;
 
@@ -120,7 +120,7 @@ namespace ra { namespace testing {
 
     for (size_t i = 0; i < lines.size(); i++) {
       const std::string & line = lines[i];
-      size_t position = line.find(iValue, 0);
+      size_t position = line.find(value, 0);
       if (position != std::string::npos) {
         oLine = (int)i;
         oCharacter = (int)position;
@@ -184,7 +184,7 @@ namespace ra { namespace testing {
     return true;
   }
 
-  void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue) {
+  void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char value) {
     //read
     std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
     FILE * f = _wfopen(pathW.c_str(), L"rb");
@@ -200,7 +200,7 @@ namespace ra { namespace testing {
 
     //modify
     if (iOffset < (size_t)size)
-      buffer[iOffset] = iValue;
+      buffer[iOffset] = value;
 
     //save
     f = _wfopen(pathW.c_str(), L"wb");

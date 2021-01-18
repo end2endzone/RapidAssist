@@ -43,57 +43,57 @@
 
 namespace ra { namespace environment {
 
-  std::string GetEnvironmentVariable(const char * iName) {
-    if (iName == NULL)
+  std::string GetEnvironmentVariable(const char * name) {
+    if (name == NULL)
       return std::string();
-    const char * value = getenv(iName);
+    const char * value = getenv(name);
     if (value == NULL)
       return std::string();
     return std::string(value);
   }
 
-  bool SetEnvironmentVariable(const char * iName, const char * iValue) {
+  bool SetEnvironmentVariable(const char * name, const char * value) {
     //validate invalid inputs
-    if (iName == NULL || strlen(iName) == 0) {
+    if (name == NULL || strlen(name) == 0) {
       return false;
     }
 
 #ifdef _WIN32
     std::string command;
-    command.append(iName);
+    command.append(name);
     command.append("=");
-    if (iValue) {
-      command.append(iValue);
+    if (value) {
+      command.append(value);
     }
     int result = _putenv(command.c_str());
 #elif __linux__
     int result = -1; //failure
-    bool erase = (iValue == NULL || strlen(iValue) == 0);
+    bool erase = (value == NULL || strlen(value) == 0);
     if (erase)
-      result = unsetenv(iName);
+      result = unsetenv(name);
     else
-      result = setenv(iName, iValue, 1); //overwrite existing
+      result = setenv(name, value, 1); //overwrite existing
 #endif
 
     bool success = (result == 0);
     return success;
   }
 
-  bool SetEnvironmentVariable(const char * iName, const   int8_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const  uint8_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const  int16_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const uint16_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const  int32_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const uint32_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const  int64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const uint64_t & iValue) { std::string tmp; tmp << iValue; return SetEnvironmentVariable(iName, tmp.c_str()); }
-  bool SetEnvironmentVariable(const char * iName, const    float & iValue) {
-    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
-    return SetEnvironmentVariable(iName, tmp.c_str());
+  bool SetEnvironmentVariable(const char * name, const   int8_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const  uint8_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const  int16_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const uint16_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const  int32_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const uint32_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const  int64_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const uint64_t & value) { std::string tmp; tmp << value; return SetEnvironmentVariable(name, tmp.c_str()); }
+  bool SetEnvironmentVariable(const char * name, const    float & value) {
+    const std::string & tmp = ra::strings::ToStringLossy(value, ra::strings::FLOAT_TOSTRING_LOSSY_EPSILON);
+    return SetEnvironmentVariable(name, tmp.c_str());
   }
-  bool SetEnvironmentVariable(const char * iName, const   double & iValue) {
-    const std::string & tmp = ra::strings::ToStringLossy(iValue, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
-    return SetEnvironmentVariable(iName, tmp.c_str());
+  bool SetEnvironmentVariable(const char * name, const   double & value) {
+    const std::string & tmp = ra::strings::ToStringLossy(value, ra::strings::DOUBLE_TOSTRING_LOSSY_EPSILON);
+    return SetEnvironmentVariable(name, tmp.c_str());
   }
 
   bool IsProcess32Bit() {
@@ -193,8 +193,8 @@ namespace ra { namespace environment {
     return vars;
   }
   
-  std::string Expand(const std::string & iValue) {
-    std::string output = iValue;
+  std::string Expand(const std::string & value) {
+    std::string output = value;
 
     ra::strings::StringVector variables = GetEnvironmentVariables();
     for (size_t i = 0; i < variables.size(); i++) {

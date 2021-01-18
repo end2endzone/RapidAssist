@@ -52,8 +52,8 @@ namespace ra { namespace strings {
   }
 
   template <class T>
-  inline void parseT(const std::string & iValue, T & t) {
-    std::istringstream input_stream(iValue);
+  inline void parseT(const std::string & value, T & t) {
+    std::istringstream input_stream(value);
     input_stream >> t;
   }
 
@@ -177,22 +177,22 @@ namespace ra { namespace strings {
   }
 
   template<>
-  inline void parseT<unsigned char>(const std::string & iValue, unsigned char & t) {
-    std::istringstream input_stream(iValue);
+  inline void parseT<unsigned char>(const std::string & value, unsigned char & t) {
+    std::istringstream input_stream(value);
     uint16_t tmp = 0;
     input_stream >> tmp;
     t = (unsigned char)tmp;
   }
   template<>
-  inline void parseT<char>(const std::string & iValue, char & t) {
-    std::istringstream input_stream(iValue);
+  inline void parseT<char>(const std::string & value, char & t) {
+    std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
     t = (char)tmp;
   }
   template<>
-  inline void parseT<int8_t>(const std::string & iValue, int8_t & t) {
-    std::istringstream input_stream(iValue);
+  inline void parseT<int8_t>(const std::string & value, int8_t & t) {
+    std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
     t = (char)tmp;
@@ -231,14 +231,14 @@ namespace ra { namespace strings {
     return buffer;
   }
 
-  bool IsNumeric(const char * iValue) {
-    if (iValue == NULL)
+  bool IsNumeric(const char * value) {
+    if (value == NULL)
       return false;
 
     bool found_dot = false;
-    size_t length = strlen(iValue);
+    size_t length = strlen(value);
     for (size_t offset = 0; offset < length; offset++) {
-      const char & c = iValue[offset];
+      const char & c = value[offset];
       if (c >= '0' && c <= '9')
         continue; //valid
       if (c == '.' && !found_dot) {
@@ -399,24 +399,24 @@ namespace ra { namespace strings {
     return false;
   }
 
-  std::string CapitalizeFirstCharacter(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string CapitalizeFirstCharacter(const std::string & value) {
+    std::string copy = value;
     if (!copy.empty()) {
       copy[0] = (char)toupper(copy[0]);
     }
     return copy;
   }
 
-  std::string Uppercase(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string Uppercase(const std::string & value) {
+    std::string copy = value;
     for (size_t i = 0; i < copy.size(); i++) {
       copy[i] = (char)toupper(copy[i]);
     }
     return copy;
   }
 
-  std::string Lowercase(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string Lowercase(const std::string & value) {
+    std::string copy = value;
     for (size_t i = 0; i < copy.size(); i++) {
       copy[i] = (char)tolower(copy[i]);
     }

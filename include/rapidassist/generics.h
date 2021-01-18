@@ -330,16 +330,16 @@ namespace ra { namespace generics {
   /// <summary>
   /// Finds all indice of the given value within an array of values.
   /// </summary>
-  /// <param name="iValue">The value to search within the array.</param>
+  /// <param name="value">The value to search within the array.</param>
   /// <param name="iArray">The array to search into.</param>
   /// <param name="size">The number of elements in the array.</param>
   /// <returns>Returns list of index where the searched value was found in the given array. Returns an empty list if the value is not found.</returns>
-  template <typename T> inline std::vector<size_t> FindIndexOf(const T & iValue, const T * iArray, const size_t & size) {
+  template <typename T> inline std::vector<size_t> FindIndexOf(const T & value, const T * iArray, const size_t & size) {
     std::vector<size_t> matches;
 
     for (size_t i = 0; i < size; i++) {
       const T & item = iArray[i];
-      if (item == iValue) {
+      if (item == value) {
         matches.push_back(i);
       }
     }
@@ -350,14 +350,14 @@ namespace ra { namespace generics {
   /// <summary>
   /// Finds the first occurange of a value within an array of values.
   /// </summary>
-  /// <param name="iValue">The value to search within the array.</param>
+  /// <param name="value">The value to search within the array.</param>
   /// <param name="iArray">The array to search into.</param>
   /// <param name="size">The number of elements in the array.</param>
   /// <returns>Returns the index where the values as found in the array. Returns ra::generics::INVALID_INDEX if the value is not found.</returns>
-  template <typename T> inline size_t FindFirst(const T & iValue, const T * iArray, const size_t & size) {
+  template <typename T> inline size_t FindFirst(const T & value, const T * iArray, const size_t & size) {
     for (size_t i = 0; i < size; i++) {
       const T & item = iArray[i];
-      if (item == iValue) {
+      if (item == value) {
         return i;
       }
     }

@@ -61,11 +61,11 @@ namespace ra { namespace testing {
   /// Returns true if the given text is found in a file.
   /// </summary>
   /// <param name="iFilename">The path of the search file.</param>
-  /// <param name="iValue">The search value.</param>
-  /// <param name="oLine">The line number where iValue is found.</param>
+  /// <param name="value">The search value.</param>
+  /// <param name="oLine">The line number where value is found.</param>
   /// <param name="oCharacter">The character offset within the line.</param>
   /// <returns>Returns true if the given text is found in a file. Returns false otherwise.</returns>
-  bool FindInFileUtf8(const char* iFilename, const char* iValue, int & oLine, int & oCharacter);
+  bool FindInFileUtf8(const char* iFilename, const char* value, int & oLine, int & oCharacter);
 
   /// <summary>
   /// Creates a file of the given size. All bytes are sequential.
@@ -99,8 +99,8 @@ namespace ra { namespace testing {
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
   /// <param name="iOffset">The offset of the modified byte.</param>
-  /// <param name="iValue">The value of the replacement.</param>
-  void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue);
+  /// <param name="value">The value of the replacement.</param>
+  void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char value);
 
   /// <summary>
   /// Copy the file of the current process to another file.
@@ -146,11 +146,11 @@ namespace ra { namespace testing {
   /// Returns true if the given text is found in a file.
   /// </summary>
   /// <param name="iFilename">The path of the search file.</param>
-  /// <param name="iValue">The search value.</param>
-  /// <param name="oLine">The line number where iValue is found.</param>
+  /// <param name="value">The search value.</param>
+  /// <param name="oLine">The line number where value is found.</param>
   /// <param name="oCharacter">The character offset within the line.</param>
   /// <returns>Returns true if the given text is found in a file. Returns false otherwise.</returns>
-  inline bool FindInFileUtf8(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) { return FindInFile(iFilename, iValue, oLine, oCharacter); }
+  inline bool FindInFileUtf8(const char* iFilename, const char* value, int & oLine, int & oCharacter) { return FindInFile(iFilename, value, oLine, oCharacter); }
 
   /// <summary>
   /// Creates a file of the given size. All bytes are sequential.
@@ -184,8 +184,8 @@ namespace ra { namespace testing {
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
   /// <param name="iOffset">The offset of the modified byte.</param>
-  /// <param name="iValue">The value of the replacement.</param>
-  inline void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char iValue) { ChangeFileContent(iFilePath, iOffset, iValue); }
+  /// <param name="value">The value of the replacement.</param>
+  inline void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char value) { ChangeFileContent(iFilePath, iOffset, value); }
 
   /// <summary>
   /// Copy the file of the current process to another file.

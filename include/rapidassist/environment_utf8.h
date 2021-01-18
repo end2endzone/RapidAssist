@@ -37,18 +37,18 @@ namespace ra { namespace environment {
   /// <summary>
   /// Returns the current value of an environment variable.
   /// </summary>
-  /// <param name="iName">Name of the variable</param>
+  /// <param name="name">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
-  std::string GetEnvironmentVariableUtf8(const char * iName);
+  std::string GetEnvironmentVariableUtf8(const char * name);
 
   /// <summary>
   /// Sets a new utf-8 encoded value for the given environment variable.
   /// </summary>
   /// <remarks>Use SetEnvironmentVariableUtf8(name, NULL) for deleting an existing variable.</remarks>
-  /// <param name="iName">Name of the variable</param>
-  /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
+  /// <param name="name">Name of the variable</param>
+  /// <param name="value">New value of the variable. Use NULL for deleting a variable.</param>
   /// <returns>Returns true when successful. Returns false otherwise.</returns>
-  bool SetEnvironmentVariableUtf8(const char * iName, const   char *   iValue);
+  bool SetEnvironmentVariableUtf8(const char * name, const   char *   value);
 
   /// <summary>
   /// Returns the list of all environment variables defined by the current process.
@@ -61,29 +61,29 @@ namespace ra { namespace environment {
   /// Unix    environment variables syntax must in the following form:  $name where  'name' is an environment variable.
   /// Windows environment variables syntax must in the following form:  %name% where 'name' is an environment variable.
   /// </summary>
-  /// <param name="iValue">The path that must be expanded.</param>
+  /// <param name="value">The path that must be expanded.</param>
   /// <returns>Returns a new string with the expanded strings.</returns>
-  std::string ExpandUtf8(const std::string & iValue);
+  std::string ExpandUtf8(const std::string & value);
 
 #elif __linux__ // UTF-8
 
   /// <summary>
   /// Returns the current value of an environment variable.
   /// </summary>
-  /// <param name="iName">Name of the variable</param>
+  /// <param name="name">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
   /// <remarks>On Linux, this function delegates to GetEnvironmentVariable(). It provides cross-platform compatibility for Windows users.</remarks>
-  inline std::string GetEnvironmentVariableUtf8(const char * iName) { return GetEnvironmentVariable(iName); }
+  inline std::string GetEnvironmentVariableUtf8(const char * name) { return GetEnvironmentVariable(name); }
 
   /// <summary>
   /// Sets a new utf-8 encoded value for the given environment variable.
   /// </summary>
   /// <remarks>Use SetEnvironmentVariableUtf8(name, NULL) for deleting an existing variable.</remarks>
-  /// <param name="iName">Name of the variable</param>
-  /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
+  /// <param name="name">Name of the variable</param>
+  /// <param name="value">New value of the variable. Use NULL for deleting a variable.</param>
   /// <returns>Returns true when successful. Returns false otherwise.</returns>
   /// <remarks>On Linux, this function delegates to SetEnvironmentVariable(). It provides cross-platform compatibility for Windows users.</remarks>
-  inline bool SetEnvironmentVariableUtf8(const char * iName, const   char *   iValue) { return SetEnvironmentVariable(iName, iValue); }
+  inline bool SetEnvironmentVariableUtf8(const char * name, const   char *   value) { return SetEnvironmentVariable(name, value); }
 
   /// <summary>
   /// Returns the list of all environment variables defined by the current process.
@@ -97,10 +97,10 @@ namespace ra { namespace environment {
   /// Unix    environment variables syntax must in the following form:  $name where  'name' is an environment variable.
   /// Windows environment variables syntax must in the following form:  %name% where 'name' is an environment variable.
   /// </summary>
-  /// <param name="iValue">The path that must be expanded.</param>
+  /// <param name="value">The path that must be expanded.</param>
   /// <returns>Returns a new string with the expanded strings.</returns>
   /// <remarks>On Linux, this function delegates to Expand(). It provides cross-platform compatibility for Windows users.</remarks>
-  inline std::string ExpandUtf8(const std::string & iValue) { return Expand(iValue); }
+  inline std::string ExpandUtf8(const std::string & value) { return Expand(value); }
 
 #endif // UTF-8
 

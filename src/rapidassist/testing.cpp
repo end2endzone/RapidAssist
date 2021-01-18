@@ -385,7 +385,7 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool FindInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) {
+  bool FindInFile(const char* iFilename, const char* value, int & oLine, int & oCharacter) {
     if (!ra::filesystem::FileExists(iFilename))
       return false;
 
@@ -399,7 +399,7 @@ namespace ra { namespace testing {
 
     for (size_t i = 0; i < lines.size(); i++) {
       const std::string & line = lines[i];
-      size_t position = line.find(iValue, 0);
+      size_t position = line.find(value, 0);
       if (position != std::string::npos) {
         oLine = (int)i;
         oCharacter = (int)position;
@@ -509,7 +509,7 @@ namespace ra { namespace testing {
 #endif
   }
 
-  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue) {
+  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char value) {
     //read
     FILE * f = fopen(iFilePath, "rb");
     if (!f)
@@ -524,7 +524,7 @@ namespace ra { namespace testing {
 
     //modify
     if (iOffset < (size_t)size)
-      buffer[iOffset] = iValue;
+      buffer[iOffset] = value;
 
     //save
     f = fopen(iFilePath, "wb");

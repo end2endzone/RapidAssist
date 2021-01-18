@@ -38,11 +38,11 @@
 namespace ra { namespace filesystem { namespace test
 {
 
-  int countValues(const std::vector<std::string> & iList, const std::string & iValue) {
+  int CountValues(const std::vector<std::string> & list, const std::string & value) {
     int count = 0;
-    for (size_t i = 0; i < iList.size(); i++) {
-      const std::string & value = iList[i];
-      if (value == iValue)
+    for (size_t i = 0; i < list.size(); i++) {
+      const std::string & tmp = list[i];
+      if (tmp == value)
         count++;
     }
     return count;
@@ -734,7 +734,7 @@ namespace ra { namespace filesystem { namespace test
       //assert that all values are unique
       for (size_t i = 0; i < numTest; i++) {
         const std::string & filename = filenames[i];
-        int count = countValues(filenames, filename);
+        int count = CountValues(filenames, filename);
         ASSERT_EQ(1, count) << "Found value '" << filename << "' " << count << " times in the list.";
       }
     }
@@ -759,7 +759,7 @@ namespace ra { namespace filesystem { namespace test
       //assert that all values are unique
       for (size_t i = 0; i < numTest; i++) {
         const std::string & path = paths[i];
-        int count = countValues(paths, path);
+        int count = CountValues(paths, path);
         ASSERT_EQ(1, count) << "Found value '" << path << "' " << count << " times in the list.";
       }
     }

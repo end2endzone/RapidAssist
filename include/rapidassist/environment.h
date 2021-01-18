@@ -36,28 +36,28 @@ namespace ra { namespace environment {
   /// <summary>
   /// Returns the current value of an environment variable.
   /// </summary>
-  /// <param name="iName">Name of the variable</param>
+  /// <param name="name">Name of the variable</param>
   /// <returns>Returns the value of the given environment variable.</returns>
-  std::string GetEnvironmentVariable(const char * iName);
+  std::string GetEnvironmentVariable(const char * name);
 
   /// <summary>
   /// Sets a new value for the given environment variable.
   /// </summary>
   /// <remarks>Use SetEnvironmentVariable(name, NULL) for deleting an existing variable.</remarks>
-  /// <param name="iName">Name of the variable</param>
-  /// <param name="iValue">New value of the variable. Use NULL for deleting a variable.</param>
+  /// <param name="name">Name of the variable</param>
+  /// <param name="value">New value of the variable. Use NULL for deleting a variable.</param>
   /// <returns>Returns true when successful. Returns false otherwise.</returns>
-  bool SetEnvironmentVariable(const char * iName, const     char * iValue);
-  bool SetEnvironmentVariable(const char * iName, const   int8_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const  uint8_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const  int16_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const uint16_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const  int32_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const uint32_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const  int64_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const uint64_t & iValue);
-  bool SetEnvironmentVariable(const char * iName, const    float & iValue);
-  bool SetEnvironmentVariable(const char * iName, const   double & iValue);
+  bool SetEnvironmentVariable(const char * name, const     char * value);
+  bool SetEnvironmentVariable(const char * name, const   int8_t & value);
+  bool SetEnvironmentVariable(const char * name, const  uint8_t & value);
+  bool SetEnvironmentVariable(const char * name, const  int16_t & value);
+  bool SetEnvironmentVariable(const char * name, const uint16_t & value);
+  bool SetEnvironmentVariable(const char * name, const  int32_t & value);
+  bool SetEnvironmentVariable(const char * name, const uint32_t & value);
+  bool SetEnvironmentVariable(const char * name, const  int64_t & value);
+  bool SetEnvironmentVariable(const char * name, const uint64_t & value);
+  bool SetEnvironmentVariable(const char * name, const    float & value);
+  bool SetEnvironmentVariable(const char * name, const   double & value);
 
   /// <summary>
   /// Returns true if the current process is 32 bit.
@@ -112,9 +112,9 @@ namespace ra { namespace environment {
   /// Unix    environment variables syntax must in the following form:  $name where  'name' is an environment variable.
   /// Windows environment variables syntax must in the following form:  %name% where 'name' is an environment variable.
   /// </summary>
-  /// <param name="iValue">The path that must be expanded.</param>
+  /// <param name="value">The path that must be expanded.</param>
   /// <returns>Returns a new string with the expanded strings.</returns>
-  std::string Expand(const std::string & iValue);
+  std::string Expand(const std::string & value);
 
 } //namespace environment
 } //namespace ra

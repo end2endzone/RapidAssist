@@ -70,11 +70,11 @@ namespace ra { namespace testing {
   /// Returns true if the given text is found in a file.
   /// </summary>
   /// <param name="iFilename">The path of the search file.</param>
-  /// <param name="iValue">The search value.</param>
-  /// <param name="oLine">The line number where iValue is found.</param>
+  /// <param name="value">The search value.</param>
+  /// <param name="oLine">The line number where value is found.</param>
   /// <param name="oCharacter">The character offset within the line.</param>
   /// <returns>Returns true if the given text is found in a file. Returns false otherwise.</returns>
-  bool FindInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter);
+  bool FindInFile(const char* iFilename, const char* value, int & oLine, int & oCharacter);
 
   /// <summary>
   /// Returns the content (each lines) of a file.
@@ -118,8 +118,8 @@ namespace ra { namespace testing {
   /// </summary>
   /// <param name="iFilePath">The path of the file.</param>
   /// <param name="iOffset">The offset of the modified byte.</param>
-  /// <param name="iValue">The value of the replacement.</param>
-  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue);
+  /// <param name="value">The value of the replacement.</param>
+  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char value);
 
 #ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>

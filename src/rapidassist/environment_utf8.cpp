@@ -42,11 +42,11 @@ namespace ra { namespace environment {
 
 #ifdef _WIN32 // UTF-8
 
-  std::string GetEnvironmentVariableUtf8(const char * iName) {
-    if (iName == NULL)
+  std::string GetEnvironmentVariableUtf8(const char * name) {
+    if (name == NULL)
       return std::string();
 
-    std::wstring nameW = ra::unicode::Utf8ToUnicode(iName);
+    std::wstring nameW = ra::unicode::Utf8ToUnicode(name);
 
     const wchar_t * value = _wgetenv(nameW.c_str());
     if (value == NULL)
@@ -56,19 +56,19 @@ namespace ra { namespace environment {
     return value_utf8;
   }
 
-  bool SetEnvironmentVariableUtf8(const char * iName, const char * iValue) {
+  bool SetEnvironmentVariableUtf8(const char * name, const char * value) {
     //validate invalid inputs
-    if (iName == NULL || strlen(iName) == 0) {
+    if (name == NULL || strlen(name) == 0) {
       return false;
     }
 
-    std::wstring nameW  = ra::unicode::Utf8ToUnicode(iName);
+    std::wstring nameW  = ra::unicode::Utf8ToUnicode(name);
 
     std::wstring commandW;
     commandW.append(nameW);
     commandW.append(L"=");
-    if (iValue) {
-      std::wstring valueW = ra::unicode::Utf8ToUnicode(iValue);
+    if (value) {
+      std::wstring valueW = ra::unicode::Utf8ToUnicode(value);
       commandW.append(valueW);
     }
     int result = _wputenv(commandW.c_str());
@@ -144,8 +144,8 @@ namespace ra { namespace environment {
     return vars;
   }
 
-  std::string ExpandUtf8(const std::string & iValue) {
-    std::string output = iValue;
+  std::string ExpandUtf8(const std::string & value) {
+    std::string output = value;
 
     ra::strings::StringVector variables = GetEnvironmentVariablesUtf8();
     for (size_t i = 0; i < variables.size(); i++) {

@@ -53,8 +53,9 @@ namespace ra { namespace strings {
   /// A numeric value can be positive or negative.
   /// A numeric value can be an integer or a floating point value.
   /// </summary>
-  /// <returns>True when iValue is numeric. False otherwise.</returns>
-  bool IsNumeric(const char * iValue);
+  /// <param name="value">The string value to validate.</param>
+  /// <returns>True when value is numeric. False otherwise.</returns>
+  bool IsNumeric(const char * value);
 
   /// <summary>
   /// Replace an occurance of a string by another.
@@ -172,23 +173,23 @@ namespace ra { namespace strings {
   /// <summary>
   /// Capitalize the first character of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to uppercase the first character.</param>
+  /// <param name="value">The string value to uppercase the first character.</param>
   /// <returns>Returns the given string with the first character capitalized.</returns>
-  std::string CapitalizeFirstCharacter(const std::string & iValue);
+  std::string CapitalizeFirstCharacter(const std::string & value);
 
   /// <summary>
   /// Upper case all characters of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to uppercase.</param>
+  /// <param name="value">The string value to uppercase.</param>
   /// <returns>Returns the given string uppercased.</returns>
-  std::string Uppercase(const std::string & iValue);
+  std::string Uppercase(const std::string & value);
 
   /// <summary>
   /// Lower case all characters of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to lowercase.</param>
+  /// <param name="value">The string value to lowercase.</param>
   /// <returns>Returns the given string lowercased.</returns>
-  std::string Lowercase(const std::string & iValue);
+  std::string Lowercase(const std::string & value);
 
   /// <summary>
   /// Removes occurance of unix/windows LF, CR or CRLF into the given string.
