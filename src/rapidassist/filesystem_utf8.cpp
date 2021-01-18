@@ -65,11 +65,11 @@ namespace ra { namespace filesystem {
     bool operator()(T const &a, T const &b) const { return a > b; }
   };
 
-  uint32_t GetFileSizeUtf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  uint32_t GetFileSizeUtf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return 0;
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct _stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
@@ -79,11 +79,11 @@ namespace ra { namespace filesystem {
     return 0;
   }
 
-  uint64_t GetFileSize64Utf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  uint64_t GetFileSize64Utf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return 0;
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct _stat64 sb;
     if (_wstat64(pathW.c_str(), &sb) == 0) {
@@ -93,11 +93,11 @@ namespace ra { namespace filesystem {
     return 0;
   }
 
-  bool FileExistsUtf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  bool FileExistsUtf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return false;
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct _stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
@@ -107,11 +107,11 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasFileReadAccessUtf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  bool HasFileReadAccessUtf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return false;
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct _stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
@@ -121,11 +121,11 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool HasFileWriteAccessUtf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  bool HasFileWriteAccessUtf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return false;
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct _stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
@@ -175,14 +175,14 @@ namespace ra { namespace filesystem {
   }
 
   //declared in filesystem.cpp
-  extern bool processDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth, bool use_utf8);
+  extern bool ProcessDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth, bool use_utf8);
 
-  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) {
-    if (iPath == NULL)
+  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth) {
+    if (path == NULL)
       return false;
 
     //Build a *.* query
-    std::string query = iPath;
+    std::string query = path;
     NormalizePath(query);
     query << "\\*";
 
@@ -199,7 +199,7 @@ namespace ra { namespace filesystem {
     std::string filename_utf8 = ra::unicode::UnicodeToUtf8(filenameW); //convert from Wide character (Unicode) to UTF-8
     bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
     bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-    bool result = processDirectoryEntry(oFiles, iPath, filename_utf8, is_directory, iDepth, true);
+    bool result = ProcessDirectoryEntry(oFiles, path, filename_utf8, is_directory, iDepth, true);
     if (!result) {
       //Warning: Current user is not able to browse this directory.
       //For instance:
@@ -219,7 +219,7 @@ namespace ra { namespace filesystem {
       filename_utf8 = ra::unicode::UnicodeToUtf8(filenameW); //convert from Wide character (Unicode) to UTF-8
       bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
       bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = processDirectoryEntry(oFiles, iPath, filename_utf8, is_directory, iDepth, true);
+      bool result = ProcessDirectoryEntry(oFiles, path, filename_utf8, is_directory, iDepth, true);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
@@ -277,8 +277,8 @@ namespace ra { namespace filesystem {
     return first;
   }
 
-  bool DirectoryExistsUtf8(const char * iPath) {
-    if (iPath == NULL || iPath[0] == '\0')
+  bool DirectoryExistsUtf8(const char * path) {
+    if (path == NULL || path[0] == '\0')
       return false;
 
 #ifdef _WIN32
@@ -286,7 +286,7 @@ namespace ra { namespace filesystem {
     //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
 #endif
 
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     struct stat sb;
     if (_wstat(pathW.c_str(), &sb) == 0) {
@@ -296,11 +296,11 @@ namespace ra { namespace filesystem {
     return false;
   }
 
-  bool CreateDirectoryUtf8(const char * iPath) {
-    if (iPath == NULL)
+  bool CreateDirectoryUtf8(const char * path) {
+    if (path == NULL)
       return false;
 
-    if (DirectoryExistsUtf8(iPath))
+    if (DirectoryExistsUtf8(path))
       return true;
 
     //directory does not already exists and must be created
@@ -310,7 +310,7 @@ namespace ra { namespace filesystem {
     char *sp;
     int   status;
     char separator = GetPathSeparator();
-    char *copypath = _strdup(iPath);
+    char *copypath = _strdup(path);
 
     status = 0;
     pp = copypath;
@@ -339,25 +339,25 @@ namespace ra { namespace filesystem {
       pp = sp + 1;
     }
     if (status == 0) {
-      std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+      std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
       status = _wmkdir(pathW.c_str());
     }
     free(copypath);
     return (status == 0);
   }
 
-  bool DeleteDirectoryUtf8(const char * iPath) {
-    if (iPath == NULL)
+  bool DeleteDirectoryUtf8(const char * path) {
+    if (path == NULL)
       return false;
 
-    if (!DirectoryExistsUtf8(iPath))
+    if (!DirectoryExistsUtf8(path))
       return true;
 
     //directory exists and must be deleted
 
     //find all files and directories in specified directory
     ra::strings::StringVector files;
-    bool found = FindFilesUtf8(files, iPath);
+    bool found = FindFilesUtf8(files, path);
     if (!found)
       return false;
 
@@ -383,16 +383,16 @@ namespace ra { namespace filesystem {
     }
 
     //delete the specified directory
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     int result = _wrmdir(pathW.c_str());
     return (result == 0);
   }
 
-  bool DeleteFileUtf8(const char * iPath) {
-    if (iPath == NULL)
+  bool DeleteFileUtf8(const char * path) {
+    if (path == NULL)
       return false;
 
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     int result = _wremove(pathW.c_str());
     return (result == 0);
   }
@@ -418,19 +418,19 @@ namespace ra { namespace filesystem {
     return curdir;
   }
 
-  uint64_t GetFileModifiedDateUtf8(const std::string & iPath) {
+  uint64_t GetFileModifiedDateUtf8(const std::string & path) {
     struct stat result;
     uint64_t mod_time = 0;
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     if (_wstat(pathW.c_str(), &result) == 0) {
       mod_time = result.st_mtime;
     }
     return mod_time;
   }
 
-  std::string GetPathBasedOnCurrentProcessUtf8(const std::string & iPath) {
-    if (IsAbsolutePath(iPath))
-      return iPath;
+  std::string GetPathBasedOnCurrentProcessUtf8(const std::string & path) {
+    if (IsAbsolutePath(path))
+      return path;
 
     std::string dir = ra::process::GetCurrentProcessDirUtf8();
     ra::filesystem::NormalizePath(dir); //remove last / or \ character if any API used return an unexpected value
@@ -438,16 +438,16 @@ namespace ra { namespace filesystem {
     std::string tmp_path;
     tmp_path.append(dir);
     tmp_path.append(ra::filesystem::GetPathSeparatorStr());
-    tmp_path.append(iPath);
+    tmp_path.append(path);
 
     std::string resolved = ResolvePath(tmp_path);
 
     return resolved;
   }
 
-  std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & iPath) {
-    if (IsAbsolutePath(iPath))
-      return iPath;
+  std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & path) {
+    if (IsAbsolutePath(path))
+      return path;
 
     std::string dir = ra::filesystem::GetCurrentDirectoryUtf8();
     ra::filesystem::NormalizePath(dir); //remove last / or \ character if any API used return an unexpected value
@@ -455,7 +455,7 @@ namespace ra { namespace filesystem {
     std::string tmp_path;
     tmp_path.append(dir);
     tmp_path.append(ra::filesystem::GetPathSeparatorStr());
-    tmp_path.append(iPath);
+    tmp_path.append(path);
 
     std::string resolved = ResolvePath(tmp_path);
 

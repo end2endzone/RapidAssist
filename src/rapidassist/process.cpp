@@ -594,8 +594,8 @@ namespace ra { namespace process {
   }
 #endif
 
-  bool OpenDocument(const std::string & iPath) {
-    if (!ra::filesystem::FileExists(iPath.c_str()))
+  bool OpenDocument(const std::string & path) {
+    if (!ra::filesystem::FileExists(path.c_str()))
       return false; //file not found
 
 #ifdef _WIN32
@@ -610,7 +610,7 @@ namespace ra { namespace process {
     info.hwnd = HWND_DESKTOP;
     info.nShow = SW_SHOWDEFAULT;
     info.lpVerb = "open";
-    info.lpFile = iPath.c_str();
+    info.lpFile = path.c_str();
     info.lpParameters = NULL; //arguments
     info.lpDirectory = NULL; // default directory
 

@@ -41,42 +41,42 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
-  uint32_t GetFileSizeUtf8(const char * iPath);
+  uint32_t GetFileSizeUtf8(const char * path);
 
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
-  uint64_t GetFileSize64Utf8(const char * iPath);
+  uint64_t GetFileSize64Utf8(const char * path);
 
   /// <summary>
   /// Determine if a file exists.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file exists. Returns false otherwise.</returns>
-  bool FileExistsUtf8(const char * iPath);
+  bool FileExistsUtf8(const char * path);
 
   /// <summary>
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  bool HasFileReadAccessUtf8(const char * iPath);
+  bool HasFileReadAccessUtf8(const char * path);
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  bool HasFileWriteAccessUtf8(const char * iPath);
+  bool HasFileWriteAccessUtf8(const char * path);
 
   /// <summary>
   /// Determine if the current process has read access to a given directory.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
   bool HasDirectoryReadAccessUtf8(const char * path);
 
@@ -84,7 +84,7 @@ namespace ra { namespace filesystem {
   /// Determine if the current process has write access to a given directory.
   /// Note: the only way to detect if write access is available is to actually write a file.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
   bool HasDirectoryWriteAccessUtf8(const char * path);
 
@@ -92,34 +92,34 @@ namespace ra { namespace filesystem {
   /// DEPRECATED. Use HasFileReadAccessUtf8() instead.
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasReadAccessUtf8(const char * iPath) { return HasFileReadAccessUtf8(iPath); }
+  DEPRECATED inline bool HasReadAccessUtf8(const char * path) { return HasFileReadAccessUtf8(path); }
 
   /// <summary>
   /// DEPRECATED. Use HasFileWriteAccessUtf8() instead.
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasWriteAccessUtf8(const char * iPath) { return HasFileWriteAccessUtf8(iPath); }
+  DEPRECATED inline bool HasWriteAccessUtf8(const char * path) { return HasFileWriteAccessUtf8(path); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
-  /// <param name="iPath">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
-  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
+  /// <param name="path">An valid directory path.</param>
+  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
+  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth);
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
-  /// <param name="iPath">An valid directory path.</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath) { return FindFilesUtf8(oFiles, iPath, -1); }
+  /// <param name="path">An valid directory path.</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
+  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path) { return FindFilesUtf8(oFiles, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.
@@ -139,30 +139,30 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Determine if a directory exists.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory exists. Returns false otherwise.</returns>
-  bool DirectoryExistsUtf8(const char * iPath);
+  bool DirectoryExistsUtf8(const char * path);
 
   /// <summary>
   /// Creates the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was created (or already exists). Returns false otherwise.</returns>
-  bool CreateDirectoryUtf8(const char * iPath);
+  bool CreateDirectoryUtf8(const char * path);
 
   /// <summary>
   /// Deletes the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was deleted (or does not exist). Returns false otherwise.</returns>
-  bool DeleteDirectoryUtf8(const char * iPath);
+  bool DeleteDirectoryUtf8(const char * path);
 
   /// <summary>
   /// Deletes the specified file.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file was deleted (or does not exist). Returns false otherwise.</returns>
-  bool DeleteFileUtf8(const char * iPath);
+  bool DeleteFileUtf8(const char * path);
 
   /// <summary>
   /// Returns the path of a tempporary file.
@@ -186,25 +186,25 @@ namespace ra { namespace filesystem {
   /// Returns the modified date of the given file.
   /// Note that the function returns the number of seconds elapsed since epoch since Jan 1st 1970.
   /// </summary>
-  /// <param name="iPath">The valid path to a file.</param>
+  /// <param name="path">The valid path to a file.</param>
   /// <returns>Returns the modified date of the given file.</returns>
-  uint64_t GetFileModifiedDateUtf8(const std::string & iPath);
+  uint64_t GetFileModifiedDateUtf8(const std::string & path);
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the directory of the current executable.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-  std::string GetPathBasedOnCurrentProcessUtf8(const std::string & iPath);
+  std::string GetPathBasedOnCurrentProcessUtf8(const std::string & path);
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the current directory.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-  std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & iPath);
+  std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & path);
 
   /// <summary>
   /// Copy a file to another destination.
@@ -309,62 +309,62 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline uint32_t GetFileSizeUtf8(const char * iPath) { return GetFileSize(iPath); }
+  inline uint32_t GetFileSizeUtf8(const char * path) { return GetFileSize(path); }
 
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline uint64_t GetFileSize64Utf8(const char * iPath) { return GetFileSize64(iPath); }
+  inline uint64_t GetFileSize64Utf8(const char * path) { return GetFileSize64(path); }
 
   /// <summary>
   /// Determine if a file exists.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file exists. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool FileExistsUtf8(const char * iPath) { return FileExists(iPath); }
+  inline bool FileExistsUtf8(const char * path) { return FileExists(path); }
 
   /// <summary>
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasFileReadAccessUtf8(const char * iPath) { return HasFileReadAccess(iPath); }
+  inline bool HasFileReadAccessUtf8(const char * path) { return HasFileReadAccess(path); }
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool HasFileWriteAccessUtf8(const char * iPath) { return HasFileWriteAccess(iPath); }
+  inline bool HasFileWriteAccessUtf8(const char * path) { return HasFileWriteAccess(path); }
 
   /// <summary>
   /// Determine if the current process has read access to a given directory.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
@@ -376,7 +376,7 @@ namespace ra { namespace filesystem {
   /// Determine if the current process has write access to a given directory.
   /// Note: the only way to detect if write access is available is to actually write a file.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
@@ -388,38 +388,38 @@ namespace ra { namespace filesystem {
   /// DEPRECATED. Use HasFileReadAccessUtf8() instead.
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasReadAccessUtf8(const char * iPath) { return HasFileReadAccessUtf8(iPath); }
+  DEPRECATED inline bool HasReadAccessUtf8(const char * path) { return HasFileReadAccessUtf8(path); }
 
   /// <summary>
   /// DEPRECATED. Use HasFileWriteAccessUtf8() instead.
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasWriteAccessUtf8(const char * iPath) { return HasFileWriteAccessUtf8(iPath); }
+  DEPRECATED inline bool HasWriteAccessUtf8(const char * path) { return HasFileWriteAccessUtf8(path); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
-  /// <param name="iPath">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
+  /// <param name="path">An valid directory path.</param>
+  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath, int iDepth) { return FindFiles(oFiles, iPath, iDepth); }
+  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth) { return FindFiles(oFiles, path, iDepth); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
-  /// <param name="iPath">An valid directory path.</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * iPath) { return FindFilesUtf8(oFiles, iPath, -1); }
+  /// <param name="path">An valid directory path.</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
+  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path) { return FindFilesUtf8(oFiles, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.
@@ -447,46 +447,46 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Determine if a directory exists.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory exists. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool DirectoryExistsUtf8(const char * iPath) { return DirectoryExists(iPath); }
+  inline bool DirectoryExistsUtf8(const char * path) { return DirectoryExists(path); }
 
   /// <summary>
   /// Creates the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was created (or already exists). Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool CreateDirectoryUtf8(const char * iPath) { return CreateDirectory(iPath); }
+  inline bool CreateDirectoryUtf8(const char * path) { return CreateDirectory(path); }
 
   /// <summary>
   /// Deletes the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was deleted (or does not exist). Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool DeleteDirectoryUtf8(const char * iPath) { return DeleteDirectory(iPath); }
+  inline bool DeleteDirectoryUtf8(const char * path) { return DeleteDirectory(path); }
 
   /// <summary>
   /// Deletes the specified file.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file was deleted (or does not exist). Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool DeleteFileUtf8(const char * iPath) { return DeleteFile(iPath); }
+  inline bool DeleteFileUtf8(const char * path) { return DeleteFile(path); }
 
   /// <summary>
   /// Returns the path of a tempporary file.
@@ -522,30 +522,30 @@ namespace ra { namespace filesystem {
   /// Returns the modified date of the given file.
   /// Note that the function returns the number of seconds elapsed since epoch since Jan 1st 1970.
   /// </summary>
-  /// <param name="iPath">The valid path to a file.</param>
+  /// <param name="path">The valid path to a file.</param>
   /// <returns>Returns the modified date of the given file.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline uint64_t GetFileModifiedDateUtf8(const std::string & iPath) { return GetFileModifiedDate(iPath); }
+  inline uint64_t GetFileModifiedDateUtf8(const std::string & path) { return GetFileModifiedDate(path); }
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the directory of the current executable.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline std::string GetPathBasedOnCurrentProcessUtf8(const std::string & iPath) { return GetPathBasedOnCurrentProcess(iPath); }
+  inline std::string GetPathBasedOnCurrentProcessUtf8(const std::string & path) { return GetPathBasedOnCurrentProcess(path); }
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the current directory.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
   /// <remarks>
@@ -553,7 +553,7 @@ namespace ra { namespace filesystem {
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & iPath) { return GetPathBasedOnCurrentDirectory(iPath); }
+  inline std::string GetPathBasedOnCurrentDirectoryUtf8(const std::string & path) { return GetPathBasedOnCurrentDirectory(path); }
 
   /// <summary>
   /// Copy a file to another destination.

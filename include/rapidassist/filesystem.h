@@ -45,9 +45,9 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
-  uint32_t GetFileSize(const char * iPath);
+  uint32_t GetFileSize(const char * path);
 
   /// <summary>
   /// Returns the size of the given FILE* in bytes.
@@ -59,51 +59,51 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the size of the given file path in bytes.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the size of the given file path in bytes.</returns>
-  uint64_t GetFileSize64(const char * iPath);
+  uint64_t GetFileSize64(const char * path);
 
   /// <summary>
   /// Returns the filename of the given path.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns the filename of the given path.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  std::string GetFilename(const char * iPath);
+  std::string GetFilename(const char * path);
 
   /// <summary>
   /// Get the file name of a path without the extension.
   /// </summary>
-  /// <param name="iPath">The file path of a file.</param>
+  /// <param name="path">The file path of a file.</param>
   /// <returns>Returns the file name without the extension.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  std::string GetFilenameWithoutExtension(const char * iPath);
+  std::string GetFilenameWithoutExtension(const char * path);
 
   /// <summary>
   /// Determine if a file exists.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file exists. Returns false otherwise.</returns>
-  bool FileExists(const char * iPath);
+  bool FileExists(const char * path);
 
   /// <summary>
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  bool HasFileReadAccess(const char * iPath);
+  bool HasFileReadAccess(const char * path);
 
   /// <summary>
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  bool HasFileWriteAccess(const char * iPath);
+  bool HasFileWriteAccess(const char * path);
 
   /// <summary>
   /// Determine if the current process has read access to a given directory.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow read access. Returns false otherwise.</returns>
   bool HasDirectoryReadAccess(const char * path);
 
@@ -111,7 +111,7 @@ namespace ra { namespace filesystem {
   /// Determine if the current process has write access to a given directory.
   /// Note: the only way to detect if write access is available is to actually write a file.
   /// </summary>
-  /// <param name="iPath">A valid directory path.</param>
+  /// <param name="path">A valid directory path.</param>
   /// <returns>Returns true when the directory allow write access. Returns false otherwise.</returns>
   bool HasDirectoryWriteAccess(const char * path);
 
@@ -119,27 +119,27 @@ namespace ra { namespace filesystem {
   /// DEPRECATED. Use HasFileReadAccess() instead.
   /// Determine if the current process has read access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be read. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasReadAccess(const char * iPath) { return HasFileReadAccess(iPath); }
+  DEPRECATED inline bool HasReadAccess(const char * path) { return HasFileReadAccess(path); }
 
   /// <summary>
   /// DEPRECATED. Use HasFileWriteAccess() instead.
   /// Determine if the current process has write access to a given file.
   /// </summary>
-  /// <param name="iPath">A valid file path.</param>
+  /// <param name="path">A valid file path.</param>
   /// <returns>Returns true when the file can be write to. Returns false otherwise.</returns>
-  DEPRECATED inline bool HasWriteAccess(const char * iPath) { return HasFileWriteAccess(iPath); }
+  DEPRECATED inline bool HasWriteAccess(const char * path) { return HasFileWriteAccess(path); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
   /// <param name="oFiles">The list of files found.</param>
-  /// <param name="iPath">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory iPath (without subdirectories). Use -1 for find all files in directory iPath (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory iPath. Returns false otherwise.</returns>
-  bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath, int iDepth);
-  inline bool FindFiles(ra::strings::StringVector & oFiles, const char * iPath) { return FindFiles(oFiles, iPath, -1); }
+  /// <param name="path">An valid directory path.</param>
+  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
+  bool FindFiles(ra::strings::StringVector & oFiles, const char * path, int iDepth);
+  inline bool FindFiles(ra::strings::StringVector & oFiles, const char * path) { return FindFiles(oFiles, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.
@@ -159,30 +159,30 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Determine if a directory exists.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory exists. Returns false otherwise.</returns>
-  bool DirectoryExists(const char * iPath);
+  bool DirectoryExists(const char * path);
 
   /// <summary>
   /// Creates the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was created (or already exists). Returns false otherwise.</returns>
-  bool CreateDirectory(const char * iPath);
+  bool CreateDirectory(const char * path);
 
   /// <summary>
   /// Deletes the specified directory.
   /// </summary>
-  /// <param name="iPath">An valid directory path.</param>
+  /// <param name="path">An valid directory path.</param>
   /// <returns>Returns true when the directory was deleted (or does not exist). Returns false otherwise.</returns>
-  bool DeleteDirectory(const char * iPath);
+  bool DeleteDirectory(const char * path);
 
   /// <summary>
   /// Deletes the specified file.
   /// </summary>
-  /// <param name="iPath">An valid file path.</param>
+  /// <param name="path">An valid file path.</param>
   /// <returns>Returns true when the file was deleted (or does not exist). Returns false otherwise.</returns>
-  bool DeleteFile(const char * iPath);
+  bool DeleteFile(const char * path);
 
   /// <summary>
   /// Returns the file name of a tempporary file.
@@ -206,36 +206,36 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the parent element of a path. For files, it returns the file's directory. For directories, it returns the parent path.
   /// </summary>
-  /// <param name="iPath">The input path to get the parent.</param>
+  /// <param name="path">The input path to get the parent.</param>
   /// <returns>Returns the parent element of the given path.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  std::string GetParentPath(const std::string & iPath);
+  std::string GetParentPath(const std::string & path);
 
   /// <summary>
   /// Convert a long file path to the short path form (8.3 format).
   /// If the system does not support automatic conversion, an estimated
   /// version is returned.
   /// </summary>
-  /// <param name="iPath">The input path to convert.</param>
+  /// <param name="path">The input path to convert.</param>
   /// <returns>Returns the short path form of the given path.</returns>
-  std::string GetShortPathForm(const std::string & iPath);
+  std::string GetShortPathForm(const std::string & path);
 
   /// <summary>
   /// Splits a path into a directory and a filename.
   /// </summary>
-  /// <param name="iPath">The input path to split.</param>
+  /// <param name="path">The input path to split.</param>
   /// <param name="oDirectory">The output directory of the given path.</param>
   /// <param name="oFilename">The output file of the given path.</param>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  void SplitPath(const std::string & iPath, std::string & oDirectory, std::string & oFilename);
+  void SplitPath(const std::string & path, std::string & oDirectory, std::string & oFilename);
 
   /// <summary>
   /// Splits a path into each element.
   /// </summary>
-  /// <param name="iPath">The input path to split.</param>
+  /// <param name="path">The input path to split.</param>
   /// <param name="oElements">The output list which contains all path elements.</param>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  void SplitPath(const std::string & iPath, std::vector<std::string> & oElements);
+  void SplitPath(const std::string & path, std::vector<std::string> & oElements);
 
   /// <summary>
   /// Convert an absolute path to a relative path based on the given absolute base path.
@@ -262,10 +262,10 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns the extension of a file.
   /// </summary>
-  /// <param name="iPath">The valid path to a file.</param>
+  /// <param name="path">The valid path to a file.</param>
   /// <returns>Returns the extension of a file.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  std::string GetFileExtention(const std::string & iPath);
+  std::string GetFileExtention(const std::string & path);
 
   enum FileSizeEnum { BYTES, KILOBYTES, MEGABYTES, GIGABYTES, TERABYTES };
 
@@ -288,17 +288,17 @@ namespace ra { namespace filesystem {
   /// Returns the modified date of the given file.
   /// Note that the function returns the number of seconds elapsed since epoch since Jan 1st 1970.
   /// </summary>
-  /// <param name="iPath">The valid path to a file.</param>
+  /// <param name="path">The valid path to a file.</param>
   /// <returns>Returns the modified date of the given file.</returns>
-  uint64_t GetFileModifiedDate(const std::string & iPath);
+  uint64_t GetFileModifiedDate(const std::string & path);
 
   /// <summary>
   /// Determine if the given path is an absolute path or not.
   /// </summary>
-  /// <param name="iPath">An valid file or directory path.</param>
+  /// <param name="path">An valid file or directory path.</param>
   /// <returns>Returns true if the given path is absolute. Returns false otherwise.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  bool IsAbsolutePath(const std::string & iPath);
+  bool IsAbsolutePath(const std::string & path);
 
   /// <summary>
   /// Determine if the given path is a root directory.
@@ -307,10 +307,10 @@ namespace ra { namespace filesystem {
   /// On Linux,   the root directory is "/".
   /// On Windows, there is one root directory per drive identified by a drive letter followed by ":\". For instance "C:\".
   /// </remarks>
-  /// <param name="iPath">An valid file or directory path.</param>
+  /// <param name="path">An valid file or directory path.</param>
   /// <returns>Returns true if the given path is a root directory. Returns false otherwise.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  bool IsRootDirectory(const std::string & iPath);
+  bool IsRootDirectory(const std::string & path);
 
   /// <summary>
   /// Resolves path that contains `..` or `.` elements to an absolute path.
@@ -319,26 +319,26 @@ namespace ra { namespace filesystem {
   /// On Linux,   one cannot walk down past the root: "/.."   is the same as "/".
   /// On Windows, one cannot walk down past the root: "C:\.." is the same as "C:\".
   /// </remarks>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the resolved path.</returns>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  std::string ResolvePath(const std::string & iPath);
+  std::string ResolvePath(const std::string & path);
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the directory of the current executable.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-  std::string GetPathBasedOnCurrentProcess(const std::string & iPath);
+  std::string GetPathBasedOnCurrentProcess(const std::string & path);
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the current directory.
   /// </summary>
-  /// <param name="iPath">An valid relative file or directory path.</param>
+  /// <param name="path">An valid relative file or directory path.</param>
   /// <returns>Returns the absolute path.</returns>
   /// <remarks>If the given path is already an absolute path, the given path is returned.</remarks>
-  std::string GetPathBasedOnCurrentDirectory(const std::string & iPath);
+  std::string GetPathBasedOnCurrentDirectory(const std::string & path);
 
   /// <summary>
   /// CopyFile() callback interface

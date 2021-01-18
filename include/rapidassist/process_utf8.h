@@ -83,9 +83,9 @@ namespace ra { namespace process {
   /// <summary>
   /// Open a document with the default system application.
   /// </summary>
-  /// <param name="iPath">The path to the document to open.</param>
+  /// <param name="path">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  bool OpenDocumentUtf8(const std::string & iPath);
+  bool OpenDocumentUtf8(const std::string & path);
 
 #elif __linux__ // UTF-8
 
@@ -137,9 +137,9 @@ namespace ra { namespace process {
   /// <summary>
   /// Open a document with the default system application.
   /// </summary>
-  /// <param name="iPath">The path to the document to open.</param>
+  /// <param name="path">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  inline bool OpenDocumentUtf8(const std::string & iPath) { return OpenDocument(iPath); }
+  inline bool OpenDocumentUtf8(const std::string & path) { return OpenDocument(path); }
 
 #endif // UTF-8
 

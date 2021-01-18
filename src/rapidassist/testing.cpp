@@ -56,8 +56,8 @@ namespace ra { namespace testing {
   // 
   class FileWrapper {
   public:
-    FileWrapper(const char * iPath, const char * iMode) {
-      file_pointer_ = fopen(iPath, iMode);
+    FileWrapper(const char * path, const char * iMode) {
+      file_pointer_ = fopen(path, iMode);
     }
 
     ~FileWrapper() {

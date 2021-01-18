@@ -124,9 +124,9 @@ namespace ra { namespace process {
   /// <summary>
   /// Open a document with the default system application.
   /// </summary>
-  /// <param name="iPath">The path to the document to open.</param>
+  /// <param name="path">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  bool OpenDocument(const std::string & iPath);
+  bool OpenDocument(const std::string & path);
 
   /// <summary>
   /// Kill an existing process using the process id.

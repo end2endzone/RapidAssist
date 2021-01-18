@@ -142,11 +142,11 @@ namespace ra { namespace process {
     return INVALID_PROCESS_ID;
   }
 
-  bool OpenDocumentUtf8(const std::string & iPath) {
-    if (!ra::filesystem::FileExistsUtf8(iPath.c_str()))
+  bool OpenDocumentUtf8(const std::string & path) {
+    if (!ra::filesystem::FileExistsUtf8(path.c_str()))
       return false; //file not found
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     SHELLEXECUTEINFOW info = { 0 };
 
