@@ -598,16 +598,16 @@ namespace ra { namespace strings {
     return tmp;
   }
 
-  std::string Format(const char * iFormat, ...) {
+  std::string Format(const char * format, ...) {
     std::string output;
 
     va_list args;
-    va_start(args, iFormat);
+    va_start(args, format);
 
     static const int BUFFER_SIZE = 10240;
     char buffer[BUFFER_SIZE];
     buffer[0] = '\0';
-    vsnprintf(buffer, BUFFER_SIZE, iFormat, args);
+    vsnprintf(buffer, BUFFER_SIZE, format, args);
     output = buffer;
 
     va_end(args);

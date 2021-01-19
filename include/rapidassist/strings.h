@@ -292,9 +292,9 @@ namespace ra { namespace strings {
   /// <summary>
   /// Format a string.
   /// </summary>
-  /// <param name="iFormat">The format of the string. Same as printf() format.</param>
+  /// <param name="format">The format of the string. Same as printf() format.</param>
   /// <returns>Returns a formatted string with the given parameters inserted.</returns>
-  std::string Format(const char * iFormat, ...);
+  std::string Format(const char * format, ...);
 
 } //namespace strings
 } //namespace ra

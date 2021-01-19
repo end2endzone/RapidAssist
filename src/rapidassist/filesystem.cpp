@@ -1166,12 +1166,12 @@ namespace ra { namespace filesystem {
     return success;
   }
 
-  bool FileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue) {
+  bool FileReplace(const std::string & path, const std::string & old_value, const std::string & new_value) {
     std::string data;
     if (!ReadFile(path, data))
       return false;
 
-    int num_finding = ra::strings::Replace(data, oldvalue, newvalue);
+    int num_finding = ra::strings::Replace(data, old_value, new_value);
 
     //does the file was modified?
     if (num_finding) {

@@ -550,12 +550,12 @@ namespace ra { namespace filesystem {
     return success;
   }
 
-  bool FileReplaceUtf8(const std::string & path, const std::string & oldvalue, const std::string & newvalue) {
+  bool FileReplaceUtf8(const std::string & path, const std::string & old_value, const std::string & new_value) {
     std::string data;
     if (!ReadFileUtf8(path, data))
       return false;
 
-    int num_finding = ra::strings::Replace(data, oldvalue, newvalue);
+    int num_finding = ra::strings::Replace(data, old_value, new_value);
 
     //does the file was modified?
     if (num_finding) {

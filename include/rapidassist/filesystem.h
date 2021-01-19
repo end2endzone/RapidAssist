@@ -413,10 +413,10 @@ namespace ra { namespace filesystem {
   /// Process a search and replace operation on the data of the given file.
   /// </summary>
   /// <param name="path">The path of the file.</param>
-  /// <param name="oldvalue">The old value to replace by the new value.</param>
-  /// <param name="newvalue">The new value that replaces the oldvalue.</param>
+  /// <param name="old_value">The old value to replace by the new value.</param>
+  /// <param name="new_value">The new value that replaces the old_value.</param>
   /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
-  bool FileReplace(const std::string & path, const std::string & oldvalue, const std::string & newvalue);
+  bool FileReplace(const std::string & path, const std::string & old_value, const std::string & new_value);
 
   /// <summary>
   /// Reads a text file line by line and store the output into the 'lines' variable.
