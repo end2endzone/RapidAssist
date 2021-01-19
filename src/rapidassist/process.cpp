@@ -491,45 +491,45 @@ namespace ra { namespace process {
     return dir;
   }
 
-  processid_t StartProcess(const std::string & iExecPath) {
+  processid_t StartProcess(const std::string & exec_path) {
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
 
     // Launch the process from the current process current directory
-    processid_t pid = StartProcess(iExecPath, curr_dir);
+    processid_t pid = StartProcess(exec_path, curr_dir);
     return pid;
   }
 
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory) {
     // Launch the process with no arguments
 #ifdef _WIN32
-    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, "");
+    processid_t pid = StartProcess(exec_path, default_directory, "");
     return pid;
 #else
     ra::strings::StringVector args;
-    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, args);
+    processid_t pid = StartProcess(exec_path, default_directory, args);
     return pid;
 #endif
   }
 
 #ifdef _WIN32
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const std::string & command_line) {
     //build the full command line
     std::string command;
 
-    //handle iExecPath
-    if (!iExecPath.empty()) {
-      if (iExecPath.find(" ") != std::string::npos) {
+    //handle exec_path
+    if (!exec_path.empty()) {
+      if (exec_path.find(" ") != std::string::npos) {
         command += "\"";
-        command += iExecPath;
+        command += exec_path;
         command += "\"";
       }
       else
-        command += iExecPath;
+        command += exec_path;
     }
 
     if (!command.empty()) {
       command += " ";
-      command += iCommandLine;
+      command += command_line;
     }
 
     //launch a new process with the command line
@@ -539,7 +539,7 @@ namespace ra { namespace process {
     startup_info.dwFlags = STARTF_USESHOWWINDOW;
     startup_info.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
     static const DWORD creation_flags = 0; //EXTENDED_STARTUPINFO_PRESENT
-    bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creation_flags, NULL, iDefaultDirectory.c_str(), &startup_info, &process_info) != 0);
+    bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creation_flags, NULL, default_directory.c_str(), &startup_info, &process_info) != 0);
     if (success) {
       //Wait for the application to initialize properly
       WaitForInputIdle(process_info.hProcess, INFINITE);
@@ -554,21 +554,21 @@ namespace ra { namespace process {
     return INVALID_PROCESS_ID;
   }
 #else
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const ra::strings::StringVector & arguments) {
     //temporary change the current directory for the child process
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    if (!ra::filesystem::DirectoryExists(iDefaultDirectory.c_str()))
+    if (!ra::filesystem::DirectoryExists(default_directory.c_str()))
       return INVALID_PROCESS_ID;
-    int chdir_result = chdir(iDefaultDirectory.c_str());
+    int chdir_result = chdir(default_directory.c_str());
 
     //prepare argv
     //the first element of argv must be the executable path itself.
     //the last element of argv must be am empty argument
     static const int MAX_ARGUMENTS = 10240;
     char * argv[MAX_ARGUMENTS] = { 0 };
-    argv[0] = (char*)iExecPath.c_str();
-    for (size_t i = 0; i < iArguments.size() && i < (MAX_ARGUMENTS - 2); i++) {
-      char * arg_value = (char*)iArguments[i].c_str();
+    argv[0] = (char*)exec_path.c_str();
+    for (size_t i = 0; i < arguments.size() && i < (MAX_ARGUMENTS - 2); i++) {
+      char * arg_value = (char*)arguments[i].c_str();
       argv[i + 1] = arg_value;
     }
 
@@ -583,7 +583,7 @@ namespace ra { namespace process {
     //}
 
     pid_t child_pid = INVALID_PROCESS_ID;
-    int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
+    int status = posix_spawn(&child_pid, exec_path.c_str(), NULL, NULL, argv, environ);
     if (status != 0)
       child_pid = INVALID_PROCESS_ID;
 

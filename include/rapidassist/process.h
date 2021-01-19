@@ -87,38 +87,38 @@ namespace ra { namespace process {
   /// <summary>
   /// Start the given process.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcess(const std::string & iExecPath);
+  processid_t StartProcess(const std::string & exec_path);
 
   /// <summary>
   /// Start the given process from the given directory.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory);
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory);
 
 #ifdef _WIN32
   /// <summary>
   /// Start the given process with the given arguments from the given directory.
   /// Note: this api is only available on Windows.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-  /// <param name="iCommandLine">The command line to send to the new process.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
+  /// <param name="command_line">The command line to send to the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine);
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const std::string & command_line);
 #else
   /// <summary>
   /// Start the given process with the given arguments from the given directory.
   /// Note: this api is only available on linux.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-  /// <param name="iArguments">The list of arguments for the new process.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
+  /// <param name="arguments">The list of arguments for the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments);
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const ra::strings::StringVector & arguments);
 #endif
 
   /// <summary>
@@ -155,9 +155,9 @@ namespace ra { namespace process {
   /// The process must be a child process of the current process for the function to be successful.
   /// </summary>
   /// <param name="pid">The process id to verify.</param>
-  /// <param name="exitcode">The process exit code if the function is successful.</param>
+  /// <param name="exit_code">The process exit code if the function is successful.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool GetExitCode(const processid_t & pid, int & exitcode);
+  bool GetExitCode(const processid_t & pid, int & exit_code);
 
   /// <summary>
   /// Wait for the given process termination.
@@ -172,9 +172,9 @@ namespace ra { namespace process {
   /// The process must be a child process of the current process for the function to be successful.
   /// </summary>
   /// <param name="pid">The process id to wait for.</param>
-  /// <param name="exitcode">The process exit code if the function is successful.</param>
+  /// <param name="exit_code">The process exit code if the function is successful.</param>
   /// <returns>Returns true if the function is successful. Returns false otherwise.</returns>
-  bool WaitExit(const processid_t & pid, int & exitcode);
+  bool WaitExit(const processid_t & pid, int & exit_code);
 
 } //namespace process
 } //namespace ra
