@@ -26,6 +26,7 @@
 
 #include <cstdlib>  //for random
 #include <ctime>    //for random
+#include <string.h> //for strlen()
 
 namespace ra { namespace random {
 
@@ -129,13 +130,15 @@ namespace ra { namespace random {
     if (symbols == NULL)
       return;
 
-    int num_symbols = (int)strlen(symbols);
+    size_t num_symbols = strlen(symbols);
+    if (num_symbols == 0)
+      return;
 
     value.reserve(length + 1);
 
     while (value.size() < length) {
       //generate a random character from symbols
-      int index = GetRandomInt(0, num_symbols - 1);
+      int index = GetRandomInt(0, ((int)num_symbols) - 1);
       const char & c = symbols[index];
 
       //add
