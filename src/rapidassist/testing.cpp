@@ -101,11 +101,11 @@ namespace ra { namespace testing {
     return MergeFilter(positive_filter, negative_filter, NULL);
   }
 
-  std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter, const char * existing_filter) {
+  std::string MergeFilter(const std::string & positive_filter_old, const std::string & negative_filter_old, const char * existing_filter) {
     std::string filter;
 
-    std::string positive_filter = positive_filter;
-    std::string negative_filter = negative_filter;
+    std::string positive_filter = positive_filter_old;
+    std::string negative_filter = negative_filter_old;
 
     if (existing_filter) {
       std::string arg_positive_filter;
@@ -410,12 +410,11 @@ namespace ra { namespace testing {
     return false;
   }
 
-  bool GetTextFileContent(const char* path, ra::strings::StringVector & oLines) {
+  bool GetTextFileContent(const char* path, ra::strings::StringVector & lines) {
     if (path == NULL)
       return false;
 
-    std::string path = path;
-    bool success = ra::filesystem::ReadTextFile(path, oLines, true);
+    bool success = ra::filesystem::ReadTextFile(path, lines, true);
     return success;
   }
 
