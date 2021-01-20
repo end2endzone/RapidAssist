@@ -46,60 +46,60 @@ namespace ra { namespace testing {
   /// <summary>
   /// Returns true if the content of two files is identical.
   /// </summary>
-  /// <param name="iFile1">The path of the first  file.</param>
-  /// <param name="iFile2">The path of the second file.</param>
-  /// <param name="oReason">A textual reason why the files are not identical. Empty if files are identical.</param>
-  /// <param name="iMaxDifferences">The maximum number of textual differences. Use -1 for finding all differences. Use 1 to return as soon as a difference is found.</param>
+  /// <param name="file1">The path of the first  file.</param>
+  /// <param name="file2">The path of the second file.</param>
+  /// <param name="reason">A textual reason why the files are not identical. Empty if files are identical.</param>
+  /// <param name="max_differences">The maximum number of textual differences. Use -1 for finding all differences. Use 1 to return as soon as a difference is found.</param>
   /// <returns>Returns true if the content of two files is identical. Returns false otherwise.</returns>
-  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences);
+  bool IsFileEquals(const char* file1, const char* file2, std::string & reason, size_t max_differences);
 
-  inline bool IsFileEquals(const char* iFile1, const char* iFile2) { std::string reason; return IsFileEquals(iFile1, iFile2, reason, 1 /*return ASAP*/); }
-  inline bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason) { return IsFileEquals(iFile1, iFile2, oReason, 1 /*return ASAP*/); }
+  inline bool IsFileEquals(const char* file1, const char* file2) { std::string reason; return IsFileEquals(file1, file2, reason, 1 /*return ASAP*/); }
+  inline bool IsFileEquals(const char* file1, const char* file2, std::string & reason) { return IsFileEquals(file1, file2, reason, 1 /*return ASAP*/); }
 
   /// <summary>
   /// Returns the location of all differences in two files.
   /// </summary>
-  /// <param name="iFile1">The path of the first  file.</param>
-  /// <param name="iFile2">The path of the second file.</param>
-  /// <param name="oDifferences">The list of all differences within both files. Empty if files are identical.</param>
-  /// <param name="iMaxDifferences">The maximum number of differences.</param>
+  /// <param name="file1">The path of the first  file.</param>
+  /// <param name="file2">The path of the second file.</param>
+  /// <param name="differences">The output list of all differences within both files. Empty if files are identical.</param>
+  /// <param name="max_differences">The maximum number of differences.</param>
   /// <returns>Returns the location of all differences in two files. Returns false otherwise.</returns>
-  bool GetFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
+  bool GetFileDifferences(const char* file1, const char* file2, std::vector<FileDiff> & differences, size_t max_differences);
 
   /// <summary>
   /// Returns true if the given text is found in a file.
   /// </summary>
-  /// <param name="iFilename">The path of the search file.</param>
+  /// <param name="path">The path of the search file.</param>
   /// <param name="value">The search value.</param>
-  /// <param name="oLine">The line number where value is found.</param>
-  /// <param name="oCharacter">The character offset within the line.</param>
+  /// <param name="line_index">The line number where value is found.</param>
+  /// <param name="character_index">The character offset within the line.</param>
   /// <returns>Returns true if the given text is found in a file. Returns false otherwise.</returns>
-  bool FindInFile(const char* iFilename, const char* value, int & oLine, int & oCharacter);
+  bool FindInFile(const char* path, const char* value, int & line_index, int & character_index);
 
   /// <summary>
   /// Returns the content (each lines) of a file.
   /// The function is deprecated.
   /// </summary>
   /// <remarks>The function is deprecated.</remarks>
-  /// <param name="iFilename">The path of the file.</param>
-  /// <param name="oLines">The content of the file line by line.</param>
+  /// <param name="path">The path of the file.</param>
+  /// <param name="lines">The output content of the file line by line.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  DEPRECATED bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines);
+  DEPRECATED bool GetTextFileContent(const char* path, ra::strings::StringVector & lines);
 
   /// <summary>
   /// Creates a file of the given size. All bytes are sequential.
   /// </summary>
-  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="path">The path of the file.</param>
   /// <param name="size">The size in bytes of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  bool CreateFile(const char * iFilePath, size_t size);
+  bool CreateFile(const char * path, size_t size);
 
   /// <summary>
   /// Creates a text file.
   /// </summary>
-  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="path">The path of the file.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  bool CreateFile(const char * iFilePath);
+  bool CreateFile(const char * path);
 
   /// <summary>
   /// Creates a large file.
@@ -108,18 +108,18 @@ namespace ra { namespace testing {
   /// https://en.wikipedia.org/wiki/Sparse_file
   /// https://stackoverflow.com/questions/43126760/what-is-a-sparse-file-and-why-do-we-need-it
   /// </remarks>
-  /// <param name="iFilePath">The path of the file.</param>
+  /// <param name="path">The path of the file.</param>
   /// <param name="size">The size of the file, in bytes.</param>
   /// <returns>Returns true on success. Returns false otherwise.</returns>
-  bool CreateFileSparse(const char * iFilePath, uint64_t size);
+  bool CreateFileSparse(const char * path, uint64_t size);
 
   /// <summary>
   /// Modify a given byte with the specified value.
   /// </summary>
-  /// <param name="iFilePath">The path of the file.</param>
-  /// <param name="iOffset">The offset of the modified byte.</param>
+  /// <param name="path">The path of the file.</param>
+  /// <param name="offset">The offset of the modified byte.</param>
   /// <param name="value">The value of the replacement.</param>
-  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char value);
+  void ChangeFileContent(const char * path, size_t offset, unsigned char value);
 
 #ifdef RAPIDASSIST_HAVE_GTEST
   /// <summary>
@@ -133,37 +133,37 @@ namespace ra { namespace testing {
   /// calling MergeFilter("", "TestSystem.testRangingLong:TestSystem.testRangingFloat") return the filter
   /// "*-TestSystem.testRangingLong:TestSystem.testRangingFloat"
   /// </example>
-  /// <param name="iPositiveFilter">positive filter</param>
-  /// <param name="iNegativeFilter">negative filter</param>
-  /// <param name="iExistingFilter">existing filter or a pre-build filter (build from a previous call to MergeFilter)</param>
+  /// <param name="positive_filter">positive filter</param>
+  /// <param name="negative_filter">negative filter</param>
+  /// <param name="existing_filter">existing filter or a pre-build filter (build from a previous call to MergeFilter)</param>
   /// <returns>The the resulting merged gtest filter.</returns>
-  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter);
-  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv);
+  std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter, const char * existing_filter);
+  std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter, int argc, char **argv);
 
-  inline std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter) { return MergeFilter(iPositiveFilter, iNegativeFilter, NULL); }
+  inline std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter) { return MergeFilter(positive_filter, negative_filter, NULL); }
 
   /// <summary>
   /// This function split a GTEST filter into a positive and a negative filter.
   /// </summary>
-  /// <remarks>iFilter must not be NULL</remarks>
+  /// <remarks>filter must not be NULL</remarks>
   /// <example>
   /// calling SplitFilter("", ..., ...) returns the "" as positive filter and "" as negative filter
   /// calling SplitFilter("*", ..., ...) returns the "*" as positive filter and "" as negative filter
   /// calling SplitFilter("-TestLib.testCase", ..., ...) returns the "" as positive filter and "TestLib.testCase" as negative filter
   /// calling SplitFilter("TestFoo.testFoo-TestLib.testCase:TestMath.testMath", ..., ...) returns the "TestFoo.testFoo" as positive filter and "TestLib.testCase:TestMath.testMath" as negative filter
   /// </example>
-  /// <param name="iFilter">The gtest filter containing a positive and negative filter.</param>
-  /// <param name="oPositiveFilter">The positive filter in iFilter.</param>
-  /// <param name="oNegativeFilter">The negative filter in iFilter.</param>
-  void SplitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter);
+  /// <param name="filter">The gtest filter containing a positive and negative filter.</param>
+  /// <param name="positive_filter">The output positive filter in filter.</param>
+  /// <param name="negative_filter">The output negative filter in filter.</param>
+  void SplitFilter(const char * filter, std::string & positive_filter, std::string & negative_filter);
 
   /// <summary>
   /// Returns a list of all runnable test cases in a gTest compatible test.
   /// Each test case is listed in the following format: testsuite.testcase
   /// </summary>
-  /// <param name="iTestCasePath">Path to the GTest compatible executable file.</param>
+  /// <param name="path">Path to the GTest compatible executable file.</param>
   /// <returns>Returns a list of all runnable test cases in a gTest compatible test. Returns an empty string if no test was found.</returns>
-  ra::strings::StringVector GetTestList(const char * iTestCasePath);
+  ra::strings::StringVector GetTestList(const char * path);
 #endif //RAPIDASSIST_HAVE_GTEST
 
   /// <summary>

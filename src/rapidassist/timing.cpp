@@ -288,18 +288,18 @@ namespace ra { namespace timing {
     return dt;
   }
 
-  std::tm ToTimeInfo(const DateTime & iDateTime) {
+  std::tm ToTimeInfo(const DateTime & date_time) {
     std::tm time_info;
 
-    time_info.tm_year  = iDateTime.year - 1900;
-    time_info.tm_mon   = iDateTime.month - 1;
-    time_info.tm_mday  = iDateTime.day;
-    time_info.tm_hour  = iDateTime.hour;
-    time_info.tm_min   = iDateTime.min;
-    time_info.tm_sec   = iDateTime.sec;
-    time_info.tm_wday  = iDateTime.wday;
-    time_info.tm_yday  = iDateTime.yday;
-    time_info.tm_isdst = (iDateTime.isdst ? 1 : 0);
+    time_info.tm_year  = date_time.year - 1900;
+    time_info.tm_mon   = date_time.month - 1;
+    time_info.tm_mday  = date_time.day;
+    time_info.tm_hour  = date_time.hour;
+    time_info.tm_min   = date_time.min;
+    time_info.tm_sec   = date_time.sec;
+    time_info.tm_wday  = date_time.wday;
+    time_info.tm_yday  = date_time.yday;
+    time_info.tm_isdst = (date_time.isdst ? 1 : 0);
 
     return time_info;
   }

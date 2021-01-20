@@ -36,8 +36,8 @@ namespace ra { namespace testing {
 
 #ifdef _WIN32 // UTF-8
 
-  extern bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences);
-  extern bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
+  extern bool IsFileEquals(FILE* file1, FILE* file2, std::string & reason, size_t max_differences);
+  extern bool GetFileDifferences(FILE* file1, FILE* file2, std::vector<FileDiff> & differences, size_t max_differences);
 
   //
   // Description:
@@ -74,47 +74,47 @@ namespace ra { namespace testing {
     FILE * file_pointer_;
   };
 
-  bool IsFileEqualsUtf8(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences) {
+  bool IsFileEqualsUtf8(const char* file1, const char* file2, std::string & reason, size_t max_differences) {
     //Build basic message
-    oReason.clear();
-    oReason << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
+    reason.clear();
+    reason << "Comparing first file \"" << file1 << "\" with second file \"" << file2 << "\". ";
 
-    FileWrapperUtf8 f1(iFile1, "rb");
+    FileWrapperUtf8 f1(file1, "rb");
     if (f1.file_pointer_ == NULL) {
-      oReason << "First file is not found.";
+      reason << "First file is not found.";
       return false;
     }
-    FileWrapperUtf8 f2(iFile2, "rb");
+    FileWrapperUtf8 f2(file2, "rb");
     if (f2.file_pointer_ == NULL) {
-      oReason << "Second file is not found.";
+      reason << "Second file is not found.";
       return false;
     }
 
-    bool result = IsFileEquals(f1.file_pointer_, f2.file_pointer_, oReason, iMaxDifferences);
+    bool result = IsFileEquals(f1.file_pointer_, f2.file_pointer_, reason, max_differences);
     return result;
   }
 
-  bool GetFileDifferencesUtf8(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
-    FileWrapperUtf8 f1(iFile1, "rb");
+  bool GetFileDifferencesUtf8(const char* file1, const char* file2, std::vector<FileDiff> & differences, size_t max_differences) {
+    FileWrapperUtf8 f1(file1, "rb");
     if (f1.file_pointer_ == NULL)
       return false;
-    FileWrapperUtf8 f2(iFile2, "rb");
+    FileWrapperUtf8 f2(file2, "rb");
     if (f2.file_pointer_ == NULL)
       return false;
 
-    bool result = GetFileDifferences(f1.file_pointer_, f2.file_pointer_, oDifferences, iMaxDifferences);
+    bool result = GetFileDifferences(f1.file_pointer_, f2.file_pointer_, differences, max_differences);
     return result;
   }
 
-  bool FindInFileUtf8(const char* iFilename, const char* value, int & oLine, int & oCharacter) {
-    if (!ra::filesystem::FileExistsUtf8(iFilename))
+  bool FindInFileUtf8(const char* path, const char* value, int & line_index, int & character_index) {
+    if (!ra::filesystem::FileExistsUtf8(path))
       return false;
 
-    oLine = -1;
-    oCharacter = -1;
+    line_index = -1;
+    character_index = -1;
 
     ra::strings::StringVector lines;
-    bool success = ra::filesystem::ReadTextFileUtf8(iFilename, lines);
+    bool success = ra::filesystem::ReadTextFileUtf8(path, lines);
     if (!success)
       return false;
 
@@ -122,8 +122,8 @@ namespace ra { namespace testing {
       const std::string & line = lines[i];
       size_t position = line.find(value, 0);
       if (position != std::string::npos) {
-        oLine = (int)i;
-        oCharacter = (int)position;
+        line_index = (int)i;
+        character_index = (int)position;
         return true;
       }
     }
@@ -131,8 +131,8 @@ namespace ra { namespace testing {
     return false;
   }
 
-  bool CreateFileUtf8(const char * iFilePath, size_t size) {
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
+  bool CreateFileUtf8(const char * path, size_t size) {
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     FILE * f = _wfopen(pathW.c_str(), L"wb");
     if (!f)
       return false;
@@ -145,8 +145,8 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFileUtf8(const char * iFilePath) {
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
+  bool CreateFileUtf8(const char * path) {
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     FILE * f = _wfopen(pathW.c_str(), L"w");
     if (f == NULL)
       return false;
@@ -158,10 +158,10 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFileSparseUtf8(const char * iFilePath, uint64_t size) {
+  bool CreateFileSparseUtf8(const char * path, uint64_t size) {
     //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
 
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     LARGE_INTEGER large_integer;
     large_integer.QuadPart = size;
@@ -184,9 +184,9 @@ namespace ra { namespace testing {
     return true;
   }
 
-  void ChangeFileContentUtf8(const char * iFilePath, size_t iOffset, unsigned char value) {
+  void ChangeFileContentUtf8(const char * path, size_t offset, unsigned char value) {
     //read
-    std::wstring pathW = ra::unicode::Utf8ToUnicode(iFilePath);
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
     FILE * f = _wfopen(pathW.c_str(), L"rb");
     if (!f)
       return;
@@ -199,8 +199,8 @@ namespace ra { namespace testing {
     fclose(f);
 
     //modify
-    if (iOffset < (size_t)size)
-      buffer[iOffset] = value;
+    if (offset < (size_t)size)
+      buffer[offset] = value;
 
     //save
     f = _wfopen(pathW.c_str(), L"wb");
