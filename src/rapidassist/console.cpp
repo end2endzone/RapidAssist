@@ -389,9 +389,7 @@ namespace ra { namespace console {
   }
 
   void PrintAnimationCursor() {
-    PushCursorPos();
-    printf("%c", GetAnimationSprite(0.15));
-    PopCursorPos();
+    printf("%c\b", GetAnimationSprite(0.15));
   }
 
   const char * GetTextColorName(const TextColor & color) {

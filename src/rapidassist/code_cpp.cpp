@@ -40,7 +40,7 @@ namespace ra { namespace code { namespace cpp {
     const char * escape_str;
   };
   //https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
-  static const ControlCharacter gCtrlChars[] = {
+  static const ControlCharacter kCtrlChars[] = {
     {'\0',"\\0"},   //0x00, null
     {'\a',"\\a"},   //0x07, alert (bell)
     {'\b',"\\b"},   //0x08, backspace
@@ -55,7 +55,7 @@ namespace ra { namespace code { namespace cpp {
     {'\?',"\\\?"},  //0x3F
     {'\\',"\\\\"},  //0x5C
   };
-  static const size_t gNumCtrlChars = sizeof(gCtrlChars) / sizeof(gCtrlChars[0]);
+  static const size_t kNumCtrlChars = sizeof(kCtrlChars) / sizeof(kCtrlChars[0]);
 
   bool IsPrintableCharacter(const char c) {
     if (c == 39) // character ' must be escaped with \' which is not supported right now
@@ -68,8 +68,8 @@ namespace ra { namespace code { namespace cpp {
   }
 
   bool IsControlCharacter(char c) {
-    for (size_t i = 0; i < gNumCtrlChars; i++) {
-      const ControlCharacter & ctrl = gCtrlChars[i];
+    for (size_t i = 0; i < kNumCtrlChars; i++) {
+      const ControlCharacter & ctrl = kCtrlChars[i];
       if (ctrl.c == c)
         return true;
     }
@@ -93,8 +93,8 @@ namespace ra { namespace code { namespace cpp {
   }
 
   const char * GetControlCharacterEscapeString(char c) {
-    for (size_t i = 0; i < gNumCtrlChars; i++) {
-      const ControlCharacter & ctrl = gCtrlChars[i];
+    for (size_t i = 0; i < kNumCtrlChars; i++) {
+      const ControlCharacter & ctrl = kCtrlChars[i];
       if (ctrl.c == c)
         return ctrl.escape_str;
     }
