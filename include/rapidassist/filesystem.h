@@ -224,18 +224,18 @@ namespace ra { namespace filesystem {
   /// Splits a path into a directory and a filename.
   /// </summary>
   /// <param name="path">The input path to split.</param>
-  /// <param name="oDirectory">The output directory of the given path.</param>
-  /// <param name="oFilename">The output file of the given path.</param>
+  /// <param name="directory">The output directory of the given path.</param>
+  /// <param name="filename">The output file of the given path.</param>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  void SplitPath(const std::string & path, std::string & oDirectory, std::string & oFilename);
+  void SplitPath(const std::string & path, std::string & directory, std::string & filename);
 
   /// <summary>
   /// Splits a path into each element.
   /// </summary>
   /// <param name="path">The input path to split.</param>
-  /// <param name="oElements">The output list which contains all path elements.</param>
+  /// <param name="elements">The output list which contains all path elements.</param>
   /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
-  void SplitPath(const std::string & path, std::vector<std::string> & oElements);
+  void SplitPath(const std::string & path, std::vector<std::string> & elements);
 
   /// <summary>
   /// Convert an absolute path to a relative path based on the given absolute base path.
@@ -272,17 +272,17 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Returns a given size in a user friendly format and units.
   /// </summary>
-  /// <param name="iBytesSize">The size in bytes</param>
+  /// <param name="size_in_bytes">The size in bytes</param>
   /// <returns>Returns a given size in a user friendly format and units.</returns>
-  std::string GetUserFriendlySize(uint64_t iBytesSize);
+  std::string GetUserFriendlySize(uint64_t size_in_bytes);
 
   /// <summary>
   /// Returns a given size in a user friendly format and units.
   /// </summary>
-  /// <param name="iBytesSize">The size in bytes</param>
-  /// <param name="iUnit">The unit output format.</param>
+  /// <param name="size_in_bytes">The size in bytes</param>
+  /// <param name="size_unit">The unit output format.</param>
   /// <returns>Returns a given size in a user friendly format and units.</returns>
-  std::string GetUserFriendlySize(uint64_t iBytesSize, FileSizeEnum iUnit);
+  std::string GetUserFriendlySize(uint64_t size_in_bytes, FileSizeEnum size_unit);
 
   /// <summary>
   /// Returns the modified date of the given file.

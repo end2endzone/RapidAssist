@@ -462,18 +462,18 @@ namespace ra { namespace filesystem {
     return resolved;
   }
 
-  extern bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8);
+  extern bool CopyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8);
 
   bool CopyFileUtf8(const std::string & source_path, const std::string & destination_path) {
-    return copyFileInternal(source_path, destination_path, NULL, NULL, true);
+    return CopyFileInternal(source_path, destination_path, NULL, NULL, true);
   }
 
   bool CopyFileUtf8(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor) {
-    return copyFileInternal(source_path, destination_path, progress_functor, NULL, true);
+    return CopyFileInternal(source_path, destination_path, progress_functor, NULL, true);
   }
 
   bool CopyFileUtf8(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function) {
-    return copyFileInternal(source_path, destination_path, NULL, progress_function, true);
+    return CopyFileInternal(source_path, destination_path, NULL, progress_function, true);
   }
 
   bool PeekFileUtf8(const std::string & path, size_t size, std::string & data) {

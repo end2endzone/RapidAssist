@@ -538,7 +538,7 @@ namespace ra { namespace filesystem {
     return parent;
   }
 
-  std::string getShortPathFormEstimation(const std::string & path) {
+  std::string GetShortPathFormEstimation(const std::string & path) {
     std::string short_path;
 
     std::vector<std::string> path_elements;
@@ -577,7 +577,7 @@ namespace ra { namespace filesystem {
     return short_path;
   }
 
-  std::string getShortPathFormWin32(const std::string & path) {
+  std::string GetShortPathFormWin32(const std::string & path) {
     std::string short_path;
 
 #ifdef _WIN32
@@ -607,41 +607,41 @@ namespace ra { namespace filesystem {
 #ifdef WIN32
     if (FileExists(path.c_str()) || DirectoryExists(path.c_str())) {
       //file must exist to use WIN32 api
-      return getShortPathFormWin32(path);
+      return GetShortPathFormWin32(path);
     }
     else {
-      return getShortPathFormEstimation(path);
+      return GetShortPathFormEstimation(path);
     }
 #elif __linux__
     //no such thing as short path form in unix
-    return getShortPathFormEstimation(path);
+    return GetShortPathFormEstimation(path);
 #endif
   }
 
-  void SplitPath(const std::string & path, std::string & oDirectory, std::string & oFilename) {
-    oDirectory = "";
-    oFilename = "";
+  void SplitPath(const std::string & path, std::string & directory, std::string & filename) {
+    directory = "";
+    filename = "";
 
     std::size_t offset = path.find_last_of("/\\");
     if (offset != std::string::npos) {
       //found
-      oDirectory = path.substr(0, offset);
-      oFilename = path.substr(offset + 1);
+      directory = path.substr(0, offset);
+      filename = path.substr(offset + 1);
     }
     else {
-      oFilename = path;
+      filename = path;
     }
   }
 
-  void SplitPath(const std::string & path, std::vector<std::string> & oElements) {
-    oElements.clear();
+  void SplitPath(const std::string & path, std::vector<std::string> & elements) {
+    elements.clear();
     std::string s = path;
     std::string accumulator;
     for (unsigned int i = 0; i < s.size(); i++) {
       const char & c = s[i];
       if ((c == '/' || c == '\\')) {
         if (accumulator.size() > 0) {
-          oElements.push_back(accumulator);
+          elements.push_back(accumulator);
           accumulator = "";
         }
       }
@@ -649,7 +649,7 @@ namespace ra { namespace filesystem {
         accumulator += c;
     }
     if (accumulator.size() > 0) {
-      oElements.push_back(accumulator);
+      elements.push_back(accumulator);
       accumulator = "";
     }
   }
@@ -734,7 +734,7 @@ namespace ra { namespace filesystem {
     return extension;
   }
 
-  std::string GetUserFriendlySize(uint64_t iBytesSize) {
+  std::string GetUserFriendlySize(uint64_t size_in_bytes) {
     static const uint64_t kb_limit = 1024;
     static const uint64_t mb_limit = kb_limit * 1000;
     static const uint64_t gb_limit = 1024 * mb_limit;
@@ -742,26 +742,26 @@ namespace ra { namespace filesystem {
 
     FileSizeEnum preferedUnit = BYTES;
 
-    if (iBytesSize < kb_limit) {
+    if (size_in_bytes < kb_limit) {
       //bytes
     }
-    else if (iBytesSize < mb_limit) {
+    else if (size_in_bytes < mb_limit) {
       preferedUnit = KILOBYTES;
     }
-    else if (iBytesSize < gb_limit) {
+    else if (size_in_bytes < gb_limit) {
       preferedUnit = MEGABYTES;
     }
-    else if (iBytesSize < tb_limit) {
+    else if (size_in_bytes < tb_limit) {
       preferedUnit = GIGABYTES;
     }
     else {
       preferedUnit = TERABYTES;
     }
 
-    return GetUserFriendlySize(iBytesSize, preferedUnit);
+    return GetUserFriendlySize(size_in_bytes, preferedUnit);
   }
 
-  std::string GetUserFriendlySize(uint64_t iBytesSize, FileSizeEnum iUnit) {
+  std::string GetUserFriendlySize(uint64_t size_in_bytes, FileSizeEnum size_unit) {
     static const uint64_t digits_precision = 100;
     static const uint64_t factor = 1024;
     static const uint64_t kb_precision = 1;
@@ -773,21 +773,21 @@ namespace ra { namespace filesystem {
 
     //Convert size to a formatted_size
     double formatted_size = 0.0;
-    switch (iUnit) {
+    switch (size_unit) {
     case BYTES:
-      formatted_size = double(iBytesSize);
+      formatted_size = double(size_in_bytes);
       break;
     case KILOBYTES:
-      formatted_size = double(((iBytesSize*digits_precision) / factor) / kb_precision) / double(digits_precision);
+      formatted_size = double(((size_in_bytes*digits_precision) / factor) / kb_precision) / double(digits_precision);
       break;
     case MEGABYTES:
-      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / mb_precision) / double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(size_in_bytes / factor)*digits_precision) / mb_precision) / double(digits_precision);
       break;
     case GIGABYTES:
-      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / gb_precision) / double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(size_in_bytes / factor)*digits_precision) / gb_precision) / double(digits_precision);
       break;
     case TERABYTES:
-      formatted_size = double(uint64_t(uint64_t(iBytesSize / factor)*digits_precision) / tb_precision) / double(digits_precision);
+      formatted_size = double(uint64_t(uint64_t(size_in_bytes / factor)*digits_precision) / tb_precision) / double(digits_precision);
       break;
     };
 
@@ -798,10 +798,10 @@ namespace ra { namespace filesystem {
     friendly_size = buffer;
 
     //Append unit descrition to friendly_size
-    switch (iUnit) {
+    switch (size_unit) {
     case BYTES:
     {
-      friendly_size = strings::ToString(iBytesSize);
+      friendly_size = strings::ToString(size_in_bytes);
       friendly_size += " bytes";
     };
     break;
@@ -1000,7 +1000,7 @@ namespace ra { namespace filesystem {
     return resolved;
   }
 
-  bool copyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
+  bool CopyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
     uint32_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
     if (force_win32_utf8)
     {
@@ -1083,15 +1083,15 @@ namespace ra { namespace filesystem {
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path) {
-    return copyFileInternal(source_path, destination_path, NULL, NULL, false);
+    return CopyFileInternal(source_path, destination_path, NULL, NULL, false);
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor) {
-    return copyFileInternal(source_path, destination_path, progress_functor, NULL, false);
+    return CopyFileInternal(source_path, destination_path, progress_functor, NULL, false);
   }
 
   bool CopyFile(const std::string & source_path, const std::string & destination_path, ProgressReportCallback progress_function) {
-    return copyFileInternal(source_path, destination_path, NULL, progress_function, false);
+    return CopyFileInternal(source_path, destination_path, NULL, progress_function, false);
   }
 
   bool PeekFile(const std::string & path, size_t size, std::string & data) {
