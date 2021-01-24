@@ -46,7 +46,7 @@ namespace ra { namespace logging {
     if (format == NULL)
       return;
 
-    std::string logstring;
+    std::string log_str;
 
     //convert arguments to a single string
     va_list args;
@@ -55,7 +55,7 @@ namespace ra { namespace logging {
     char buffer[BUFFER_SIZE];
     buffer[0] = '\0';
     vsnprintf(buffer, BUFFER_SIZE, format, args);
-    logstring = buffer;
+    log_str = buffer;
     va_end(args);
 
     //print the single string to the console
@@ -63,13 +63,13 @@ namespace ra { namespace logging {
       return; //silence the output
 
     if (iLevel == LOG_ERROR) {
-      printf("Error: %s\n", logstring.c_str());
+      printf("Error: %s\n", log_str.c_str());
     }
     else if (iLevel == LOG_WARNING) {
-      printf("Warning: %s\n", logstring.c_str());
+      printf("Warning: %s\n", log_str.c_str());
     }
     else {
-      printf("%s\n", logstring.c_str());
+      printf("%s\n", log_str.c_str());
     }
   }
 

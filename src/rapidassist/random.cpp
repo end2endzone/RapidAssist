@@ -31,10 +31,10 @@
 namespace ra { namespace random {
 
   //Force initializing random number provider each time the application starts
-  bool initRandomProvider();
-  static bool rand_initialized = initRandomProvider();
+  bool InitRandomProvider();
+  static bool rand_initialized = InitRandomProvider();
 
-  bool initRandomProvider() {
+  bool InitRandomProvider() {
     srand((unsigned int)time(NULL));
     return true;
   }
