@@ -56,9 +56,9 @@ namespace ra { namespace logging {
   /// <summary>
   /// Prints the given arguments to the console depending on the specified logging level.
   /// </summary>
-  /// <param name="iLevel">The level of the given arguments</param>
+  /// <param name="level">The level of the given arguments</param>
   /// <param name="format">The format of the given argument. Same as printf's format.</param>
-  void Log(LoggerLevel iLevel, const char * format, ...);
+  void Log(LoggerLevel level, const char * format, ...);
 
 } //namespace logging
 } //namespace ra

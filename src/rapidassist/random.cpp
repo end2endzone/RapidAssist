@@ -119,9 +119,9 @@ namespace ra { namespace random {
     GetRandomString(oValue, length, symbols.c_str());
   }
 
-  std::string GetRandomString(size_t iMaxLen, SymbolsFlags::Flags flags) {
+  std::string GetRandomString(size_t length, SymbolsFlags::Flags flags) {
     std::string tmp;
-    GetRandomString(tmp, iMaxLen, flags);
+    GetRandomString(tmp, length, flags);
     return tmp;
   }
 

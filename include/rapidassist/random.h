@@ -68,7 +68,7 @@ namespace ra { namespace random {
   std::string GetRandomString();
 
   /// <summary>
-  /// Returns a random string with a maximum length of iMaxLen.
+  /// Returns a random string with a maximum length of 'length'.
   /// </summary>
   /// <param name="length">The length of the generated string.</param>
   /// <param name="oValue">The output generated string.</param>

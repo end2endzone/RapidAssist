@@ -44,7 +44,7 @@ namespace ra { namespace strings {
 
   //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
   template <class T>
-  inline std::string toStringT(const T & t) {
+  inline std::string ToStringT(const T & t) {
     std::stringstream out;
     out << t;
     const std::string & s = out.str();
@@ -52,35 +52,35 @@ namespace ra { namespace strings {
   }
 
   template <class T>
-  inline void parseT(const std::string & value, T & t) {
+  inline void ParseT(const std::string & value, T & t) {
     std::istringstream input_stream(value);
     input_stream >> t;
   }
 
   //specializations
   template<>
-  inline std::string toStringT<unsigned char>(const unsigned char & t) {
+  inline std::string ToStringT<unsigned char>(const unsigned char & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<char>(const char & t) {
+  inline std::string ToStringT<char>(const char & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<int8_t>(const int8_t & t) {
+  inline std::string ToStringT<int8_t>(const int8_t & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<float>(const float & t) {
+  inline std::string ToStringT<float>(const float & t) {
     //To get a lossless conversion from float to string, a precision of at least 8 is required.
     //However, in order to get the maximum number of digits while printing the number (((float)14263 / 32767) + 1000000.0f), which is displayed as 1000000.4 in Visual Studio 2010, a precision of 11 is required.
     //If we ToString() using different precision, we get the following:
@@ -168,7 +168,7 @@ namespace ra { namespace strings {
     return s;
   }
   template<>
-  inline std::string toStringT<double>(const double & t) {
+  inline std::string ToStringT<double>(const double & t) {
     //note lossless conversion
     std::stringstream out;
     out << std::setprecision(DOUBLE_TOSTRING_LOSSLESS_PRECISION) << t;
@@ -177,21 +177,21 @@ namespace ra { namespace strings {
   }
 
   template<>
-  inline void parseT<unsigned char>(const std::string & value, unsigned char & t) {
+  inline void ParseT<unsigned char>(const std::string & value, unsigned char & t) {
     std::istringstream input_stream(value);
     uint16_t tmp = 0;
     input_stream >> tmp;
     t = (unsigned char)tmp;
   }
   template<>
-  inline void parseT<char>(const std::string & value, char & t) {
+  inline void ParseT<char>(const std::string & value, char & t) {
     std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
     t = (char)tmp;
   }
   template<>
-  inline void parseT<int8_t>(const std::string & value, int8_t & t) {
+  inline void ParseT<int8_t>(const std::string & value, int8_t & t) {
     std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
@@ -199,7 +199,7 @@ namespace ra { namespace strings {
   }
 
   template <typename T>
-  inline std::string toStringDigits(const T & t, int num_digits) {
+  inline std::string ToStringDigits(const T & t, int num_digits) {
     if (num_digits < 0)
       num_digits = 0;
     if (num_digits > 99)
@@ -241,12 +241,12 @@ namespace ra { namespace strings {
       const char & c = value[offset];
       if (c >= '0' && c <= '9')
         continue; //valid
-      if (c == '.' && !found_dot) {
+      else if (c == '.' && !found_dot) {
         //only 1 dot character must be found in the string
         found_dot = true;
         continue; //valid
       }
-      if ((c == '+' || c == '-')) {
+      else if ((c == '+' || c == '-')) {
         if (offset == 0) {
           //+ or - sign are accepted but must be the first character of the value
           continue; //valid
@@ -283,25 +283,25 @@ namespace ra { namespace strings {
   }
 
   //default base type excepted floating points
-  std::string ToString(const   int8_t & value) { return toStringT(value); }
-  std::string ToString(const  uint8_t & value) { return toStringT(value); }
-  std::string ToString(const  int16_t & value) { return toStringT(value); }
-  std::string ToString(const uint16_t & value) { return toStringT(value); }
-  std::string ToString(const  int32_t & value) { return toStringT(value); }
-  std::string ToString(const uint32_t & value) { return toStringT(value); }
-  std::string ToString(const  int64_t & value) { return toStringT(value); }
-  std::string ToString(const uint64_t & value) { return toStringT(value); }
+  std::string ToString(const   int8_t & value) { return ToStringT(value); }
+  std::string ToString(const  uint8_t & value) { return ToStringT(value); }
+  std::string ToString(const  int16_t & value) { return ToStringT(value); }
+  std::string ToString(const uint16_t & value) { return ToStringT(value); }
+  std::string ToString(const  int32_t & value) { return ToStringT(value); }
+  std::string ToString(const uint32_t & value) { return ToStringT(value); }
+  std::string ToString(const  int64_t & value) { return ToStringT(value); }
+  std::string ToString(const uint64_t & value) { return ToStringT(value); }
 
   //floating point, lossless conversion
-  std::string ToStringLossless(const    float & value) { return toStringT(value); }
-  std::string ToStringLossless(const   double & value) { return toStringT(value); }
+  std::string ToStringLossless(const    float & value) { return ToStringT(value); }
+  std::string ToStringLossless(const   double & value) { return ToStringT(value); }
 
   //floating point, lossy conversion
   std::string ToStringLossy(const    float & value, const  float & epsilon) {
     for (int digits = 0; digits < FLOAT_TOSTRING_LOSSLESS_PRECISION; digits++) {
       const std::string & str = ToStringFormatted(value, digits);
       float parsed_value = 0.0f;
-      parseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+      ParseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
       float diff = std::abs(parsed_value - value);
       if (diff <= epsilon) {
         //this is the shortest representation
@@ -317,7 +317,7 @@ namespace ra { namespace strings {
     for (int digits = 0; digits < DOUBLE_TOSTRING_LOSSLESS_PRECISION; digits++) {
       const std::string & str = ToStringFormatted(value, digits);
       double parsed_value = 0.0;
-      parseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+      ParseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
       double diff = std::abs(parsed_value - value);
       if (diff <= epsilon) {
         //this is the shortest representation
@@ -331,11 +331,11 @@ namespace ra { namespace strings {
 
   //floating point, formatted output
   std::string ToStringFormatted(const    float & value, int digits) {
-    const std::string & tmp = toStringDigits(value, digits);
+    const std::string & tmp = ToStringDigits(value, digits);
     return tmp;
   }
   std::string ToStringFormatted(const   double & value, int digits) {
-    const std::string & tmp = toStringDigits(value, digits);
+    const std::string & tmp = ToStringDigits(value, digits);
     return tmp;
   }
 
@@ -357,16 +357,16 @@ namespace ra { namespace strings {
     return false;
   }
 
-  bool Parse(const std::string& str, int8_t &   value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint8_t &  value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int16_t &  value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint16_t & value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int32_t &  value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint32_t & value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int64_t &  value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint64_t & value) { parseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, float &    value) { parseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, double &   value) { parseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int8_t &   value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint8_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int16_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint16_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int32_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint32_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int64_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint64_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, float &    value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, double &   value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
   bool Parse(const std::string& str, bool &     value) {
     //first try to parse the value as a string
     std::string upper_str = ra::strings::Uppercase(str);

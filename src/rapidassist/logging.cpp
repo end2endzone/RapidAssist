@@ -42,7 +42,7 @@ namespace ra { namespace logging {
     return quiet_mode;
   }
 
-  void Log(LoggerLevel iLevel, const char * format, ...) {
+  void Log(LoggerLevel level, const char * format, ...) {
     if (format == NULL)
       return;
 
@@ -59,13 +59,13 @@ namespace ra { namespace logging {
     va_end(args);
 
     //print the single string to the console
-    if (iLevel == LOG_INFO && quiet_mode)
+    if (level == LOG_INFO && quiet_mode)
       return; //silence the output
 
-    if (iLevel == LOG_ERROR) {
+    if (level == LOG_ERROR) {
       printf("Error: %s\n", log_str.c_str());
     }
-    else if (iLevel == LOG_WARNING) {
+    else if (level == LOG_WARNING) {
       printf("Warning: %s\n", log_str.c_str());
     }
     else {
