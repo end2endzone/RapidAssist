@@ -256,7 +256,7 @@ namespace ra { namespace testing {
         //test case
         std::string full_test_case_name;
         full_test_case_name.append(test_suite_name);
-        full_test_case_name.append(subString2(line, 2, 999));
+        full_test_case_name.append(line.substr(2, 999));
         test_list.push_back(full_test_case_name);
       }
       else {
