@@ -53,17 +53,17 @@ namespace ra { namespace testing {
     }
 
     ~FileWrapperUtf8() {
-      close();
+      Close();
     }
 
-    bool isEOF() {
+    bool IsEof() {
       if (file_pointer_ == NULL)
         return true;
       //http://www.cplusplus.com/reference/cstdio/feof/
       return (feof(file_pointer_) != 0);
     }
 
-    void close() {
+    void Close() {
       if (file_pointer_) {
         fclose(file_pointer_);
         file_pointer_ = NULL;
@@ -195,7 +195,7 @@ namespace ra { namespace testing {
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;
-    size_t byteRead = fread(buffer, 1, size, f);
+    size_t byte_read = fread(buffer, 1, size, f);
     fclose(f);
 
     //modify
@@ -206,7 +206,7 @@ namespace ra { namespace testing {
     f = _wfopen(pathW.c_str(), L"wb");
     if (!f)
       return;
-    size_t byteWrite = fwrite(buffer, 1, size, f);
+    size_t byte_write = fwrite(buffer, 1, size, f);
     fclose(f);
   }
 

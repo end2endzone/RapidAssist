@@ -61,20 +61,20 @@ namespace ra { namespace testing {
     }
 
     ~FileWrapper() {
-      close();
+      Close();
     }
 
-    static bool isEOF(FILE * f) {
+    static bool IsEof(FILE * f) {
       if (f == NULL)
         return true;
       //http://www.cplusplus.com/reference/cstdio/feof/
       return (feof(f) != 0);
     }
-    bool isEOF() {
-      return FileWrapper::isEOF(file_pointer_);
+    bool IsEof() {
+      return FileWrapper::IsEof(file_pointer_);
     }
 
-    void close() {
+    void Close() {
       if (file_pointer_) {
         fclose(file_pointer_);
         file_pointer_ = NULL;
@@ -352,7 +352,7 @@ namespace ra { namespace testing {
     size_t offsetRead = 0;
 
     //while there is data to read in files
-    while (!FileWrapper::isEOF(file1) && !FileWrapper::isEOF(file2)) {
+    while (!FileWrapper::IsEof(file1) && !FileWrapper::IsEof(file2)) {
       size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, file1);
       size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, file2);
       if (readSize1 != readSize2) {
@@ -518,7 +518,7 @@ namespace ra { namespace testing {
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;
-    size_t byteRead = fread(buffer, 1, size, f);
+    size_t byte_read = fread(buffer, 1, size, f);
     fclose(f);
 
     //modify
@@ -529,7 +529,7 @@ namespace ra { namespace testing {
     f = fopen(path, "wb");
     if (!f)
       return;
-    size_t byteWrite = fwrite(buffer, 1, size, f);
+    size_t byte_write = fwrite(buffer, 1, size, f);
     fclose(f);
   }
 
