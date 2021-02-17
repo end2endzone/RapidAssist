@@ -85,12 +85,6 @@ namespace ra { namespace testing {
     FILE * file_pointer_;
   };
 
-  std::string subString2(const std::string & iString, size_t iStart, size_t iCount) {
-    std::string tmp = iString;
-    tmp.substr(iStart, iCount);
-    return tmp;
-  }
-
 #ifdef RAPIDASSIST_HAVE_GTEST
   std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter, int argc, char **argv) {
     //find supplied --gtest_filter argument
@@ -187,9 +181,10 @@ namespace ra { namespace testing {
     if (!ra::filesystem::FileExists(path))
       return ra::strings::StringVector();
 
-    static const std::string log_filename = "gTestHelper.tmp";
+    const std::string log_filename = ra::filesystem::GetTemporaryFileName();
 
     std::string command_line;
+#ifdef _WIN32
     command_line.append("cmd /c \"");
     command_line.append("\"");
     command_line.append(path);
@@ -200,11 +195,32 @@ namespace ra { namespace testing {
     command_line.append("\"");
     command_line.append(log_filename);
     command_line.append("\"");
+#elif __linux__
+    command_line.append("\"");
+    command_line.append(path);
+    command_line.append("\"");
+    command_line.append(" --gtest_list_tests");
+    command_line.append(" 2>NUL");
+    command_line.append(" 1>");
+    command_line.append("\"");
+    command_line.append(log_filename);
+    command_line.append("\"");
+#endif //_WIN32
 
     //exec
     int return_code = system(command_line.c_str());
+#ifdef _WIN32
+    int exit_code = system(command_line.c_str());
+#elif __linux__
+    //Run the new process and log the output
+    int system_result = system(command_line.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+#endif //_WIN32
     if (return_code != 0)
+    {
+      printf("Failed running command: %s\n", command_line.c_str());
       return ra::strings::StringVector();
+    }
 
     if (!ra::filesystem::FileExists(log_filename.c_str()))
       return ra::strings::StringVector();
@@ -217,17 +233,26 @@ namespace ra { namespace testing {
     std::string test_case_name;
     FILE * f = fopen(log_filename.c_str(), "r");
     if (!f)
+    {
+      ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
       return ra::strings::StringVector();
+    }
 
-    static const int BUFFER_SIZE = 1024;
-    char buffer[BUFFER_SIZE];
-    while (fgets(buffer, BUFFER_SIZE, f)) {
-      std::string line = buffer;
-      line.substr(0, line.size() - 1); //remove CRLF at the end of the 
-      if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header) {
+    ra::strings::StringVector lines;
+    bool success = ra::filesystem::ReadTextFile(log_filename, lines);
+    if (!success)
+    {
+      ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
+      return ra::strings::StringVector();
+    }
+    
+    for(size_t i=0; i<lines.size(); i++)
+    {
+      const std::string line = lines[i];
+      if (line.substr(0, disabled_test_case_header.size()) == disabled_test_case_header) {
         //do nothing
       }
-      else if (subString2(line, 0, 2) == "  ") {
+      else if (line.substr(0, 2) == "  ") {
         //test case
         std::string full_test_case_name;
         full_test_case_name.append(test_suite_name);
@@ -237,7 +262,7 @@ namespace ra { namespace testing {
       else {
         //test suite name
         test_suite_name = "";
-        if (subString2(line, 0, disabled_test_suite_header.size()) == disabled_test_suite_header) {
+        if (line.substr(0, disabled_test_suite_header.size()) == disabled_test_suite_header) {
           //disabled test suite
         }
         else {
@@ -249,10 +274,7 @@ namespace ra { namespace testing {
     fclose(f);
 
     //delete log file
-    int remove_result = remove(log_filename.c_str());
-
-    //exec
-    return_code = system(command_line.c_str());
+    ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
 
     return test_list;
   }
