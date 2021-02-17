@@ -30,7 +30,7 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
-#include <windows.h> // for Sleep()
+#include <Windows.h> // for Sleep()
 #include "rapidassist/undef_windows_macros.h"
 #elif _POSIX_C_SOURCE >= 199309L
 #include <time.h>   // for nanosleep()
@@ -361,8 +361,8 @@ _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
     size_t last_space_index = compilation_date_str.find_last_of(" ");
     if (last_space_index == std::string::npos)
       return DEFAULT_YEAR;
-    const char * yearStr = &compilation_date_str[last_space_index + 1];
-    int year = atoi(yearStr);
+    const char * year_str = &compilation_date_str[last_space_index + 1];
+    int year = atoi(year_str);
     return year;
   }
 

@@ -371,18 +371,18 @@ namespace ra { namespace testing {
     static const size_t BUFFER_SIZE = 1024;
     char buffer1[BUFFER_SIZE];
     char buffer2[BUFFER_SIZE];
-    size_t offsetRead = 0;
+    size_t offset_read = 0;
 
     //while there is data to read in files
     while (!FileWrapper::IsEof(file1) && !FileWrapper::IsEof(file2)) {
-      size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, file1);
-      size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, file2);
-      if (readSize1 != readSize2) {
+      size_t read_size1 = fread(buffer1, 1, BUFFER_SIZE, file1);
+      size_t read_size2 = fread(buffer2, 1, BUFFER_SIZE, file2);
+      if (read_size1 != read_size2) {
         //this should not happend since both files are identical in length.
         return false; //failed
       }
-      bool contentEquals = memcmp(buffer1, buffer2, readSize1) == 0;
-      if (!contentEquals) {
+      bool content_equals = memcmp(buffer1, buffer2, read_size1) == 0;
+      if (!content_equals) {
         //current buffers are different
 
         //Find differences and build file diff info.
@@ -391,7 +391,7 @@ namespace ra { namespace testing {
           unsigned char c2 = (unsigned char)buffer2[i];
           if (c1 != c2) {
             FileDiff d;
-            d.offset = offsetRead + i;
+            d.offset = offset_read + i;
             d.c1 = c1;
             d.c2 = c2;
             differences.push_back(d);
@@ -402,7 +402,7 @@ namespace ra { namespace testing {
           }
         }
       }
-      offsetRead += readSize1;
+      offset_read += read_size1;
     }
     return true;
   }

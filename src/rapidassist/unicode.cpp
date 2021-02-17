@@ -188,9 +188,9 @@ namespace ra { namespace unicode {
     int num_characters = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
     if (num_characters == 0)
       return EMPTY_STRING;
-    std::string strTo(num_characters, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], num_characters, NULL, NULL);
-    return strTo;
+    std::string output(num_characters, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &output[0], num_characters, NULL, NULL);
+    return output;
   }
 
   // Convert an UTF8 string to a wide Unicode String
@@ -200,9 +200,9 @@ namespace ra { namespace unicode {
     int num_characters = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
     if (num_characters == 0)
       return EMPTY_WIDE_STRING;
-    std::wstring wstrTo(num_characters, 0);
-    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], num_characters);
-    return wstrTo;
+    std::wstring output(num_characters, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &output[0], num_characters);
+    return output;
   }
 
   // Convert an wide Unicode string to ANSI string
@@ -212,9 +212,9 @@ namespace ra { namespace unicode {
     int num_characters = WideCharToMultiByte(CP_ACP, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
     if (num_characters == 0)
       return EMPTY_STRING;
-    std::string strTo(num_characters, 0);
-    WideCharToMultiByte(CP_ACP, 0, &wstr[0], (int)wstr.size(), &strTo[0], num_characters, NULL, NULL);
-    return strTo;
+    std::string output(num_characters, 0);
+    WideCharToMultiByte(CP_ACP, 0, &wstr[0], (int)wstr.size(), &output[0], num_characters, NULL, NULL);
+    return output;
   }
 
   // Convert an ANSI string to a wide Unicode String
@@ -224,9 +224,9 @@ namespace ra { namespace unicode {
     int num_characters = MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), NULL, 0);
     if (num_characters == 0)
       return EMPTY_WIDE_STRING;
-    std::wstring wstrTo(num_characters, 0);
-    MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), &wstrTo[0], num_characters);
-    return wstrTo;
+    std::wstring output(num_characters, 0);
+    MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), &output[0], num_characters);
+    return output;
   }
 
   std::string Utf8ToAnsi(const std::string & str)

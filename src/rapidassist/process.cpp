@@ -33,7 +33,7 @@
 //#   ifndef WIN32_LEAN_AND_MEAN
 //#   define WIN32_LEAN_AND_MEAN 1
 //#   endif
-#   include <windows.h> // for GetModuleHandleEx()
+#   include <Windows.h> // for GetModuleHandleEx()
 #   include "rapidassist/undef_windows_macros.h"
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )

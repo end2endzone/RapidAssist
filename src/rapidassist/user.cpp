@@ -27,7 +27,7 @@
 
 #ifdef WIN32
 #   include <Shlobj.h>
-#   include <windows.h>
+#   include <Windows.h>
 #   include "rapidassist/undef_windows_macros.h"
 #   include <Lmcons.h>
 #else
@@ -41,7 +41,7 @@
 namespace ra { namespace user {
 
 #ifdef _WIN32
-  inline std::string getWin32Directory(int csidl) {
+  inline std::string GetWin32Directory(int csidl) {
     // https://stackoverflow.com/questions/18493484/shgetfolderpath-deprecated-what-is-alternative-to-retrieve-path-for-windows-fol
     // https://superuser.com/questions/150012/what-is-the-difference-between-local-and-roaming-folders
     // CSIDL_PROFILE          matches "C:\Users\JohnSmith"
@@ -60,7 +60,7 @@ namespace ra { namespace user {
 
   std::string GetHomeDirectory() {
 #ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_PROFILE);
+    const std::string & dir = GetWin32Directory(CSIDL_PROFILE);
     return dir;
 #else
     //https://stackoverflow.com/questions/1610203/unix-programming-not-sure-how-to-use-the-passwd-struct
@@ -86,7 +86,7 @@ namespace ra { namespace user {
 
   std::string GetApplicationsDataDirectory() {
 #ifdef _WIN32
-   const std::string & dir = getWin32Directory(CSIDL_LOCAL_APPDATA);
+   const std::string & dir = GetWin32Directory(CSIDL_LOCAL_APPDATA);
     return dir;
 #else
     return "/usr/share";
@@ -95,7 +95,7 @@ namespace ra { namespace user {
 
   std::string GetDocumentsDirectory() {
 #ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_PERSONAL);
+    const std::string & dir = GetWin32Directory(CSIDL_PERSONAL);
     return dir;
 #else
     return std::string(GetHomeDirectory()) + "/Documents";
@@ -104,7 +104,7 @@ namespace ra { namespace user {
 
   std::string GetDesktopDirectory() {
 #ifdef _WIN32
-    const std::string & dir = getWin32Directory(CSIDL_DESKTOPDIRECTORY);
+    const std::string & dir = GetWin32Directory(CSIDL_DESKTOPDIRECTORY);
     return dir;
 #else
     return std::string(GetHomeDirectory()) + "/Desktop";

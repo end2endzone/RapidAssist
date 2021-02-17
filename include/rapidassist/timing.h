@@ -50,9 +50,9 @@ namespace ra { namespace timing {
   /// <summary>
   /// Converts a std::tm structure to a DateTime structure.
   /// </summary>
-  /// <param name="timeinfo">The given std::tm value.</param>
+  /// <param name="time_info">The given std::tm value.</param>
   /// <returns>Returns a DateTime structure matching the given std::tm info.</returns>
-  DateTime ToDateTime(const std::tm & timeinfo);
+  DateTime ToDateTime(const std::tm & time_info);
 
   /// <summary>
   /// Converts a DateTime structure to a std::tm structure.
