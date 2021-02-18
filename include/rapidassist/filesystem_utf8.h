@@ -107,19 +107,19 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
-  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="files">The list of files found.</param>
   /// <param name="path">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
-  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth);
+  /// <param name="depth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when files contains the list of files from directory path. Returns false otherwise.</returns>
+  bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth);
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
-  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="files">The list of files found.</param>
   /// <param name="path">An valid directory path.</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path) { return FindFilesUtf8(oFiles, path, -1); }
+  /// <returns>Returns true when files contains the list of files from directory path. Returns false otherwise.</returns>
+  inline bool FindFilesUtf8(ra::strings::StringVector & files, const char * path) { return FindFilesUtf8(files, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.
@@ -403,23 +403,23 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
-  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="files">The list of files found.</param>
   /// <param name="path">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
+  /// <param name="depth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when files contains the list of files from directory path. Returns false otherwise.</returns>
   /// <remarks>
   /// On Linux, this function delegates to the non-utf8 function (the function with the same name without the 'Utf8' postfix).
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth) { return FindFiles(oFiles, path, iDepth); }
+  inline bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth) { return FindFiles(files, path, depth); }
 
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
-  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="files">The list of files found.</param>
   /// <param name="path">An valid directory path.</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
-  inline bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path) { return FindFilesUtf8(oFiles, path, -1); }
+  /// <returns>Returns true when files contains the list of files from directory path. Returns false otherwise.</returns>
+  inline bool FindFilesUtf8(ra::strings::StringVector & files, const char * path) { return FindFilesUtf8(files, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.

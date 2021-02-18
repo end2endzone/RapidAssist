@@ -134,12 +134,12 @@ namespace ra { namespace filesystem {
   /// <summary>
   /// Find files in a directory / subdirectory.
   /// </summary>
-  /// <param name="oFiles">The list of files found.</param>
+  /// <param name="files">The list of files found.</param>
   /// <param name="path">An valid directory path.</param>
-  /// <param name="iDepth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
-  /// <returns>Returns true when oFiles contains the list of files from directory path. Returns false otherwise.</returns>
-  bool FindFiles(ra::strings::StringVector & oFiles, const char * path, int iDepth);
-  inline bool FindFiles(ra::strings::StringVector & oFiles, const char * path) { return FindFiles(oFiles, path, -1); }
+  /// <param name="depth">The search depth. Use 0 for finding files in directory path (without subdirectories). Use -1 for find all files in directory path (including subdirectories).</param>
+  /// <returns>Returns true when files contains the list of files from directory path. Returns false otherwise.</returns>
+  bool FindFiles(ra::strings::StringVector & files, const char * path, int depth);
+  inline bool FindFiles(ra::strings::StringVector & files, const char * path) { return FindFiles(files, path, -1); }
 
   /// <summary>
   /// Finds a file using the PATH environment variable.

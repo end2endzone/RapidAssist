@@ -46,9 +46,9 @@ namespace ra { namespace testing {
   // 
   class FileWrapperUtf8 {
   public:
-    FileWrapperUtf8(const char * path, const char * iMode) {
+    FileWrapperUtf8(const char * path, const char * mode) {
       std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
-      std::wstring modeW = ra::unicode::Utf8ToUnicode(iMode);
+      std::wstring modeW = ra::unicode::Utf8ToUnicode(mode);
       file_pointer_ = _wfopen(pathW.c_str(), modeW.c_str());
     }
 

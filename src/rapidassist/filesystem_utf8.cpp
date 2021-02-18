@@ -175,9 +175,9 @@ namespace ra { namespace filesystem {
   }
 
   //declared in filesystem.cpp
-  extern bool ProcessDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth, bool use_utf8);
+  extern bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & iFilename, bool is_directory, int depth, bool use_utf8);
 
-  bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth) {
+  bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth) {
     if (path == NULL)
       return false;
 
@@ -199,7 +199,7 @@ namespace ra { namespace filesystem {
     std::string filename_utf8 = ra::unicode::UnicodeToUtf8(filenameW); //convert from Wide character (Unicode) to UTF-8
     bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
     bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-    bool result = ProcessDirectoryEntry(oFiles, path, filename_utf8, is_directory, iDepth, true);
+    bool result = ProcessDirectoryEntry(files, path, filename_utf8, is_directory, depth, true);
     if (!result) {
       //Warning: Current user is not able to browse this directory.
       //For instance:
@@ -219,7 +219,7 @@ namespace ra { namespace filesystem {
       filename_utf8 = ra::unicode::UnicodeToUtf8(filenameW); //convert from Wide character (Unicode) to UTF-8
       bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
       bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = ProcessDirectoryEntry(oFiles, path, filename_utf8, is_directory, iDepth, true);
+      bool result = ProcessDirectoryEntry(files, path, filename_utf8, is_directory, depth, true);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }

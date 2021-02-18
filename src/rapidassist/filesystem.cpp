@@ -95,10 +95,10 @@ namespace ra { namespace filesystem {
   uint32_t GetFileSize(FILE * f) {
     if (f == NULL)
       return 0;
-    long initPos = ftell(f);
+    long init_pos = ftell(f);
     fseek(f, 0, SEEK_END);
     long size = ftell(f);
-    fseek(f, initPos, SEEK_SET);
+    fseek(f, init_pos, SEEK_SET);
     return size;
   }
 
@@ -216,34 +216,34 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  extern bool FindFilesUtf8(ra::strings::StringVector & oFiles, const char * path, int iDepth);
+  extern bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth);
 
   //shared cross-platform code for FindFiles().
-  bool ProcessDirectoryEntry(ra::strings::StringVector & oFiles, const char * iDirectoryPath, const std::string & iFilename, bool is_directory, int iDepth, bool use_utf8) {
+  bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & iFilename, bool is_directory, int depth, bool use_utf8) {
     //is it a valid item ?
     if (iFilename != "." && iFilename != "..") {
       //build full path
-      std::string full_filename = iDirectoryPath;
+      std::string full_filename = directory_path;
       NormalizePath(full_filename);
       full_filename.append(GetPathSeparatorStr());
       full_filename.append(iFilename);
 
       //add this path to the list
-      oFiles.push_back(full_filename);
+      files.push_back(full_filename);
 
       //should we recurse on directory ?
-      if (is_directory && iDepth != 0) {
+      if (is_directory && depth != 0) {
         //compute new depth
-        int sub_depth = iDepth - 1;
+        int sub_depth = depth - 1;
         if (sub_depth < -1)
           sub_depth = -1;
 
         //find children
         bool result = false;
         if (!use_utf8)
-          result = FindFiles(oFiles, full_filename.c_str(), sub_depth);
+          result = FindFiles(files, full_filename.c_str(), sub_depth);
         else
-          result = FindFilesUtf8(oFiles, full_filename.c_str(), sub_depth);
+          result = FindFilesUtf8(files, full_filename.c_str(), sub_depth);
         if (!result) {
           return false;
         }
@@ -253,7 +253,7 @@ namespace ra { namespace filesystem {
     return true;
   }
 
-  bool FindFiles(ra::strings::StringVector & oFiles, const char * path, int iDepth) {
+  bool FindFiles(ra::strings::StringVector & files, const char * path, int depth) {
     if (path == NULL)
       return false;
 
@@ -273,7 +273,7 @@ namespace ra { namespace filesystem {
     std::string filename = find_data.cFileName;
     bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
     bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-    bool result = ProcessDirectoryEntry(oFiles, path, filename, is_directory, iDepth, false);
+    bool result = ProcessDirectoryEntry(files, path, filename, is_directory, depth, false);
     if (!result) {
       //Warning: Current user is not able to browse this directory.
       //For instance:
@@ -292,7 +292,7 @@ namespace ra { namespace filesystem {
       filename = find_data.cFileName;
       bool is_directory = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
       bool is_junction = ((find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0); //or JUNCTION, SYMLINK or MOUNT_POINT
-      bool result = ProcessDirectoryEntry(oFiles, path, filename, is_directory, iDepth, false);
+      bool result = ProcessDirectoryEntry(files, path, filename, is_directory, depth, false);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
@@ -310,7 +310,7 @@ namespace ra { namespace filesystem {
       std::string filename = dirp->d_name;
 
       bool is_directory = (dirp->d_type == DT_DIR);
-      bool result = ProcessDirectoryEntry(oFiles, path, filename, is_directory, iDepth, false);
+      bool result = ProcessDirectoryEntry(files, path, filename, is_directory, depth, false);
       if (!result) {
         //Warning: Current user is not able to browse this directory.
       }
