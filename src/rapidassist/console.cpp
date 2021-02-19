@@ -71,13 +71,13 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    col = csbiInfo.dwCursorPosition.X;
-    row = csbiInfo.dwCursorPosition.Y;
+    col = csbi.dwCursorPosition.X;
+    row = csbi.dwCursorPosition.Y;
 #elif __linux__
     //flush whatever was printed before
     fflush(stdout);
@@ -178,13 +178,13 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    width = (int)csbiInfo.dwMaximumWindowSize.X;
-    height = (int)csbiInfo.dwMaximumWindowSize.Y;
+    width = (int)csbi.dwMaximumWindowSize.X;
+    height = (int)csbi.dwMaximumWindowSize.Y;
 #elif __linux__
     struct winsize ws;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
@@ -329,24 +329,24 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
     COORD coord = { 0 , 0 };
     DWORD number_of_chars_written;
     DWORD length;
-    length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+    length = csbi.dwSize.X * csbi.dwSize.Y;
     if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), length, coord, &number_of_chars_written)) {
       printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, length, coord, &number_of_chars_written)) {
+    if (!FillConsoleOutputAttribute(hStdout, csbi.wAttributes, length, coord, &number_of_chars_written)) {
       printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
@@ -378,20 +378,18 @@ namespace ra { namespace console {
     }
   }
 
-  char GetAnimationSprite(double iRefreshRate) {
+  char GetAnimationSprite(double refresh_rate) {
     static const char animation_sprites[] = { '-', '\\', '|', '/' };
     static const int num_animation_sprites = sizeof(animation_sprites) / sizeof(animation_sprites[0]);
     double seconds = ra::timing::GetMillisecondsTimer(); //already seconds
-    int sprite_index = (int)(seconds / iRefreshRate);
+    int sprite_index = (int)(seconds / refresh_rate);
     sprite_index = sprite_index % num_animation_sprites;
     char sprite = animation_sprites[sprite_index];
     return sprite;
   }
 
   void PrintAnimationCursor() {
-    PushCursorPos();
-    printf("%c", GetAnimationSprite(0.15));
-    PopCursorPos();
+    printf("%c\b", GetAnimationSprite(0.15));
   }
 
   const char * GetTextColorName(const TextColor & color) {
@@ -508,10 +506,10 @@ namespace ra { namespace console {
     return "Unknown";
   }
 
-  void SetTextColor(const TextColor & iForeground, const TextColor & iBackground) {
+  void SetTextColor(const TextColor & foreground, const TextColor & background) {
 #ifdef _WIN32
     WORD foreground_attribute = 0;
-    switch (iForeground) {
+    switch (foreground) {
     case BLACK:
       foreground_attribute = 0;
       break;
@@ -563,7 +561,7 @@ namespace ra { namespace console {
     };
 
     WORD background_attribute = 0;
-    switch (iBackground) {
+    switch (background) {
     case BLACK:
       background_attribute = 0;
       break;
@@ -630,7 +628,7 @@ namespace ra { namespace console {
     ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::DEFAULT;
 
     //foreground
-    switch (iForeground) {
+    switch (foreground) {
     case BLACK:
       ansi_foreground = ansi::ForegroundColor::BLACK;
       break;
@@ -682,7 +680,7 @@ namespace ra { namespace console {
     };
 
     //background
-    switch (iBackground) {
+    switch (background) {
     case BLACK:
       ansi_background = ansi::BackgroundColor::BLACK;
       break;
@@ -738,9 +736,9 @@ namespace ra { namespace console {
 #endif
   }
 
-  void GetTextColor(TextColor & oForeground, TextColor & oBackground) {
-    oForeground = GRAY;
-    oBackground = BLACK;
+  void GetTextColor(TextColor & foreground, TextColor & background) {
+    foreground = GRAY;
+    background = BLACK;
 
 #ifdef _WIN32
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -748,122 +746,122 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
 
-    DWORD foreground_info = csbiInfo.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-    DWORD background_info = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+    DWORD foreground_info = csbi.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    DWORD background_info = csbi.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
     //foreground
     switch (foreground_info) {
     case 0:
-      oForeground = BLACK;
+      foreground = BLACK;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = WHITE;
+      foreground = WHITE;
       break;
     case FOREGROUND_BLUE:
-      oForeground = DARK_BLUE;
+      foreground = DARK_BLUE;
       break;
     case FOREGROUND_GREEN:
-      oForeground = DARK_GREEN;
+      foreground = DARK_GREEN;
       break;
     case FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = DARK_CYAN;
+      foreground = DARK_CYAN;
       break;
     case FOREGROUND_RED:
-      oForeground = DARK_RED;
+      foreground = DARK_RED;
       break;
     case FOREGROUND_RED | FOREGROUND_BLUE:
-      oForeground = DARK_MAGENTA;
+      foreground = DARK_MAGENTA;
       break;
     case FOREGROUND_RED | FOREGROUND_GREEN:
-      oForeground = DARK_YELLOW;
+      foreground = DARK_YELLOW;
       break;
     case FOREGROUND_INTENSITY:
-      oForeground = DARK_GRAY;
+      foreground = DARK_GRAY;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_BLUE:
-      oForeground = BLUE;
+      foreground = BLUE;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_GREEN:
-      oForeground = GREEN;
+      foreground = GREEN;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = CYAN;
+      foreground = CYAN;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_RED:
-      oForeground = RED;
+      foreground = RED;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE:
-      oForeground = MAGENTA;
+      foreground = MAGENTA;
       break;
     case FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN:
-      oForeground = YELLOW;
+      foreground = YELLOW;
       break;
     case FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE:
-      oForeground = GRAY;
+      foreground = GRAY;
       break;
     };
 
     //background
     switch (background_info) {
     case 0:
-      oBackground = BLACK;
+      background = BLACK;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = WHITE;
+      background = WHITE;
       break;
     case BACKGROUND_BLUE:
-      oBackground = DARK_BLUE;
+      background = DARK_BLUE;
       break;
     case BACKGROUND_GREEN:
-      oBackground = DARK_GREEN;
+      background = DARK_GREEN;
       break;
     case BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = DARK_CYAN;
+      background = DARK_CYAN;
       break;
     case BACKGROUND_RED:
-      oBackground = DARK_RED;
+      background = DARK_RED;
       break;
     case BACKGROUND_RED | BACKGROUND_BLUE:
-      oBackground = DARK_MAGENTA;
+      background = DARK_MAGENTA;
       break;
     case BACKGROUND_RED | BACKGROUND_GREEN:
-      oBackground = DARK_YELLOW;
+      background = DARK_YELLOW;
       break;
     case BACKGROUND_INTENSITY:
-      oBackground = DARK_GRAY;
+      background = DARK_GRAY;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_BLUE:
-      oBackground = BLUE;
+      background = BLUE;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_GREEN:
-      oBackground = GREEN;
+      background = GREEN;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = CYAN;
+      background = CYAN;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_RED:
-      oBackground = RED;
+      background = RED;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE:
-      oBackground = MAGENTA;
+      background = MAGENTA;
       break;
     case BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN:
-      oBackground = YELLOW;
+      background = YELLOW;
       break;
     case BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE:
-      oBackground = GRAY;
+      background = GRAY;
       break;
     };
 #elif __linux__
     //not implemented yet
-    oForeground = GRAY;
-    oBackground = BLACK;
+    foreground = GRAY;
+    background = BLACK;
 #endif
   }
 

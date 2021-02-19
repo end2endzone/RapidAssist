@@ -38,18 +38,18 @@
 namespace ra { namespace filesystem { namespace test
 {
 
-  int countValues(const std::vector<std::string> & iList, const std::string & iValue) {
+  int CountValues(const std::vector<std::string> & list, const std::string & value) {
     int count = 0;
-    for (size_t i = 0; i < iList.size(); i++) {
-      const std::string & value = iList[i];
-      if (value == iValue)
+    for (size_t i = 0; i < list.size(); i++) {
+      const std::string & tmp = list[i];
+      if (tmp == value)
         count++;
     }
     return count;
   }
 
-  bool createCarsDirectory(const std::string & iBasePath) {
-    // iBasePath
+  bool CreateCarsDirectory(const std::string & base_path) {
+    // base_path
     // |-cars
     //   |-prices.txt
     //   |-Mazda (empty directory)
@@ -68,10 +68,10 @@ namespace ra { namespace filesystem { namespace test
 
     //create directories
     ra::strings::StringVector directories;
-    directories.push_back(iBasePath + "/cars/Mazda");
-    directories.push_back(iBasePath + "/cars/Honda");
-    directories.push_back(iBasePath + "/cars/Toyota");
-    directories.push_back(iBasePath + "/cars/Volkswagen");
+    directories.push_back(base_path + "/cars/Mazda");
+    directories.push_back(base_path + "/cars/Honda");
+    directories.push_back(base_path + "/cars/Toyota");
+    directories.push_back(base_path + "/cars/Volkswagen");
     for (size_t i = 0; i < directories.size(); i++) {
       std::string & directory = directories[i];
       filesystem::NormalizePath(directory);
@@ -83,13 +83,13 @@ namespace ra { namespace filesystem { namespace test
 
     //create the files
     ra::strings::StringVector files;
-    files.push_back(iBasePath + "/cars/prices.txt");
-    files.push_back(iBasePath + "/cars/Honda/Civic.txt");
-    files.push_back(iBasePath + "/cars/Toyota/Corolla.txt");
-    files.push_back(iBasePath + "/cars/Toyota/Camry.txt");
-    files.push_back(iBasePath + "/cars/Volkswagen/Passat.txt");
-    files.push_back(iBasePath + "/cars/Volkswagen/Golf.txt");
-    files.push_back(iBasePath + "/cars/Volkswagen/Jetta.txt");
+    files.push_back(base_path + "/cars/prices.txt");
+    files.push_back(base_path + "/cars/Honda/Civic.txt");
+    files.push_back(base_path + "/cars/Toyota/Corolla.txt");
+    files.push_back(base_path + "/cars/Toyota/Camry.txt");
+    files.push_back(base_path + "/cars/Volkswagen/Passat.txt");
+    files.push_back(base_path + "/cars/Volkswagen/Golf.txt");
+    files.push_back(base_path + "/cars/Volkswagen/Jetta.txt");
     for (size_t i = 0; i < files.size(); i++) {
       std::string & file = files[i];
       filesystem::NormalizePath(file);
@@ -103,7 +103,7 @@ namespace ra { namespace filesystem { namespace test
   }
 
 #ifdef __linux__
-  bool Truncate(const char * iFilePath, uint64_t iSize) {
+  bool Truncate(const char * file_path, uint64_t size) {
     //truncate -s 10737418240 10Gigfile.img
     
     std::string truncate_path = ra::filesystem::FindFileFromPaths("truncate");
@@ -115,8 +115,8 @@ namespace ra { namespace filesystem { namespace test
     //Prepare command arguments
     ra::strings::StringVector arguments;
     arguments.push_back("-s");
-    arguments.push_back(ra::strings::ToString(iSize));
-    arguments.push_back(iFilePath);
+    arguments.push_back(ra::strings::ToString(size));
+    arguments.push_back(file_path);
 
     //Run the new executable
     ra::process::processid_t pid = ra::process::StartProcess(truncate_path, current_dir, arguments);
@@ -265,7 +265,7 @@ namespace ra { namespace filesystem { namespace test
 
       //setup cleanup in case of failures
       struct FileCleanupCallback {
-        FileCleanupCallback(const char * iFilename) : mFilename(iFilename) {}
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
         ~FileCleanupCallback() {
           ra::filesystem::DeleteFile(mFilename);
         }
@@ -399,7 +399,7 @@ namespace ra { namespace filesystem { namespace test
     //create cars directory tree
     std::string basePath = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
     {
-      bool carsOK = createCarsDirectory(basePath);
+      bool carsOK = CreateCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
     }
 
@@ -701,7 +701,7 @@ namespace ra { namespace filesystem { namespace test
     //create cars directory tree
     std::string basePath = ra::testing::GetTestQualifiedName() + "." + ra::strings::ToString(__LINE__);
     {
-      bool carsOK = createCarsDirectory(basePath);
+      bool carsOK = CreateCarsDirectory(basePath);
       ASSERT_TRUE(carsOK);
     }
 
@@ -734,7 +734,7 @@ namespace ra { namespace filesystem { namespace test
       //assert that all values are unique
       for (size_t i = 0; i < numTest; i++) {
         const std::string & filename = filenames[i];
-        int count = countValues(filenames, filename);
+        int count = CountValues(filenames, filename);
         ASSERT_EQ(1, count) << "Found value '" << filename << "' " << count << " times in the list.";
       }
     }
@@ -759,7 +759,7 @@ namespace ra { namespace filesystem { namespace test
       //assert that all values are unique
       for (size_t i = 0; i < numTest; i++) {
         const std::string & path = paths[i];
-        int count = countValues(paths, path);
+        int count = CountValues(paths, path);
         ASSERT_EQ(1, count) << "Found value '" << path << "' " << count << " times in the list.";
       }
     }

@@ -26,6 +26,7 @@
 #include "rapidassist/testing.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/filesystem.h"
+#include "rapidassist/process.h"
 
 namespace ra { namespace test {
 
@@ -268,6 +269,28 @@ namespace ra { namespace test {
 
     //Cleanup
     ra::filesystem::DeleteFile(file_path.c_str());
+  }
+
+  TEST_F(TestTesting, testGetTestList) {
+    //Get path on the executable
+    std::string process_path = ra::process::GetCurrentProcessPath();
+    ASSERT_TRUE(!process_path.empty());
+    ASSERT_TRUE(ra::filesystem::FileExists(process_path.c_str()));
+
+    //Get the names of all tests supported
+    ra::strings::StringVector names = ra::testing::GetTestList(process_path.c_str());
+    ASSERT_TRUE(!names.empty());
+
+    //Search for this test name in the names
+    const std::string this_test = ra::testing::GetTestQualifiedName();
+    bool found = false;
+    for(size_t i=0; i<names.size() && !found; i++)
+    {
+      const std::string & name = names[i];
+      if (name == this_test)
+        found = true;
+    }
+    ASSERT_TRUE(found) << "The test '" << this_test << "' is not found in the list of tests: " << ra::strings::Join(names, "\n");
   }
 
 } //namespace test

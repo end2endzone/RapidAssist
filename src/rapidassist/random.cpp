@@ -26,14 +26,15 @@
 
 #include <cstdlib>  //for random
 #include <ctime>    //for random
+#include <string.h> //for strlen()
 
 namespace ra { namespace random {
 
   //Force initializing random number provider each time the application starts
-  bool initRandomProvider();
-  static bool rand_initialized = initRandomProvider();
+  bool InitRandomProvider();
+  static bool rand_initialized = InitRandomProvider();
 
-  bool initRandomProvider() {
+  bool InitRandomProvider() {
     srand((unsigned int)time(NULL));
     return true;
   }
@@ -42,17 +43,17 @@ namespace ra { namespace random {
     return rand();
   }
 
-  int GetRandomInt(int iMin, int iMax) {
+  int GetRandomInt(int value_min, int value_max) {
     //limit the accepted value returned by rand() to allow uniform distribution of values
-    //i.e:  if iMin=0 and iMax=7 and RAND_MAX=8 then 
+    //i.e:  if value_min=0 and value_max=7 and RAND_MAX=8 then 
     //      returned value 0 has probability twice as high as other numbers
     //      ( rand()==0 and rand()==8 both returns 0 )
 
     //compute maximum value of rand() to allow uniform distribution of values
     int max = RAND_MAX;
-    int modulo = (iMax - iMin) + 1;
+    int modulo = (value_max - value_min) + 1;
     if (max % modulo != (modulo - 1)) {
-      //adjust max to get uniform distribution across iMin to iMax
+      //adjust max to get uniform distribution across value_min to value_max
       int diff = (max % modulo);
       max -= (diff + 1);
     }
@@ -63,21 +64,21 @@ namespace ra { namespace random {
       rand_value = rand();
     }
 
-    int value = rand_value % modulo; //within [0, iMax-iMin]
-    value += iMin;                  //within [iMin, iMax]
+    int value = rand_value % modulo; //within [0, value_max-value_min]
+    value += value_min;                  //within [value_min, value_max]
 
     return value;
   }
 
-  double GetRandomDouble(double iMin, double iMax) {
+  double GetRandomDouble(double value_min, double value_max) {
     double f = (double)rand() / RAND_MAX;
-    double value = iMin + f * (iMax - iMin);
+    double value = value_min + f * (value_max - value_min);
     return value;
   }
 
-  float GetRandomFloat(float iMin, float iMax) {
+  float GetRandomFloat(float value_min, float value_max) {
     float f = (float)rand() / RAND_MAX;
-    float value = iMin + f * (iMax - iMin);
+    float value = value_min + f * (value_max - value_min);
     return value;
   }
 
@@ -87,62 +88,67 @@ namespace ra { namespace random {
     return rnd;
   }
 
-  void GetRandomString(std::string & oValue, size_t iMaxLen) {
+  void GetRandomString(std::string & value, size_t length) {
     static const char * defaultSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    GetRandomString(oValue, iMaxLen, defaultSymbols);
+    GetRandomString(value, length, defaultSymbols);
   }
 
-  std::string GetRandomString(size_t iMaxLen) {
+  std::string GetRandomString(size_t length) {
     std::string tmp;
-    GetRandomString(tmp, iMaxLen);
+    GetRandomString(tmp, length);
     return tmp;
   }
 
-  void GetRandomString(std::string & oValue, size_t iMaxLen, SymbolsFlags::Flags iFlags) {
+  void GetRandomString(std::string & value, size_t length, SymbolsFlags::Flags flags) {
     std::string symbols;
 
-    if ((iFlags & SymbolsFlags::LETTERS_LOWERCASE) == SymbolsFlags::LETTERS_LOWERCASE)
+    if ((flags & SymbolsFlags::LETTERS_LOWERCASE) == SymbolsFlags::LETTERS_LOWERCASE)
       symbols.append("abcdefghijklmnopqrstuvwxyz");
-    if ((iFlags & SymbolsFlags::LETTERS_UPPERCASE) == SymbolsFlags::LETTERS_UPPERCASE)
+    if ((flags & SymbolsFlags::LETTERS_UPPERCASE) == SymbolsFlags::LETTERS_UPPERCASE)
       symbols.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    if ((iFlags & SymbolsFlags::NUMBERS) == SymbolsFlags::NUMBERS)
+    if ((flags & SymbolsFlags::NUMBERS) == SymbolsFlags::NUMBERS)
       symbols.append("0123456789");
-    if ((iFlags & SymbolsFlags::SPECIAL_CHARACTERS) == SymbolsFlags::SPECIAL_CHARACTERS)
+    if ((flags & SymbolsFlags::SPECIAL_CHARACTERS) == SymbolsFlags::SPECIAL_CHARACTERS)
       symbols.append("!\"/$%?&*()_+-=\\:<>");
 
     if (symbols.size() == 0) {
-      oValue = "";
+      value = "";
       return;
     }
 
-    GetRandomString(oValue, iMaxLen, symbols.c_str());
+    GetRandomString(value, length, symbols.c_str());
   }
 
-  std::string GetRandomString(size_t iMaxLen, SymbolsFlags::Flags iFlags) {
+  std::string GetRandomString(size_t length, SymbolsFlags::Flags flags) {
     std::string tmp;
-    GetRandomString(tmp, iMaxLen, iFlags);
+    GetRandomString(tmp, length, flags);
     return tmp;
   }
 
-  void GetRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols) {
-    std::string symbols = iSymbols;
-    int numSymbols = (int)symbols.size();
+  void GetRandomString(std::string & value, size_t length, const char* symbols) {
+    value.clear();
+    if (symbols == NULL)
+      return;
 
-    oValue.reserve(iMaxLen + 1);
+    size_t num_symbols = strlen(symbols);
+    if (num_symbols == 0)
+      return;
 
-    while (oValue.size() < (size_t)iMaxLen) {
-      //generate a random character from iSymbols
-      int index = GetRandomInt(0, numSymbols - 1);
-      const char & c = iSymbols[index];
+    value.reserve(length + 1);
+
+    while (value.size() < length) {
+      //generate a random character from symbols
+      int index = GetRandomInt(0, ((int)num_symbols) - 1);
+      const char & c = symbols[index];
 
       //add
-      oValue.append(1, c);
+      value.append(1, c);
     }
   }
 
-  std::string GetRandomString(size_t iMaxLen, const char* iSymbols) {
+  std::string GetRandomString(size_t length, const char* symbols) {
     std::string tmp;
-    GetRandomString(tmp, iMaxLen, iSymbols);
+    GetRandomString(tmp, length, symbols);
     return tmp;
   }
 

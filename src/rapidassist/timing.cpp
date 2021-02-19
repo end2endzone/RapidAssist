@@ -30,7 +30,7 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
-#include <windows.h> // for Sleep()
+#include <Windows.h> // for Sleep()
 #include "rapidassist/undef_windows_macros.h"
 #elif _POSIX_C_SOURCE >= 199309L
 #include <time.h>   // for nanosleep()
@@ -288,18 +288,18 @@ namespace ra { namespace timing {
     return dt;
   }
 
-  std::tm ToTimeInfo(const DateTime & iDateTime) {
+  std::tm ToTimeInfo(const DateTime & date_time) {
     std::tm time_info;
 
-    time_info.tm_year  = iDateTime.year - 1900;
-    time_info.tm_mon   = iDateTime.month - 1;
-    time_info.tm_mday  = iDateTime.day;
-    time_info.tm_hour  = iDateTime.hour;
-    time_info.tm_min   = iDateTime.min;
-    time_info.tm_sec   = iDateTime.sec;
-    time_info.tm_wday  = iDateTime.wday;
-    time_info.tm_yday  = iDateTime.yday;
-    time_info.tm_isdst = (iDateTime.isdst ? 1 : 0);
+    time_info.tm_year  = date_time.year - 1900;
+    time_info.tm_mon   = date_time.month - 1;
+    time_info.tm_mday  = date_time.day;
+    time_info.tm_hour  = date_time.hour;
+    time_info.tm_min   = date_time.min;
+    time_info.tm_sec   = date_time.sec;
+    time_info.tm_wday  = date_time.wday;
+    time_info.tm_yday  = date_time.yday;
+    time_info.tm_isdst = (date_time.isdst ? 1 : 0);
 
     return time_info;
   }
@@ -361,8 +361,8 @@ _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
     size_t last_space_index = compilation_date_str.find_last_of(" ");
     if (last_space_index == std::string::npos)
       return DEFAULT_YEAR;
-    const char * yearStr = &compilation_date_str[last_space_index + 1];
-    int year = atoi(yearStr);
+    const char * year_str = &compilation_date_str[last_space_index + 1];
+    int year = atoi(year_str);
     return year;
   }
 

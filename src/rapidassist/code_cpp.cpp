@@ -40,7 +40,7 @@ namespace ra { namespace code { namespace cpp {
     const char * escape_str;
   };
   //https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
-  static const ControlCharacter gCtrlChars[] = {
+  static const ControlCharacter kCtrlChars[] = {
     {'\0',"\\0"},   //0x00, null
     {'\a',"\\a"},   //0x07, alert (bell)
     {'\b',"\\b"},   //0x08, backspace
@@ -55,7 +55,7 @@ namespace ra { namespace code { namespace cpp {
     {'\?',"\\\?"},  //0x3F
     {'\\',"\\\\"},  //0x5C
   };
-  static const size_t gNumCtrlChars = sizeof(gCtrlChars) / sizeof(gCtrlChars[0]);
+  static const size_t kNumCtrlChars = sizeof(kCtrlChars) / sizeof(kCtrlChars[0]);
 
   bool IsPrintableCharacter(const char c) {
     if (c == 39) // character ' must be escaped with \' which is not supported right now
@@ -68,8 +68,8 @@ namespace ra { namespace code { namespace cpp {
   }
 
   bool IsControlCharacter(char c) {
-    for (size_t i = 0; i < gNumCtrlChars; i++) {
-      const ControlCharacter & ctrl = gCtrlChars[i];
+    for (size_t i = 0; i < kNumCtrlChars; i++) {
+      const ControlCharacter & ctrl = kCtrlChars[i];
       if (ctrl.c == c)
         return true;
     }
@@ -93,8 +93,8 @@ namespace ra { namespace code { namespace cpp {
   }
 
   const char * GetControlCharacterEscapeString(char c) {
-    for (size_t i = 0; i < gNumCtrlChars; i++) {
-      const ControlCharacter & ctrl = gCtrlChars[i];
+    for (size_t i = 0; i < kNumCtrlChars; i++) {
+      const ControlCharacter & ctrl = kCtrlChars[i];
       if (ctrl.c == c)
         return ctrl.escape_str;
     }
@@ -121,17 +121,17 @@ namespace ra { namespace code { namespace cpp {
     return buffer;
   }
 
-  std::string ToOctString(const unsigned char * iBuffer, size_t iSize) {
-    return ToOctString(iBuffer, iSize, true);
+  std::string ToOctString(const unsigned char * buffer, size_t size) {
+    return ToOctString(buffer, size, true);
   }
 
-  std::string ToOctString(const unsigned char * iBuffer, size_t iSize, bool iDisableWarningC4125) {
+  std::string ToOctString(const unsigned char * buffer, size_t size, bool disable_warning_c4125) {
     std::string output;
 
     //estimate the size of the output string to prevent memory copy
     //assume 50% of buffer is *NOT* printable
-    size_t non_printable_size = ((iSize * 50) / 100);
-    size_t estimated_string_size = iSize - non_printable_size + non_printable_size * 4; //4 bytes per octal characters
+    size_t non_printable_size = ((size * 50) / 100);
+    size_t estimated_string_size = size - non_printable_size + non_printable_size * 4; //4 bytes per octal characters
     output.reserve(estimated_string_size);
 
     enum CHARACTER_TYPE {
@@ -141,10 +141,10 @@ namespace ra { namespace code { namespace cpp {
     };
 
     CHARACTER_TYPE previous = PRINTABLE;
-    for (size_t i = 0; i < iSize; i++) {
-      unsigned char c = iBuffer[i];
-      unsigned char next = iBuffer[i + 1];
-      if (i + 1 == iSize) //if out of scope
+    for (size_t i = 0; i < size; i++) {
+      unsigned char c = buffer[i];
+      unsigned char next = buffer[i + 1];
+      if (i + 1 == size) //if out of scope
         next = '\0';
 
       if (c == 0 && !IsDigitCharacter(next)) {
@@ -160,7 +160,7 @@ namespace ra { namespace code { namespace cpp {
         output.append(GetControlCharacterEscapeString(c));
         previous = CONTROL;
       }
-      else if (iDisableWarningC4125 && previous == OCTAL && IsDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
+      else if (disable_warning_c4125 && previous == OCTAL && IsDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
       {
         //character must be encoded as octal instead of printable
         output.append(ToOctString(c));
@@ -179,13 +179,13 @@ namespace ra { namespace code { namespace cpp {
     return output;
   }
 
-  std::string ToHexString(const unsigned char * iBuffer, size_t iSize) {
+  std::string ToHexString(const unsigned char * buffer, size_t size) {
     std::string output;
 
     //estimate the size of the output string to prevent memory copy
     //assume 50% of buffer is *NOT* printable
-    size_t non_printable_size = ((iSize * 50) / 100);
-    size_t estimated_string_size = iSize - non_printable_size + non_printable_size * 4; //4 bytes per hex characters
+    size_t non_printable_size = ((size * 50) / 100);
+    size_t estimated_string_size = size - non_printable_size + non_printable_size * 4; //4 bytes per hex characters
     output.reserve(estimated_string_size);
 
     enum CHARACTER_TYPE {
@@ -195,10 +195,10 @@ namespace ra { namespace code { namespace cpp {
     };
 
     CHARACTER_TYPE previous = PRINTABLE;
-    for (size_t i = 0; i < iSize; i++) {
-      unsigned char c = iBuffer[i];
-      unsigned char next = iBuffer[i + 1];
-      if (i + 1 == iSize) //if out of scope
+    for (size_t i = 0; i < size; i++) {
+      unsigned char c = buffer[i];
+      unsigned char next = buffer[i + 1];
+      if (i + 1 == size) //if out of scope
         next = '\0';
 
       if (c == 0 && !IsDigitCharacter(next)) {
@@ -234,18 +234,18 @@ namespace ra { namespace code { namespace cpp {
     return output;
   }
 
-  std::string ToCppCharactersArray(const unsigned char * iBuffer, size_t iSize) {
+  std::string ToCppCharactersArray(const unsigned char * buffer, size_t size) {
     std::ostringstream oss;
 
-    for (size_t i = 0; i < iSize; i++) {
-      unsigned char c = iBuffer[i];
+    for (size_t i = 0; i < size; i++) {
+      unsigned char c = buffer[i];
 
       if (IsPrintableCharacter((char)c))
         oss << '\'' << (char)c << '\'';
       else
         oss << (int)c; //print as decimal value
 
-      size_t lastByteIndex = iSize - 1;
+      size_t lastByteIndex = size - 1;
 
       if (i != lastByteIndex)
         oss << ",";

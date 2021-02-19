@@ -34,7 +34,7 @@ namespace ra { namespace filesystem { namespace test
 {
 
 #ifdef __linux__
-  extern bool Truncate(const char * iFilePath, uint64_t iSize);
+  extern bool Truncate(const char * file_path, uint64_t size);
 #endif
 
   //--------------------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ namespace ra { namespace filesystem { namespace test
 
       //setup cleanup in case of failures
       struct FileCleanupCallback {
-        FileCleanupCallback(const char * iFilename) : mFilename(iFilename) {}
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
         ~FileCleanupCallback() {
           ra::filesystem::DeleteFileUtf8(mFilename);
         }

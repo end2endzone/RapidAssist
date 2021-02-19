@@ -33,7 +33,7 @@
 //#   ifndef WIN32_LEAN_AND_MEAN
 //#   define WIN32_LEAN_AND_MEAN 1
 //#   endif
-#   include <windows.h> // for GetModuleHandleEx()
+#   include <Windows.h> // for GetModuleHandleEx()
 #   include "rapidassist/undef_windows_macros.h"
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
@@ -190,11 +190,11 @@ namespace ra { namespace process {
     return TRUE;
   }
 
-  bool FindProcessWindows(const processid_t & pid, HwndList & oWindows) {
-    oWindows.clear();
+  bool FindProcessWindows(const processid_t & pid, HwndList & windows) {
+    windows.clear();
 
     FindProcessWindowsStruct s;
-    s.windows_ptr = &oWindows;
+    s.windows_ptr = &windows;
     s.pid = pid;
 
     bool success = (EnumWindows(EnumWindowsProc, (LPARAM)&s) == TRUE);
@@ -219,7 +219,7 @@ namespace ra { namespace process {
     return success;
   }
 
-  bool Terminate(const processid_t & pid, DWORD iTimeoutMS) {
+  bool Terminate(const processid_t & pid, DWORD timeout_ms) {
     bool success = false;
 
     //Get a handle
@@ -229,10 +229,10 @@ namespace ra { namespace process {
       if (GetThreadIds(pid, thread_ids)) {
         DWORD num_threads = (DWORD)thread_ids.size();
         if (num_threads >= 1) {
-          if (iTimeoutMS != INFINITE) {
+          if (timeout_ms != INFINITE) {
 
             //Call WM_CLOSE & WM_QUIT on all the threads
-            DWORD thread_timeout_ms = iTimeoutMS / num_threads;
+            DWORD thread_timeout_ms = timeout_ms / num_threads;
             for (size_t thread_index = 0; thread_index < num_threads && !success; thread_index++) {
               DWORD thread_id = thread_ids[thread_index];
               bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work
@@ -491,45 +491,45 @@ namespace ra { namespace process {
     return dir;
   }
 
-  processid_t StartProcess(const std::string & iExecPath) {
+  processid_t StartProcess(const std::string & exec_path) {
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
 
     // Launch the process from the current process current directory
-    processid_t pid = StartProcess(iExecPath, curr_dir);
+    processid_t pid = StartProcess(exec_path, curr_dir);
     return pid;
   }
 
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory) {
     // Launch the process with no arguments
 #ifdef _WIN32
-    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, "");
+    processid_t pid = StartProcess(exec_path, default_directory, "");
     return pid;
 #else
     ra::strings::StringVector args;
-    processid_t pid = StartProcess(iExecPath, iDefaultDirectory, args);
+    processid_t pid = StartProcess(exec_path, default_directory, args);
     return pid;
 #endif
   }
 
 #ifdef _WIN32
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const std::string & command_line) {
     //build the full command line
     std::string command;
 
-    //handle iExecPath
-    if (!iExecPath.empty()) {
-      if (iExecPath.find(" ") != std::string::npos) {
+    //handle exec_path
+    if (!exec_path.empty()) {
+      if (exec_path.find(" ") != std::string::npos) {
         command += "\"";
-        command += iExecPath;
+        command += exec_path;
         command += "\"";
       }
       else
-        command += iExecPath;
+        command += exec_path;
     }
 
     if (!command.empty()) {
       command += " ";
-      command += iCommandLine;
+      command += command_line;
     }
 
     //launch a new process with the command line
@@ -539,7 +539,7 @@ namespace ra { namespace process {
     startup_info.dwFlags = STARTF_USESHOWWINDOW;
     startup_info.wShowWindow = SW_SHOWDEFAULT; //SW_SHOW, SW_SHOWNORMAL
     static const DWORD creation_flags = 0; //EXTENDED_STARTUPINFO_PRESENT
-    bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creation_flags, NULL, iDefaultDirectory.c_str(), &startup_info, &process_info) != 0);
+    bool success = (CreateProcess(NULL, (char*)command.c_str(), NULL, NULL, FALSE, creation_flags, NULL, default_directory.c_str(), &startup_info, &process_info) != 0);
     if (success) {
       //Wait for the application to initialize properly
       WaitForInputIdle(process_info.hProcess, INFINITE);
@@ -554,21 +554,21 @@ namespace ra { namespace process {
     return INVALID_PROCESS_ID;
   }
 #else
-  processid_t StartProcess(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) {
+  processid_t StartProcess(const std::string & exec_path, const std::string & default_directory, const ra::strings::StringVector & arguments) {
     //temporary change the current directory for the child process
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    if (!ra::filesystem::DirectoryExists(iDefaultDirectory.c_str()))
+    if (!ra::filesystem::DirectoryExists(default_directory.c_str()))
       return INVALID_PROCESS_ID;
-    int chdir_result = chdir(iDefaultDirectory.c_str());
+    int chdir_result = chdir(default_directory.c_str());
 
     //prepare argv
     //the first element of argv must be the executable path itself.
     //the last element of argv must be am empty argument
     static const int MAX_ARGUMENTS = 10240;
     char * argv[MAX_ARGUMENTS] = { 0 };
-    argv[0] = (char*)iExecPath.c_str();
-    for (size_t i = 0; i < iArguments.size() && i < (MAX_ARGUMENTS - 2); i++) {
-      char * arg_value = (char*)iArguments[i].c_str();
+    argv[0] = (char*)exec_path.c_str();
+    for (size_t i = 0; i < arguments.size() && i < (MAX_ARGUMENTS - 2); i++) {
+      char * arg_value = (char*)arguments[i].c_str();
       argv[i + 1] = arg_value;
     }
 
@@ -583,7 +583,7 @@ namespace ra { namespace process {
     //}
 
     pid_t child_pid = INVALID_PROCESS_ID;
-    int status = posix_spawn(&child_pid, iExecPath.c_str(), NULL, NULL, argv, environ);
+    int status = posix_spawn(&child_pid, exec_path.c_str(), NULL, NULL, argv, environ);
     if (status != 0)
       child_pid = INVALID_PROCESS_ID;
 
@@ -594,8 +594,8 @@ namespace ra { namespace process {
   }
 #endif
 
-  bool OpenDocument(const std::string & iPath) {
-    if (!ra::filesystem::FileExists(iPath.c_str()))
+  bool OpenDocument(const std::string & path) {
+    if (!ra::filesystem::FileExists(path.c_str()))
       return false; //file not found
 
 #ifdef _WIN32
@@ -610,7 +610,7 @@ namespace ra { namespace process {
     info.hwnd = HWND_DESKTOP;
     info.nShow = SW_SHOWDEFAULT;
     info.lpVerb = "open";
-    info.lpFile = iPath.c_str();
+    info.lpFile = path.c_str();
     info.lpParameters = NULL; //arguments
     info.lpDirectory = NULL; // default directory
 

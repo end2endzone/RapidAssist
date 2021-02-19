@@ -241,8 +241,8 @@ int main(int argc, char **argv) {
   if (ra::testing::IsGitHubActions() || ra::testing::IsTravis()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    printf("*** Disabling TestTiming.testOpenDocument unit test ***\n");
-    std::string newFilter = ra::testing::MergeFilter("", "TestTiming.testOpenDocument", basefilter.c_str());
+    printf("*** Disabling TestProcess.testOpenDocument unit test ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "TestProcess.testOpenDocument", basefilter.c_str());
 
     ::testing::GTEST_FLAG(filter) = newFilter;
   }

@@ -28,7 +28,7 @@
 
 #ifdef WIN32
 #   include <Shlobj.h>
-#   include <windows.h>
+#   include <Windows.h>
 #   include "rapidassist/undef_windows_macros.h"
 #   include <Lmcons.h>
 #else
@@ -42,7 +42,7 @@
 namespace ra { namespace user {
 
 #ifdef _WIN32 // UTF-8
-  inline std::string getWin32DirectoryUtf8(int csidl) {
+  inline std::string GetWin32DirectoryUtf8(int csidl) {
     // https://stackoverflow.com/questions/18493484/shgetfolderpath-deprecated-what-is-alternative-to-retrieve-path-for-windows-fol
     // https://superuser.com/questions/150012/what-is-the-difference-between-local-and-roaming-folders
     // CSIDL_PROFILE          matches "C:\Users\JohnSmith"
@@ -60,22 +60,22 @@ namespace ra { namespace user {
   }
 
   std::string GetHomeDirectoryUtf8() {
-    const std::string & dir = getWin32DirectoryUtf8(CSIDL_PROFILE);
+    const std::string & dir = GetWin32DirectoryUtf8(CSIDL_PROFILE);
     return dir;
   }
 
   std::string GetApplicationsDataDirectoryUtf8() {
-    const std::string & dir = getWin32DirectoryUtf8(CSIDL_LOCAL_APPDATA);
+    const std::string & dir = GetWin32DirectoryUtf8(CSIDL_LOCAL_APPDATA);
     return dir;
   }
 
   std::string GetDocumentsDirectoryUtf8() {
-    const std::string & dir = getWin32DirectoryUtf8(CSIDL_PERSONAL);
+    const std::string & dir = GetWin32DirectoryUtf8(CSIDL_PERSONAL);
     return dir;
   }
 
   std::string GetDesktopDirectoryUtf8() {
-    const std::string & dir = getWin32DirectoryUtf8(CSIDL_DESKTOPDIRECTORY);
+    const std::string & dir = GetWin32DirectoryUtf8(CSIDL_DESKTOPDIRECTORY);
     return dir;
   }
 

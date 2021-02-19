@@ -53,17 +53,18 @@ namespace ra { namespace strings {
   /// A numeric value can be positive or negative.
   /// A numeric value can be an integer or a floating point value.
   /// </summary>
-  /// <returns>True when iValue is numeric. False otherwise.</returns>
-  bool IsNumeric(const char * iValue);
+  /// <param name="value">The string value to validate.</param>
+  /// <returns>True when value is numeric. False otherwise.</returns>
+  bool IsNumeric(const char * value);
 
   /// <summary>
   /// Replace an occurance of a string by another.
   /// </summary>
-  /// <param name="iString">The given string that need to be searched.</param>
-  /// <param name="iOldValue">The old value to replace.</param>
-  /// <param name="iNewValue">The new value to replace.</param>
+  /// <param name="str">The given string that need to be searched.</param>
+  /// <param name="old_value">The old value to replace.</param>
+  /// <param name="new_value">The new value to replace.</param>
   /// <returns>Returns the number of token that was replaced.</returns>
-  int Replace(std::string & iString, const std::string & iOldValue, const std::string & iNewValue);
+  int Replace(std::string & str, const std::string & old_value, const std::string & new_value);
 
   /// <summary>
   /// Converts the given value to string.
@@ -155,145 +156,145 @@ namespace ra { namespace strings {
   /// Parse the given string into the given numeric variable.
   /// </summary>
   /// <param name="str">The input string which contains a numeric value.</param>
-  /// <param name="oValue">The output numeric value.</param>
+  /// <param name="value">The output numeric value.</param>
   /// <returns>Returns true when the parsing is successful.</returns>
-  bool Parse(const std::string& str, int8_t & oValue);
-  bool Parse(const std::string& str, uint8_t & oValue);
-  bool Parse(const std::string& str, int16_t & oValue);
-  bool Parse(const std::string& str, uint16_t & oValue);
-  bool Parse(const std::string& str, int32_t & oValue);
-  bool Parse(const std::string& str, uint32_t & oValue);
-  bool Parse(const std::string& str, int64_t & oValue);
-  bool Parse(const std::string& str, uint64_t & oValue);
-  bool Parse(const std::string& str, float & oValue);
-  bool Parse(const std::string& str, double & oValue);
-  bool Parse(const std::string& str, bool & oValue);
+  bool Parse(const std::string& str, int8_t &   value);
+  bool Parse(const std::string& str, uint8_t &  value);
+  bool Parse(const std::string& str, int16_t &  value);
+  bool Parse(const std::string& str, uint16_t & value);
+  bool Parse(const std::string& str, int32_t &  value);
+  bool Parse(const std::string& str, uint32_t & value);
+  bool Parse(const std::string& str, int64_t &  value);
+  bool Parse(const std::string& str, uint64_t & value);
+  bool Parse(const std::string& str, float &    value);
+  bool Parse(const std::string& str, double &   value);
+  bool Parse(const std::string& str, bool &     value);
 
   /// <summary>
   /// Capitalize the first character of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to uppercase the first character.</param>
+  /// <param name="value">The string value to uppercase the first character.</param>
   /// <returns>Returns the given string with the first character capitalized.</returns>
-  std::string CapitalizeFirstCharacter(const std::string & iValue);
+  std::string CapitalizeFirstCharacter(const std::string & value);
 
   /// <summary>
   /// Upper case all characters of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to uppercase.</param>
+  /// <param name="value">The string value to uppercase.</param>
   /// <returns>Returns the given string uppercased.</returns>
-  std::string Uppercase(const std::string & iValue);
+  std::string Uppercase(const std::string & value);
 
   /// <summary>
   /// Lower case all characters of the given string.
   /// </summary>
-  /// <param name="iValue">The string value to lowercase.</param>
+  /// <param name="value">The string value to lowercase.</param>
   /// <returns>Returns the given string lowercased.</returns>
-  std::string Lowercase(const std::string & iValue);
+  std::string Lowercase(const std::string & value);
 
   /// <summary>
-  /// Removes occurance of unix/windows LF, CR or CRLF into the given string.
+  /// Removes LF, CR or CRLF characters from the given string (unix and windows).
   /// </summary>
-  /// <param name="iBuffer">The given buffer to modify.</param>
-  void RemoveEol(char * iBuffer);
-
-  /// <summary>
-  /// Splits an input string into multiple string based on the given splitting character.
-  /// </summary>
-  /// <param name="iText">The input text to split.</param>
-  /// <param name="iSplitCharacter">The splitting character.</param>
-  /// <returns>Returns a list of string.</returns>
-  StringVector Split(const std::string & iText, char iSplitCharacter);
+  /// <param name="buffer">The given buffer to modify.</param>
+  void RemoveEol(char * buffer);
 
   /// <summary>
   /// Splits an input string into multiple string based on the given splitting character.
   /// </summary>
-  /// <param name="iText">The input text to split.</param>
-  /// <param name="iSplitPattern">The splitting pattern.</param>
+  /// <param name="text">The input text to split.</param>
+  /// <param name="split_characters">The splitting character.</param>
   /// <returns>Returns a list of string.</returns>
-  StringVector Split(const std::string & iText, const char * iSplitPattern);
+  StringVector Split(const std::string & text, char split_characters);
 
   /// <summary>
-  /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
+  /// Splits an input string into multiple string based on the given splitting character.
   /// </summary>
-  /// <param name="oList">The output list of string.</param>
-  /// <param name="iText">The input text to split.</param>
-  /// <param name="iSplitCharacter">The splitting character.</param>
-  void Split(StringVector & oList, const std::string & iText, char iSplitCharacter);
+  /// <param name="text">The input text to split.</param>
+  /// <param name="split_pattern">The splitting pattern.</param>
+  /// <returns>Returns a list of string.</returns>
+  StringVector Split(const std::string & text, const char * split_pattern);
 
   /// <summary>
-  /// Splits an input string into multiple string based on the given splitting character and store the result in oList.
+  /// Splits an input string into multiple string based on the given split character and store the result in values.
   /// </summary>
-  /// <param name="oList">The output list of string.</param>
-  /// <param name="iText">The input text to split.</param>
-  /// <param name="iSplitPattern">The splitting pattern.</param>
-  void Split(StringVector & oList, const std::string & iText, const char * iSplitPattern);
+  /// <param name="values">The output list of string.</param>
+  /// <param name="text">The input text to split.</param>
+  /// <param name="split_characters">The splitting character.</param>
+  void Split(StringVector & values, const std::string & text, char split_character);
 
   /// <summary>
-  /// Join a list of strings into a single string separating each element by iSeparator.
+  /// Splits an input string into multiple string based on the given split pattern and store the result in values parameter.
   /// </summary>
-  /// <param name="iList">The list of elements to join.</param>
-  /// <param name="iSeparator">The string separator.</param>
-  /// <returns>Returns a list of strings merged into a single string separating each element by iSeparator.</returns>
-  std::string Join(const StringVector & iList, const char * iSeparator);
+  /// <param name="values">The output list of string.</param>
+  /// <param name="text">The input text to split.</param>
+  /// <param name="split_pattern">The splitting pattern.</param>
+  void Split(StringVector & values, const std::string & text, const char * split_pattern);
 
   /// <summary>
-  /// Removes left and right space characters of the given string.
+  /// Join a list of strings into a single string separating each element by separator.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
+  /// <param name="values">The list of elements to join.</param>
+  /// <param name="separator">The string separator.</param>
+  /// <returns>Returns a list of strings merged into a single string separating each element by separator.</returns>
+  std::string Join(const StringVector & values, const char * separator);
+
+  /// <summary>
+  /// Removes leading and trailing space characters from a string.
+  /// </summary>
+  /// <param name="str">The string to trim.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string Trim(const std::string & iStr);
+  std::string Trim(const std::string & str);
 
   /// <summary>
-  /// Removes left and right occurrence of iChar characters of the given string.
+  /// Removes specified leading and trailing characters from a string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
-  /// <param name="iChar">The character to remove.</param>
+  /// <param name="str">The string to trim.</param>
+  /// <param name="c">The character to remove.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string Trim(const std::string & iStr, const char iChar);
+  std::string Trim(const std::string & str, const char c);
 
   /// <summary>
-  /// Removes right space characters of the given string.
+  /// Removes trailing space characters from a string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
+  /// <param name="str">The string to trim.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string TrimRight(const std::string & iStr);
+  std::string TrimRight(const std::string & str);
 
   /// <summary>
-  /// Removes left space characters of the given string.
+  /// Removes leading space characters from a string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
+  /// <param name="str">The string to trim.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string TrimLeft(const std::string & iStr);
+  std::string TrimLeft(const std::string & str);
 
   /// <summary>
-  /// Removes right occurrence of iChar characters of the given string.
+  /// Remove specified trailing characters from a string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
-  /// <param name="iChar">The character to remove.</param>
+  /// <param name="str">The string to trim.</param>
+  /// <param name="c">The character to remove.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string TrimRight(const std::string & iStr, const char iChar);
+  std::string TrimRight(const std::string & str, const char c);
 
   /// <summary>
-  /// Removes left occurrence of iChar characters of the given string.
+  /// Remove specified leading characters from a string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
-  /// <param name="iChar">The character to remove.</param>
+  /// <param name="str">The string to trim.</param>
+  /// <param name="c">The character to remove.</param>
   /// <returns>Returns the trimmed string.</returns>
-  std::string TrimLeft(const std::string & iStr, const char iChar);
+  std::string TrimLeft(const std::string & str, const char c);
 
   /// <summary>
   /// Reverse order each character of the given string.
   /// </summary>
-  /// <param name="iStr">The string to trim.</param>
+  /// <param name="str">The string to trim.</param>
   /// <returns>Returns a mirror copy of the given string.</returns>
-  std::string Reverse(const std::string & iStr);
+  std::string Reverse(const std::string & str);
 
   /// <summary>
   /// Format a string.
   /// </summary>
-  /// <param name="iFormat">The format of the string. Same as printf() format.</param>
+  /// <param name="format">The format of the string. Same as printf() format.</param>
   /// <returns>Returns a formatted string with the given parameters inserted.</returns>
-  std::string Format(const char * iFormat, ...);
+  std::string Format(const char * format, ...);
 
 } //namespace strings
 } //namespace ra

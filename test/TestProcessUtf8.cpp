@@ -64,8 +64,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file
@@ -107,8 +107,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file
@@ -156,8 +156,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file

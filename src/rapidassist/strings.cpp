@@ -44,7 +44,7 @@ namespace ra { namespace strings {
 
   //Note: http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.2
   template <class T>
-  inline std::string toStringT(const T & t) {
+  inline std::string ToStringT(const T & t) {
     std::stringstream out;
     out << t;
     const std::string & s = out.str();
@@ -52,35 +52,35 @@ namespace ra { namespace strings {
   }
 
   template <class T>
-  inline void parseT(const std::string & iValue, T & t) {
-    std::istringstream input_stream(iValue);
+  inline void ParseT(const std::string & value, T & t) {
+    std::istringstream input_stream(value);
     input_stream >> t;
   }
 
   //specializations
   template<>
-  inline std::string toStringT<unsigned char>(const unsigned char & t) {
+  inline std::string ToStringT<unsigned char>(const unsigned char & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<char>(const char & t) {
+  inline std::string ToStringT<char>(const char & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<int8_t>(const int8_t & t) {
+  inline std::string ToStringT<int8_t>(const int8_t & t) {
     std::stringstream out;
     out << (int)t;
     const std::string & s = out.str();
     return s;
   }
   template<>
-  inline std::string toStringT<float>(const float & t) {
+  inline std::string ToStringT<float>(const float & t) {
     //To get a lossless conversion from float to string, a precision of at least 8 is required.
     //However, in order to get the maximum number of digits while printing the number (((float)14263 / 32767) + 1000000.0f), which is displayed as 1000000.4 in Visual Studio 2010, a precision of 11 is required.
     //If we ToString() using different precision, we get the following:
@@ -168,7 +168,7 @@ namespace ra { namespace strings {
     return s;
   }
   template<>
-  inline std::string toStringT<double>(const double & t) {
+  inline std::string ToStringT<double>(const double & t) {
     //note lossless conversion
     std::stringstream out;
     out << std::setprecision(DOUBLE_TOSTRING_LOSSLESS_PRECISION) << t;
@@ -177,29 +177,29 @@ namespace ra { namespace strings {
   }
 
   template<>
-  inline void parseT<unsigned char>(const std::string & iValue, unsigned char & t) {
-    std::istringstream input_stream(iValue);
+  inline void ParseT<unsigned char>(const std::string & value, unsigned char & t) {
+    std::istringstream input_stream(value);
     uint16_t tmp = 0;
     input_stream >> tmp;
     t = (unsigned char)tmp;
   }
   template<>
-  inline void parseT<char>(const std::string & iValue, char & t) {
-    std::istringstream input_stream(iValue);
+  inline void ParseT<char>(const std::string & value, char & t) {
+    std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
     t = (char)tmp;
   }
   template<>
-  inline void parseT<int8_t>(const std::string & iValue, int8_t & t) {
-    std::istringstream input_stream(iValue);
+  inline void ParseT<int8_t>(const std::string & value, int8_t & t) {
+    std::istringstream input_stream(value);
     int16_t tmp = 0;
     input_stream >> tmp;
     t = (char)tmp;
   }
 
   template <typename T>
-  inline std::string toStringDigits(const T & t, int num_digits) {
+  inline std::string ToStringDigits(const T & t, int num_digits) {
     if (num_digits < 0)
       num_digits = 0;
     if (num_digits > 99)
@@ -231,22 +231,22 @@ namespace ra { namespace strings {
     return buffer;
   }
 
-  bool IsNumeric(const char * iValue) {
-    if (iValue == NULL)
+  bool IsNumeric(const char * value) {
+    if (value == NULL)
       return false;
 
     bool found_dot = false;
-    size_t length = strlen(iValue);
+    size_t length = strlen(value);
     for (size_t offset = 0; offset < length; offset++) {
-      const char & c = iValue[offset];
+      const char & c = value[offset];
       if (c >= '0' && c <= '9')
         continue; //valid
-      if (c == '.' && !found_dot) {
+      else if (c == '.' && !found_dot) {
         //only 1 dot character must be found in the string
         found_dot = true;
         continue; //valid
       }
-      if ((c == '+' || c == '-')) {
+      else if ((c == '+' || c == '-')) {
         if (offset == 0) {
           //+ or - sign are accepted but must be the first character of the value
           continue; //valid
@@ -258,17 +258,17 @@ namespace ra { namespace strings {
     return true;
   }
 
-  int Replace(std::string & iString, const std::string & iOldValue, const std::string & iNewValue) {
+  int Replace(std::string & str, const std::string & old_value, const std::string & new_value) {
     int num_occurance = 0;
 
-    if (iOldValue.size() > 0) {
+    if (old_value.size() > 0) {
       size_t start_pos = 0;
       size_t find_pos = std::string::npos;
       do {
-        find_pos = iString.find(iOldValue, start_pos);
+        find_pos = str.find(old_value, start_pos);
         if (find_pos != std::string::npos) {
-          iString.replace(find_pos, iOldValue.length(), iNewValue);
-          start_pos = find_pos + iNewValue.length();
+          str.replace(find_pos, old_value.length(), new_value);
+          start_pos = find_pos + new_value.length();
           num_occurance++;
         }
       } while (find_pos != -1);
@@ -283,25 +283,25 @@ namespace ra { namespace strings {
   }
 
   //default base type excepted floating points
-  std::string ToString(const   int8_t & value) { return toStringT(value); }
-  std::string ToString(const  uint8_t & value) { return toStringT(value); }
-  std::string ToString(const  int16_t & value) { return toStringT(value); }
-  std::string ToString(const uint16_t & value) { return toStringT(value); }
-  std::string ToString(const  int32_t & value) { return toStringT(value); }
-  std::string ToString(const uint32_t & value) { return toStringT(value); }
-  std::string ToString(const  int64_t & value) { return toStringT(value); }
-  std::string ToString(const uint64_t & value) { return toStringT(value); }
+  std::string ToString(const   int8_t & value) { return ToStringT(value); }
+  std::string ToString(const  uint8_t & value) { return ToStringT(value); }
+  std::string ToString(const  int16_t & value) { return ToStringT(value); }
+  std::string ToString(const uint16_t & value) { return ToStringT(value); }
+  std::string ToString(const  int32_t & value) { return ToStringT(value); }
+  std::string ToString(const uint32_t & value) { return ToStringT(value); }
+  std::string ToString(const  int64_t & value) { return ToStringT(value); }
+  std::string ToString(const uint64_t & value) { return ToStringT(value); }
 
   //floating point, lossless conversion
-  std::string ToStringLossless(const    float & value) { return toStringT(value); }
-  std::string ToStringLossless(const   double & value) { return toStringT(value); }
+  std::string ToStringLossless(const    float & value) { return ToStringT(value); }
+  std::string ToStringLossless(const   double & value) { return ToStringT(value); }
 
   //floating point, lossy conversion
   std::string ToStringLossy(const    float & value, const  float & epsilon) {
     for (int digits = 0; digits < FLOAT_TOSTRING_LOSSLESS_PRECISION; digits++) {
       const std::string & str = ToStringFormatted(value, digits);
       float parsed_value = 0.0f;
-      parseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+      ParseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
       float diff = std::abs(parsed_value - value);
       if (diff <= epsilon) {
         //this is the shortest representation
@@ -317,7 +317,7 @@ namespace ra { namespace strings {
     for (int digits = 0; digits < DOUBLE_TOSTRING_LOSSLESS_PRECISION; digits++) {
       const std::string & str = ToStringFormatted(value, digits);
       double parsed_value = 0.0;
-      parseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
+      ParseT(str, parsed_value); //do not look at the parsing result since we are aiming at a lossy conversion.
       double diff = std::abs(parsed_value - value);
       if (diff <= epsilon) {
         //this is the shortest representation
@@ -331,11 +331,11 @@ namespace ra { namespace strings {
 
   //floating point, formatted output
   std::string ToStringFormatted(const    float & value, int digits) {
-    const std::string & tmp = toStringDigits(value, digits);
+    const std::string & tmp = ToStringDigits(value, digits);
     return tmp;
   }
   std::string ToStringFormatted(const   double & value, int digits) {
-    const std::string & tmp = toStringDigits(value, digits);
+    const std::string & tmp = ToStringDigits(value, digits);
     return tmp;
   }
 
@@ -357,33 +357,33 @@ namespace ra { namespace strings {
     return false;
   }
 
-  bool Parse(const std::string& str, int8_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint8_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int16_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint16_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int32_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint32_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, int64_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, uint64_t & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToString(oValue);         bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, float & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToStringLossless(oValue); bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, double & oValue) { parseT(str, oValue); /*verify*/ const std::string & tmp = ToStringLossless(oValue); bool lossless = (tmp == str); return lossless; }
-  bool Parse(const std::string& str, bool & oValue) {
+  bool Parse(const std::string& str, int8_t &   value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint8_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int16_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint16_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int32_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint32_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, int64_t &  value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, uint64_t & value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToString(value);          bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, float &    value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, double &   value) { ParseT(str, value); /*verify*/ const std::string & tmp = ToStringLossless(value);  bool lossless = (tmp == str); return lossless; }
+  bool Parse(const std::string& str, bool &     value) {
     //first try to parse the value as a string
     std::string upper_str = ra::strings::Uppercase(str);
-    if (upper_str == "TRUE") { oValue = true; return true; }
-    if (upper_str == "YES") { oValue = true; return true; }
-    if (upper_str == "Y") { oValue = true; return true; }
-    if (upper_str == "ON") { oValue = true; return true; }
-    if (upper_str == "FALSE") { oValue = false; return true; }
-    if (upper_str == "NO") { oValue = false; return true; }
-    if (upper_str == "N") { oValue = false; return true; }
-    if (upper_str == "OFF") { oValue = false; return true; }
+    if (upper_str == "TRUE")  { value = true;   return true; }
+    if (upper_str == "YES")   { value = true;   return true; }
+    if (upper_str == "Y")     { value = true;   return true; }
+    if (upper_str == "ON")    { value = true;   return true; }
+    if (upper_str == "FALSE") { value = false;  return true; }
+    if (upper_str == "NO")    { value = false;  return true; }
+    if (upper_str == "N")     { value = false;  return true; }
+    if (upper_str == "OFF")   { value = false;  return true; }
 
     //then try to parse the value as a signed integer
     int64_t signed_integer = 0;
     bool parsed = Parse(str, signed_integer);
     if (parsed) {
-      oValue = (signed_integer != 0);
+      value = (signed_integer != 0);
       return true;
     }
 
@@ -391,7 +391,7 @@ namespace ra { namespace strings {
     uint64_t unsigned_integer = 0;
     parsed = Parse(str, unsigned_integer);
     if (parsed) {
-      oValue = (unsigned_integer != 0);
+      value = (unsigned_integer != 0);
       return true;
     }
 
@@ -399,163 +399,163 @@ namespace ra { namespace strings {
     return false;
   }
 
-  std::string CapitalizeFirstCharacter(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string CapitalizeFirstCharacter(const std::string & value) {
+    std::string copy = value;
     if (!copy.empty()) {
       copy[0] = (char)toupper(copy[0]);
     }
     return copy;
   }
 
-  std::string Uppercase(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string Uppercase(const std::string & value) {
+    std::string copy = value;
     for (size_t i = 0; i < copy.size(); i++) {
       copy[i] = (char)toupper(copy[i]);
     }
     return copy;
   }
 
-  std::string Lowercase(const std::string & iValue) {
-    std::string copy = iValue;
+  std::string Lowercase(const std::string & value) {
+    std::string copy = value;
     for (size_t i = 0; i < copy.size(); i++) {
       copy[i] = (char)tolower(copy[i]);
     }
     return copy;
   }
 
-  void RemoveEol(char * iBuffer) {
-    if (iBuffer == NULL)
+  void RemoveEol(char * buffer) {
+    if (buffer == NULL)
       return;
 
     int index = 0;
-    while (iBuffer[index] != '\0') {
-      if (iBuffer[index] == '\n' && iBuffer[index + 1] == '\r' && iBuffer[index + 2] == '\0') //Windows
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\r' && iBuffer[index + 1] == '\n' && iBuffer[index + 2] == '\0') //Windows
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\n' && iBuffer[index + 1] == '\0') // UNIX
-        iBuffer[index] = '\0';
-      else if (iBuffer[index] == '\r' && iBuffer[index + 1] == '\0') // OLD MAC
-        iBuffer[index] = '\0';
+    while (buffer[index] != '\0') {
+      if (buffer[index] == '\n' && buffer[index + 1] == '\r' && buffer[index + 2] == '\0') //Windows
+        buffer[index] = '\0';
+      else if (buffer[index] == '\r' && buffer[index + 1] == '\n' && buffer[index + 2] == '\0') //Windows
+        buffer[index] = '\0';
+      else if (buffer[index] == '\n' && buffer[index + 1] == '\0') // UNIX
+        buffer[index] = '\0';
+      else if (buffer[index] == '\r' && buffer[index + 1] == '\0') // OLD MAC
+        buffer[index] = '\0';
 
       index++;
     }
   }
 
-  StringVector Split(const std::string & iText, char iSplitCharacter) {
-    char pattern[] = { iSplitCharacter, '\0' };
+  StringVector Split(const std::string & text, char split_characters) {
+    char pattern[] = { split_characters, '\0' };
     StringVector list;
-    Split(list, iText, pattern);
+    Split(list, text, pattern);
     return list;
   }
 
-  StringVector Split(const std::string & iText, const char * iSplitPattern) {
+  StringVector Split(const std::string & text, const char * split_pattern) {
     StringVector list;
-    Split(list, iText, iSplitPattern);
+    Split(list, text, split_pattern);
     return list;
   }
 
-  void Split(StringVector & oList, const std::string & iText, char iSplitCharacter) {
-    char pattern[] = { iSplitCharacter, '\0' };
-    Split(oList, iText, pattern);
+  void Split(StringVector & values, const std::string & text, char split_character) {
+    char pattern[] = { split_character, '\0' };
+    Split(values, text, pattern);
   }
 
-  void Split(StringVector & oList, const std::string & iText, const char * iSplitPattern) {
-    oList.clear();
+  void Split(StringVector & values, const std::string & text, const char * split_pattern) {
+    values.clear();
 
     //validate invalue split pattern
-    if (iSplitPattern == NULL || strlen(iSplitPattern) == 0) {
-      oList.push_back(iText);
+    if (split_pattern == NULL || strlen(split_pattern) == 0) {
+      values.push_back(text);
       return;
     }
 
     std::string accumulator;
-    std::string pattern = iSplitPattern;
-    for (size_t i = 0; i < iText.size(); i++) {
-      const char * substring = &iText[i];
+    std::string pattern = split_pattern;
+    for (size_t i = 0; i < text.size(); i++) {
+      const char * substring = &text[i];
       if (strncmp(substring, pattern.c_str(), pattern.size()) == 0) {
         //found a split pattern
 
         //flush current accumulator
         if (accumulator != "") {
-          oList.push_back(accumulator);
+          values.push_back(accumulator);
           accumulator = "";
         }
 
         //does iTest starts with a separator?
         if (i == 0) {
-          oList.push_back("");
+          values.push_back("");
         }
 
         //does this separator follows another separator?
-        if (i >= pattern.size() && strncmp(&iText[i - pattern.size()], pattern.c_str(), pattern.size()) == 0) {
+        if (i >= pattern.size() && strncmp(&text[i - pattern.size()], pattern.c_str(), pattern.size()) == 0) {
           //consecutive separators
-          oList.push_back("");
+          values.push_back("");
         }
 
         i += pattern.size();
 
-        //does iText ends with a separator?
-        if (iText[i] == '\0') {
-          oList.push_back("");
+        //does text ends with a separator?
+        if (text[i] == '\0') {
+          values.push_back("");
         }
 
         i--; //since the next loop will increase i by 1
       }
       else {
-        const char & c = iText[i];
+        const char & c = text[i];
         accumulator.append(1, c);
       }
     }
 
     //flush current accumulator
     if (accumulator != "") {
-      oList.push_back(accumulator);
+      values.push_back(accumulator);
       accumulator = "";
     }
   }
 
-  std::string Join(const StringVector & iList, const char * iSeparator) {
+  std::string Join(const StringVector & values, const char * separator) {
     std::string output;
-    for (size_t i = 0; i < iList.size(); i++) {
-      const std::string & value = iList[i];
-      if (i > 0 && iSeparator != NULL)
-        output.append(iSeparator);
+    for (size_t i = 0; i < values.size(); i++) {
+      const std::string & value = values[i];
+      if (i > 0 && separator != NULL)
+        output.append(separator);
       output.append(value);
     }
     return output;
   }
 
-  std::string Trim(const std::string & iStr) {
-    return TrimLeft(TrimRight(iStr));
+  std::string Trim(const std::string & str) {
+    return TrimLeft(TrimRight(str));
   }
 
-  std::string Trim(const std::string & iStr, const char iChar) {
-    return TrimLeft(TrimRight(iStr, iChar), iChar);
+  std::string Trim(const std::string & str, const char c) {
+    return TrimLeft(TrimRight(str, c), c);
   }
 
-  std::string TrimRight(const std::string & iStr) {
-    return TrimRight(iStr, ' ');
+  std::string TrimRight(const std::string & str) {
+    return TrimRight(str, ' ');
   }
 
-  std::string TrimLeft(const std::string & iStr) {
-    return TrimLeft(iStr, ' ');
+  std::string TrimLeft(const std::string & str) {
+    return TrimLeft(str, ' ');
   }
 
-  std::string TrimRight(const std::string & iStr, const char iChar) {
+  std::string TrimRight(const std::string & str, const char c) {
     static const size_t SIZE_T_MAX = std::numeric_limits< size_t >::max();
 
-    std::string tmp = iStr;
+    std::string tmp = str;
 
-    if (iChar == '\0')
+    if (c == '\0')
       return tmp;
 
-    size_t size = iStr.size();
+    size_t size = str.size();
     if (size) {
       size_t loop_start = size - 1;
       size_t loop_end = 0;
       for (size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX; i--) {
-        if (tmp[i] == iChar) {
+        if (tmp[i] == c) {
           tmp.erase(i, 1);
         }
         else {
@@ -567,25 +567,25 @@ namespace ra { namespace strings {
     return tmp;
   }
 
-  std::string TrimLeft(const std::string & iStr, const char iChar) {
-    std::string tmp = iStr;
+  std::string TrimLeft(const std::string & str, const char c) {
+    std::string tmp = str;
 
-    if (iChar == '\0')
+    if (c == '\0')
       return tmp;
 
-    size_t size = iStr.size();
+    size_t size = str.size();
     if (size) {
-      while (!tmp.empty() && tmp[0] == iChar) {
+      while (!tmp.empty() && tmp[0] == c) {
         tmp.erase(0, 1);
       }
     }
     return tmp;
   }
 
-  std::string Reverse(const std::string & iStr) {
-    std::string tmp = iStr;
+  std::string Reverse(const std::string & str) {
+    std::string tmp = str;
 
-    size_t size = iStr.size();
+    size_t size = str.size();
     if (size) {
       size_t loop_start = 0;
       size_t loop_end = (size - 1) / 2;
@@ -598,16 +598,16 @@ namespace ra { namespace strings {
     return tmp;
   }
 
-  std::string Format(const char * iFormat, ...) {
+  std::string Format(const char * format, ...) {
     std::string output;
 
     va_list args;
-    va_start(args, iFormat);
+    va_start(args, format);
 
     static const int BUFFER_SIZE = 10240;
     char buffer[BUFFER_SIZE];
     buffer[0] = '\0';
-    vsnprintf(buffer, BUFFER_SIZE, iFormat, args);
+    vsnprintf(buffer, BUFFER_SIZE, format, args);
     output = buffer;
 
     va_end(args);

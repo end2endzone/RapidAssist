@@ -83,9 +83,9 @@ namespace ra { namespace console {
   /// <summary>
   /// Returns the current cursor spinning sprite based on the requested refresh rate.
   /// </summary>
-  /// <param name="iRefreshRate">The duration time in seconds of a single sprite.</param>
+  /// <param name="refresh_rate">The duration time in seconds of a single sprite.</param>
   /// <returns>Returns the current cursor spinning sprite based on the requested refresh rate.</returns>
-  char GetAnimationSprite(double iRefreshRate);
+  char GetAnimationSprite(double refresh_rate);
 
   /// <summary>
   /// Prints a spinning cursor over time.
@@ -128,16 +128,20 @@ namespace ra { namespace console {
   /// <summary>
   /// Set a new foreground and background text color.
   /// </summary>
-  /// <param name="iForeground">The text foreground color.</param>
-  /// <param name="iBackground">The text background color.</param>
-  void SetTextColor(const TextColor & iForeground, const TextColor & iBackground);
+  /// <param name="foreground">The text foreground color.</param>
+  /// <param name="background">The text background color.</param>
+  void SetTextColor(const TextColor & foreground, const TextColor & background);
 
   /// <summary>
   /// Get the current foreground and background text color.
   /// </summary>
-  /// <param name="oForeground">The text foreground color.</param>
-  /// <param name="oBackground">The text background color.</param>
-  void GetTextColor(TextColor & oForeground, TextColor & oBackground);
+  /// <param name="foreground">The output text foreground color.</param>
+  /// <param name="background">The output text background color.</param>
+  /// <remarks>
+  /// On Windows, a GUI is always available (as the mane implies).
+  /// On Linux, a GUI is optional. a desktop GUI is also not available if the application was launched from ssh.
+  /// </remarks>
+  void GetTextColor(TextColor & foreground, TextColor & background);
 
   /// <summary>
   /// Set default foreground and background text colors.

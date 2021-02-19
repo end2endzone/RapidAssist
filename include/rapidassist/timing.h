@@ -50,16 +50,16 @@ namespace ra { namespace timing {
   /// <summary>
   /// Converts a std::tm structure to a DateTime structure.
   /// </summary>
-  /// <param name="timeinfo">The given std::tm value.</param>
+  /// <param name="time_info">The given std::tm value.</param>
   /// <returns>Returns a DateTime structure matching the given std::tm info.</returns>
-  DateTime ToDateTime(const std::tm & timeinfo);
+  DateTime ToDateTime(const std::tm & time_info);
 
   /// <summary>
   /// Converts a DateTime structure to a std::tm structure.
   /// </summary>
-  /// <param name="iDateTime">The given DateTime value.</param>
+  /// <param name="date_time">The given DateTime value.</param>
   /// <returns>Returns a std::tm structure matching the given DateTime info.</returns>
-  std::tm ToTimeInfo(const DateTime & iDateTime);
+  std::tm ToTimeInfo(const DateTime & date_time);
 
   /// <summary>
   /// Wait for the clock to jump to the next second. Synchronize the time clock to a new second.

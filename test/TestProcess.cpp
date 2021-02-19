@@ -89,8 +89,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file
@@ -132,8 +132,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file
@@ -181,8 +181,8 @@ namespace ra { namespace process { namespace test
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
 
     //wait for the process to complete
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //Search for the generated output file
@@ -657,8 +657,8 @@ namespace ra { namespace process { namespace test
     //wait for the process to complete
     printf("Waiting for the sleep process to exit...\n", new_process_path.c_str());
     fflush(NULL);
-    int exitcode = 0;
-    bool wait_ok = ra::process::WaitExit(pid, exitcode);
+    int exit_code = 0;
+    bool wait_ok = ra::process::WaitExit(pid, exit_code);
     ASSERT_TRUE(wait_ok);
 
     //assert the process is not running anymore

@@ -46,8 +46,8 @@
 namespace ra { namespace testing {
 
   //predeclarations
-  bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences);
-  bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences);
+  bool IsFileEquals(FILE* file1, FILE* file2, std::string & reason, size_t max_differences);
+  bool GetFileDifferences(FILE* file1, FILE* file2, std::vector<FileDiff> & differences, size_t max_differences);
 
   //
   // Description:
@@ -56,25 +56,25 @@ namespace ra { namespace testing {
   // 
   class FileWrapper {
   public:
-    FileWrapper(const char * iPath, const char * iMode) {
-      file_pointer_ = fopen(iPath, iMode);
+    FileWrapper(const char * path, const char * mode) {
+      file_pointer_ = fopen(path, mode);
     }
 
     ~FileWrapper() {
-      close();
+      Close();
     }
 
-    static bool isEOF(FILE * f) {
+    static bool IsEof(FILE * f) {
       if (f == NULL)
         return true;
       //http://www.cplusplus.com/reference/cstdio/feof/
       return (feof(f) != 0);
     }
-    bool isEOF() {
-      return FileWrapper::isEOF(file_pointer_);
+    bool IsEof() {
+      return FileWrapper::IsEof(file_pointer_);
     }
 
-    void close() {
+    void Close() {
       if (file_pointer_) {
         fclose(file_pointer_);
         file_pointer_ = NULL;
@@ -85,32 +85,26 @@ namespace ra { namespace testing {
     FILE * file_pointer_;
   };
 
-  std::string subString2(const std::string & iString, size_t iStart, size_t iCount) {
-    std::string tmp = iString;
-    tmp.substr(iStart, iCount);
-    return tmp;
-  }
-
 #ifdef RAPIDASSIST_HAVE_GTEST
-  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, int argc, char **argv) {
+  std::string MergeFilter(const std::string & positive_filter, const std::string & negative_filter, int argc, char **argv) {
     //find supplied --gtest_filter argument
     std::string gtest_filter;
     bool found = ra::cli::ParseArgument("gtest_filter", gtest_filter, argc, argv);
     if (found)
-      return MergeFilter(iPositiveFilter, iNegativeFilter, gtest_filter.c_str());
-    return MergeFilter(iPositiveFilter, iNegativeFilter, NULL);
+      return MergeFilter(positive_filter, negative_filter, gtest_filter.c_str());
+    return MergeFilter(positive_filter, negative_filter, NULL);
   }
 
-  std::string MergeFilter(const std::string & iPositiveFilter, const std::string & iNegativeFilter, const char * iExistingFilter) {
+  std::string MergeFilter(const std::string & positive_filter_old, const std::string & negative_filter_old, const char * existing_filter) {
     std::string filter;
 
-    std::string positive_filter = iPositiveFilter;
-    std::string negative_filter = iNegativeFilter;
+    std::string positive_filter = positive_filter_old;
+    std::string negative_filter = negative_filter_old;
 
-    if (iExistingFilter) {
+    if (existing_filter) {
       std::string arg_positive_filter;
       std::string arg_negative_filter;
-      SplitFilter(iExistingFilter, arg_positive_filter, arg_negative_filter);
+      SplitFilter(existing_filter, arg_positive_filter, arg_negative_filter);
 
       //append argument filters to positive_filter and negative_filter filters
       if (positive_filter == "")
@@ -147,52 +141,53 @@ namespace ra { namespace testing {
     return filter;
   }
 
-  void SplitFilter(const char * iFilter, std::string & oPositiveFilter, std::string & oNegativeFilter) {
-    oPositiveFilter = "";
-    oNegativeFilter = "";
+  void SplitFilter(const char * filter, std::string & positive_filter, std::string & negative_filter) {
+    positive_filter = "";
+    negative_filter = "";
 
-    if (iFilter == NULL)
+    if (filter == NULL)
       return;
 
-    std::string filter_string = iFilter;
+    std::string filter_string = filter;
     if (filter_string == "")
       return;
 
     ra::strings::StringVector filters;
-    ra::strings::Split(filters, iFilter, "-");
+    ra::strings::Split(filters, filter, "-");
 
     if (filters.size() > 2) {
       //something went wrong filter contains multiple '-' character
       //return the first 2 elements either way
-      oPositiveFilter = filters[0].c_str();
-      oNegativeFilter = filters[1].c_str();
+      positive_filter = filters[0].c_str();
+      negative_filter = filters[1].c_str();
     }
     else if (filters.size() == 2) {
       //positive and negative filter found
-      oPositiveFilter = filters[0].c_str();
-      oNegativeFilter = filters[1].c_str();
+      positive_filter = filters[0].c_str();
+      negative_filter = filters[1].c_str();
     }
     else if (filters.size() == 1) {
       //positive only filter found
-      oPositiveFilter = filters[0].c_str();
-      oNegativeFilter = "";
+      positive_filter = filters[0].c_str();
+      negative_filter = "";
     }
     else {
       //something went wrong
     }
   }
 
-  ra::strings::StringVector GetTestList(const char * iTestCasePath) {
+  ra::strings::StringVector GetTestList(const char * path) {
     //check that file exists
-    if (!ra::filesystem::FileExists(iTestCasePath))
+    if (!ra::filesystem::FileExists(path))
       return ra::strings::StringVector();
 
-    static const std::string log_filename = "gTestHelper.tmp";
+    const std::string log_filename = ra::filesystem::GetTemporaryFileName();
 
     std::string command_line;
+#ifdef _WIN32
     command_line.append("cmd /c \"");
     command_line.append("\"");
-    command_line.append(iTestCasePath);
+    command_line.append(path);
     command_line.append("\"");
     command_line.append(" --gtest_list_tests");
     command_line.append(" 2>NUL");
@@ -200,11 +195,32 @@ namespace ra { namespace testing {
     command_line.append("\"");
     command_line.append(log_filename);
     command_line.append("\"");
+#elif __linux__
+    command_line.append("\"");
+    command_line.append(path);
+    command_line.append("\"");
+    command_line.append(" --gtest_list_tests");
+    command_line.append(" 2>NUL");
+    command_line.append(" 1>");
+    command_line.append("\"");
+    command_line.append(log_filename);
+    command_line.append("\"");
+#endif //_WIN32
 
     //exec
     int return_code = system(command_line.c_str());
+#ifdef _WIN32
+    int exit_code = system(command_line.c_str());
+#elif __linux__
+    //Run the new process and log the output
+    int system_result = system(command_line.c_str());
+    int exit_code = WEXITSTATUS( system_result );
+#endif //_WIN32
     if (return_code != 0)
+    {
+      printf("Failed running command: %s\n", command_line.c_str());
       return ra::strings::StringVector();
+    }
 
     if (!ra::filesystem::FileExists(log_filename.c_str()))
       return ra::strings::StringVector();
@@ -217,27 +233,36 @@ namespace ra { namespace testing {
     std::string test_case_name;
     FILE * f = fopen(log_filename.c_str(), "r");
     if (!f)
+    {
+      ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
       return ra::strings::StringVector();
+    }
 
-    static const int BUFFER_SIZE = 1024;
-    char buffer[BUFFER_SIZE];
-    while (fgets(buffer, BUFFER_SIZE, f)) {
-      std::string line = buffer;
-      line.substr(0, line.size() - 1); //remove CRLF at the end of the 
-      if (subString2(line, 0, disabled_test_case_header.size()) == disabled_test_case_header) {
+    ra::strings::StringVector lines;
+    bool success = ra::filesystem::ReadTextFile(log_filename, lines);
+    if (!success)
+    {
+      ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
+      return ra::strings::StringVector();
+    }
+    
+    for(size_t i=0; i<lines.size(); i++)
+    {
+      const std::string line = lines[i];
+      if (line.substr(0, disabled_test_case_header.size()) == disabled_test_case_header) {
         //do nothing
       }
-      else if (subString2(line, 0, 2) == "  ") {
+      else if (line.substr(0, 2) == "  ") {
         //test case
         std::string full_test_case_name;
         full_test_case_name.append(test_suite_name);
-        full_test_case_name.append(subString2(line, 2, 999));
+        full_test_case_name.append(line.substr(2, 999));
         test_list.push_back(full_test_case_name);
       }
       else {
         //test suite name
         test_suite_name = "";
-        if (subString2(line, 0, disabled_test_suite_header.size()) == disabled_test_suite_header) {
+        if (line.substr(0, disabled_test_suite_header.size()) == disabled_test_suite_header) {
           //disabled test suite
         }
         else {
@@ -249,67 +274,64 @@ namespace ra { namespace testing {
     fclose(f);
 
     //delete log file
-    int remove_result = remove(log_filename.c_str());
-
-    //exec
-    return_code = system(command_line.c_str());
+    ra::filesystem::DeleteFile(log_filename.c_str()); //cleanup
 
     return test_list;
   }
 #endif //RAPIDASSIST_HAVE_GTEST
 
-  bool IsFileEquals(const char* iFile1, const char* iFile2, std::string & oReason, size_t iMaxDifferences) {
+  bool IsFileEquals(const char* file1, const char* file2, std::string & reason, size_t max_differences) {
     //Build basic message
-    oReason.clear();
-    oReason << "Comparing first file \"" << iFile1 << "\" with second file \"" << iFile2 << "\". ";
+    reason.clear();
+    reason << "Comparing first file \"" << file1 << "\" with second file \"" << file2 << "\". ";
 
-    FileWrapper f1(iFile1, "rb");
+    FileWrapper f1(file1, "rb");
     if (f1.file_pointer_ == NULL) {
-      oReason << "First file is not found.";
+      reason << "First file is not found.";
       return false;
     }
-    FileWrapper f2(iFile2, "rb");
+    FileWrapper f2(file2, "rb");
     if (f2.file_pointer_ == NULL) {
-      oReason << "Second file is not found.";
+      reason << "Second file is not found.";
       return false;
     }
 
-    bool result = IsFileEquals(f1.file_pointer_, f2.file_pointer_, oReason, iMaxDifferences);
+    bool result = IsFileEquals(f1.file_pointer_, f2.file_pointer_, reason, max_differences);
     return result;
   }
 
-  bool IsFileEquals(FILE* iFile1, FILE* iFile2, std::string & oReason, size_t iMaxDifferences) {
+  bool IsFileEquals(FILE* file1, FILE* file2, std::string & reason, size_t max_differences) {
     //Compare by size
-    uint32_t size1 = ra::filesystem::GetFileSize(iFile1);
-    uint32_t size2 = ra::filesystem::GetFileSize(iFile2);
+    uint32_t size1 = ra::filesystem::GetFileSize(file1);
+    uint32_t size2 = ra::filesystem::GetFileSize(file2);
     if (size1 != size2) {
       if (size1 < size2)
-        oReason << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
+        reason << "First file is smaller than Second file: " << size1 << " vs " << size2 << ".";
       else
-        oReason << "First file is bigger than Second file: " << size1 << " vs " << size2 << ".";
+        reason << "First file is bigger than Second file: " << size1 << " vs " << size2 << ".";
       return false;
     }
 
     //Compare content
     std::vector<FileDiff> differences;
-    bool success = GetFileDifferences(iFile1, iFile2, differences, iMaxDifferences + 1); //search 1 more record to differentiate between exactly iMaxDifferences differences and more than iMaxDifferences differences
+    bool success = GetFileDifferences(file1, file2, differences, max_differences + 1); //search 1 more record to differentiate between exactly max_differences differences and more than max_differences differences
     if (!success) {
-      oReason << "Unable to determine if content is identical...";
+      reason << "Unable to determine if content is identical...";
       return false;
     }
 
     if (differences.size() == 0) {
       //no diffences. Files are identicals
-      oReason.clear();
+      reason.clear();
       return true;
     }
 
     //Build error message from differences
-    oReason << "Content is different: ";
-    for (size_t i = 0; i < differences.size() && i < iMaxDifferences; i++) {
+    reason << "Content is different: ";
+    for (size_t i = 0; i < differences.size() && i < max_differences; i++) {
       const FileDiff & d = differences[i];
       if (i >= 1)
-        oReason << ", ";
+        reason << ", ";
       static const int BUFFER_SIZE = 1024;
       char buffer[BUFFER_SIZE];
 #ifdef _WIN32
@@ -317,30 +339,30 @@ namespace ra { namespace testing {
 #else
       sprintf(buffer, "{address %zu(0x%zX) is 0x%02X instead of 0x%02X}", d.offset, d.offset, d.c1, d.c2);
 #endif
-      oReason << buffer;
-      //oReason << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
+      reason << buffer;
+      //reason << "{at offset " << (d.offset) << "(0x" << std::hex << (int)d.offset << ") has 0x" << std::hex << (int)d.c1 << " vs 0x" << std::hex << (int)d.c2 << "}";
     }
-    if (differences.size() > iMaxDifferences)
-      oReason << ", ...";
+    if (differences.size() > max_differences)
+      reason << ", ...";
     return false;
   }
 
-  bool GetFileDifferences(const char* iFile1, const char* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
-    FileWrapper f1(iFile1, "rb");
+  bool GetFileDifferences(const char* file1, const char* file2, std::vector<FileDiff> & differences, size_t max_differences) {
+    FileWrapper f1(file1, "rb");
     if (f1.file_pointer_ == NULL)
       return false;
-    FileWrapper f2(iFile2, "rb");
+    FileWrapper f2(file2, "rb");
     if (f2.file_pointer_ == NULL)
       return false;
 
-    bool result = GetFileDifferences(f1.file_pointer_, f2.file_pointer_, oDifferences, iMaxDifferences);
+    bool result = GetFileDifferences(f1.file_pointer_, f2.file_pointer_, differences, max_differences);
     return result;
   }
 
-  bool GetFileDifferences(FILE* iFile1, FILE* iFile2, std::vector<FileDiff> & oDifferences, size_t iMaxDifferences) {
+  bool GetFileDifferences(FILE* file1, FILE* file2, std::vector<FileDiff> & differences, size_t max_differences) {
     //Check by size
-    uint32_t size1 = ra::filesystem::GetFileSize(iFile1);
-    uint32_t size2 = ra::filesystem::GetFileSize(iFile2);
+    uint32_t size1 = ra::filesystem::GetFileSize(file1);
+    uint32_t size2 = ra::filesystem::GetFileSize(file2);
     if (size1 != size2) {
       return false; //unsupported
     }
@@ -349,18 +371,18 @@ namespace ra { namespace testing {
     static const size_t BUFFER_SIZE = 1024;
     char buffer1[BUFFER_SIZE];
     char buffer2[BUFFER_SIZE];
-    size_t offsetRead = 0;
+    size_t offset_read = 0;
 
     //while there is data to read in files
-    while (!FileWrapper::isEOF(iFile1) && !FileWrapper::isEOF(iFile2)) {
-      size_t readSize1 = fread(buffer1, 1, BUFFER_SIZE, iFile1);
-      size_t readSize2 = fread(buffer2, 1, BUFFER_SIZE, iFile2);
-      if (readSize1 != readSize2) {
+    while (!FileWrapper::IsEof(file1) && !FileWrapper::IsEof(file2)) {
+      size_t read_size1 = fread(buffer1, 1, BUFFER_SIZE, file1);
+      size_t read_size2 = fread(buffer2, 1, BUFFER_SIZE, file2);
+      if (read_size1 != read_size2) {
         //this should not happend since both files are identical in length.
         return false; //failed
       }
-      bool contentEquals = memcmp(buffer1, buffer2, readSize1) == 0;
-      if (!contentEquals) {
+      bool content_equals = memcmp(buffer1, buffer2, read_size1) == 0;
+      if (!content_equals) {
         //current buffers are different
 
         //Find differences and build file diff info.
@@ -369,40 +391,40 @@ namespace ra { namespace testing {
           unsigned char c2 = (unsigned char)buffer2[i];
           if (c1 != c2) {
             FileDiff d;
-            d.offset = offsetRead + i;
+            d.offset = offset_read + i;
             d.c1 = c1;
             d.c2 = c2;
-            oDifferences.push_back(d);
+            differences.push_back(d);
 
             //check max differences found
-            if (oDifferences.size() == iMaxDifferences)
+            if (differences.size() == max_differences)
               return true;
           }
         }
       }
-      offsetRead += readSize1;
+      offset_read += read_size1;
     }
     return true;
   }
 
-  bool FindInFile(const char* iFilename, const char* iValue, int & oLine, int & oCharacter) {
-    if (!ra::filesystem::FileExists(iFilename))
+  bool FindInFile(const char* path, const char* value, int & line_index, int & character_index) {
+    if (!ra::filesystem::FileExists(path))
       return false;
 
-    oLine = -1;
-    oCharacter = -1;
+    line_index = -1;
+    character_index = -1;
 
     ra::strings::StringVector lines;
-    bool success = ra::filesystem::ReadTextFile(iFilename, lines);
+    bool success = ra::filesystem::ReadTextFile(path, lines);
     if (!success)
       return false;
 
     for (size_t i = 0; i < lines.size(); i++) {
       const std::string & line = lines[i];
-      size_t position = line.find(iValue, 0);
+      size_t position = line.find(value, 0);
       if (position != std::string::npos) {
-        oLine = (int)i;
-        oCharacter = (int)position;
+        line_index = (int)i;
+        character_index = (int)position;
         return true;
       }
     }
@@ -410,21 +432,20 @@ namespace ra { namespace testing {
     return false;
   }
 
-  bool GetTextFileContent(const char* iFilename, ra::strings::StringVector & oLines) {
-    if (iFilename == NULL)
+  bool GetTextFileContent(const char* path, ra::strings::StringVector & lines) {
+    if (path == NULL)
       return false;
 
-    std::string path = iFilename;
-    bool success = ra::filesystem::ReadTextFile(path, oLines, true);
+    bool success = ra::filesystem::ReadTextFile(path, lines, true);
     return success;
   }
 
-  bool CreateFile(const char * iFilePath, size_t iSize) {
-    FILE * f = fopen(iFilePath, "wb");
+  bool CreateFile(const char * path, size_t size) {
+    FILE * f = fopen(path, "wb");
     if (!f)
       return false;
 
-    for (size_t i = 0; i < iSize; i++) {
+    for (size_t i = 0; i < size; i++) {
       unsigned int value = (i % 256);
       fwrite(&value, 1, 1, f);
     }
@@ -432,8 +453,8 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFile(const char * iFilePath) {
-    FILE * f = fopen(iFilePath, "w");
+  bool CreateFile(const char * path) {
+    FILE * f = fopen(path, "w");
     if (f == NULL)
       return false;
     fputs("FOO!\n", f);
@@ -444,14 +465,14 @@ namespace ra { namespace testing {
     return true;
   }
 
-  bool CreateFileSparse(const char * iFilePath, uint64_t iSize) {
+  bool CreateFileSparse(const char * path, uint64_t size) {
 #ifdef _WIN32
     //https://stackoverflow.com/questions/982659/quickly-create-large-file-on-a-windows-system
 
     LARGE_INTEGER large_integer;
-    large_integer.QuadPart = iSize;
+    large_integer.QuadPart = size;
 
-    HANDLE hFile = ::CreateFileA(iFilePath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+    HANDLE hFile = ::CreateFileA(path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
     if (hFile == INVALID_HANDLE_VALUE)
       return false;
     if (SetFilePointerEx(hFile, large_integer, 0, FILE_BEGIN) == 0)
@@ -489,8 +510,8 @@ namespace ra { namespace testing {
     //Prepare command arguments
     ra::strings::StringVector arguments;
     arguments.push_back("-l");
-    arguments.push_back(ra::strings::ToString(iSize));
-    arguments.push_back(iFilePath);
+    arguments.push_back(ra::strings::ToString(size));
+    arguments.push_back(path);
 
     //Run the new executable
     ra::process::processid_t pid = ra::process::StartProcess(fallocate_path, current_dir, arguments);
@@ -509,9 +530,9 @@ namespace ra { namespace testing {
 #endif
   }
 
-  void ChangeFileContent(const char * iFilePath, size_t iOffset, unsigned char iValue) {
+  void ChangeFileContent(const char * path, size_t offset, unsigned char value) {
     //read
-    FILE * f = fopen(iFilePath, "rb");
+    FILE * f = fopen(path, "rb");
     if (!f)
       return;
 
@@ -519,18 +540,18 @@ namespace ra { namespace testing {
     unsigned char * buffer = new unsigned char[size];
     if (!buffer)
       return;
-    size_t byteRead = fread(buffer, 1, size, f);
+    size_t byte_read = fread(buffer, 1, size, f);
     fclose(f);
 
     //modify
-    if (iOffset < (size_t)size)
-      buffer[iOffset] = iValue;
+    if (offset < (size_t)size)
+      buffer[offset] = value;
 
     //save
-    f = fopen(iFilePath, "wb");
+    f = fopen(path, "wb");
     if (!f)
       return;
-    size_t byteWrite = fwrite(buffer, 1, size, f);
+    size_t byte_write = fwrite(buffer, 1, size, f);
     fclose(f);
   }
 

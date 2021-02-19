@@ -38,28 +38,28 @@ namespace ra { namespace random {
   int GetRandomInt();
 
   /// <summary>
-  /// Returns a random number between iMin (inclusive) and iMax (inclusive).
+  /// Returns a random number between value_min (inclusive) and value_max (inclusive).
   /// </summary>
-  /// <param name="iMin">The minimum value that can be generated</param>
-  /// <param name="iMax">The maximum value that can be generated</param>
-  /// <returns>Returns a random number between iMin and iMax.</returns>
-  int GetRandomInt(int iMin, int iMax);
+  /// <param name="value_min">The minimum value that can be generated</param>
+  /// <param name="value_max">The maximum value that can be generated</param>
+  /// <returns>Returns a random number between value_min and value_max.</returns>
+  int GetRandomInt(int value_min, int value_max);
 
   /// <summary>
-  /// Returns a random number between iMin (inclusive) and iMax (inclusive).
+  /// Returns a random number between value_min (inclusive) and value_max (inclusive).
   /// </summary>
-  /// <param name="iMin">The minimum value that can be generated</param>
-  /// <param name="iMax">The maximum value that can be generated</param>
-  /// <returns>Returns a random number between iMin and iMax.</returns>
-  double GetRandomDouble(double iMin, double iMax);
+  /// <param name="value_min">The minimum value that can be generated</param>
+  /// <param name="value_max">The maximum value that can be generated</param>
+  /// <returns>Returns a random number between value_min and value_max.</returns>
+  double GetRandomDouble(double value_min, double value_max);
 
   /// <summary>
-  /// Returns a random number between iMin (inclusive) and iMax (inclusive).
+  /// Returns a random number between value_min (inclusive) and value_max (inclusive).
   /// </summary>
-  /// <param name="iMin">The minimum value that can be generated</param>
-  /// <param name="iMax">The maximum value that can be generated</param>
-  /// <returns>Returns a random number between iMin and iMax.</returns>
-  float GetRandomFloat(float iMin, float iMax);
+  /// <param name="value_min">The minimum value that can be generated</param>
+  /// <param name="value_max">The maximum value that can be generated</param>
+  /// <returns>Returns a random number between value_min and value_max.</returns>
+  float GetRandomFloat(float value_min, float value_max);
 
   /// <summary>
   /// Returns a random string.
@@ -68,21 +68,21 @@ namespace ra { namespace random {
   std::string GetRandomString();
 
   /// <summary>
-  /// Returns a random string with a maximum length of iMaxLen.
+  /// Returns a random string with a maximum length of 'length'.
   /// </summary>
-  /// <param name="iMaxLen">The maximum length of the generated string.</param>
-  /// <param name="oValue">The result of the generated string.</param>
-  void GetRandomString(std::string & oValue, size_t iMaxLen);
-  std::string GetRandomString(size_t iMaxLen);
+  /// <param name="length">The length of the generated string.</param>
+  /// <param name="value">The output generated string.</param>
+  void GetRandomString(std::string & value, size_t length);
+  std::string GetRandomString(size_t length);
 
   /// <summary>
   /// Returns a random string.
   /// </summary>
-  /// <param name="iMaxLen">The maximum length of the generated string.</param>
-  /// <param name="iSymbols">The list of allowed character of the generated string.</param>
-  /// <param name="oValue">The result of the generated string.</param>
-  void GetRandomString(std::string & oValue, size_t iMaxLen, const char* iSymbols);
-  std::string GetRandomString(size_t iMaxLen, const char* iSymbols);
+  /// <param name="length">The length of the generated string.</param>
+  /// <param name="symbols">The list of allowed character of the generated string.</param>
+  /// <param name="value">The output generated string.</param>
+  void GetRandomString(std::string & value, size_t length, const char* symbols);
+  std::string GetRandomString(size_t length, const char* symbols);
 
   class SymbolsFlags {
   public:
@@ -98,10 +98,10 @@ namespace ra { namespace random {
   /// <summary>
   /// Returns a random string.
   /// </summary>
-  /// <param name="iMaxLen">The maximum length of the generated string.</param>
-  /// <param name="iFlags">The flags that defines the allowed content of the generated string.</param>
-  /// <param name="oValue">The result of the generated string.</param>
-  void GetRandomString(std::string & oValue, size_t iMaxLen, SymbolsFlags::Flags iFlags);
+  /// <param name="length">The maximum length of the generated string.</param>
+  /// <param name="flags">The flags that defines the allowed content of the generated string.</param>
+  /// <param name="value">The output generated string.</param>
+  void GetRandomString(std::string & value, size_t length, SymbolsFlags::Flags flags);
 
 } //namespace random
 } //namespace ra

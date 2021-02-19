@@ -33,7 +33,7 @@
 //#   ifndef WIN32_LEAN_AND_MEAN
 //#   define WIN32_LEAN_AND_MEAN 1
 //#   endif
-#   include <windows.h> // for GetModuleHandleEx()
+#   include <Windows.h> // for GetModuleHandleEx()
 #   include "rapidassist/undef_windows_macros.h"
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
@@ -83,42 +83,42 @@ namespace ra { namespace process {
     return dir;
   }
 
-  processid_t StartProcessUtf8(const std::string & iExecPath) {
+  processid_t StartProcessUtf8(const std::string & exec_path) {
     std::string curr_dir = ra::filesystem::GetCurrentDirectoryUtf8();
 
     // Launch the process from the current process current directory
-    processid_t pid = StartProcessUtf8(iExecPath, curr_dir);
+    processid_t pid = StartProcessUtf8(exec_path, curr_dir);
     return pid;
   }
 
-  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory) {
+  processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory) {
     // Launch the process with no arguments
-    processid_t pid = StartProcessUtf8(iExecPath, iDefaultDirectory, "");
+    processid_t pid = StartProcessUtf8(exec_path, default_directory, "");
     return pid;
   }
 
-  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine) {
+  processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory, const std::string & command_line) {
     //build the full command line
     std::string command;
 
-    //handle iExecPath
-    if (!iExecPath.empty()) {
-      if (iExecPath.find(" ") != std::string::npos) {
+    //handle exec_path
+    if (!exec_path.empty()) {
+      if (exec_path.find(" ") != std::string::npos) {
         command += "\"";
-        command += iExecPath;
+        command += exec_path;
         command += "\"";
       }
       else
-        command += iExecPath;
+        command += exec_path;
     }
 
     if (!command.empty()) {
       command += " ";
-      command += iCommandLine;
+      command += command_line;
     }
 
     const std::wstring commandW = ra::unicode::Utf8ToUnicode(command);
-    const std::wstring defaultDirectoryW = ra::unicode::Utf8ToUnicode(iDefaultDirectory);
+    const std::wstring defaultDirectoryW = ra::unicode::Utf8ToUnicode(default_directory);
 
     //launch a new process with the command line
     PROCESS_INFORMATION process_info = { 0 };
@@ -142,11 +142,11 @@ namespace ra { namespace process {
     return INVALID_PROCESS_ID;
   }
 
-  bool OpenDocumentUtf8(const std::string & iPath) {
-    if (!ra::filesystem::FileExistsUtf8(iPath.c_str()))
+  bool OpenDocumentUtf8(const std::string & path) {
+    if (!ra::filesystem::FileExistsUtf8(path.c_str()))
       return false; //file not found
 
-    const std::wstring pathW = ra::unicode::Utf8ToUnicode(iPath);
+    const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
     SHELLEXECUTEINFOW info = { 0 };
 

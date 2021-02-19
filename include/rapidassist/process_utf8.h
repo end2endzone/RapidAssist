@@ -58,34 +58,34 @@ namespace ra { namespace process {
   /// <summary>
   /// Start the given process.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcessUtf8(const std::string & iExecPath);
+  processid_t StartProcessUtf8(const std::string & exec_path);
 
   /// <summary>
   /// Start the given process from the given directory.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory);
+  processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory);
 
   /// <summary>
   /// Start the given process with the given arguments from the given directory.
   /// Note: this api is only available on Windows.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-  /// <param name="iCommandLine">The command line to send to the new process.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
+  /// <param name="command_line">The command line to send to the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory, const std::string & iCommandLine);
+  processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory, const std::string & command_line);
 
   /// <summary>
   /// Open a document with the default system application.
   /// </summary>
-  /// <param name="iPath">The path to the document to open.</param>
+  /// <param name="path">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  bool OpenDocumentUtf8(const std::string & iPath);
+  bool OpenDocumentUtf8(const std::string & path);
 
 #elif __linux__ // UTF-8
 
@@ -112,34 +112,34 @@ namespace ra { namespace process {
   /// <summary>
   /// Start the given process.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  inline processid_t StartProcessUtf8(const std::string & iExecPath) { return StartProcess(iExecPath); }
+  inline processid_t StartProcessUtf8(const std::string & exec_path) { return StartProcess(exec_path); }
 
   /// <summary>
   /// Start the given process from the given directory.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  inline processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory) { return StartProcess(iExecPath, iDefaultDirectory); }
+  inline processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory) { return StartProcess(exec_path, default_directory); }
 
   /// <summary>
   /// Start the given process with the given arguments from the given directory.
   /// Note: this api is only available on linux.
   /// </summary>
-  /// <param name="iExecPath">The path to the executable to start.</param>
-  /// <param name="iDefaultDirectory">The directory to run the command from.</param>
-  /// <param name="iArguments">The list of arguments for the new process.</param>
+  /// <param name="exec_path">The path to the executable to start.</param>
+  /// <param name="default_directory">The directory to run the command from.</param>
+  /// <param name="arguments">The list of arguments for the new process.</param>
   /// <returns>Returns the process id when successful. Returns INVALID_PROCESS_ID otherwise.</returns>
-  inline processid_t StartProcessUtf8(const std::string & iExecPath, const std::string & iDefaultDirectory, const ra::strings::StringVector & iArguments) { return StartProcess(iExecPath, iDefaultDirectory, iArguments); }
+  inline processid_t StartProcessUtf8(const std::string & exec_path, const std::string & default_directory, const ra::strings::StringVector & arguments) { return StartProcess(exec_path, default_directory, arguments); }
 
   /// <summary>
   /// Open a document with the default system application.
   /// </summary>
-  /// <param name="iPath">The path to the document to open.</param>
+  /// <param name="path">The path to the document to open.</param>
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
-  inline bool OpenDocumentUtf8(const std::string & iPath) { return OpenDocument(iPath); }
+  inline bool OpenDocumentUtf8(const std::string & path) { return OpenDocument(path); }
 
 #endif // UTF-8
 
