@@ -175,7 +175,7 @@ namespace ra { namespace filesystem {
   }
 
   //declared in filesystem.cpp
-  extern bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & iFilename, bool is_directory, int depth, bool use_utf8);
+  extern bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & filename, bool is_directory, int depth, bool use_utf8);
 
   bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth) {
     if (path == NULL)

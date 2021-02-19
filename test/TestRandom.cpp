@@ -44,9 +44,9 @@ namespace ra { namespace random { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
-  bool isAllTrue(bool * iArray, size_t size) {
+  bool IsAllTrue(bool * my_array, size_t size) {
     for (size_t i = 0; i < size; i++) {
-      if (iArray[i] == false)
+      if (my_array[i] == false)
         return false;
     }
     return true;
@@ -67,12 +67,12 @@ namespace ra { namespace random { namespace test
         ASSERT_LE(index, 99);
 
         found[index] = true;
-        if (isAllTrue(found, sizeof(found))) {
+        if (IsAllTrue(found, sizeof(found))) {
           break;
         }
       }
 
-      ASSERT_TRUE(isAllTrue(found, sizeof(found)));
+      ASSERT_TRUE(IsAllTrue(found, sizeof(found)));
     }
   }
   //--------------------------------------------------------------------------------------------------

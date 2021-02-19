@@ -71,13 +71,13 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    col = csbiInfo.dwCursorPosition.X;
-    row = csbiInfo.dwCursorPosition.Y;
+    col = csbi.dwCursorPosition.X;
+    row = csbi.dwCursorPosition.Y;
 #elif __linux__
     //flush whatever was printed before
     fflush(stdout);
@@ -178,13 +178,13 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    width = (int)csbiInfo.dwMaximumWindowSize.X;
-    height = (int)csbiInfo.dwMaximumWindowSize.Y;
+    width = (int)csbi.dwMaximumWindowSize.X;
+    height = (int)csbi.dwMaximumWindowSize.Y;
 #elif __linux__
     struct winsize ws;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
@@ -329,24 +329,24 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
     COORD coord = { 0 , 0 };
     DWORD number_of_chars_written;
     DWORD length;
-    length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+    length = csbi.dwSize.X * csbi.dwSize.Y;
     if (!FillConsoleOutputCharacter(hStdout, TEXT(' '), length, coord, &number_of_chars_written)) {
       printf("FillConsoleOutputCharacter() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    if (!FillConsoleOutputAttribute(hStdout, csbiInfo.wAttributes, length, coord, &number_of_chars_written)) {
+    if (!FillConsoleOutputAttribute(hStdout, csbi.wAttributes, length, coord, &number_of_chars_written)) {
       printf("FillConsoleOutputAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
@@ -746,14 +746,14 @@ namespace ra { namespace console {
       printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo)) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
       printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
 
-    DWORD foreground_info = csbiInfo.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-    DWORD background_info = csbiInfo.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+    DWORD foreground_info = csbi.wAttributes & (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    DWORD background_info = csbi.wAttributes & (BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
 
     //foreground
     switch (foreground_info) {

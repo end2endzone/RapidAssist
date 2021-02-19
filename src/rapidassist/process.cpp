@@ -190,11 +190,11 @@ namespace ra { namespace process {
     return TRUE;
   }
 
-  bool FindProcessWindows(const processid_t & pid, HwndList & oWindows) {
-    oWindows.clear();
+  bool FindProcessWindows(const processid_t & pid, HwndList & windows) {
+    windows.clear();
 
     FindProcessWindowsStruct s;
-    s.windows_ptr = &oWindows;
+    s.windows_ptr = &windows;
     s.pid = pid;
 
     bool success = (EnumWindows(EnumWindowsProc, (LPARAM)&s) == TRUE);
@@ -219,7 +219,7 @@ namespace ra { namespace process {
     return success;
   }
 
-  bool Terminate(const processid_t & pid, DWORD iTimeoutMS) {
+  bool Terminate(const processid_t & pid, DWORD timeout_ms) {
     bool success = false;
 
     //Get a handle
@@ -229,10 +229,10 @@ namespace ra { namespace process {
       if (GetThreadIds(pid, thread_ids)) {
         DWORD num_threads = (DWORD)thread_ids.size();
         if (num_threads >= 1) {
-          if (iTimeoutMS != INFINITE) {
+          if (timeout_ms != INFINITE) {
 
             //Call WM_CLOSE & WM_QUIT on all the threads
-            DWORD thread_timeout_ms = iTimeoutMS / num_threads;
+            DWORD thread_timeout_ms = timeout_ms / num_threads;
             for (size_t thread_index = 0; thread_index < num_threads && !success; thread_index++) {
               DWORD thread_id = thread_ids[thread_index];
               bool post_success = (PostThreadMessage(thread_id, WM_CLOSE, 0, 0) != 0); //WM_CLOSE does not always work

@@ -125,7 +125,7 @@ namespace ra { namespace code { namespace cpp {
     return ToOctString(buffer, size, true);
   }
 
-  std::string ToOctString(const unsigned char * buffer, size_t size, bool iDisableWarningC4125) {
+  std::string ToOctString(const unsigned char * buffer, size_t size, bool disable_warning_c4125) {
     std::string output;
 
     //estimate the size of the output string to prevent memory copy
@@ -160,7 +160,7 @@ namespace ra { namespace code { namespace cpp {
         output.append(GetControlCharacterEscapeString(c));
         previous = CONTROL;
       }
-      else if (iDisableWarningC4125 && previous == OCTAL && IsDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
+      else if (disable_warning_c4125 && previous == OCTAL && IsDigitCharacter(c)) //prevent warning C4125: decimal digit terminates octal escape sequence
       {
         //character must be encoded as octal instead of printable
         output.append(ToOctString(c));

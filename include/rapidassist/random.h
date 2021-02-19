@@ -71,7 +71,7 @@ namespace ra { namespace random {
   /// Returns a random string with a maximum length of 'length'.
   /// </summary>
   /// <param name="length">The length of the generated string.</param>
-  /// <param name="oValue">The output generated string.</param>
+  /// <param name="value">The output generated string.</param>
   void GetRandomString(std::string & value, size_t length);
   std::string GetRandomString(size_t length);
 

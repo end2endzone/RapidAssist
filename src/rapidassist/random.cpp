@@ -99,7 +99,7 @@ namespace ra { namespace random {
     return tmp;
   }
 
-  void GetRandomString(std::string & oValue, size_t length, SymbolsFlags::Flags flags) {
+  void GetRandomString(std::string & value, size_t length, SymbolsFlags::Flags flags) {
     std::string symbols;
 
     if ((flags & SymbolsFlags::LETTERS_LOWERCASE) == SymbolsFlags::LETTERS_LOWERCASE)
@@ -112,11 +112,11 @@ namespace ra { namespace random {
       symbols.append("!\"/$%?&*()_+-=\\:<>");
 
     if (symbols.size() == 0) {
-      oValue = "";
+      value = "";
       return;
     }
 
-    GetRandomString(oValue, length, symbols.c_str());
+    GetRandomString(value, length, symbols.c_str());
   }
 
   std::string GetRandomString(size_t length, SymbolsFlags::Flags flags) {

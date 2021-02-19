@@ -222,7 +222,7 @@ namespace ra { namespace strings {
   void Split(StringVector & values, const std::string & text, char split_character);
 
   /// <summary>
-  /// Splits an input string into multiple string based on the given split pattern and store the result in oList.
+  /// Splits an input string into multiple string based on the given split pattern and store the result in values parameter.
   /// </summary>
   /// <param name="values">The output list of string.</param>
   /// <param name="text">The input text to split.</param>

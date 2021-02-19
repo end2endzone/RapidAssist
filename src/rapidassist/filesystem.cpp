@@ -219,14 +219,14 @@ namespace ra { namespace filesystem {
   extern bool FindFilesUtf8(ra::strings::StringVector & files, const char * path, int depth);
 
   //shared cross-platform code for FindFiles().
-  bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & iFilename, bool is_directory, int depth, bool use_utf8) {
+  bool ProcessDirectoryEntry(ra::strings::StringVector & files, const char * directory_path, const std::string & filename, bool is_directory, int depth, bool use_utf8) {
     //is it a valid item ?
-    if (iFilename != "." && iFilename != "..") {
+    if (filename != "." && filename != "..") {
       //build full path
       std::string full_filename = directory_path;
       NormalizePath(full_filename);
       full_filename.append(GetPathSeparatorStr());
-      full_filename.append(iFilename);
+      full_filename.append(filename);
 
       //add this path to the list
       files.push_back(full_filename);
