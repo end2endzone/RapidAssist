@@ -102,7 +102,7 @@ namespace ra { namespace filesystem { namespace test
     return true;
   }
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   bool Truncate(const char * file_path, uint64_t size) {
     //truncate -s 10737418240 10Gigfile.img
     
@@ -194,7 +194,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint32_t EXPECTED = 11;
 #endif
 
@@ -231,7 +231,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint64_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;
 #endif
 
@@ -274,7 +274,7 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
       if (!created)
       {
         printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
@@ -977,7 +977,7 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestFilesystem, testGetPathSeparator) {
 #ifdef WIN32
     ASSERT_EQ('\\', filesystem::GetPathSeparator());
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_EQ('/', filesystem::GetPathSeparator());
 #endif
   }
@@ -1337,7 +1337,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("src\\main.cpp"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath(".\\src\\main.cpp"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("..\\src\\main.cpp"));
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_TRUE(ra::filesystem::IsAbsolutePath("/home"));
     ASSERT_TRUE(ra::filesystem::IsAbsolutePath("/bin/bash"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("src/main.cpp"));
@@ -1351,7 +1351,7 @@ namespace ra { namespace filesystem { namespace test
     {
 #ifdef _WIN32
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/bin/bash";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentProcess(testPath);
@@ -1391,7 +1391,7 @@ namespace ra { namespace filesystem { namespace test
     {
 #ifdef _WIN32
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/bin/bash";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentDirectory(testPath);
@@ -1430,7 +1430,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with ..");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..\\baz\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/../baz/myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1443,7 +1443,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/baz/myapp", actual);
 #endif
     }
@@ -1455,7 +1455,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with .. at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/..";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1468,7 +1468,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo", actual);
 #endif
     }
@@ -1480,7 +1480,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with .");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.\\baz\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/./baz/myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1494,7 +1494,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\bar\\baz\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/bar/baz/myapp", actual);
 #endif
     }
@@ -1506,7 +1506,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with . at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/.";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1520,7 +1520,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\bar", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/bar", actual);
 #endif
     }
@@ -1532,7 +1532,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test too many \\..\\ elements");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\..\\..\\..\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/../../../myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1545,7 +1545,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/myapp", actual);
 #endif
     }
@@ -1557,7 +1557,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with impossible to resolve situations (relative path)");
 #ifdef _WIN32
       std::string testPath = "..\\foo\\..\\..\\bar\\baz\\..\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "../foo/../../bar/baz/../myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1567,7 +1567,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("..\\..\\bar\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("../../bar/myapp", actual);
 #endif
     }
@@ -1579,7 +1579,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test buggy path");
 #ifdef _WIN32
       std::string testPath = "\\home\\pi\\dev\\github\\RapidAssist\\build\\bin\\files\\images\\slashscreen.png";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/home/pi/dev/github/RapidAssist/build/bin/files/images/slashscreen.png";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1589,7 +1589,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ(testPath, actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ(testPath, actual);
 #endif
     }
@@ -1602,7 +1602,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE(ra::filesystem::IsRootDirectory("z:\\"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("c:\\foo"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("c:"));
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_TRUE(ra::filesystem::IsRootDirectory("/"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("/foo"));
 #endif

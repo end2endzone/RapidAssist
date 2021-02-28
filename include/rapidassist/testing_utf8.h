@@ -118,7 +118,7 @@ namespace ra { namespace testing {
   /// <returns>Returns true if duplicate process is successful. Returns false otherwise.</returns>
   bool CloneExecutableTempFileUtf8(std::string & output_path, std::string & error_message);
 
-#elif __linux__ // UTF-8
+#elif defined(__linux__) || defined(__APPLE__) // UTF-8
 
   /// <summary>
   /// Returns true if the content of two files is identical.

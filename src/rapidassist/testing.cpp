@@ -195,7 +195,7 @@ namespace ra { namespace testing {
     command_line.append("\"");
     command_line.append(log_filename);
     command_line.append("\"");
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     command_line.append("\"");
     command_line.append(path);
     command_line.append("\"");
@@ -211,7 +211,7 @@ namespace ra { namespace testing {
     int return_code = system(command_line.c_str());
 #ifdef _WIN32
     int exit_code = system(command_line.c_str());
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Run the new process and log the output
     int system_result = system(command_line.c_str());
     int exit_code = WEXITSTATUS( system_result );
@@ -634,7 +634,7 @@ namespace ra { namespace testing {
       return false;
     }
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     //On Linux, the execute flag must be set on the target file
     std::string command;
     command.append("chmod +x ");

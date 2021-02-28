@@ -45,7 +45,7 @@
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
 #include "rapidassist/undef_windows_macros.h"
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #define __chdir chdir
 #define __getcwd getcwd
 #define __rmdir rmdir
@@ -299,7 +299,7 @@ namespace ra { namespace filesystem {
     }
     FindClose(hFind);
     return true;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     DIR *dp;
     struct dirent *dirp;
     if ((dp = opendir(path)) == NULL) {
@@ -520,7 +520,7 @@ namespace ra { namespace filesystem {
   std::string GetTemporaryDirectory() {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariable("TEMP");
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     std::string temp = "/tmp";
 #endif
     return temp;
@@ -612,7 +612,7 @@ namespace ra { namespace filesystem {
     else {
       return GetShortPathFormEstimation(path);
     }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //no such thing as short path form in unix
     return GetShortPathFormEstimation(path);
 #endif
@@ -699,7 +699,7 @@ namespace ra { namespace filesystem {
   char GetPathSeparator() {
 #ifdef _WIN32
     return '\\';
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     return '/';
 #endif
   }
@@ -707,7 +707,7 @@ namespace ra { namespace filesystem {
   const char * GetPathSeparatorStr() {
 #ifdef _WIN32
     return "\\";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     return "/";
 #endif
   }

@@ -304,7 +304,7 @@ namespace ra { namespace filesystem {
   /// <returns>Returns true when the function is successful. Returns false otherwise.</returns>
   bool WriteTextFileUtf8(const std::string & path, const ra::strings::StringVector & lines, bool insert_newline_characters = true);
 
-#elif __linux__ // UTF-8
+#elif defined(__linux__) || defined(__APPLE__) // UTF-8
 
   /// <summary>
   /// Returns the size of the given file path in bytes.

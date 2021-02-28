@@ -32,7 +32,7 @@
 #include "rapidassist/user.h"
 
 #include <stdlib.h> //for system()
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <sys/wait.h> //for WEXITSTATUS
 #endif
 
@@ -83,7 +83,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessPath");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -126,7 +126,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessDir");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -175,7 +175,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentDirectory");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path2, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path2, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);

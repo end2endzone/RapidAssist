@@ -72,7 +72,7 @@ namespace ra { namespace user {
   /// <returns>Returns the user's login username.</returns>
   std::string GetUsernameUtf8();
 
-#elif __linux__ // UTF-8
+#elif defined(__linux__) || defined(__APPLE__) // UTF-8
 
   /// <summary>
   /// Returns the current user 'home' directory.

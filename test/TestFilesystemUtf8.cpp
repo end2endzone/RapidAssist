@@ -33,7 +33,7 @@
 namespace ra { namespace filesystem { namespace test
 {
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   extern bool Truncate(const char * file_path, uint64_t size);
 #endif
 
@@ -105,7 +105,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint64_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;
 #endif
 
@@ -148,7 +148,7 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
       if (!created)
       {
         printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
@@ -476,7 +476,7 @@ namespace ra { namespace filesystem { namespace test
     command.append(log_filename);
     int exit_code = system(command.c_str());
     ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Run the new process and log the output
     std::string command;
     command.append("cd \"");

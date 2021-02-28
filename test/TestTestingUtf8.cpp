@@ -222,7 +222,7 @@ namespace ra { namespace test {
 #ifdef _WIN32
     int exit_code = system(command.c_str());
     ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Run the new process and log the output
     int system_result = system(command.c_str());
     int exit_code = WEXITSTATUS( system_result );
@@ -250,7 +250,7 @@ namespace ra { namespace test {
 #ifdef _WIN32
     int exit_code = system_utf8(command.c_str());
     ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Run the new process and log the output
     int system_result = system(command.c_str());
     int exit_code = WEXITSTATUS( system_result );

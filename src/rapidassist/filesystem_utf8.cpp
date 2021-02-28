@@ -47,7 +47,7 @@
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
 #include "rapidassist/undef_windows_macros.h"
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #define __chdir chdir
 #define __getcwd getcwd
 #define __rmdir rmdir
@@ -406,7 +406,7 @@ namespace ra { namespace filesystem {
   std::string GetTemporaryDirectoryUtf8() {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariableUtf8("TEMP");
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     std::string temp = "/tmp";
 #endif
     return temp;

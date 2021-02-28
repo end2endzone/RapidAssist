@@ -38,7 +38,7 @@
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
 #   include <Tlhelp32.h>
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #   include <unistd.h>
 #   include <limits.h>
 #   include <sys/types.h>
@@ -392,7 +392,7 @@ namespace ra { namespace process {
       return path; //failure
     }
     path = buffer;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //from https://stackoverflow.com/a/33249023
     char exe_path[PATH_MAX + 1] = { 0 };
     ssize_t len = ::readlink("/proc/self/exe", exe_path, sizeof(exe_path));

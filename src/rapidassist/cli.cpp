@@ -75,7 +75,7 @@ namespace ra { namespace cli {
     if (found) {
 #ifdef _WIN32
       static const char * format = "%Iu";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const char * format = "%zu";
 #endif
       if (1 == sscanf(tmp.c_str(), format, &value)) {

@@ -230,7 +230,7 @@ namespace ra { namespace testing {
       return false;
     }
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     //On Linux, the execute flag must be set on the target file
     std::string command;
     command.append("chmod +x ");

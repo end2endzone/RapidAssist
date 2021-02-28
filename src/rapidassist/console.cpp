@@ -36,7 +36,7 @@
 #include <Windows.h>
 #include "rapidassist/undef_windows_macros.h"
 
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 
 #include <cstdio>       // fileno()
 #include <unistd.h>     // isatty(), read() and STDIN_FILENO
@@ -78,7 +78,7 @@ namespace ra { namespace console {
     }
     col = csbi.dwCursorPosition.X;
     row = csbi.dwCursorPosition.Y;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //flush whatever was printed before
     fflush(stdout);
 
@@ -164,7 +164,7 @@ namespace ra { namespace console {
       printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     printf("\033[%d;%dH", row, col);
 #endif
   }
@@ -185,7 +185,7 @@ namespace ra { namespace console {
     }
     width = (int)csbi.dwMaximumWindowSize.X;
     height = (int)csbi.dwMaximumWindowSize.Y;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     struct winsize ws;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
     width = (int)ws.ws_col;
@@ -354,7 +354,7 @@ namespace ra { namespace console {
       printf("SetConsoleCursorPosition() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //not implemented yet
     printf("\033[2J");
 #endif
@@ -622,7 +622,7 @@ namespace ra { namespace console {
       printf("SetConsoleTextAttribute() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
       return;
     }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ansi::FormatAttribute::Attr ansi_attr = ansi::FormatAttribute::DEFAULT;
     ansi::ForegroundColor::Color ansi_foreground = ansi::ForegroundColor::DEFAULT;
     ansi::BackgroundColor::Color ansi_background = ansi::BackgroundColor::DEFAULT;
@@ -858,7 +858,7 @@ namespace ra { namespace console {
       background = GRAY;
       break;
     };
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //not implemented yet
     foreground = GRAY;
     background = BLACK;
@@ -868,7 +868,7 @@ namespace ra { namespace console {
   void SetDefaultTextColor() {
 #ifdef _WIN32
     ra::console::SetTextColor(ra::console::GRAY, ra::console::BLACK);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     printf("\033[0m");
 #endif
   }
@@ -876,7 +876,7 @@ namespace ra { namespace console {
   bool IsDesktopGuiAvailable() {
 #ifdef _WIN32
     return true;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     std::string display = ra::environment::GetEnvironmentVariable("DISPLAY");
     bool has_desktop_gui = !display.empty();
     return has_desktop_gui;
@@ -888,7 +888,7 @@ namespace ra { namespace console {
     std::string prompt = ra::environment::GetEnvironmentVariable("PROMPT");
     bool has_no_prompt = prompt.empty();
     return has_no_prompt;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //https://stackoverflow.com/questions/13204177/how-to-find-out-if-running-from-terminal-or-gui
     if (isatty(fileno(stdin)))
       return false;
@@ -918,7 +918,7 @@ namespace ra { namespace console {
 
     //another process created the console (ie: cmd.exe)
     return false;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     return IsRunFromDesktop();
 #endif
   }

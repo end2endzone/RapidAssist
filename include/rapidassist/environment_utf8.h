@@ -65,7 +65,7 @@ namespace ra { namespace environment {
   /// <returns>Returns a new string with the expanded strings.</returns>
   std::string ExpandUtf8(const std::string & value);
 
-#elif __linux__ // UTF-8
+#elif defined(__linux__) || defined(__APPLE__) // UTF-8
 
   /// <summary>
   /// Returns the current value of an environment variable.

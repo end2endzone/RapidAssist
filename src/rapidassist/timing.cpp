@@ -50,7 +50,7 @@
 
 namespace ra { namespace timing {
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   //linux:
   //https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
   //http://nadeausoftware.com/articles/2012/04/c_c_tip_how_measure_elapsed_real_time_benchmarking
@@ -212,7 +212,7 @@ namespace ra { namespace timing {
     //performance/elapsed time should lock the thread to a single core.
     return GetPerformanceTimerWin32();
 
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Using CLOCK_MONOTONIC_RAW because timer is not adjusted by adjtime/NTP.
     //We won't risk having a frequency adjustement while the process is running.
     //See the following for details:
@@ -247,7 +247,7 @@ namespace ra { namespace timing {
 #ifdef WIN32
     InitMillisecondsInterruptTimer();
     return GetMillisecondsTimerWin32();
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     struct timespec now;
     clockid_t clock_id = 0;
 
