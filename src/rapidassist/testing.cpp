@@ -635,7 +635,7 @@ namespace ra { namespace testing {
     }
 
 #if defined(__linux__) || defined(__APPLE__)
-    //On Linux, the execute flag must be set on the target file
+    //On Linux and macOS, the execute flag must be set on the target file
     std::string command;
     command.append("chmod +x ");
     command.append(target_path);
@@ -646,7 +646,7 @@ namespace ra { namespace testing {
       error_message = "Failed running command: " + command;
       return false;
     }
-#endif //__linux__
+#endif //__linux__ || __APPLE__
 
     return true;
   }

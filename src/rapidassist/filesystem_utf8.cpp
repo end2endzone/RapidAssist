@@ -406,7 +406,10 @@ namespace ra { namespace filesystem {
   std::string GetTemporaryDirectoryUtf8() {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariableUtf8("TEMP");
-#elif defined(__linux__) || defined(__APPLE__)
+#elif __linux__
+    std::string temp = "/tmp";
+#elif __APPLE__
+    //std::string temp = environment::GetEnvironmentVariable("TMPDIR");
     std::string temp = "/tmp";
 #endif
     return temp;

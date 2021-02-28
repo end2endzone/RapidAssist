@@ -876,10 +876,12 @@ namespace ra { namespace console {
   bool IsDesktopGuiAvailable() {
 #ifdef _WIN32
     return true;
-#elif defined(__linux__) || defined(__APPLE__)
+#elif __linux__
     std::string display = ra::environment::GetEnvironmentVariable("DISPLAY");
     bool has_desktop_gui = !display.empty();
     return has_desktop_gui;
+#elif __APPLE__
+    return true;
 #endif
   }
 

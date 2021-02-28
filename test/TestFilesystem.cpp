@@ -1353,6 +1353,8 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
 #elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/bin/bash";
+#elif __APPLE__
+      std::string testPath = "/bin/zsh";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentProcess(testPath);
 
@@ -1391,8 +1393,10 @@ namespace ra { namespace filesystem { namespace test
     {
 #ifdef _WIN32
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
-#elif defined(__linux__) || defined(__APPLE__)
+#elif __linux__
       std::string testPath = "/bin/bash";
+#elif __APPLE__
+      std::string testPath = "/bin/zsh";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentDirectory(testPath);
 
