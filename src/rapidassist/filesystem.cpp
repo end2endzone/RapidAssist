@@ -51,7 +51,12 @@
 #define __rmdir rmdir
 #include <unistd.h> //for getcwd()
 #include <dirent.h> //for opendir() and closedir()
+#endif
+
+#if defined(__linux__)
 #include <linux/limits.h> //for PATH_MAX
+#elif defined(__APPLE__)
+#include <limits.h> //for PATH_MAX
 #endif
 
 namespace ra { namespace filesystem {
