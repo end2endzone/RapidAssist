@@ -86,6 +86,7 @@ namespace ra { namespace strings {
   std::string ToString(const uint32_t & value);
   std::string ToString(const  int64_t & value);
   std::string ToString(const uint64_t & value);
+  std::string ToString(const   size_t & value);
 
   /// <summary>
   /// Converts the given value to string. The conversion to string is lossless. That is no data is lost if the string is converted back to floating point.

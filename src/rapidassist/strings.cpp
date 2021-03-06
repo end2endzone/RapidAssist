@@ -291,6 +291,7 @@ namespace ra { namespace strings {
   std::string ToString(const uint32_t & value) { return ToStringT(value); }
   std::string ToString(const  int64_t & value) { return ToStringT(value); }
   std::string ToString(const uint64_t & value) { return ToStringT(value); }
+  std::string ToString(const   size_t & value) { return ToStringT(value); }
 
   //floating point, lossless conversion
   std::string ToStringLossless(const    float & value) { return ToStringT(value); }
