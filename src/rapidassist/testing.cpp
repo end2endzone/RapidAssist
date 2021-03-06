@@ -43,6 +43,13 @@
 #include "rapidassist/undef_windows_macros.h"
 #endif
 
+#if defined(__APPLE__)
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 namespace ra { namespace testing {
 
   //predeclarations
@@ -488,7 +495,7 @@ namespace ra { namespace testing {
     if (CloseHandle(hFile) == 0)
       return false;
     return true;
-#else
+#elif defined(__linux__)
     //https://stackoverflow.com/questions/257844/quickly-create-a-large-file-on-a-linux-system
     //Valid commands are:
     //  truncate -s 10737418240 10Gigfile.img
@@ -527,6 +534,41 @@ namespace ra { namespace testing {
     if (exit_code != 0)
       return false;
     return true;
+#elif defined(__APPLE__)
+    int fd = open(path, O_WRONLY|O_TRUNC|O_CREAT);
+    if (fd == 0)
+      return false;
+
+    off_t offset = static_cast<off_t>(size);
+    
+    // If requested size is 0 bytes
+    if (offset == 0) {
+      close(fd);
+      return true;
+    }
+
+    // How many bytes should we skip?
+    if (offset >= 2) {
+      off_t skip_size_request = offset - 1;
+      off_t skip_size_actual = lseek(fd, skip_size_request, SEEK_CUR); // Make a hole
+
+      if (skip_size_request != skip_size_actual) {
+        close(fd);
+        return false;
+      }
+
+      offset -= skip_size_request;
+    }
+    
+    // Write last byte
+    write(fd, ".", 1);
+    offset--;
+
+    close(fd);
+
+    uint64_t actual_size = ra::filesystem::GetFileSize64(path);
+    bool success = (actual_size == size);
+    return success;
 #endif
   }
 
