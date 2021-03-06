@@ -4,3 +4,4 @@
 /client/build
 /ci/github/bin
 /ci/github/SysinternalsSuite.zip
+.DS_Store

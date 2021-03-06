@@ -1,9 +1,13 @@
 # Any commands which fail will cause the shell script to exit immediately
 set -e
 
-# Validate Travis CI environment
+# Validate RapidAssist environment variables
 if [ "$RAPIDASSIST_SOURCE_DIR" = "" ]; then
   echo "Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.";
+  exit 1;
+fi
+if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
+  echo "Please define 'RAPIDASSIST_BUILD_TYPE' environment variable.";
   exit 1;
 fi
 
