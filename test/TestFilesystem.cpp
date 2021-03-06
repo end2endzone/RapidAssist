@@ -30,8 +30,11 @@
 #include "rapidassist/process.h"
 #include "rapidassist/random.h"
 
-#ifndef _WIN32
+#ifdef __linux__
 #include <linux/fs.h>
+#endif
+
+#ifndef _WIN32
 #include <sys/ioctl.h> //for ioctl()
 #endif
 
