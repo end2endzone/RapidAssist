@@ -537,7 +537,7 @@ namespace ra { namespace filesystem { namespace test
       ra::strings::StringVector locations;
       bool success = ra::filesystem::FindFileFromPaths(filename, locations);
       ASSERT_TRUE(success);
-      ASSERT_EQ(1, locations.size());
+      ASSERT_GT(locations.size(), 1) << "Failed to find the location of file '" << filename << "' in PATH."; //note allow finding more than 1 path for filename
     }
   }
   //--------------------------------------------------------------------------------------------------
