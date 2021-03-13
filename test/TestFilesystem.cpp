@@ -1237,11 +1237,13 @@ namespace ra { namespace filesystem { namespace test
       //not supported. Cannot find a file that exists but cannot be read.
       //Note, the file 'C:\pagefile.sys' can be found using FindFirstFile() but not with _stat() which I don't understand.
       return;
-#else
+#elif defined(__linux__)
       const char * path = "/proc/sysrq-trigger"; //permission denied file
       ASSERT_TRUE(filesystem::FileExists(path));
       bool hasRead = filesystem::HasFileReadAccess(path);
       ASSERT_FALSE(hasRead);
+#elif defined(__APPLE__)
+      // Not able to find a file without read access on macos.
 #endif
     }
   }
@@ -1273,8 +1275,11 @@ namespace ra { namespace filesystem { namespace test
       //On Github Actions, "C:\\bootmgr" is not available. Use "C:\Windows\WindowsShell.Manifest" instead.
       if (path.empty() && ra::filesystem::FileExists("C:\\bootmgr")) path = "C:\\bootmgr";
       if (path.empty() && ra::filesystem::FileExists("C:\\Windows\\WindowsShell.Manifest")) path = "C:\\Windows\\WindowsShell.Manifest";
-#else
+#elif defined(__linux__)
       path = "/proc/cpuinfo"; //permission denied file
+#elif defined(__APPLE__)
+      path = "/etc/bashrc"; //permission denied file
+      //path = "/etc/profile"; //permission denied file
 #endif
       ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasFileWriteAccess().";
       bool has_write = filesystem::HasFileWriteAccess(path.c_str());
@@ -1324,8 +1329,10 @@ namespace ra { namespace filesystem { namespace test
       {
         dir_path = "C:\\Windows";
       }
-#else
+#elif defined(__linux__)
       dir_path = "/proc"; //permission denied file directory
+#elif defined(__APPLE__)
+      dir_path = "/Library/Printers"; //permission denied file directory
 #endif
       ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccess().";
       bool has_write = filesystem::HasDirectoryWriteAccess(dir_path.c_str());
@@ -1623,8 +1630,8 @@ namespace ra { namespace filesystem { namespace test
     const std::string output_filename = ra::testing::GetTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::GetPathSeparator() + output_filename;
 
-    ASSERT_TRUE(ra::filesystem::FileExists(process_path.c_str()));
-    ASSERT_TRUE(ra::filesystem::DirectoryExists(temp_dir.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(process_path.c_str())) << "Process path '" << process_path << "' is not found!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(temp_dir.c_str())) << "Directory '" << temp_dir << "' is not found!";
 
     bool copied = ra::filesystem::CopyFile(process_path, output_path);
     ASSERT_TRUE(copied) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";

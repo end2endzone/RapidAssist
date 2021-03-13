@@ -522,14 +522,72 @@ namespace ra { namespace filesystem {
     return rnd_path;
   }
 
+#ifdef __APPLE__
+std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
+  std::string value = ra::environment::GetEnvironmentVariable(name);
+  if (!value.empty()) {
+    char * real_path = realpath(value.c_str(), NULL);
+    if (real_path) {
+      value = real_path;
+      free(real_path);
+    }
+  }
+  return value;
+}
+#endif
+
   std::string GetTemporaryDirectory() {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariable("TEMP");
 #elif __linux__
     std::string temp = "/tmp";
 #elif __APPLE__
-    //std::string temp = environment::GetEnvironmentVariable("TMPDIR");
-    std::string temp = "/tmp";
+    #if 0
+    std::string temp = "/tmp"; // Directory `/tmp` is usually a simlink to `/private/tmp`.
+    #else
+    std::string temp;
+
+    // According to https://stackoverflow.com/questions/8087805/how-to-get-system-or-user-temp-folder-in-unix-and-windows,
+    // the order to resolve temporary directory path is from TMPDIR, TMP, TEMP, TEMPDIR. If none of these are found, "/tmp".
+
+    // Resolve from TMPDIR which is something like /var/folders/07/5pfg6cln437c_p9l4h2nt40r0000gn/T/
+    temp = GetTemporaryDirectoryFromEnvVar("TMPDIR");
+    if (!temp.empty() && ra::filesystem::DirectoryExists(temp.c_str()))
+      return temp;
+    temp.clear();
+
+    temp = GetTemporaryDirectoryFromEnvVar("TMP");
+    if (!temp.empty() && ra::filesystem::DirectoryExists(temp.c_str()))
+      return temp;
+    temp.clear();
+
+    temp = GetTemporaryDirectoryFromEnvVar("TEMP");
+    if (!temp.empty() && ra::filesystem::DirectoryExists(temp.c_str()))
+      return temp;
+    temp.clear();
+
+    temp = GetTemporaryDirectoryFromEnvVar("TEMPDIR");
+    if (!temp.empty() && ra::filesystem::DirectoryExists(temp.c_str()))
+      return temp;
+    temp.clear();
+
+    // No environment variable defines the location of a temporary directory.
+    // Fallback to '/tmp' (converted to real path)
+    char * tmp_real_path = realpath("/tmp", NULL);
+    if (tmp_real_path) {
+      temp = tmp_real_path;
+      free(tmp_real_path);
+      if (ra::filesystem::DirectoryExists(temp.c_str()))
+        return temp;
+    }
+    temp.clear();
+
+    // The real path of '/tmp' does not exists.
+    // Fallback to '/tmp' (not converted to real path)
+    if (ra::filesystem::DirectoryExists("/tmp"))
+      temp = "/tmp";
+    #endif
+
 #endif
     return temp;
   }
