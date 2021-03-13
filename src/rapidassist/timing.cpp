@@ -259,8 +259,9 @@ namespace ra { namespace timing {
 
 #ifdef __APPLE__
   double GetMicrosecondsTimerFromCalendarClock() {
-    ////https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
-    ////https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
 
     struct timespec ts;
     
@@ -276,9 +277,29 @@ namespace ra { namespace timing {
     return seconds;
   }
   
+  double GetMicrosecondsTimerFromSystemClock() {
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    struct timespec ts;
+    
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+    
+    double seconds = ts.tv_sec + ts.tv_nsec / 1000000000.0;
+    return seconds;
+  }
+  
   double GetMicrosecondsTimerFromMachAbsTime() {
     //https://stackoverflow.com/questions/41509505/clock-gettime-on-macos
     //https://developer.apple.com/library/archive/qa/qa1398/_index.html
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
 
     mach_timebase_info_data_t tbi;
     mach_timebase_info(&tbi);
@@ -297,6 +318,7 @@ namespace ra { namespace timing {
   double GetMillisecondsTimerFromMachAbsTime() {
     //https://stackoverflow.com/questions/41509505/clock-gettime-on-macos
     //https://developer.apple.com/library/archive/qa/qa1398/_index.html
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
 
     mach_timebase_info_data_t tbi;
     mach_timebase_info(&tbi);
