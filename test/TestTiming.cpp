@@ -154,7 +154,7 @@ namespace ra { namespace timing { namespace test
     ra::timing::Millisleep(800);
     double time2 = GetMillisecondsTimer();
 
-    double elapsed_milliseconds = (time2 - time1);
+    double elapsed_milliseconds = (time2 - time1)*1000.0;
 
 #ifdef _WIN32
     double epsilon = 30.0; //Windows have ~15ms accuracy.
