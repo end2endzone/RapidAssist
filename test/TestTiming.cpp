@@ -126,7 +126,7 @@ namespace ra { namespace timing { namespace test
     double epsilon = 1.0;
 #endif
     
-    ASSERT_NEAR(800.0, elapsed_milliseconds, 30);
+    ASSERT_NEAR(800.0, elapsed_milliseconds, epsilon);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMillisecondsTimerPerformance) {
@@ -170,7 +170,7 @@ namespace ra { namespace timing { namespace test
     double epsilon = 1.0;
 #endif
     
-    ASSERT_NEAR(800.0, elapsed_milliseconds, 30);
+    ASSERT_NEAR(800.0, elapsed_milliseconds, epsilon);
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test
