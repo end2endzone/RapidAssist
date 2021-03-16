@@ -1,3 +1,4 @@
+
 ![RapidAssist logo](docs/RapidAssist-splashscreen.jpg?raw=true)
 
 
@@ -13,16 +14,19 @@ RapidAssist is a lite cross-platform library that assist you with the most c++ r
 
 Build:
 
-| Service | Build | Tests |
+| Service/Platform | Build | Tests |
 |----|-------|-------|
 | AppVeyor | [![Build status](https://img.shields.io/appveyor/ci/end2endzone/RapidAssist/master.svg?logo=AppVeyor&logoColor=white)](https://ci.appveyor.com/project/end2endzone/rapidassist) | [![Tests status](https://img.shields.io/appveyor/tests/end2endzone/rapidassist/master.svg?logo=AppVeyor&logoColor=white)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master/tests) |
 | Travis CI | [![Build Status](https://img.shields.io/travis/end2endzone/RapidAssist/master.svg?logo=Travis-CI&style=flat&logoColor=white)](https://travis-ci.org/end2endzone/RapidAssist) |  |
+| Windows Server 2019 | [![Build on Windows](https://github.com/end2endzone/RapidAssist/actions/workflows/build_windows.yml/badge.svg)](https://github.com/end2endzone/RapidAssist/actions/workflows/build_windows.yml) |  |
+| Ubuntu 18.04 | [![Build on Linux](https://github.com/end2endzone/RapidAssist/actions/workflows/build_linux.yml/badge.svg)](https://github.com/end2endzone/RapidAssist/actions/workflows/build_linux.yml) |  |
+| macOS | [![Build on macOS](https://github.com/end2endzone/RapidAssist/actions/workflows/build_macos.yml/badge.svg)](https://github.com/end2endzone/RapidAssist/actions/workflows/build_macos.yml) |  |
 
 Statistics:
 
-| AppVeyor | Travic CI |
-|----------|-----------|
-| [![Statistics](https://buildstats.info/appveyor/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master) | [![Statistics](https://buildstats.info/travisci/chart/end2endzone/RapidAssist)](https://travis-ci.org/end2endzone/RapidAssist) |
+| AppVeyor | Travic CI | GitHub |
+|----------|-----------|--------|
+| [![Statistics](https://buildstats.info/appveyor/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master) | [![Statistics](https://buildstats.info/travisci/chart/end2endzone/RapidAssist)](https://travis-ci.org/end2endzone/RapidAssist) | [![Statistics](https://buildstats.info/github/chart/end2endzone/rapidassist)](https://ci.appveyor.com/project/end2endzone/rapidassist/branch/master) |
 
 
 
@@ -111,8 +115,9 @@ Please refer to file [INSTALL.md](INSTALL.md) for details on how installing/buil
 
 RapidAssist has been tested with the following platform:
 
-*   Linux x86/x64
-*   Windows x86/x64
+* Linux, 32 and 64 bit
+* Windows, 32 and 64 bit
+* macOS, 32 and 64 bit
 
 
 
