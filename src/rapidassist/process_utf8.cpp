@@ -38,7 +38,7 @@
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
 #   include <Tlhelp32.h>
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #   include <unistd.h>
 #   include <limits.h>
 #   include <sys/types.h>

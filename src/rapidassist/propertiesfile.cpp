@@ -248,7 +248,7 @@ namespace ra { namespace filesystem {
 #ifdef _WIN32 // UTF-8
     const std::wstring pathW = ra::unicode::Utf8ToUnicode(file_path);
     FILE * f = _wfopen(pathW.c_str(), L"w");
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     FILE * f = fopen(file_path.c_str(), "w");
 #endif // UTF-8
 

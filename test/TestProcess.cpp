@@ -32,7 +32,7 @@
 #include "rapidassist/user.h"
 
 #include <stdlib.h> //for system()
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <sys/wait.h> //for WEXITSTATUS
 #endif
 
@@ -69,6 +69,10 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessPath) {
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    
+    std::string process_path = ra::process::GetCurrentProcessPath();
+    printf("GetCurrentProcessPath()=%s\n", process_path.c_str());
+    ASSERT_NE("", process_path);
 
     //clone current process executable into another process.
     std::string new_process_path;
@@ -83,7 +87,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessPath");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -112,6 +116,10 @@ namespace ra { namespace process { namespace test
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestProcess, testGetCurrentProcessDir) {
     static const std::string separator = ra::filesystem::GetPathSeparatorStr();
+    
+    std::string process_dir = ra::process::GetCurrentProcessDir();
+    printf("GetCurrentProcessDir()=%s\n", process_dir.c_str());
+    ASSERT_NE("", process_dir);
 
     //clone current process executable into another process.
     std::string new_process_path;
@@ -126,7 +134,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessDir");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -175,7 +183,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentDirectory");
 #ifdef _WIN32
     processid_t pid = StartProcess(new_process_path, test_dir_path2, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcess(new_process_path, test_dir_path2, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -591,7 +599,7 @@ namespace ra { namespace process { namespace test
     const std::string expected_error_code_str = ra::strings::ToString(expected_error_code);
     const std::string exec_path = ra::environment::GetEnvironmentVariable("ComSpec");
     const std::string arguments = "/c exit " + expected_error_code_str;
-#else
+#elif defined(__linux__) || defined(__APPLE__)
     const int expected_error_code = 234;
     const std::string expected_error_code_str = ra::strings::ToString(expected_error_code);
     ra::strings::StringVector arguments;
@@ -655,7 +663,7 @@ namespace ra { namespace process { namespace test
     ASSERT_TRUE(ra::process::IsRunning(pid));
 
     //wait for the process to complete
-    printf("Waiting for the sleep process to exit...\n", new_process_path.c_str());
+    printf("Waiting for the process '%s' to exit...\n", new_process_path.c_str());
     fflush(NULL);
     int exit_code = 0;
     bool wait_ok = ra::process::WaitExit(pid, exit_code);

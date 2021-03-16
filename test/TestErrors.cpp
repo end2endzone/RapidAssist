@@ -30,6 +30,7 @@
 #include "rapidassist/undef_windows_macros.h"
 #else
 #include <cmath>    //for std::log
+#include <dirent.h> //for opendir()
 #endif
 
 namespace ra { namespace errors { namespace test
@@ -64,8 +65,10 @@ namespace ra { namespace errors { namespace test
         FILE_ATTRIBUTE_NORMAL,  // normal file
         NULL);                  // no attr. template
     }
-#else
+#elif defined(__linux__)
     double not_a_number = std::log(-1.0);
+#elif defined(__APPLE__)
+    DIR *dp = opendir("/i_do_not_exists");
 #endif
 
     errorcode_t error_code = ra::errors::GetLastErrorCode();

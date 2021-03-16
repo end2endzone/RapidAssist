@@ -58,7 +58,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessPathUtf8");
 #ifdef _WIN32
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -101,7 +101,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentProcessDirUtf8");
 #ifdef _WIN32
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);
@@ -150,7 +150,7 @@ namespace ra { namespace process { namespace test
     arguments.push_back("--SaveGetCurrentDirectoryUtf8");
 #ifdef _WIN32
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path2, arguments[0]);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     processid_t pid = StartProcessUtf8(new_process_path, test_dir_path2, arguments);
 #endif
     ASSERT_NE(pid, ra::process::INVALID_PROCESS_ID);

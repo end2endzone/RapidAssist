@@ -24,6 +24,7 @@
 
 #include "TestTiming.h"
 #include "rapidassist/timing.h"
+#include "rapidassist/testing.h"
 
 namespace ra { namespace timing { namespace test
 {
@@ -109,8 +110,23 @@ namespace ra { namespace timing { namespace test
     ra::timing::Millisleep(800);
     double time2 = GetMicrosecondsTimer();
 
-    double milliseconds = (time2 - time1)*1000.0;
-    ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
+    double elapsed_milliseconds = (time2 - time1)*1000.0;
+
+#ifdef _WIN32
+    double epsilon = 30.0; //Windows have ~15ms accuracy.
+#elif defined(__linux__)
+    double epsilon = 15.0;
+#elif defined(__APPLE__)
+    double epsilon = 15.0;
+    if (ra::testing::IsGitHubActions()) {
+      // On Github Action, the observed difference seems to be about 60ms to 140ms for GetMicrosecondsTimer()
+      epsilon = 150.0;
+    }
+#else
+    double epsilon = 1.0;
+#endif
+    
+    ASSERT_NEAR(800.0, elapsed_milliseconds, epsilon);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMillisecondsTimerPerformance) {
@@ -138,8 +154,23 @@ namespace ra { namespace timing { namespace test
     ra::timing::Millisleep(800);
     double time2 = GetMillisecondsTimer();
 
-    double milliseconds = (time2 - time1)*1000.0;
-    ASSERT_NEAR(800, milliseconds, 30); //Windows have ~15ms accuracy. Don't know about linux
+    double elapsed_milliseconds = (time2 - time1)*1000.0;
+
+#ifdef _WIN32
+    double epsilon = 30.0; //Windows have ~15ms accuracy.
+#elif defined(__linux__)
+    double epsilon = 15.0;
+#elif defined(__APPLE__)
+    double epsilon = 15.0;
+    if (ra::testing::IsGitHubActions()) {
+      // On Github Action, the observed difference seems to be about 90ms to 140ms for GetMillisecondsTimer()
+      epsilon = 150.0;
+    }
+#else
+    double epsilon = 1.0;
+#endif
+    
+    ASSERT_NEAR(800.0, elapsed_milliseconds, epsilon);
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

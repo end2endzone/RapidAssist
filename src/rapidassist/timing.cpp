@@ -26,6 +26,19 @@
 
 #include <cstdlib> //for atoi()
 
+#if defined(__APPLE__)
+  //https://github.com/envoyproxy/envoy/issues/1789
+  //https://boringssl.googlesource.com/boringssl/+/63a0797ff247f13870b649c3f6239d80be202752
+  #define _DARWIN_C_SOURCE
+#endif
+
+//https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+#ifdef __MACH__
+#include <mach/mach_time.h> /* mach_absolute_time */
+#include <mach/mach.h>      /* host_get_clock_service, mach_... */
+#include <mach/clock.h>     /* clock_get_time */
+#endif
+
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -50,7 +63,7 @@
 
 namespace ra { namespace timing {
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   //linux:
   //https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
   //http://nadeausoftware.com/articles/2012/04/c_c_tip_how_measure_elapsed_real_time_benchmarking
@@ -80,7 +93,7 @@ namespace ra { namespace timing {
   ///  - Must be called from the same thread to compute elapsed time.
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  double GetPerformanceTimerWin32() {
+  inline double GetPerformanceTimerWin32() {
     //Warning for processes running a multicore processors...
     //While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
     //for multiple processors, bugs in the BIOS or drivers may result in these routines
@@ -107,7 +120,7 @@ namespace ra { namespace timing {
   ///By default, the resolution is 15.6ms (64Hz).
   ///The function must be called once per process execution.
   ///</summary>
-  void InitMillisecondsInterruptTimer() {
+  inline void InitMillisecondsInterruptTimer() {
     //allow running only once
     static bool firstPass = true;
     if (!firstPass)
@@ -135,7 +148,7 @@ namespace ra { namespace timing {
   ///  - Does not requires the multimedia timer initialization.
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  double GetTickCountTimer() //fast constant 15ms timer
+  inline double GetTickCountTimer() //fast constant 15ms timer
   {
     DWORD milliseconds_counter = GetTickCount();
     double seconds = double(milliseconds_counter) / 1000.0;
@@ -151,7 +164,7 @@ namespace ra { namespace timing {
   ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  double GetMillisecondsTimerWin32() {
+  inline double GetMillisecondsTimerWin32() {
     DWORD milliseconds_counter = timeGetTime();
     double seconds = double(milliseconds_counter) / 1000.0;
     return seconds;
@@ -173,7 +186,7 @@ namespace ra { namespace timing {
   ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  double GetSystemTimeTimerWin32() {
+  inline double GetSystemTimeTimerWin32() {
     FILETIME file_time;
     ULONGLONG t;
     if (GetSystemTimePreciseAsFileTime_) {
@@ -190,29 +203,8 @@ namespace ra { namespace timing {
 #endif
 
 
-
-
-
-
-
-  double GetMicrosecondsTimer() {
-#ifdef WIN32
-    //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
-    //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
-    //accuracy and works on single and multiple core processors without having
-    //to lock the thread on the same core.
-    if (GetSystemTimePreciseAsFileTime_) {
-      double seconds = GetSystemTimeTimerWin32();
-      return seconds;
-    }
-
-    //Fallback to using QueryPerformanceCounter() but the user must be aware that
-    //if the current thread jumps to another core, the calclated elapsed time
-    //will be incorrect or can even be backward. The code which is calculating the
-    //performance/elapsed time should lock the thread to a single core.
-    return GetPerformanceTimerWin32();
-
-#elif __linux__
+#ifdef __linux__
+  double GetMicrosecondsTimerFromMonotonicTimer() {
     //Using CLOCK_MONOTONIC_RAW because timer is not adjusted by adjtime/NTP.
     //We won't risk having a frequency adjustement while the process is running.
     //See the following for details:
@@ -238,19 +230,13 @@ namespace ra { namespace timing {
     //clock_gettime() is successful
     double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
     return seconds;
-#else
-    return -1.0;
-#endif
   }
-
-  double GetMillisecondsTimer() {
-#ifdef WIN32
-    InitMillisecondsInterruptTimer();
-    return GetMillisecondsTimerWin32();
-#elif __linux__
+  
+  double GetMicrosecondsTimerFromMonotonicCoarse() {
     struct timespec now;
     clockid_t clock_id = 0;
 
+    //use a coarse clock available on the system.
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &now) == 0) { clock_id = CLOCK_MONOTONIC_COARSE; }
     else if (clock_gettime(CLOCK_REALTIME_COARSE, &now) == 0) { clock_id = CLOCK_REALTIME_COARSE; }
     else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
@@ -265,6 +251,134 @@ namespace ra { namespace timing {
 
     //clock_gettime() is successful
     double seconds = now.tv_sec + now.tv_nsec / 1000000000.0;
+    return seconds;
+  }
+  
+#endif
+
+
+#ifdef __APPLE__
+  double GetMicrosecondsTimerFromCalendarClock() {
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    struct timespec ts;
+    
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+    
+    double seconds = ts.tv_sec + ts.tv_nsec / 1000000000.0;
+    return seconds;
+  }
+  
+  double GetMicrosecondsTimerFromSystemClock() {
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    struct timespec ts;
+    
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+    
+    double seconds = ts.tv_sec + ts.tv_nsec / 1000000000.0;
+    return seconds;
+  }
+  
+  double GetMicrosecondsTimerFromMachAbsTime() {
+    //https://stackoverflow.com/questions/41509505/clock-gettime-on-macos
+    //https://developer.apple.com/library/archive/qa/qa1398/_index.html
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    mach_timebase_info_data_t tbi;
+    mach_timebase_info(&tbi);
+
+    // Get absolute time in unknow units of time
+    uint64_t base_time = mach_absolute_time();
+
+    // Convert to nanoseconds
+    uint64_t elapsed_nano = base_time * tbi.numer / tbi.denom;
+    uint64_t elapsed_micro = elapsed_nano / 1000;
+    
+    double seconds = elapsed_micro / 1000000.0; // microseconds to seconds
+    return seconds;
+  }
+  
+  double GetMillisecondsTimerFromMachAbsTime() {
+    //https://stackoverflow.com/questions/41509505/clock-gettime-on-macos
+    //https://developer.apple.com/library/archive/qa/qa1398/_index.html
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    mach_timebase_info_data_t tbi;
+    mach_timebase_info(&tbi);
+
+    // Get absolute time in unknow units of time
+    uint64_t base_time = mach_absolute_time();
+
+    // Convert to nanoseconds
+    uint64_t elapsed_nano = base_time * tbi.numer / tbi.denom;
+    uint64_t elapsed_milli = elapsed_nano / 1000000;
+    
+    double seconds = elapsed_milli / 1000.0; // milliseconds to seconds
+    return seconds;
+  }
+  
+#endif
+
+
+
+
+
+
+
+  double GetMicrosecondsTimer() {
+#ifdef WIN32
+    //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
+    //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
+    //accuracy and works on single and multiple core processors without having
+    //to lock the thread on the same core.
+    if (GetSystemTimePreciseAsFileTime_) {
+      double seconds = GetSystemTimeTimerWin32();
+      return seconds;
+    }
+
+    //Fallback to using QueryPerformanceCounter() but the user must be aware that
+    //if the current thread jumps to another core, the calclated elapsed time
+    //will be incorrect or can even be backward. The code which is calculating the
+    //performance/elapsed time should lock the thread to a single core.
+    return GetPerformanceTimerWin32();
+
+#elif defined(__linux__)
+    double seconds = GetMicrosecondsTimerFromMonotonicTimer();
+    return seconds;
+#elif defined(__APPLE__)
+    double seconds = GetMicrosecondsTimerFromMachAbsTime();
+    return seconds;
+#else
+    return -1.0;
+#endif
+  }
+
+  double GetMillisecondsTimer() {
+#ifdef WIN32
+    InitMillisecondsInterruptTimer();
+    return GetMillisecondsTimerWin32();
+#elif defined(__linux__)
+    double seconds = GetMicrosecondsTimerFromMonotonicCoarse();
+    return seconds;
+#elif defined(__APPLE__)
+    double seconds = GetMillisecondsTimerFromMachAbsTime();
     return seconds;
 #else
     return -1.0;
@@ -340,11 +454,9 @@ namespace ra { namespace timing {
       ((__syscall_slong_t)milliseconds % 1000) * 1000 * 1000 /* nano seconds */
     };
     return nanosleep(&ts, NULL);
-#elif _BSD_SOURCE || \
-(_XOPEN_SOURCE >= 500 || \
-_XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && \
-!(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
-
+#elif __APPLE__
+    return usleep(1000 * milliseconds);
+#elif _BSD_SOURCE || (_XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) && !(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
     /* else fallback to obsolte usleep() */
     return usleep(1000 * milliseconds);
 #else

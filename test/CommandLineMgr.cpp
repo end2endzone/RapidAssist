@@ -34,7 +34,7 @@
 #include <Windows.h>
 #include "rapidassist/undef_windows_macros.h"
 #include <signal.h>
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -74,7 +74,7 @@ namespace ra { namespace test
     signal(SIGBREAK, SIG_IGN);  //Disable CTRL+BREAK
     SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE);
   }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
   void DisableConsoleInterruptSignals() {
     //Ignore all signals except KILL and STOP
     struct sigaction act;
@@ -155,7 +155,7 @@ namespace ra { namespace test
     printf("Leaving...\n");
     fflush(NULL);
   }
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
   volatile bool is_interrupted;
 
   void term_handler(int signum) {

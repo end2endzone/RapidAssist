@@ -47,13 +47,18 @@
 #include <direct.h> //for _chdir(), _getcwd()
 #include <Windows.h> //for GetShortPathName()
 #include "rapidassist/undef_windows_macros.h"
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #define __chdir chdir
 #define __getcwd getcwd
 #define __rmdir rmdir
 #include <unistd.h> //for getcwd()
 #include <dirent.h> //for opendir() and closedir()
+#endif
+
+#if defined(__linux__)
 #include <linux/limits.h> //for PATH_MAX
+#elif defined(__APPLE__)
+#include <limits.h> //for PATH_MAX
 #endif
 
 namespace ra { namespace filesystem {
@@ -407,6 +412,9 @@ namespace ra { namespace filesystem {
 #ifdef _WIN32
     std::string temp = environment::GetEnvironmentVariableUtf8("TEMP");
 #elif __linux__
+    std::string temp = "/tmp";
+#elif __APPLE__
+    //std::string temp = environment::GetEnvironmentVariable("TMPDIR");
     std::string temp = "/tmp";
 #endif
     return temp;

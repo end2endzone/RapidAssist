@@ -30,8 +30,11 @@
 #include "rapidassist/process.h"
 #include "rapidassist/random.h"
 
-#ifndef _WIN32
+#ifdef __linux__
 #include <linux/fs.h>
+#endif
+
+#ifndef _WIN32
 #include <sys/ioctl.h> //for ioctl()
 #endif
 
@@ -102,7 +105,7 @@ namespace ra { namespace filesystem { namespace test
     return true;
   }
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   bool Truncate(const char * file_path, uint64_t size) {
     //truncate -s 10737418240 10Gigfile.img
     
@@ -194,7 +197,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint32_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint32_t EXPECTED = 11;
 #endif
 
@@ -231,7 +234,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint64_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;
 #endif
 
@@ -274,7 +277,7 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
       if (!created)
       {
         printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
@@ -534,7 +537,7 @@ namespace ra { namespace filesystem { namespace test
       ra::strings::StringVector locations;
       bool success = ra::filesystem::FindFileFromPaths(filename, locations);
       ASSERT_TRUE(success);
-      ASSERT_EQ(1, locations.size());
+      ASSERT_GE(locations.size(), 1) << "Failed to find the location of file '" << filename << "' in PATH."; //note allow finding more than 1 path for filename
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -977,7 +980,7 @@ namespace ra { namespace filesystem { namespace test
   TEST_F(TestFilesystem, testGetPathSeparator) {
 #ifdef WIN32
     ASSERT_EQ('\\', filesystem::GetPathSeparator());
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_EQ('/', filesystem::GetPathSeparator());
 #endif
   }
@@ -1234,11 +1237,13 @@ namespace ra { namespace filesystem { namespace test
       //not supported. Cannot find a file that exists but cannot be read.
       //Note, the file 'C:\pagefile.sys' can be found using FindFirstFile() but not with _stat() which I don't understand.
       return;
-#else
+#elif defined(__linux__)
       const char * path = "/proc/sysrq-trigger"; //permission denied file
       ASSERT_TRUE(filesystem::FileExists(path));
       bool hasRead = filesystem::HasFileReadAccess(path);
       ASSERT_FALSE(hasRead);
+#elif defined(__APPLE__)
+      // Not able to find a file without read access on macos.
 #endif
     }
   }
@@ -1270,8 +1275,11 @@ namespace ra { namespace filesystem { namespace test
       //On Github Actions, "C:\\bootmgr" is not available. Use "C:\Windows\WindowsShell.Manifest" instead.
       if (path.empty() && ra::filesystem::FileExists("C:\\bootmgr")) path = "C:\\bootmgr";
       if (path.empty() && ra::filesystem::FileExists("C:\\Windows\\WindowsShell.Manifest")) path = "C:\\Windows\\WindowsShell.Manifest";
-#else
+#elif defined(__linux__)
       path = "/proc/cpuinfo"; //permission denied file
+#elif defined(__APPLE__)
+      path = "/etc/bashrc"; //permission denied file
+      //path = "/etc/profile"; //permission denied file
 #endif
       ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasFileWriteAccess().";
       bool has_write = filesystem::HasFileWriteAccess(path.c_str());
@@ -1321,8 +1329,10 @@ namespace ra { namespace filesystem { namespace test
       {
         dir_path = "C:\\Windows";
       }
-#else
+#elif defined(__linux__)
       dir_path = "/proc"; //permission denied file directory
+#elif defined(__APPLE__)
+      dir_path = "/Library/Printers"; //permission denied file directory
 #endif
       ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccess().";
       bool has_write = filesystem::HasDirectoryWriteAccess(dir_path.c_str());
@@ -1337,7 +1347,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("src\\main.cpp"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath(".\\src\\main.cpp"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("..\\src\\main.cpp"));
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_TRUE(ra::filesystem::IsAbsolutePath("/home"));
     ASSERT_TRUE(ra::filesystem::IsAbsolutePath("/bin/bash"));
     ASSERT_FALSE(ra::filesystem::IsAbsolutePath("src/main.cpp"));
@@ -1351,8 +1361,10 @@ namespace ra { namespace filesystem { namespace test
     {
 #ifdef _WIN32
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/bin/bash";
+#elif __APPLE__
+      std::string testPath = "/bin/zsh";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentProcess(testPath);
 
@@ -1393,6 +1405,8 @@ namespace ra { namespace filesystem { namespace test
       std::string testPath = "C:\\windows\\system32\\cmd.exe";
 #elif __linux__
       std::string testPath = "/bin/bash";
+#elif __APPLE__
+      std::string testPath = "/bin/zsh";
 #endif
       std::string actual = ra::filesystem::GetPathBasedOnCurrentDirectory(testPath);
 
@@ -1430,7 +1444,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with ..");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..\\baz\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/../baz/myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1443,7 +1457,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\baz\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/baz/myapp", actual);
 #endif
     }
@@ -1455,7 +1469,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with .. at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\..";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/..";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1468,7 +1482,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo", actual);
 #endif
     }
@@ -1480,7 +1494,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with .");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.\\baz\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/./baz/myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1494,7 +1508,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\bar\\baz\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/bar/baz/myapp", actual);
 #endif
     }
@@ -1506,7 +1520,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with . at the end");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\bar\\.";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/bar/.";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1520,7 +1534,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\foo\\bar", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/foo/bar", actual);
 #endif
     }
@@ -1532,7 +1546,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test too many \\..\\ elements");
 #ifdef _WIN32
       std::string testPath = "C:\\foo\\..\\..\\..\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/foo/../../../myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1545,7 +1559,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("C:\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("/myapp", actual);
 #endif
     }
@@ -1557,7 +1571,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test with impossible to resolve situations (relative path)");
 #ifdef _WIN32
       std::string testPath = "..\\foo\\..\\..\\bar\\baz\\..\\myapp.exe";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "../foo/../../bar/baz/../myapp";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1567,7 +1581,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ("..\\..\\bar\\myapp.exe", actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ("../../bar/myapp", actual);
 #endif
     }
@@ -1579,7 +1593,7 @@ namespace ra { namespace filesystem { namespace test
       SCOPED_TRACE("test buggy path");
 #ifdef _WIN32
       std::string testPath = "\\home\\pi\\dev\\github\\RapidAssist\\build\\bin\\files\\images\\slashscreen.png";
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       std::string testPath = "/home/pi/dev/github/RapidAssist/build/bin/files/images/slashscreen.png";
 #endif
       std::string actual = ra::filesystem::ResolvePath(testPath);
@@ -1589,7 +1603,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef _WIN32
       ASSERT_EQ(testPath, actual);
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       ASSERT_EQ(testPath, actual);
 #endif
     }
@@ -1602,7 +1616,7 @@ namespace ra { namespace filesystem { namespace test
     ASSERT_TRUE(ra::filesystem::IsRootDirectory("z:\\"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("c:\\foo"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("c:"));
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     ASSERT_TRUE(ra::filesystem::IsRootDirectory("/"));
     ASSERT_FALSE(ra::filesystem::IsRootDirectory("/foo"));
 #endif
@@ -1616,8 +1630,8 @@ namespace ra { namespace filesystem { namespace test
     const std::string output_filename = ra::testing::GetTestQualifiedName() + "." + process_filename + ".tmp";
     const std::string output_path = temp_dir + ra::filesystem::GetPathSeparator() + output_filename;
 
-    ASSERT_TRUE(ra::filesystem::FileExists(process_path.c_str()));
-    ASSERT_TRUE(ra::filesystem::DirectoryExists(temp_dir.c_str()));
+    ASSERT_TRUE(ra::filesystem::FileExists(process_path.c_str())) << "Process path '" << process_path << "' is not found!";
+    ASSERT_TRUE(ra::filesystem::DirectoryExists(temp_dir.c_str())) << "Directory '" << temp_dir << "' is not found!";
 
     bool copied = ra::filesystem::CopyFile(process_path, output_path);
     ASSERT_TRUE(copied) << "Failed to copy file '" << process_path.c_str() << "' to '" << output_path.c_str() << "'.";

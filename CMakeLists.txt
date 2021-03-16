@@ -119,11 +119,6 @@ if (WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-# Provide apple compatability by suppling __LINUX__.
-if (APPLE)
-  add_definitions(-D__LINUX__)
-endif()
-
 # Define include directories for source code.
 # The specified values will not be exported.
 set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include )

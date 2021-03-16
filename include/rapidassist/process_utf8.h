@@ -87,7 +87,7 @@ namespace ra { namespace process {
   /// <returns>Returns true if the document was opened with the system's default application. Returns false otherwise.</returns>
   bool OpenDocumentUtf8(const std::string & path);
 
-#elif __linux__ // UTF-8
+#elif defined(__linux__) || defined(__APPLE__) // UTF-8
 
   /// <summary>
   /// Provides the file path of the current executing process.

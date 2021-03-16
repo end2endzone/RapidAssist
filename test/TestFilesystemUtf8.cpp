@@ -33,7 +33,7 @@
 namespace ra { namespace filesystem { namespace test
 {
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   extern bool Truncate(const char * file_path, uint64_t size);
 #endif
 
@@ -105,7 +105,7 @@ namespace ra { namespace filesystem { namespace test
 
 #ifdef WIN32
       static const uint64_t EXPECTED = 14;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;
 #endif
 
@@ -148,7 +148,7 @@ namespace ra { namespace filesystem { namespace test
       } _FileCleanupCallbackInstance(filename.c_str());
 
       bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
-#ifdef __linux__
+#if defined(__linux__)
       if (!created)
       {
         printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
@@ -254,8 +254,10 @@ namespace ra { namespace filesystem { namespace test
       {
         dir_path = "C:\\Windows";
       }
-#else
+#elif defined(__linux__)
       dir_path = "/proc"; //permission denied file directory
+#elif defined(__APPLE__)
+      dir_path = "/Library/Printers"; //permission denied file directory
 #endif
       ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccessUtf8().";
       bool has_write = filesystem::HasDirectoryWriteAccessUtf8(dir_path.c_str());
@@ -476,7 +478,7 @@ namespace ra { namespace filesystem { namespace test
     command.append(log_filename);
     int exit_code = system(command.c_str());
     ASSERT_EQ(0, exit_code) << "Failed running command: " << command;
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Run the new process and log the output
     std::string command;
     command.append("cd \"");

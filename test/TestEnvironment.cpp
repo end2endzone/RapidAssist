@@ -59,10 +59,10 @@ namespace ra { namespace environment { namespace test
     //test a known variable
 #ifdef WIN32
     std::string actual = environment::GetEnvironmentVariable("TEMP");
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     //Note: "SHELL" variable is not supported in Github Actions.
-    //Possible candidates are: LANG, HOME, USER
-    std::string actual = environment::GetEnvironmentVariable("LANG");
+    //Possible candidates are: LANG, HOME, USER, TERM
+    std::string actual = environment::GetEnvironmentVariable("TERM");
 #endif
     ASSERT_NE("", actual);
   }

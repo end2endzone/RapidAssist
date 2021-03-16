@@ -66,7 +66,7 @@ namespace ra { namespace environment {
       command.append(value);
     }
     int result = _putenv(command.c_str());
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
     int result = -1; //failure
     bool erase = (value == NULL || strlen(value) == 0);
     if (erase)

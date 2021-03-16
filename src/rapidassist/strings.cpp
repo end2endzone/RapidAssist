@@ -291,6 +291,9 @@ namespace ra { namespace strings {
   std::string ToString(const uint32_t & value) { return ToStringT(value); }
   std::string ToString(const  int64_t & value) { return ToStringT(value); }
   std::string ToString(const uint64_t & value) { return ToStringT(value); }
+#ifdef __APPLE__  
+  std::string ToString(const   size_t & value) { return ToStringT(value); }
+#endif
 
   //floating point, lossless conversion
   std::string ToStringLossless(const    float & value) { return ToStringT(value); }
@@ -543,7 +546,7 @@ namespace ra { namespace strings {
   }
 
   std::string TrimRight(const std::string & str, const char c) {
-    static const size_t SIZE_T_MAX = std::numeric_limits< size_t >::max();
+    static const size_t SIZE_T_MAX_VALUE = std::numeric_limits< size_t >::max();
 
     std::string tmp = str;
 
@@ -554,7 +557,7 @@ namespace ra { namespace strings {
     if (size) {
       size_t loop_start = size - 1;
       size_t loop_end = 0;
-      for (size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX; i--) {
+      for (size_t i = loop_start; i >= loop_end && i != SIZE_T_MAX_VALUE; i--) {
         if (tmp[i] == c) {
           tmp.erase(i, 1);
         }

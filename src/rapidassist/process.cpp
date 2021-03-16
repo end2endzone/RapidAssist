@@ -26,6 +26,7 @@
 #include "rapidassist/filesystem.h"
 #include "rapidassist/timing.h"
 #include "rapidassist/unicode.h"
+#include "rapidassist/errors.h"
 
 #include <string>
 
@@ -38,7 +39,7 @@
 #   include <psapi.h>
 #   pragma comment( lib, "psapi.lib" )
 #   include <Tlhelp32.h>
-#elif __linux__
+#elif defined(__linux__) || defined(__APPLE__)
 #   include <unistd.h>
 #   include <limits.h>
 #   include <sys/types.h>
@@ -47,6 +48,11 @@
 #   include <sys/wait.h>
 #   include <errno.h>
 extern char **environ;
+#endif
+
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>  // for _NSGetExecutablePath()
+#include <libproc.h>      // for proc_listpids()
 #endif
 
 namespace ra { namespace process {
@@ -279,7 +285,7 @@ namespace ra { namespace process {
     return success;
   }
 
-#else
+#elif defined(__linux__)
   ///=========================================================================================
   ///                                 Linux support functions
   ///=========================================================================================
@@ -392,7 +398,7 @@ namespace ra { namespace process {
       return path; //failure
     }
     path = buffer;
-#elif __linux__
+#elif defined(__linux__)
     //from https://stackoverflow.com/a/33249023
     char exe_path[PATH_MAX + 1] = { 0 };
     ssize_t len = ::readlink("/proc/self/exe", exe_path, sizeof(exe_path));
@@ -411,16 +417,57 @@ namespace ra { namespace process {
       exe_path[len] = '\0';
       path = exe_path;
     }
+#elif defined(__APPLE__)
+    #if 0
+    // Note: With the following implementation, calling function `GetCurrentProcessPath()`
+    // returns the value `/Users/antoine/dev/RapidAssist/build/bin/./rapidassist_unittest-d`
+    // which includes the string `/./` which is annoying.
+    // Another implementation is preferred.
+
+    //https://stackoverflow.com/questions/7004401/c-find-execution-path-on-mac
+
+    // Get required buffer size
+    uint32_t bufsize = 0;
+    if (_NSGetExecutablePath(NULL, &bufsize) != -1)
+      return ""; //fail to get the required size
+    if (bufsize == 0)
+      return ""; // fail to get required buffer size
+
+    // Allocate memory
+    char * buffer = NULL;
+    buffer = new char[bufsize];
+    if (!buffer)
+      return ""; // Fail, not enough memory
+    
+    // Get actual executable path
+    if(_NSGetExecutablePath(buffer, &bufsize) == 0) {
+      path = buffer;
+    }
+
+    // Free memory
+    delete[] buffer;
+    #else
+    // Note: With the following implementation, calling function `GetCurrentProcessPath()`
+    // returns the value `/Users/antoine/dev/RapidAssist/build/bin/rapidassist_unittest-d`
+    // which is the expected value.
+    
+    struct proc_bsdinfo proc;
+    char tmp[4096]; // Using a bigger buffer results in the function `proc_pidpath()` failing to execute and returning an empty string.
+    tmp[0] = '\0';
+    pid_t pid = getpid();
+    int path_size = proc_pidpath(pid, tmp, sizeof(tmp));
+    if (path_size > 0 && tmp[0] != '\0')
+      path = tmp;
+    #endif
 #endif
     return path;
   }
 
   ProcessIdList GetProcesses() {
     ProcessIdList processes;
-
 #ifdef _WIN32
     //Get process ids
-    const int MAX_PROCESSES = 10000;
+    const int MAX_PROCESSES = 10240;
     DWORD process_ids[MAX_PROCESSES];
     DWORD process_ids_size = 0; //in bytes
     EnumProcesses(process_ids, MAX_PROCESSES, &process_ids_size);
@@ -431,7 +478,7 @@ namespace ra { namespace process {
       DWORD pid = process_ids[i];
       processes.push_back(pid);
     }
-#else
+#elif defined(__linux__)
     //list processes from the filesystem
     ra::strings::StringVector files;
     bool found = ra::filesystem::FindFiles(files, "/proc", 0);
@@ -468,8 +515,21 @@ namespace ra { namespace process {
 
       processes.push_back(pid);
     }
+#elif defined(__APPLE__)
+    //https://stackoverflow.com/questions/6045878/observe-a-process-of-unknown-pid-no-ui/6046282#6046282
+    //https://stackoverflow.com/questions/49506579/how-to-find-the-pid-of-any-process-in-mac-osx-c
+    const size_t MAX_PROCESSES = 10240;
+    pid_t pids[MAX_PROCESSES];
+    int bytes = proc_listpids(PROC_ALL_PIDS, 0, pids, sizeof(pids));
+    int num_proc = bytes / sizeof(pids[0]);
+    for (int i = 0; i < num_proc; i++) {
+      struct proc_bsdinfo proc;
+      int st = proc_pidinfo(pids[i], PROC_PIDTBSDINFO, 0, &proc, PROC_PIDTBSDINFO_SIZE);
+      if (st == PROC_PIDTBSDINFO_SIZE) {
+        processes.push_back(pids[i]);
+      }       
+    }
 #endif
-
     return processes;
   }
 
@@ -621,7 +681,7 @@ namespace ra { namespace process {
       return true;
     }
     return false;
-#else
+#elif defined(__linux__)
     const char * xdgopen_path = "/usr/bin/xdg-open";
     if (!ra::filesystem::FileExists(xdgopen_path))
       return false; //xdg-open not found
@@ -631,6 +691,8 @@ namespace ra { namespace process {
     processid_t pid = StartProcess(xdgopen_path, curr_dir, args);
     bool success = (pid != INVALID_PROCESS_ID);
     return success;
+#elif defined(__APPLE__)
+    return false;
 #endif
   }
 
@@ -643,7 +705,7 @@ namespace ra { namespace process {
       success = (TerminateProcess(hProcess, 255) != 0);
       CloseHandle(hProcess);
     }
-#else
+#elif defined(__linux__) || defined(__APPLE__)
     int kill_error = ::kill(pid, SIGKILL);
     success = (kill_error == 0);
 
@@ -652,7 +714,6 @@ namespace ra { namespace process {
       int status = 0;
       processid_t result_pid = waitpid(pid, &status, 0);
     }
-
 #endif
     return success;
   }
@@ -687,7 +748,7 @@ namespace ra { namespace process {
       running = false; //should not append unless GetWin32ExitCodeResult is modified without notice.
     };
     return running;
-#else
+#elif defined(__linux__)
     char state = '\0';
     if (!GetProcessState(pid, state))
       return false; //unable to find process state
@@ -695,6 +756,23 @@ namespace ra { namespace process {
     // See GetProcessState() for known process states.
     bool running = IsRunningState(state);
     return running;
+#elif defined(__APPLE__)
+    //https://stackoverflow.com/questions/49506579/how-to-find-the-pid-of-any-process-in-mac-osx-c
+    struct proc_bsdinfo proc;
+    int st = proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &proc, PROC_PIDTBSDINFO_SIZE);
+    if (st == PROC_PIDTBSDINFO_SIZE) {
+      return true;
+    }
+    // Failed to get bsd information about process.
+    // Most probable reason is that process is not created by current user.
+
+    //Try to get the process path
+    char path[1024];
+    int path_size = proc_pidpath(pid, path, sizeof(path));
+    if (path_size > 0 && path[0] != '\0')
+      return true;
+
+    return false;
 #endif
   }
 
@@ -703,7 +781,7 @@ namespace ra { namespace process {
     //ask the process to exit gracefully allowing a maximum of 60 seconds to close
     bool terminated = Terminate(pid, 60000);
     return terminated;
-#else
+#elif defined(__linux__) || defined(__APPLE__)
     //ask the process to exit gracefully
     int kill_error = ::kill(pid, SIGTERM);
     bool success = (kill_error == 0);
@@ -727,9 +805,10 @@ namespace ra { namespace process {
       return true;
     }
     return false;
-#else
+#elif defined(__linux__) || defined(__APPLE__)
     int status = 0;
-    if (waitpid(pid, &status, WNOHANG | WUNTRACED | WCONTINUED) == pid) {
+    pid_t results_pid = waitpid(pid, &status, WNOHANG | WUNTRACED | WCONTINUED);
+    if (results_pid == pid) {
       //waitpid success
       bool process_exited = WIFEXITED(status);
       exit_code = WEXITSTATUS(status);
@@ -751,7 +830,7 @@ namespace ra { namespace process {
       return true;
     }
     return false;
-#else
+#elif defined(__linux__) || defined(__APPLE__)
     //DISABLED THE FOLLOWING IMPLEMENTATION:
     //  waitpid() function consumes the process exit code which disables the implementation of GetExitCode().
     //  In other words, calling GetExitCode() will always fails after calling the waitpid() function.
@@ -782,8 +861,9 @@ namespace ra { namespace process {
     //validate if pid is valid
     int res = ::kill(pid, 0);
     bool valid_pid = (res == 0 || (res < 0 && errno == EPERM));
-    if (!valid_pid)
+    if (!valid_pid) {
       return false;
+    }
 
     //wait for the process state to change
     //this implementation is slow but does not rely on waitpid()
@@ -799,12 +879,16 @@ namespace ra { namespace process {
 
   bool WaitExit(const processid_t & pid, int & exit_code) {
     bool success = WaitExit(pid);
-    if (!success)
+    if (!success) {
       return false;
+    }
 
 #ifndef _WIN32
     //also read the process exit code to remove the zombie process
     success = GetExitCode(pid, exit_code);
+    if (!success) {
+      return false;
+    }
 #endif
 
     return success;
