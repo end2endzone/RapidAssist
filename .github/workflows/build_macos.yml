@@ -27,6 +27,12 @@ jobs:
         git config --local advice.detachedHead false
         git submodule update --init --recursive
 
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
     - name: List environment variables for debugging
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
@@ -52,6 +58,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: ./ci/github/test_script.sh
+
+    - name: Creating test badge
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: python ci/github/makejunitbadge.py build/bin/rapidassist_unittest.64bit.${{env.Configuration}}.xml
 
     - name: Archive test results
       uses: actions/upload-artifact@v2

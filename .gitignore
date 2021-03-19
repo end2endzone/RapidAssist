@@ -6,3 +6,5 @@
 /ci/github/SysinternalsSuite.zip
 .DS_Store
 .vscode
+/ci/github/badge.json
+/badge.json
