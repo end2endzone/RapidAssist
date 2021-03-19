@@ -70,7 +70,7 @@ jobs:
 
     - name: Creating test badge
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: python ci\github\makejunitbadge.py build\bin\${{env.Configuration}}\rapidassist_unittest.${{env.Platform}}.${{env.Configuration}}.xml
+      run: python ci\github\maketestbadge.py build\bin\${{env.Configuration}}\rapidassist_unittest.${{env.Platform}}.${{env.Configuration}}.xml
       
     - name: Archive test results
       uses: actions/upload-artifact@v2

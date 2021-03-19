@@ -56,7 +56,7 @@ def getColorFromLevel(level):
   return color
 
 def main():
-  print("makejunitbadge v1.0")
+  print("maketestbadge v1.0")
   
   # Validate input file
   if len(sys.argv)  == 2:
@@ -69,7 +69,7 @@ def main():
     print("File not found: " + file_path)
     sys.exit(1);
   
-  print("Creating json endpoint file from junit report: " + file_path + ".")
+  print("Creating badge from junit report '" + file_path + "' for https://shields.io/endpoint.")
   
   # Parse the content of the file
   try:
