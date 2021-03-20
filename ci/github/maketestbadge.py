@@ -133,9 +133,14 @@ def main():
   badge_namedLogo = getNamedLogo()
   badge_logoColor = "white"
   
+  print("Creating badge: " + badge_namedLogo + ", " + getColorFromLevel(badge_level).lower() + ", " + badge_message)
+  
+  relative_path = "badge.json"
+  full_path = os.path.realpath(relative_path)
+  
   # Save as badge.json
   try:
-    text_file = open("badge.json", "w")
+    text_file = open(full_path, "w")
     text_file.write("{")
     text_file.write("  \"schemaVersion\": {0}".format(badge_schemaVersion))
     text_file.write("  \"label\": {0}".format(badge_label))
@@ -152,7 +157,7 @@ def main():
     print(err.msg)
     sys.exit(1);
   
-  print("Saved badge: " + badge_namedLogo + ", " + getColorFromLevel(badge_level).lower() + ", " + badge_message)
+  print("Saved badge as " + full_path)
   
 if __name__ == "__main__":
   main()
