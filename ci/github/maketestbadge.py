@@ -36,7 +36,8 @@ def getNamedLogo():
       namedLogo = "Linux"
     elif os.getenv('RUNNER_OS', "") == "Windows":
       namedLogo = "Windows"
-    namedLogo = "GitHub"
+    else
+      namedLogo = "GitHub"
   elif platform.system() == "Darwin":
       namedLogo = "Apple"
   elif platform.system() == "Linux":
@@ -62,7 +63,7 @@ def main():
   if len(sys.argv)  == 2:
     file_path = sys.argv[1]
   else:
-    print("Create endpoint badge json files. See https://shields.io/endpoint for details.")
+    print("Create endpoint badge json files from junit report. See https://shields.io/endpoint for details.")
     print("Missing input file. Please specify a path to a junit report.")
     sys.exit(1);
   if not path.isfile(file_path) or not path.exists(file_path):
