@@ -36,7 +36,7 @@ def getNamedLogo():
       namedLogo = "Linux"
     elif os.getenv('RUNNER_OS', "") == "Windows":
       namedLogo = "Windows"
-    else
+    else:
       namedLogo = "GitHub"
   elif platform.system() == "Darwin":
       namedLogo = "Apple"
