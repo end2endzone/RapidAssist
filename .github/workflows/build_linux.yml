@@ -35,10 +35,10 @@ jobs:
 
     - name: Create new environment variables
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      shell: bash
+      shell: cmd
       run: |
-        python -c "import os; print('GIT_REPOSITORY=' + os.path.split('${{env.GITHUB_REPOSITORY}}')[1]);" >> $GITHUB_ENV
-        python -c "import os; print('GIT_BRANCH=' + os.path.split('${{env.GITHUB_REF}}')[1]);" >> $GITHUB_ENV
+        python -c "import os; print('GIT_REPOSITORY=' + os.path.split(os.getenv('GITHUB_REPOSITORY'))[1]);" >> %GITHUB_ENV%
+        python -c "import os; print('GIT_BRANCH=' + os.path.split(os.getenv('GITHUB_REF'))[1]);" >> %GITHUB_ENV%
       
     - name: List environment variables for debugging
       working-directory: ${{env.GITHUB_WORKSPACE}}
