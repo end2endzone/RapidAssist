@@ -69,7 +69,7 @@ def main():
     print("File not found: " + file_path)
     sys.exit(1);
   
-  print("Creating badge from junit report '" + file_path + "' for https://shields.io/endpoint.")
+  print("Creating badge from junit report '" + file_path + "' for https://shields.io/endpoint")
   
   # Parse the content of the file
   try:

@@ -72,7 +72,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %%f in (`dir/b build\bin\${{env.configuration}}\rapidassist_unittest*.xml`) do (set UNITTEST_REPORT_PATH=%%F)
+        for /f "tokens=* usebackq" %%f in (`dir/b/s build\bin\${{env.configuration}}\rapidassist_unittest*.xml`) do (set UNITTEST_REPORT_PATH=%%f)
         echo UNITTEST_REPORT_PATH=%UNITTEST_REPORT_PATH%
         echo UNITTEST_REPORT_PATH=%UNITTEST_REPORT_PATH% >> $GITHUB_ENV
       
