@@ -141,15 +141,15 @@ def main():
   # Save as badge.json
   try:
     text_file = open(full_path, "w")
-    text_file.write("{")
-    text_file.write("  \"schemaVersion\": {0}".format(badge_schemaVersion))
-    text_file.write("  \"label\": {0}".format(badge_label))
-    text_file.write("  \"labelColor\": {0}".format(badge_labelColor))
-    text_file.write("  \"namedLogo\": {0}".format(badge_namedLogo))
-    text_file.write("  \"logoColor\": {0}".format(badge_logoColor))
-    text_file.write("  \"color\": {0}".format(badge_color))
-    text_file.write("  \"message\": {0}".format(badge_message))
-    text_file.write("}")
+    text_file.write("{\n")
+    text_file.write("  \"schemaVersion\": {0}\n".format(badge_schemaVersion))
+    text_file.write("  \"label\": {0}\n".format(badge_label))
+    text_file.write("  \"labelColor\": {0}\n".format(badge_labelColor))
+    text_file.write("  \"namedLogo\": {0}\n".format(badge_namedLogo))
+    text_file.write("  \"logoColor\": {0}\n".format(badge_logoColor))
+    text_file.write("  \"color\": {0}\n".format(badge_color))
+    text_file.write("  \"message\": {0}\n".format(badge_message))
+    text_file.write("}\n")
     text_file.close()
   except OSError as err:
     err.msg = "Failed to save badge.json."
