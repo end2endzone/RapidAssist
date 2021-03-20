@@ -78,6 +78,7 @@ jobs:
       
     - name: Creating test badge
       working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
       run: |
         set
         python ci\github\maketestbadge.py ${{env.UNITTEST_REPORT_PATH}}
