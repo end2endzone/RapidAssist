@@ -37,9 +37,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
       run: |
-        python -c "import os; print('GIT_REPOSITORY=' + os.path.split(os.getenv('GITHUB_REPOSITORY'))[1]);" >> %GITHUB_ENV%
-        python -c "import os; print('GIT_BRANCH=' + os.path.split(os.getenv('GITHUB_REF'))[1]);" >> %GITHUB_ENV%
-      
+        python -c "import os; print('GIT_REPOSITORY=' + os.path.split(os.getenv('GITHUB_REPOSITORY'))[1]);" >> $GITHUB_ENV
+        python -c "import os; print('GIT_BRANCH=' + os.path.split(os.getenv('GITHUB_REF'))[1]);" >> $GITHUB_ENV
+        echo GITHUB_WORKFLOW=$GITHUB_WORKFLOW>> $GITHUB_ENV
+
     - name: List environment variables for debugging
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: bash
