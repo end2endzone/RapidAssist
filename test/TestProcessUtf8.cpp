@@ -199,13 +199,10 @@ namespace ra { namespace process { namespace test
 
     //take a snapshot of the list of processes before opening the document
     ProcessIdList process_before = ra::process::GetProcesses();
+    ASSERT_NE(0, process_before.size());
 
-#ifdef _WIN32
     success = ra::process::OpenDocumentUtf8(file_path);
     ASSERT_TRUE(success);
-#else
-    // N/A
-#endif
 
     ra::timing::Millisleep(5000); //allow time for the process to start properly (again).
 
@@ -214,17 +211,25 @@ namespace ra { namespace process { namespace test
     ProcessIdList new_pids = GetNewProcesses(process_before, process_after);
     if (new_pids.size() == 1) {
       //found the new process that opened the document
+      printf("Found pid %s for document '%s'\n", ra::strings::ToString(new_pids[0]).c_str(), file_path.c_str());
 
       //kill the process
       processid_t document_pid = new_pids[0];
       bool killed = ra::process::Kill(document_pid);
       ASSERT_TRUE(killed);
     }
-    else {
+    else if (new_pids.size() > 1) {
       //fail finding the new process
       std::string pids = ra::process::ToString(new_pids);
-      printf("Warning: fail to identify the process for document '%s'\n", file_path.c_str());
-      printf("Warning: the following new process may need to be closed for cleanup: %s\n", pids.c_str());
+      printf("Warning: failed to identify the exact process for document '%s'\n", file_path.c_str());
+      printf("Warning: the following new processes may need to be closed for cleanup: %s\n", pids.c_str());
+    }
+    else {
+      std::string msg;
+      msg += ra::strings::Format("Warning: fail to identify a process for document '%s'.\n", file_path.c_str());
+      msg += ra::strings::Format("Warning: %s processes are running but no new processes were identified after opening the document.\n", ra::strings::ToString(process_before.size()).c_str());
+      printf("%s", file_path.c_str());
+      FAIL() << msg;
     }
 
     //cleanup

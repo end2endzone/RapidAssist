@@ -681,18 +681,21 @@ namespace ra { namespace process {
       return true;
     }
     return false;
-#elif defined(__linux__)
-    const char * xdgopen_path = "/usr/bin/xdg-open";
-    if (!ra::filesystem::FileExists(xdgopen_path))
-      return false; //xdg-open not found
+#elif defined(__linux__) || defined(__APPLE__)
+    #if defined(__linux__)
+    const char * open_path = "/usr/bin/xdg-open";
+    #elif defined(__APPLE__)
+    const char * open_path = "/usr/bin/open";
+    #endif
+    if (!ra::filesystem::FileExists(open_path))
+      return false; //open or xdg-open not found
 
-    const ra::strings::StringVector args;
+    ra::strings::StringVector args;
+    args.push_back(path);
     std::string curr_dir = ra::filesystem::GetCurrentDirectory();
-    processid_t pid = StartProcess(xdgopen_path, curr_dir, args);
+    processid_t pid = StartProcess(open_path, curr_dir, args);
     bool success = (pid != INVALID_PROCESS_ID);
     return success;
-#elif defined(__APPLE__)
-    return false;
 #endif
   }
 
