@@ -29,6 +29,6 @@ Write-Output ""
 
 Write-Output "Extracting SysinternalsSuite.zip to '$ScriptDir\bin' directory..."
 #Expand-ZipFile .\SysinternalsSuite.zip -destination .
-Start-Process -FilePath "C:\Program Files\7-Zip\7z.exe" -Wait -WorkingDirectory "." -ArgumentList "x ""$ScriptDir\SysinternalsSuite.zip"" ""-o$ScriptDir\bin"""
+Start-Process -FilePath "C:\Program Files\7-Zip\7z.exe" -Wait -WorkingDirectory "." -ArgumentList "x ""$ScriptDir\SysinternalsSuite.zip"" -aoa ""-o$ScriptDir\bin"""
 Write-Output "done"
 Write-Output ""
