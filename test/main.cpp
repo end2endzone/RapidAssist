@@ -245,8 +245,19 @@ int main(int argc, char **argv) {
   if (ra::testing::IsGitHubActions() || ra::testing::IsTravis()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    printf("*** Disabling TestProcess.testOpenDocument unit test ***\n");
-    std::string newFilter = ra::testing::MergeFilter("", "TestProcess.testOpenDocument", basefilter.c_str());
+    //On GitHub Actions, the following output is visible if we try to open a document:
+    //    Error: no "view" rule for type "text/plain" passed its test case
+    //           (for more information, add "--debug=1" on the command line)
+    //    /usr/bin/xdg-open: 869: www-browser: not found
+    //    /usr/bin/xdg-open: 869: links2: not found
+    //    /usr/bin/xdg-open: 869: elinks: not found
+    //    /usr/bin/xdg-open: 869: links: not found
+    //    /usr/bin/xdg-open: 869: lynx: not found
+    //    /usr/bin/xdg-open: 869: w3m: not found
+    //    xdg-open: no method available for opening '/home/runner/work/RapidAssist/RapidAssist/build/bin/TestProcessUtf8.testOpenDocumentUtf8.psi_?_psi.txt'
+
+    printf("*** Disabling TestProcess.testOpenDocument* unit test ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "TestProcess.testOpenDocument*", basefilter.c_str());
 
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
