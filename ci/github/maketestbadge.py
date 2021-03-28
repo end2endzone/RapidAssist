@@ -57,7 +57,7 @@ def getColorFromLevel(level):
   return color
 
 def main():
-  print("maketestbadge v1.0")
+  print("maketestbadge v1.1")
   
   # Validate input file
   if len(sys.argv)  == 2:
@@ -124,8 +124,8 @@ def main():
     badge_message = str(failures_count) + " failed"
   else:
     badge_message = str(failures_count) + " failed"
-  if disabled_count > 0:
-    badge_message = badge_message + ", " + str(disabled_count) + " disabled"
+  #if disabled_count > 0:
+  #  badge_message = badge_message + ", " + str(disabled_count) + " disabled"
   
   # other
   badge_schemaVersion = 1
