@@ -11,6 +11,11 @@ cd $RESTORE_DIRECTORY
 unset RESTORE_DIRECTORY
 
 # Set debug or release build type
-export RAPIDASSIST_BUILD_TYPE=Debug
-#export RAPIDASSIST_BUILD_TYPE=Release
+export RAPIDASSIST_BUILD_TYPE=Release
 echo "RAPIDASSIST_BUILD_TYPE set to $RAPIDASSIST_BUILD_TYPE configuration."
+
+# Call all build scripts one by one.
+cd $RAPIDASSIST_SOURCE_DIR/ci/linux && ./install_googletest.sh;
+cd $RAPIDASSIST_SOURCE_DIR/ci/linux && ./build_library.sh;
+cd $RAPIDASSIST_SOURCE_DIR/ci/linux && ./build_client.sh;
+cd $RAPIDASSIST_SOURCE_DIR/ci/linux && ./test_script.sh;

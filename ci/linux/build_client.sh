@@ -12,7 +12,7 @@ if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
 fi
 
 echo ============================================================================
-echo Generating...
+echo Generating RapidAssist client example...
 echo ============================================================================
 cd $RAPIDASSIST_SOURCE_DIR/client
 mkdir -p build
@@ -20,7 +20,7 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=$RAPIDASSIST_BUILD_TYPE -DCMAKE_PREFIX_PATH=$RAPIDASSIST_SOURCE_DIR/third_parties/googletest/install\;$RAPIDASSIST_SOURCE_DIR/install ..
 
 echo ============================================================================
-echo Compiling...
+echo Compiling RapidAssist client example...
 echo ============================================================================
 cmake --build . -- -j4
 echo

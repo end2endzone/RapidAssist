@@ -25,7 +25,7 @@ git -c advice.detachedHead=false checkout release-1.8.0
 echo
 
 echo ============================================================================
-echo Compiling...
+echo Compiling googletest...
 echo ============================================================================
 mkdir -p build
 cd build
@@ -34,7 +34,7 @@ cmake --build . -- -j4
 echo
 
 echo ============================================================================
-echo Installing into $RAPIDASSIST_SOURCE_DIR/third_parties/googletest/install
+echo Installing googletest into $RAPIDASSIST_SOURCE_DIR/third_parties/googletest/install
 echo ============================================================================
 make install
 echo

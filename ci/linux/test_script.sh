@@ -12,10 +12,14 @@ if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
 fi
 
 echo ============================================================================
-echo Testing project
+echo Testing RapidAssist library...
 echo ============================================================================
 cd $RAPIDASSIST_SOURCE_DIR/build/bin;
-./rapidassist_unittest || true; #do not fail build even if a test fails.
+if [ "$RAPIDASSIST_BUILD_TYPE" = "Debug" ]; then
+  ./rapidassist_unittest-d || true; #do not fail build even if a test fails.
+else
+  ./rapidassist_unittest   || true; #do not fail build even if a test fails.
+fi
 
 #Debug TestProcess filters:
 #./rapidassist_unittest --gtest_filter=TestFilesystem.testNormalizePath:TestProcess.testIsRunning:TestProcess.testProcesses*:TestProcess.testGetExitCode*:TestProcess.testWaitExit:TestString.testIsNumeric
