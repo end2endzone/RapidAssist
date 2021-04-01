@@ -57,7 +57,7 @@ def getColorFromLevel(level):
   return color
 
 def main():
-  print("maketestbadge v1.0")
+  print("maketestbadge v1.1")
   
   # Validate input file
   if len(sys.argv)  == 2:
@@ -124,13 +124,13 @@ def main():
     badge_message = str(failures_count) + " failed"
   else:
     badge_message = str(failures_count) + " failed"
-  if disabled_count > 0:
-    badge_message = badge_message + ", " + str(disabled_count) + " disabled"
+  #if disabled_count > 0:
+  #  badge_message = badge_message + ", " + str(disabled_count) + " disabled"
   
   # other
   badge_schemaVersion = 1
   badge_label = "tests"
-  badge_labelColor = "#5c5c5c"
+  #badge_labelColor = "#5c5c5c"
   badge_namedLogo = getNamedLogo()
   badge_logoColor = "white"
   
@@ -147,7 +147,7 @@ def main():
     text_file.write("  \"namedLogo\": \"{0}\",\n".format(badge_namedLogo))
     text_file.write("  \"logoColor\": \"{0}\",\n".format(badge_logoColor))
     text_file.write("  \"label\": \"{0}\",\n".format(badge_label))
-    text_file.write("  \"labelColor\": \"{0}\",\n".format(badge_labelColor))
+    #text_file.write("  \"labelColor\": \"{0}\",\n".format(badge_labelColor))
     text_file.write("  \"color\": \"{0}\",\n".format(badge_color))
     text_file.write("  \"message\": \"{0}\"\n".format(badge_message))
     text_file.write("}\n")

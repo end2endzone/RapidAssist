@@ -8,3 +8,5 @@
 .vscode
 /ci/github/badge.json
 /badge.json
+/ci/appveyor/bin
+/ci/appveyor/SysinternalsSuite.zip

@@ -245,24 +245,38 @@ int main(int argc, char **argv) {
   if (ra::testing::IsGitHubActions() || ra::testing::IsTravis()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    printf("*** Disabling TestProcess.testOpenDocument unit test ***\n");
-    std::string newFilter = ra::testing::MergeFilter("", "TestProcess.testOpenDocument", basefilter.c_str());
+    //On GitHub Actions running Linux OS, the following output is visible if we try to open a document:
+    //    Error: no "view" rule for type "text/plain" passed its test case
+    //           (for more information, add "--debug=1" on the command line)
+    //    /usr/bin/xdg-open: 869: www-browser: not found
+    //    /usr/bin/xdg-open: 869: links2: not found
+    //    /usr/bin/xdg-open: 869: elinks: not found
+    //    /usr/bin/xdg-open: 869: links: not found
+    //    /usr/bin/xdg-open: 869: lynx: not found
+    //    /usr/bin/xdg-open: 869: w3m: not found
+    //    xdg-open: no method available for opening '/home/runner/work/RapidAssist/RapidAssist/build/bin/TestProcessUtf8.testOpenDocumentUtf8.psi_?_psi.txt'
+
+    printf("*** Disabling TestProcess*.testOpenDocument* unit tests ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "TestProcess*.testOpenDocument*", basefilter.c_str());
 
     ::testing::GTEST_FLAG(filter) = newFilter;
   }
 
-  //Disable TestFilesystem.testHasDirectoryWriteAccess and TestFilesystemUtf8.testHasDirectoryWriteAccessUtf8 on Github Actions, Windows platform.
+  //Disable TestFilesystem.testHasDirectoryWriteAccess and TestFilesystemUtf8.testHasDirectoryWriteAccessUtf8 on the following build platforms:
+  //  * Github Actions, Windows OS.
+  //  * AppVeyor
+  //
   //Running user has read and write access to all directories in C:\, including the following directories:
   //  c:\MSOCache
   //  c:\PerfLogs
   //  c:\Recovery
   //  c:\System Volume Information
   //which are normally read denied on a "normal" Windows 7 os.
-  if (ra::testing::IsGitHubActions()) {
+  if (ra::testing::IsGitHubActions() || ra::testing::IsAppVeyor()) {
     std::string basefilter = ::testing::GTEST_FLAG(filter);
 
-    printf("*** Disabling TestFilesystem.testHasDirectoryWriteAccess and TestFilesystemUtf8.testHasDirectoryWriteAccessUtf8 unit test ***\n");
-    std::string newFilter = ra::testing::MergeFilter("", "*testHasDirectoryWriteAccess*", basefilter.c_str());
+    printf("*** Disabling TestFilesystem*.testHasDirectoryWriteAccess* unit tests ***\n");
+    std::string newFilter = ra::testing::MergeFilter("", "TestFilesystem*.testHasDirectoryWriteAccess*", basefilter.c_str());
 
     ::testing::GTEST_FLAG(filter) = newFilter;
   }

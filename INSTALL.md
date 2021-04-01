@@ -1,6 +1,7 @@
+
 # Install #
 
-The library does not provides pre-build binaries or provides an installation package. To install the binary files on the system, the source code must be compiled and copied to the appropriate directory.
+The library does not provides pre-build binaries or an installation package. To install the binary files on the system, the source code must be compiled and copied to the appropriate directory.
 
 The following steps show how to install the library:
 
@@ -10,7 +11,7 @@ The following steps show how to install the library:
 
 3) Navigate to the `build` directory and execute the 'install' command for your platform:
    1) On Windows, enter `cmake --build . --config Release --target INSTALL`.
-   2) On Linux, enter `sudo make install`.
+   2) On Linux or macOS, enter `sudo make install`.
 
 # Build #
 
@@ -30,7 +31,7 @@ The following software must be installed on the system for compiling source code
 
 
 
-### Linux Requirements ###
+### Linux & macOS Requirements ###
 
 These are the base requirements to build and use RapidAssist:
 
@@ -53,7 +54,7 @@ The RapidAssist library uses the CMake build system to generate a platform-speci
 
 To build the software, execute the following steps:
 
-1) Build and install all software prerequisites before building this software.
+1) Build and install all [software prerequisites](#prerequisites) before building this software.
 
 2) Get a copy of the source code by using one of the following methods:
    * Download the source code of the project from an existing [tags](http://github.com/end2endzone/RapidAssist) and extract the downloaded zip file to a local directory (for example `c:\projects\RapidAssist` or `~/dev/RapidAssist`).
@@ -74,33 +75,72 @@ Note: See [CMake Quick Tips](#cmake-quick-tips) section for more details on buil
 
 
 
-### Building scripts for Linux ###
+### Building scripts for Linux & macOS ###
 
-The project provides scripts to facilitate the build process. The scripts can be found in [ci/travis](https://github.com/end2endzone/RapidAssist/tree/master/ci/travis) directory. There are 2 scripts, one for gtest dependency and a final script for building the library. The scripts are named
+The project provides scripts to facilitate the build process. The scripts can be found in [ci/linux](https://github.com/end2endzone/RapidAssist/tree/master/ci/linux) directory and can be used on **Linux** and **macOS** platforms. There are 2 master scripts, one for building in debug and another for building in release. The scripts are named
 
-1) install_googletest.sh
-2) build_library.sh
+* build_all_debug.sh
+* build_all_release.sh
 
-They are designed to be executed on [Travis CI](https://travis-ci.org/github/end2endzone/RapidAssist) and requires the environment variable `TRAVIS_BUILD_DIR` to be set to the location where you cloned the RapidAssist repository or extracted the source code. Once the environment variable is set, you should be able to execute each script one by one. 
+If you do not know about *debug* and *release* configurations, then you probably need to build in *release* mode. If you plan to contribute to the project or a project that requires this library, you should be building in *debug*.
 
-During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `$TRAVIS_BUILD_DIR/third_parties/googletest`. At the end of the build process, RapidAssist library will be located in directory `$TRAVIS_BUILD_DIR/build/bin`.
+**Launch one of the 2 scripts to fully build RapidAssist with all dependencies using default options.**
 
-You can see the latest build log example on [Travis CI RapidAssist page](https://travis-ci.org/github/end2endzone/RapidAssist).
+Also, there are other scripts which are designed to be called by the 2 master scripts:
+* build_client.sh
+* build_library.sh
+* install_googletest.sh
+* test_script.sh
+
+They can be called individually but they require the following environment variables to be set:
+
+| Name                   | Value                                                                   |
+|------------------------|-------------------------------------------------------------------------|
+| RAPIDASSIST_SOURCE_DIR | Directory where you cloned the repository or extracted the source code. |
+| RAPIDASSIST_BUILD_TYPE | `Release` or `Debug`                                                    |
+
+Once the environment variables are set, you should be able to execute each script one by one.
+
+During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `$RAPIDASSIST_SOURCE_DIR/third_parties/googletest`. At the end of the build process, RapidAssist library will be located in directory `$RAPIDASSIST_SOURCE_DIR/build/bin`.
+
+You can see the latest build log example at the following locations:
+* [Linux builds](https://travis-ci.org/github/end2endzone/RapidAssist) on Travis CI.
+* [Linux builds](https://github.com/end2endzone/RapidAssist/actions/workflows/build_linux.yml) on GitHub Actions.
+* [macOS builds](https://github.com/end2endzone/RapidAssist/actions/workflows/build_macos.yml) on GitHub Actions.
 
 
 
 ### Building scripts for Windows ###
 
-The project provides scripts to facilitate the build process. The scripts can be found in [ci/appveyor](https://github.com/end2endzone/RapidAssist/tree/master/ci/appveyor) directory. There are 2 scripts, one for gtest dependency and a final script for building the library. The scripts are named
+The project provides scripts to facilitate the build process. The scripts can be found in [ci/windows](https://github.com/end2endzone/RapidAssist/tree/master/ci/windows) directory. There are 2 master scripts, one for building in debug and another for building in release. The scripts are named
 
-1) install_googletest.bat
-2) build_library.bat
+* build_all_debug.bat
+* build_all_release.bat
 
-They are designed to be executed on [AppVeyor](https://ci.appveyor.com/project/end2endzone/RapidAssist) and requires the environment variable `APPVEYOR_BUILD_FOLDER` to be set to the location where you cloned the RapidAssist repository or extracted the source code. The environment variable `CONFIGURATION` must also be set to the value `Release`. Once the environment variables are set, you should be able to execute each script one by one. 
+If you do not know about *debug* and *release* configurations, then you probably need to build in *release* mode. If you plan to contribute to the project or a project that requires this library, you should be building in *debug*.
 
-During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `%APPVEYOR_BUILD_FOLDER%\third_parties\googletest`). At the end of the build process, RapidAssist library will be located in directory `%APPVEYOR_BUILD_FOLDER%\build\bin\%CONFIGURATION%`.
+**Double click on one of the 2 scripts to fully build RapidAssist with all dependencies using default options.**
+ 
+Also, there are other scripts which are designed to be called by the 2 master scripts:
+* build_client.bat
+* build_library.bat
+* install_googletest.bat
+* test_script.bat
 
-You can see the latest build log example on [AppVeyor RapidAssist page](https://ci.appveyor.com/project/end2endzone/RapidAssist).
+They can be called individually but they require the following environment variables to be set:
+
+| Name                   | Value                                                                                      |
+|------------------------|--------------------------------------------------------------------------------------------|
+| RAPIDASSIST_SOURCE_DIR | Directory where you cloned the repository or extracted the source code.                    |
+| Configuration          | `Release` or `Debug`                                                                       |
+| Platform               | `x64` or `Win32`                                                                           |
+| PlatformToolset        | An empty value or a valid platform toolset like `Windows7.1SDK`, `v140`, `v141` or `v142`. |
+
+Once the environment variables are set, you should be able to execute each script one by one.
+
+During the compilation process, project dependencies will be cloned in `third_parties` directory (for example, `%RAPIDASSIST_SOURCE_DIR%\third_parties\googletest`). At the end of the build process, the project's library will be located in directory `%RAPIDASSIST_SOURCE_DIR%\build\bin\%CONFIGURATION%`.
+
+You can see the latest build log example on [AppVeyor RapidAssist page](https://ci.appveyor.com/project/end2endzone/RapidAssist) or [GitHub Actions page](https://github.com/end2endzone/RapidAssist/actions/workflows/build_windows.yml).
 
 
 
@@ -159,11 +199,11 @@ With this method, users *do not* have to define environment variable such as `[N
 
 The following table shows the available build option supported:
 
-| Name | Type | Default | Usage |
-|------|------|:-------:|-------|
-| CMAKE_INSTALL_PREFIX   | STRING | See CMake documentation | Defines the installation folder of the library.           |
-| BUILD_SHARED_LIBS      | BOOL   | OFF                     | Enable/disable the generation of shared library makefiles |
-| RAPIDASSIST_BUILD_TEST | BOOL   | OFF                     | Enable/disable the generation of unit tests target. |
+| Name                   | Type   | Default                 | Usage                                                      |
+|------------------------|--------|-------------------------|------------------------------------------------------------|
+| CMAKE_INSTALL_PREFIX   | STRING | See CMake documentation | Defines the installation folder of the library.            |
+| BUILD_SHARED_LIBS      | BOOL   | OFF                     | Enable/disable the generation of shared library makefiles  |
+| RAPIDASSIST_BUILD_TEST | BOOL   | OFF                     | Enable/disable the generation of unit tests target.        |
 | RAPIDASSIST_BUILD_DOC  | BOOL   | OFF                     | Enable/disable the generation of API documentation target. |
 
 To enable a build option, run the following command at the cmake configuration time:

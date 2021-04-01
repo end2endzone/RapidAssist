@@ -1298,7 +1298,7 @@ namespace ra { namespace filesystem { namespace test
     {
       std::string curr_dir = ra::filesystem::GetCurrentDirectory();
       bool has_read = filesystem::HasDirectoryReadAccess(curr_dir.c_str());
-      ASSERT_TRUE(has_read);
+      ASSERT_TRUE(has_read) << "Directory '" << curr_dir << "' was expected to have read access.";
     }
 
     //No test for read denied access
@@ -1317,7 +1317,7 @@ namespace ra { namespace filesystem { namespace test
     {
       std::string temp_dir = ra::filesystem::GetTemporaryDirectory();
       bool has_write = filesystem::HasDirectoryWriteAccess(temp_dir.c_str());
-      ASSERT_TRUE(has_write);
+      ASSERT_TRUE(has_write) << "Directory '" << temp_dir << "' was expected to have write access.";
     }
 
     //test write access denied
@@ -1336,7 +1336,7 @@ namespace ra { namespace filesystem { namespace test
 #endif
       ASSERT_TRUE(filesystem::DirectoryExists(dir_path.c_str())) << "Directory '" << dir_path << "' not found. Unable to call HasDirectoryWriteAccess().";
       bool has_write = filesystem::HasDirectoryWriteAccess(dir_path.c_str());
-      ASSERT_FALSE(has_write);
+      ASSERT_FALSE(has_write) << "Directory '" << dir_path << "' was expected to NOT have write access.";
     }
   }
   //--------------------------------------------------------------------------------------------------

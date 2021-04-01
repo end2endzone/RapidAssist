@@ -60,6 +60,10 @@ configuration: Release
 #  - Release
 
 before_build:
+- cmd: |
+    call %APPVEYOR_BUILD_FOLDER%\ci\github\install_sysinternals.bat
+    %APPVEYOR_BUILD_FOLDER%\ci\github\bin\accesschk64.exe -d -nobanner /accepteula "%USERNAME%" c:\*.*
+
 - cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\install_googletest.bat
 
 build_script:
