@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(RapidAssistClient)
 
-find_package(rapidassist 0.4.0 REQUIRED)
+find_package(rapidassist 0.9.0 REQUIRED)
 
 message(rapidassist_FOUND=        ${rapidassist_FOUND})
 message(rapidassist_LIBRARY=      ${rapidassist_LIBRARY})
