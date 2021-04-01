@@ -119,8 +119,8 @@ namespace ra { namespace timing { namespace test
 #elif defined(__APPLE__)
     double epsilon = 15.0;
     if (ra::testing::IsGitHubActions()) {
-      // On Github Action, the observed difference seems to be about 60ms to 140ms for GetMicrosecondsTimer()
-      epsilon = 150.0;
+      // On Github Action, the observed delays seems to be increased by about 60ms for GetMicrosecondsTimer()
+      epsilon = 70.0;
     }
 #else
     double epsilon = 1.0;
@@ -163,8 +163,8 @@ namespace ra { namespace timing { namespace test
 #elif defined(__APPLE__)
     double epsilon = 15.0;
     if (ra::testing::IsGitHubActions()) {
-      // On Github Action, the observed difference seems to be about 90ms to 140ms for GetMillisecondsTimer()
-      epsilon = 150.0;
+      // On Github Action, the observed delays seems to be increased by about 90ms for GetMillisecondsTimer()
+      epsilon = 100.0;
     }
 #else
     double epsilon = 1.0;
