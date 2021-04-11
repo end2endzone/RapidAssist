@@ -7,13 +7,14 @@ if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
   exit 1;
 fi
 
-# Find the project root directory
-current_directory=$PWD
-this_filename=`basename "$0"`
-this_directory=`dirname "$0"`
-cd $this_directory/../..
-RAPIDASSIST_SOURCE_DIR=$PWD
-cd $current_directory
+# Set RAPIDASSIST_SOURCE_DIR root directory
+RESTORE_DIRECTORY=$PWD
+cd "$(dirname "$0")"
+cd ../..
+export RAPIDASSIST_SOURCE_DIR=$PWD
+echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
+cd $RESTORE_DIRECTORY
+unset RESTORE_DIRECTORY
 
 echo ============================================================================
 echo Cloning googletest into $RAPIDASSIST_SOURCE_DIR/third_parties/googletest

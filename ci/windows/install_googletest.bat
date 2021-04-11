@@ -12,15 +12,12 @@ if "%Platform%"=="" (
   exit /B 1
 )
 
-:: Find project root directory
+:: Set RAPIDASSIST_SOURCE_DIR root directory
 cd /d %~dp0
 cd ..\..
 set RAPIDASSIST_SOURCE_DIR=%CD%
+echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
 cd /d %~dp0
-if "%RAPIDASSIST_SOURCE_DIR%"=="" (
-  echo Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.
-  exit /B 1
-)
 
 echo ============================================================================
 echo Cloning googletest into %RAPIDASSIST_SOURCE_DIR%\third_parties\googletest
