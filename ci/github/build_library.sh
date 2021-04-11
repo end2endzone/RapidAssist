@@ -9,4 +9,4 @@ fi
 
 # Call matching script for linux
 this_filename=`basename "$0"`
-$TRAVIS_BUILD_DIR/ci/linux/$this_filename
+$GITHUB_WORKSPACE/ci/linux/$this_filename
