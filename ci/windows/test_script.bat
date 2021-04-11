@@ -1,16 +1,22 @@
 @echo off
 
 :: Validate mandatory environment variables
-if "%RAPIDASSIST_SOURCE_DIR%"=="" (
-  echo Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.
-  exit /B 1
-)
 if "%Configuration%"=="" (
   echo Please define 'Configuration' environment variable.
   exit /B 1
 )
 if "%Platform%"=="" (
   echo Please define 'Platform' environment variable.
+  exit /B 1
+)
+
+:: Find project root directory
+cd /d %~dp0
+cd ..\..
+set RAPIDASSIST_SOURCE_DIR=%CD%
+cd /d %~dp0
+if "%RAPIDASSIST_SOURCE_DIR%"=="" (
+  echo Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.
   exit /B 1
 )
 
@@ -24,5 +30,9 @@ if "%Configuration%"=="Debug" (
   rapidassist_unittest.exe
 )
 
-::reset error in case of test case fail
+:: Note:
+::  GitHub Action do not support uploading test results in a nice GUI. There is no build-in way to detect a failed test.
+::  Do not reset the error returned by unit test execution. This will actually fail the build and will indicate in GitHub that a test has failed.
+:: 
+:: Reset error in case of test case fail, this prevents a test failure to actually fail the build
 exit /b 0

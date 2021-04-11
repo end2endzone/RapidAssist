@@ -7,14 +7,6 @@ if [ "$GITHUB_WORKSPACE" = "" ]; then
   exit 1;
 fi
 
-echo ============================================================================
-echo Running unit tests...
-echo ============================================================================
-cd $GITHUB_WORKSPACE/build/bin;
-./rapidassist_unittest || true; #do not fail build even if a test fails.
-
-# Note:
-#  GitHub Action do not support uploading test results in a nice GUI. There is no build-in way to detect a failed test.
-#  Do not reset the error returned by unit test execution. This will actually fail the build and will indicate in GitHub that a test has failed.
-# 
-# || true; #do not fail build even if a test fails.
+# Call matching script for linux
+this_filename=`basename "$0"`
+$TRAVIS_BUILD_DIR/ci/linux/$this_filename

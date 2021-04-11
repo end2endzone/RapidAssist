@@ -7,7 +7,9 @@ branches:
   only:
   - master
   - feature-issue60
-
+env:
+  global:
+    - RAPIDASSIST_BUILD_TYPE=Release
 script:
 - cd $TRAVIS_BUILD_DIR/ci/travis;  ./install_googletest.sh;
 - cd $TRAVIS_BUILD_DIR/ci/travis;  ./build_library.sh;

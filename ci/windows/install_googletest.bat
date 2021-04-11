@@ -1,10 +1,8 @@
 @echo off
 
+@echo off
+
 :: Validate mandatory environment variables
-if "%RAPIDASSIST_SOURCE_DIR%"=="" (
-  echo Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.
-  exit /B 1
-)
 if "%Configuration%"=="" (
   echo Please define 'Configuration' environment variable.
   exit /B 1
@@ -14,6 +12,15 @@ if "%Platform%"=="" (
   exit /B 1
 )
 
+:: Find project root directory
+cd /d %~dp0
+cd ..\..
+set RAPIDASSIST_SOURCE_DIR=%CD%
+cd /d %~dp0
+if "%RAPIDASSIST_SOURCE_DIR%"=="" (
+  echo Please define 'RAPIDASSIST_SOURCE_DIR' environment variable.
+  exit /B 1
+)
 
 echo ============================================================================
 echo Cloning googletest into %RAPIDASSIST_SOURCE_DIR%\third_parties\googletest

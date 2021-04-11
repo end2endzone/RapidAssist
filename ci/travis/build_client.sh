@@ -7,16 +7,6 @@ if [ "$TRAVIS_BUILD_DIR" = "" ]; then
   exit 1;
 fi
 
-echo ============================================================================
-echo Generating...
-echo ============================================================================
-cd $TRAVIS_BUILD_DIR/client
-mkdir -p build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$TRAVIS_BUILD_DIR/third_parties/googletest/install\;$TRAVIS_BUILD_DIR/install ..
-
-echo ============================================================================
-echo Compiling...
-echo ============================================================================
-cmake --build . -- -j4
-echo
+# Call matching script for linux
+this_filename=`basename "$0"`
+$TRAVIS_BUILD_DIR/ci/linux/$this_filename
