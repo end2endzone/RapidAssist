@@ -1,15 +1,19 @@
 @echo off
 
-:: Find RAPIDASSIST_SOURCE_DIR source directory
-cd /d %~dp0
-cd ..\..
-set RAPIDASSIST_SOURCE_DIR=%cd%
+:: Set RAPIDASSIST_SOURCE_DIR root directory
+if "%RAPIDASSIST_SOURCE_DIR%"=="" (
+  cd /d %~dp0
+  cd ..\..
+  set RAPIDASSIST_SOURCE_DIR=%CD%
+  echo RAPIDASSIST_SOURCE_DIR set to '%RAPIDASSIST_SOURCE_DIR%'.
+  cd /d %~dp0
+)
+
+:: Set build configuration parameters
 set Configuration=Release
 set Platform=x64
 set PlatformToolset=""
-
 echo Building RapidAssist for Windows in %Configuration%, %Platform% configuration...
-echo RAPIDASSIST_SOURCE_DIR set to '%RAPIDASSIST_SOURCE_DIR%'
 echo.
 
 :: Return back to scripts folder

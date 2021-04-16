@@ -8,13 +8,15 @@ if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
 fi
 
 # Set RAPIDASSIST_SOURCE_DIR root directory
-RESTORE_DIRECTORY=$PWD
-cd "$(dirname "$0")"
-cd ../..
-export RAPIDASSIST_SOURCE_DIR=$PWD
-echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
-cd $RESTORE_DIRECTORY
-unset RESTORE_DIRECTORY
+if [ "$RAPIDASSIST_SOURCE_DIR" = "" ]; then
+  RESTORE_DIRECTORY=$PWD
+  cd "$(dirname "$0")"
+  cd ../..
+  export RAPIDASSIST_SOURCE_DIR=$PWD
+  echo "RAPIDASSIST_SOURCE_DIR set to '$RAPIDASSIST_SOURCE_DIR'."
+  cd $RESTORE_DIRECTORY
+  unset RESTORE_DIRECTORY
+fi
 
 echo ============================================================================
 echo Testing RapidAssist library...

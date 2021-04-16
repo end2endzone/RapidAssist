@@ -8,13 +8,20 @@ if [ "$RAPIDASSIST_BUILD_TYPE" = "" ]; then
 fi
 
 # Set RAPIDASSIST_SOURCE_DIR root directory
-RESTORE_DIRECTORY=$PWD
-cd "$(dirname "$0")"
-cd ../..
-export RAPIDASSIST_SOURCE_DIR=$PWD
-echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
-cd $RESTORE_DIRECTORY
-unset RESTORE_DIRECTORY
+if [ "$RAPIDASSIST_SOURCE_DIR" = "" ]; then
+  RESTORE_DIRECTORY=$PWD
+  cd "$(dirname "$0")"
+  cd ../..
+  export RAPIDASSIST_SOURCE_DIR=$PWD
+  echo "RAPIDASSIST_SOURCE_DIR set to '$RAPIDASSIST_SOURCE_DIR'."
+  cd $RESTORE_DIRECTORY
+  unset RESTORE_DIRECTORY
+fi
+
+# Prepare CMAKE parameters
+export CMAKE_INSTALL_PREFIX=$RAPIDASSIST_SOURCE_DIR/install
+unset CMAKE_PREFIX_PATH
+export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$RAPIDASSIST_SOURCE_DIR/third_parties/googletest/install"
 
 echo ============================================================================
 echo Generating RapidAssist library...
@@ -22,7 +29,7 @@ echo ===========================================================================
 cd $RAPIDASSIST_SOURCE_DIR
 mkdir -p build
 cd build
-cmake -DCMAKE_BUILD_TYPE=$RAPIDASSIST_BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$RAPIDASSIST_SOURCE_DIR/install -DCMAKE_PREFIX_PATH=$RAPIDASSIST_SOURCE_DIR/third_parties/googletest/install -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_BUILD_TYPE=$RAPIDASSIST_BUILD_TYPE -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" ..
 
 echo ============================================================================
 echo Compiling RapidAssist library...

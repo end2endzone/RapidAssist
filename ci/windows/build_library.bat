@@ -11,11 +11,18 @@ if "%Platform%"=="" (
 )
 
 :: Set RAPIDASSIST_SOURCE_DIR root directory
-cd /d %~dp0
-cd ..\..
-set RAPIDASSIST_SOURCE_DIR=%CD%
-echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
-cd /d %~dp0
+if "%RAPIDASSIST_SOURCE_DIR%"=="" (
+  cd /d %~dp0
+  cd ..\..
+  set RAPIDASSIST_SOURCE_DIR=%CD%
+  echo RAPIDASSIST_SOURCE_DIR set to '%RAPIDASSIST_SOURCE_DIR%'.
+  cd /d %~dp0
+)
+
+:: Prepare CMAKE parameters
+set CMAKE_INSTALL_PREFIX=%RAPIDASSIST_SOURCE_DIR%\install
+set CMAKE_PREFIX_PATH=
+set CMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH%;%RAPIDASSIST_SOURCE_DIR%\third_parties\googletest\install
 
 echo ============================================================================
 echo Generating RapidAssist library...
@@ -23,7 +30,7 @@ echo ===========================================================================
 cd /d %RAPIDASSIST_SOURCE_DIR%
 mkdir build >NUL 2>NUL
 cd build
-cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DCMAKE_INSTALL_PREFIX=%RAPIDASSIST_SOURCE_DIR%\install -DCMAKE_PREFIX_PATH=%RAPIDASSIST_SOURCE_DIR%\third_parties\googletest\install -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF ..
+cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -DRAPIDASSIST_BUILD_TEST=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=%CMAKE_INSTALL_PREFIX% -DCMAKE_PREFIX_PATH="%CMAKE_PREFIX_PATH%" ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ============================================================================

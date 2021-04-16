@@ -11,11 +11,13 @@ if "%Platform%"=="" (
 )
 
 :: Set RAPIDASSIST_SOURCE_DIR root directory
-cd /d %~dp0
-cd ..\..
-set RAPIDASSIST_SOURCE_DIR=%CD%
-echo "RAPIDASSIST_SOURCE_DIR set to $RAPIDASSIST_SOURCE_DIR."
-cd /d %~dp0
+if "%RAPIDASSIST_SOURCE_DIR%"=="" (
+  cd /d %~dp0
+  cd ..\..
+  set RAPIDASSIST_SOURCE_DIR=%CD%
+  echo RAPIDASSIST_SOURCE_DIR set to '%RAPIDASSIST_SOURCE_DIR%'.
+  cd /d %~dp0
+)
 
 echo =======================================================================
 echo Testing RapidAssist library...
