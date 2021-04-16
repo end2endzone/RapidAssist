@@ -1,6 +1,7 @@
 Changes for 0.9.2:
 
 * Fixed issue #68: Simplify building process with scripts and INSTALL documentation (again).
+* Fixed issue #69: Building with spaces in path.
 
 
 Changes for 0.9.1:

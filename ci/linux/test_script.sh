@@ -9,19 +9,19 @@ fi
 
 # Set RAPIDASSIST_SOURCE_DIR root directory
 if [ "$RAPIDASSIST_SOURCE_DIR" = "" ]; then
-  RESTORE_DIRECTORY=$PWD
+  RESTORE_DIRECTORY="$PWD"
   cd "$(dirname "$0")"
   cd ../..
-  export RAPIDASSIST_SOURCE_DIR=$PWD
+  export RAPIDASSIST_SOURCE_DIR="$PWD"
   echo "RAPIDASSIST_SOURCE_DIR set to '$RAPIDASSIST_SOURCE_DIR'."
-  cd $RESTORE_DIRECTORY
+  cd "$RESTORE_DIRECTORY"
   unset RESTORE_DIRECTORY
 fi
 
 echo ============================================================================
 echo Testing RapidAssist library...
 echo ============================================================================
-cd $RAPIDASSIST_SOURCE_DIR/build/bin;
+cd "$RAPIDASSIST_SOURCE_DIR/build/bin"
 if [ "$RAPIDASSIST_BUILD_TYPE" = "Debug" ]; then
   ./rapidassist_unittest-d || true; #do not fail build even if a test fails.
 else

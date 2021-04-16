@@ -1,7 +1,5 @@
 @echo off
 
-@echo off
-
 :: Validate mandatory environment variables
 if "%Configuration%"=="" (
   echo Please define 'Configuration' environment variable.
@@ -13,13 +11,16 @@ if "%Platform%"=="" (
 )
 
 :: Set RAPIDASSIST_SOURCE_DIR root directory
+setlocal enabledelayedexpansion
 if "%RAPIDASSIST_SOURCE_DIR%"=="" (
-  cd /d %~dp0
+  :: Delayed expansion is required within parentheses https://superuser.com/questions/78496/variables-in-batch-file-not-being-set-when-inside-if
+  cd /d "%~dp0"
   cd ..\..
-  set RAPIDASSIST_SOURCE_DIR=%CD%
-  echo RAPIDASSIST_SOURCE_DIR set to '%RAPIDASSIST_SOURCE_DIR%'.
-  cd /d %~dp0
+  set RAPIDASSIST_SOURCE_DIR=!CD!
+  cd ..\..
+  echo RAPIDASSIST_SOURCE_DIR set to '!RAPIDASSIST_SOURCE_DIR!'.
 )
+endlocal & set RAPIDASSIST_SOURCE_DIR=%RAPIDASSIST_SOURCE_DIR%
 
 :: Prepare CMAKE parameters
 set CMAKE_INSTALL_PREFIX=%RAPIDASSIST_SOURCE_DIR%\third_parties\googletest\install
@@ -29,8 +30,8 @@ set CMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH%;
 echo ============================================================================
 echo Cloning googletest into %RAPIDASSIST_SOURCE_DIR%\third_parties\googletest
 echo ============================================================================
-mkdir %RAPIDASSIST_SOURCE_DIR%\third_parties >NUL 2>NUL
-cd %RAPIDASSIST_SOURCE_DIR%\third_parties
+mkdir "%RAPIDASSIST_SOURCE_DIR%\third_parties" >NUL 2>NUL
+cd "%RAPIDASSIST_SOURCE_DIR%\third_parties"
 git clone "https://github.com/google/googletest.git"
 cd googletest
 echo.
@@ -44,7 +45,7 @@ echo Compiling googletest...
 echo ============================================================================
 mkdir build >NUL 2>NUL
 cd build
-cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -Dgtest_force_shared_crt=ON -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" ..
+cmake -DCMAKE_GENERATOR_PLATFORM=%Platform% -T %PlatformToolset% -Dgtest_force_shared_crt=ON -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON -DCMAKE_INSTALL_PREFIX="%CMAKE_INSTALL_PREFIX%" -DCMAKE_PREFIX_PATH="%CMAKE_PREFIX_PATH%" ..
 if %errorlevel% neq 0 exit /b %errorlevel%
 cmake --build . --config %Configuration% -- -maxcpucount /m
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -56,3 +57,6 @@ echo ===========================================================================
 cmake --build . --config %Configuration% --target INSTALL
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo.
+
+::Return to launch folder
+cd /d "%~dp0"
