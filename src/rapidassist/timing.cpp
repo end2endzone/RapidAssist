@@ -52,8 +52,8 @@
 #endif
 
 #ifdef WIN32
-#include <Mmsystem.h> //for timeGetTime()
-#pragma comment(lib, "winmm.lib") //for timeGetTime()
+#include <Mmsystem.h> //for timeGetTime(), timeBeginPeriod()
+#pragma comment(lib, "winmm.lib") //for timeGetTime(), timeBeginPeriod()
 #else
 #include <sys/time.h> //for clock_gettime()
 #endif
@@ -62,6 +62,8 @@
 #include <string>
 
 namespace ra { namespace timing {
+
+  const uint64_t NANOSECONDS_PER_SECONDS = (uint64_t)1e9;
 
 #if defined(__linux__) || defined(__APPLE__)
   //linux:
@@ -91,26 +93,30 @@ namespace ra { namespace timing {
   ///  - Have below microsecond accuracy.
   ///  - Use the QueryPerformanceCounter, affected by multicore processors.
   ///  - Must be called from the same thread to compute elapsed time.
+  ///
+  /// Warning for processes running a multicore processors...
+  /// While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
+  /// for multiple processors, bugs in the BIOS or drivers may result in these routines
+  /// returning different values as the thread moves from one processor to another.
+  /// So, it's best to keep the thread on a single processor.
+  /// See the following for details:
+  ///   https://msdn.microsoft.com/en-us/library/windows/desktop/ee417693(v=vs.85).aspx
+  ///   https://stackoverflow.com/questions/44020619/queryperformancecounter-on-multi-core-processor-under-windows-10-behaves-erratic
+  ///   https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247(v=vs.85).aspx (SetThreadAffinityMask function)
   ///</remarks>
-  ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  inline double GetPerformanceTimerWin32() {
-    //Warning for processes running a multicore processors...
-    //While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
-    //for multiple processors, bugs in the BIOS or drivers may result in these routines
-    //returning different values as the thread moves from one processor to another.
-    //So, it's best to keep the thread on a single processor.
-    //See the following for details:
-    //  https://msdn.microsoft.com/en-us/library/windows/desktop/ee417693(v=vs.85).aspx
-    //  https://stackoverflow.com/questions/44020619/queryperformancecounter-on-multi-core-processor-under-windows-10-behaves-erratic
-    //  https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247(v=vs.85).aspx (SetThreadAffinityMask function)
-
+  ///<returns>Returns the elapsed time in seconds since an arbitrary starting point. Returns 0 on error.</returns>
+  inline double GetSecondsFromPerformanceTimer() {
+    //Get frequency in counts per seconds.
     static LARGE_INTEGER frequency = { 0 };
-    //if first pass
     if (frequency.QuadPart == 0)
-      QueryPerformanceFrequency(&frequency);
+    {
+      if (!QueryPerformanceFrequency(&frequency))
+        return 0.0;
+    }
 
     LARGE_INTEGER counter;
-    QueryPerformanceCounter(&counter);
+    if (!QueryPerformanceCounter(&counter))
+      return 0.0;
     double seconds = counter.QuadPart / double(frequency.QuadPart);
     return seconds;
   }
@@ -148,7 +154,7 @@ namespace ra { namespace timing {
   ///  - Does not requires the multimedia timer initialization.
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  inline double GetTickCountTimer() //fast constant 15ms timer
+  inline double GetSecondsFromGetTickCount() //fast constant 15ms timer
   {
     DWORD milliseconds_counter = GetTickCount();
     double seconds = double(milliseconds_counter) / 1000.0;
@@ -164,7 +170,7 @@ namespace ra { namespace timing {
   ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  inline double GetMillisecondsTimerWin32() {
+  inline double GetSecondsFromTimeGetTime() {
     DWORD milliseconds_counter = timeGetTime();
     double seconds = double(milliseconds_counter) / 1000.0;
     return seconds;
@@ -182,11 +188,11 @@ namespace ra { namespace timing {
   ///<remarks>
   ///The function have the following properties:
   ///  - Have ~1ms accuracy on Windows 7 and before.
-  ///  - Have ~2us accuracy on Windows 8 and up.
+  ///  - Have <1us accuracy on Windows 8 and up.
   ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
   ///</remarks>
   ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
-  inline double GetSystemTimeTimerWin32() {
+  inline double GetSecondsFromSystemTime() {
     FILETIME file_time;
     ULONGLONG t;
     if (GetSystemTimePreciseAsFileTime_) {
@@ -200,8 +206,102 @@ namespace ra { namespace timing {
     t = ((ULONGLONG)file_time.dwHighDateTime << 32) | (ULONGLONG)file_time.dwLowDateTime;
     return (double)t / 10000000.0;
   }
-#endif
 
+  ///<summary>
+  ///Returns the elasped time in nanoseconds since an arbitrary starting point.
+  ///</summary>
+  ///<remarks>
+  ///The function have the following properties:
+  ///  - Have below microsecond accuracy.
+  ///  - Use the QueryPerformanceCounter, affected by multicore processors.
+  ///  - Must be called from the same thread to compute elapsed time.
+  ///
+  /// Warning for processes running a multicore processors...
+  /// While QueryPerformanceCounter and QueryPerformanceFrequency typically adjust
+  /// for multiple processors, bugs in the BIOS or drivers may result in these routines
+  /// returning different values as the thread moves from one processor to another.
+  /// So, it's best to keep the thread on a single processor.
+  /// See the following for details:
+  ///   https://msdn.microsoft.com/en-us/library/windows/desktop/ee417693(v=vs.85).aspx
+  ///   https://stackoverflow.com/questions/44020619/queryperformancecounter-on-multi-core-processor-under-windows-10-behaves-erratic
+  ///   https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247(v=vs.85).aspx (SetThreadAffinityMask function)
+  ///</remarks>
+  ///<returns>Returns the elapsed time in nanoseconds since an arbitrary starting point. Returns 0 on error.</returns>
+  inline uint64_t GetNanosecondsCounterFromPerformanceTimer() {
+    //Get frequency in counts per seconds.
+    static LARGE_INTEGER frequency = { 0 };
+    if (frequency.QuadPart == 0)
+    {
+      if (!QueryPerformanceFrequency(&frequency))
+        return 0;
+    }
+
+    LARGE_INTEGER counter;
+    if (!QueryPerformanceCounter(&counter))
+      return 0;
+
+    uint64_t nanoseconds = (uint64_t) ((NANOSECONDS_PER_SECONDS * counter.QuadPart) / frequency.QuadPart);
+    return nanoseconds;
+  }
+
+  ///<summary>
+  ///Returns the elasped time in nanoseconds since an arbitrary starting point.
+  ///</summary>
+  ///<remarks>
+  ///The function have the following properties:
+  ///  - Have ~1ms accuracy on Windows 7 and before.
+  ///  - Have <1us accuracy on Windows 8 and up.
+  ///  - Uses the multimedia timer. See also InitMillisecondsInterruptTimer().
+  ///</remarks>
+  ///<returns>Returns the elapsed time in nanoseconds since an arbitrary starting point.</returns>
+  inline uint64_t GetNanosecondsCounterFromSystemTime() {
+    FILETIME file_time;
+    if (GetSystemTimePreciseAsFileTime_) {
+      //Windows 8, Windows Server 2012 and later
+      GetSystemTimePreciseAsFileTime_(&file_time); //microseconds accuracy
+    }
+    else {
+      //Windows 2000 and later
+      GetSystemTimeAsFileTime(&file_time); //milliseconds accuracy
+    }
+    uint64_t nanoseconds = ((uint64_t)file_time.dwHighDateTime << 32) | (uint64_t)file_time.dwLowDateTime;
+    nanoseconds *= 100;
+    return nanoseconds;
+  }
+
+  ///<summary>
+  ///Returns the elasped time in nanoseconds since an arbitrary starting point.
+  ///</summary>
+  ///<remarks>
+  ///The function have the following properties:
+  ///  - Have 15ms accuracy by default.
+  ///  - Have  1ms accuracy if after calling InitMillisecondsInterruptTimer().
+  ///  - Uses the multimedia timer.
+  ///</remarks>
+  ///<returns>Returns the elapsed time in seconds since an arbitrary starting point.</returns>
+  inline uint64_t GetNanosecondsCounterFromTimeGetTime() {
+    DWORD ms = timeGetTime();
+    uint64_t ns = (uint64_t)ms*1000*1000;
+    return ns;
+  }
+
+  ///<summary>
+  ///Returns the elasped time in nanoseconds since an arbitrary starting point.
+  ///</summary>
+  ///<remarks>
+  ///The function have the following properties:
+  ///  - Have a fixed ~15.6ms accuracy.
+  ///  - Does not requires the multimedia timer initialization.
+  ///</remarks>
+  ///<returns>Returns the elapsed time in nanoseconds since an arbitrary starting point.</returns>
+  inline uint64_t GetNanosecondsCounterFromGetTickCount()
+  {
+    uint32_t ms = GetTickCount(); //fast constant 15.6ms timer
+    uint64_t ns = (uint64_t)ms*1000*1000;
+    return ns;
+  }
+
+#endif
 
 #ifdef __linux__
   double GetMicrosecondsTimerFromMonotonicTimer() {
@@ -254,6 +354,56 @@ namespace ra { namespace timing {
     return seconds;
   }
   
+  uint64_t GetNanosecondsCounterFromMonotonicTimer() {
+    //Using CLOCK_MONOTONIC_RAW because timer is not adjusted by adjtime/NTP.
+    //We won't risk having a frequency adjustement while the process is running.
+    //See the following for details:
+    //  https://stackoverflow.com/questions/25583498/clock-monotonic-vs-clock-monotonic-raw-truncated-values
+    //  https://stackoverflow.com/questions/14270300/what-is-the-difference-between-clock-monotonic-clock-monotonic-raw
+    //  https://stackoverflow.com/questions/31073923/clockid-t-clock-gettime-first-argument-portability
+    struct timespec now;
+    clockid_t clock_id = 0;
+
+    //use the best clock available on the system.
+    if (clock_gettime(CLOCK_MONOTONIC_RAW, &now) == 0) { clock_id = CLOCK_MONOTONIC_RAW; }
+    else if (clock_gettime(CLOCK_MONOTONIC, &now) == 0) { clock_id = CLOCK_MONOTONIC; }
+    else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
+    else {
+      //all calls to clock_gettime() have failed.
+      //fallback to gettimeofday()
+      struct timeval tm;
+      gettimeofday(&tm, NULL);
+      uint64_t nanoseconds = ((uint64_t)tm.tv_sec)*NANOSECONDS_PER_SECONDS + ((uint64_t)tm.tv_usec)*1000;
+      return nanoseconds;
+    }
+
+    //clock_gettime() is successful
+    uint64_t nanoseconds = ((uint64_t)now.tv_sec)*NANOSECONDS_PER_SECONDS + (uint64_t)now.tv_nsec;
+    return nanoseconds;
+  }
+  
+  uint64_t GetNanosecondsCounterFromMonotonicCoarse() {
+    struct timespec now;
+    clockid_t clock_id = 0;
+
+    //use a coarse clock available on the system.
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &now) == 0) { clock_id = CLOCK_MONOTONIC_COARSE; }
+    else if (clock_gettime(CLOCK_REALTIME_COARSE, &now) == 0) { clock_id = CLOCK_REALTIME_COARSE; }
+    else if (clock_gettime(CLOCK_REALTIME, &now) == 0) { clock_id = CLOCK_REALTIME; }
+    else {
+      //all calls to clock_gettime() have failed.
+      //fallback to gettimeofday()
+      struct timeval tm;
+      gettimeofday(&tm, NULL);
+      uint64_t nanoseconds = ((uint64_t)tm.tv_sec)*NANOSECONDS_PER_SECONDS + ((uint64_t)tm.tv_usec)*1000;
+      return nanoseconds;
+    }
+
+    //clock_gettime() is successful
+    uint64_t nanoseconds = ((uint64_t)now.tv_sec)*NANOSECONDS_PER_SECONDS + (uint64_t)now.tv_nsec;
+    return nanoseconds;
+  }
+
 #endif
 
 
@@ -333,6 +483,60 @@ namespace ra { namespace timing {
     double seconds = elapsed_milli / 1000.0; // milliseconds to seconds
     return seconds;
   }
+
+  uint64_t GetNanosecondsCounterFromCalendarClock() {
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    struct timespec ts;
+    
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+    
+    uint64_t nanoseconds = ((uint64_t)ts.tv_sec)*NANOSECONDS_PER_SECONDS + (uint64_t)ts.tv_nsec;
+    return nanoseconds;
+  }
+  
+  uint64_t GetNanosecondsCounterFromSystemClock() {
+    //https://stackoverflow.com/questions/5167269/clock-gettime-alternative-in-mac-os-x
+    //https://developer.apple.com/documentation/kernel/1462446-mach_absolute_time
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    struct timespec ts;
+    
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+    
+    uint64_t nanoseconds = ((uint64_t)ts.tv_sec)*NANOSECONDS_PER_SECONDS + (uint64_t)ts.tv_nsec;
+    return nanoseconds;
+  }
+
+  uint64_t GetNanosecondsCounterFromMachAbsTime() {
+    //https://stackoverflow.com/questions/41509505/clock-gettime-on-macos
+    //https://developer.apple.com/library/archive/qa/qa1398/_index.html
+    //https://stackoverflow.com/questions/25027215/queryperformancecounter-but-on-osx
+
+    mach_timebase_info_data_t tbi;
+    mach_timebase_info(&tbi);
+
+    // Get absolute time in unknow units of time
+    uint64_t base_time = mach_absolute_time();
+
+    // Convert to nanoseconds
+    uint64_t nanoseconds = (base_time * (uint64_t)tbi.numer) / (uint64_t)tbi.denom;
+    return nanoseconds;
+  }
   
 #endif
 
@@ -349,7 +553,7 @@ namespace ra { namespace timing {
     //accuracy and works on single and multiple core processors without having
     //to lock the thread on the same core.
     if (GetSystemTimePreciseAsFileTime_) {
-      double seconds = GetSystemTimeTimerWin32();
+      double seconds = GetSecondsFromSystemTime();
       return seconds;
     }
 
@@ -357,7 +561,7 @@ namespace ra { namespace timing {
     //if the current thread jumps to another core, the calclated elapsed time
     //will be incorrect or can even be backward. The code which is calculating the
     //performance/elapsed time should lock the thread to a single core.
-    return GetPerformanceTimerWin32();
+    return GetSecondsFromPerformanceTimer();
 
 #elif defined(__linux__)
     double seconds = GetMicrosecondsTimerFromMonotonicTimer();
@@ -373,7 +577,7 @@ namespace ra { namespace timing {
   double GetMillisecondsTimer() {
 #ifdef WIN32
     InitMillisecondsInterruptTimer();
-    return GetMillisecondsTimerWin32();
+    return GetSecondsFromTimeGetTime();
 #elif defined(__linux__)
     double seconds = GetMicrosecondsTimerFromMonotonicCoarse();
     return seconds;
@@ -385,6 +589,79 @@ namespace ra { namespace timing {
 #endif
   }
 
+  ///<summary>
+  ///Returns the elasped time in milliseconds since an arbitrary starting point.
+  ///</summary>
+  uint64_t GetMillisecondsCounterU64() {
+#ifdef WIN32
+    //There are 4 timer apis on Win32:
+    // - GetNanosecondsCounterFromGetTickCount()      which has 15.6ms accuracy.
+    // - GetNanosecondsCounterFromTimeGetTime()       which has 15.6ms accuracy by default. Can get as low as 1ms accuracy if after calling InitMillisecondsInterruptTimer().
+    // - GetNanosecondsCounterFromSystemTime()        which has ~1ms accuracy on Windows 7 (and before), <1us accuracy on Windows 8 and up.
+    // - GetNanosecondsCounterFromPerformanceTimer()  which has <1us accuracy, affected by multicore processors. Must always be called from the same thread.
+    //
+    //GetNanosecondsCounterFromSystemTime() has worst case milliseconds resolution on Windows 7.
+    //From Windows 8 and up, its has <1ms resolution.
+    uint64_t ns = GetNanosecondsCounterFromSystemTime();
+    uint64_t ms = ns/1000000;
+    return ms;
+#elif defined(__linux__)
+    uint64_t ns = GetNanosecondsCounterFromMonotonicCoarse();
+    uint64_t ms = ns/1000000;
+    return ms;
+#elif defined(__APPLE__)
+    uint64_t ns = GetNanosecondsCounterFromMachAbsTime();
+    uint64_t ms = ns/1000000;
+    return ms;
+#else
+    return -1.0;
+#endif
+  }
+
+  ///<summary>
+  ///Returns the elasped time in milliseconds since an arbitrary starting point.
+  ///Note: the implementation is falling back on nanoseconds accuracy for best results.
+  ///</summary>
+  uint64_t GetMicrosecondsCounterU64() {
+    uint64_t ns = GetNanosecondsCounterU64();
+    uint64_t us = ns/1000;
+    return us;
+  }
+
+  uint64_t GetNanosecondsTimerU64() {
+#ifdef WIN32
+    //There are 4 timer apis on Win32:
+    // - GetNanosecondsCounterFromGetTickCount()      which has 15.6ms accuracy.
+    // - GetNanosecondsCounterFromTimeGetTime()       which has 15.6ms accuracy by default. Can get as low as 1ms accuracy if after calling InitMillisecondsInterruptTimer().
+    // - GetNanosecondsCounterFromSystemTime()        which has ~1ms accuracy on Windows 7 (and before), <1us accuracy on Windows 8 and up.
+    // - GetNanosecondsCounterFromPerformanceTimer()  which has <1us accuracy, affected by multicore processors. Must always be called from the same thread.
+    //
+    //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
+    //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
+    //accuracy and works on single and multiple core processors without having
+    //to lock the thread on the same core.
+    if (GetSystemTimePreciseAsFileTime_) {
+      uint64_t nanoseconds = GetNanosecondsCounterFromSystemTime();
+      return nanoseconds;
+    }
+
+    //Fallback to using QueryPerformanceCounter() but the user must be aware that
+    //if the current thread jumps to another core, the calclated elapsed time
+    //will be incorrect or can even be backward. The code which is calculating the
+    //performance/elapsed time should lock the thread to a single core.
+    uint64_t nanoseconds = GetNanosecondsCounterFromPerformanceTimer();
+    return nanoseconds;
+
+#elif defined(__linux__)
+    uint64_t ns = GetNanosecondsCounterFromMonotonicTimer();
+    return ns;
+#elif defined(__APPLE__)
+    uint64_t ns = GetNanosecondsCounterFromMachAbsTime();
+    return ns;
+#else
+    return 0;
+#endif
+  }
 
   DateTime ToDateTime(const std::tm & time_info) {
     DateTime dt;
