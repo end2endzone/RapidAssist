@@ -614,7 +614,7 @@ namespace ra { namespace timing {
     uint64_t ms = ns/1000000;
     return ms;
 #else
-    return -1.0;
+    return 0;
 #endif
   }
 
@@ -628,7 +628,7 @@ namespace ra { namespace timing {
     return us;
   }
 
-  uint64_t GetNanosecondsTimerU64() {
+  uint64_t GetNanosecondsCounterU64() {
 #ifdef WIN32
     //There are 4 timer apis on Win32:
     // - GetNanosecondsCounterFromGetTickCount()      which has 15.6ms accuracy.
