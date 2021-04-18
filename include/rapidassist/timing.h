@@ -113,6 +113,36 @@ namespace ra { namespace timing {
   /// <returns>Returns the elapsed time in seconds since an arbitrary starting point with milliseconds resolution. Returns -1.0 on error.</returns>
   double GetMillisecondsTimer();
 
+  /// <summary>
+  /// Returns the elapsed time in milliseconds since an arbitrary starting point.
+  /// </summary>
+  /// <remarks>
+  /// The function should be used to calculate the elapsed time between two events.
+  /// It should not be used for getting the current calendar time.
+  /// </remarks>
+  /// <returns>Returns the elapsed time in milliseconds since an arbitrary starting point with up to milliseconds resolution. Returns 0 on error.</returns>
+  uint64_t GetMillisecondsCounterU64();
+
+  /// <summary>
+  /// Returns the elapsed time in microseconds since an arbitrary starting point.
+  /// </summary>
+  /// <remarks>
+  /// The function should be used to calculate the elapsed time between two events.
+  /// It should not be used for getting the current calendar time.
+  /// </remarks>
+  /// <returns>Returns the elapsed time in microseconds since an arbitrary starting point with up to microseconds resolution. Returns 0 on error.</returns>
+  uint64_t GetMicrosecondsCounterU64();
+
+  /// <summary>
+  /// Returns the elapsed time in nanoseconds since an arbitrary starting point.
+  /// </summary>
+  /// <remarks>
+  /// The function should be used to calculate the elapsed time between two events.
+  /// It should not be used for getting the current calendar time.
+  /// </remarks>
+  /// <returns>Returns the elapsed time in nanoseconds since an arbitrary starting point with up to nanoseconds resolution. Returns 0 on error.</returns>
+  uint64_t GetNanosecondsCounterU64();
+
 } //namespace timing
 } //namespace ra
 
