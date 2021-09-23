@@ -104,8 +104,8 @@ namespace ra { namespace filesystem {
 
     const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
-    struct _stat sb;
-    if (_wstat(pathW.c_str(), &sb) == 0) {
+    struct _stat64 sb;
+    if (_wstat64(pathW.c_str(), &sb) == 0) {
       if ((sb.st_mode & S_IFREG) == S_IFREG)
         return true;
     }
@@ -118,8 +118,8 @@ namespace ra { namespace filesystem {
 
     const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
-    struct _stat sb;
-    if (_wstat(pathW.c_str(), &sb) == 0) {
+    struct _stat64 sb;
+    if (_wstat64(pathW.c_str(), &sb) == 0) {
       if ((sb.st_mode & S_IREAD) == S_IREAD)
         return true;
     }
@@ -132,8 +132,8 @@ namespace ra { namespace filesystem {
 
     const std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
-    struct _stat sb;
-    if (_wstat(pathW.c_str(), &sb) == 0) {
+    struct _stat64 sb;
+    if (_wstat64(pathW.c_str(), &sb) == 0) {
       if ((sb.st_mode & S_IWRITE) == S_IWRITE)
         return true;
     }
@@ -287,14 +287,15 @@ namespace ra { namespace filesystem {
       return false;
 
 #ifdef _WIN32
+    //Note: This was true before fixing #71.
     //Note that the current windows implementation of DirectoryExists() uses the _stat() API and the implementation has issues with junctions and symbolink link.
     //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
 #endif
 
     std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
 
-    struct stat sb;
-    if (_wstat(pathW.c_str(), &sb) == 0) {
+    struct stat64 sb;
+    if (_wstat64(pathW.c_str(), &sb) == 0) {
       if ((sb.st_mode & S_IFDIR) == S_IFDIR)
         return true;
     }
@@ -427,10 +428,10 @@ namespace ra { namespace filesystem {
   }
 
   uint64_t GetFileModifiedDateUtf8(const std::string & path) {
-    struct stat result;
+    struct stat64 result;
     uint64_t mod_time = 0;
     std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
-    if (_wstat(pathW.c_str(), &result) == 0) {
+    if (_wstat64(pathW.c_str(), &result) == 0) {
       mod_time = result.st_mtime;
     }
     return mod_time;
@@ -493,8 +494,8 @@ namespace ra { namespace filesystem {
       return false;
 
     //allocate a buffer which can hold the data of the peek size
-    uint32_t file_size = ra::filesystem::GetFileSizeUtf8(path.c_str());
-    uint32_t max_read_size = (file_size < (uint32_t)size ? file_size : (uint32_t)size);
+    uint64_t file_size = ra::filesystem::GetFileSize64Utf8(path.c_str());
+    uint64_t max_read_size = (file_size < (uint64_t)size ? file_size : (uint64_t)size);
 
     //validates empty files 
     if (max_read_size == 0)

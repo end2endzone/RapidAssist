@@ -44,6 +44,87 @@ namespace ra { namespace filesystem { namespace test
   void TestFilesystemUtf8::TearDown() {
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testFileExistsUtf8) {
+    //test NULL
+    {
+      bool exists = filesystem::FileExistsUtf8(NULL);
+      ASSERT_FALSE(exists);
+    }
+
+    //test not found
+    {
+      bool exists = filesystem::FileExistsUtf8("foo.bar.notfound.bang");
+      ASSERT_FALSE(exists);
+    }
+
+    //test found
+    {
+      //create dummy file
+      std::string filename = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.txt";;
+      ASSERT_TRUE(ra::testing::CreateFileUtf8(filename.c_str()));
+
+      bool exists = filesystem::FileExistsUtf8(filename.c_str());
+      ASSERT_TRUE(exists);
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testFileExistsLargeFileUtf8) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".psi_\xCE\xA8_psi.tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFileUtf8(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test if file exists
+      ASSERT_TRUE(filesystem::FileExistsUtf8(filename.c_str())) << "File not found: " << filename;
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, testWriteFileUtf8) {
     std::string filename = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.txt";
 
@@ -192,6 +273,64 @@ namespace ra { namespace filesystem { namespace test
 
     //cleanup
     ra::filesystem::DeleteFileUtf8(filename.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testHasFileReadWriteAccessLargeFileUtf8) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".psi_\xCE\xA8_psi.tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFileUtf8(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test read and write access
+      bool have_read = ra::filesystem::HasFileReadAccessUtf8(filename.c_str());
+      ASSERT_TRUE(have_read);
+
+      bool have_write = ra::filesystem::HasFileWriteAccessUtf8(filename.c_str());
+      ASSERT_TRUE(have_write);
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, testHasDirectoryReadAccessUtf8) {
@@ -437,6 +576,61 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testGetFileModifiedDateLargeFileUtf8) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".psi_\xCE\xA8_psi.tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFileUtf8(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test file modified date
+      uint64_t time = filesystem::GetFileModifiedDateUtf8(filename);
+      ASSERT_NE(0, time);
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, DISABLED_testGetCurrentDirectoryUtf8) {
     std::string log_filename = ra::testing::GetTestQualifiedName() + ".log";
 
@@ -610,6 +804,135 @@ namespace ra { namespace filesystem { namespace test
     //assert that first and last progress was received
     ASSERT_TRUE(functor.hasProgressBegin());
     ASSERT_TRUE(functor.hasProgressEnd());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testPeekFileUtf8) {
+    const std::string newline = ra::environment::GetLineSeparator();
+
+    //building word list
+    static const std::string sentence = "The quick brown fox jumps over the lazy dog.";
+
+    //create a test file
+    const std::string file_path = ra::testing::GetTestQualifiedName() + ".txt";
+
+    //create a huge file
+    std::string buffer;
+    buffer.reserve(500 * (sentence.size() + 10)); //help speed the test a bit
+    for (size_t i = 0; i < 500; i++) {
+      buffer += sentence;
+      buffer += "\n";
+      buffer += ra::strings::ToString(i);
+      buffer += "\n";
+    }
+    bool write_ok = ra::filesystem::WriteFileUtf8(file_path, buffer);
+    ASSERT_TRUE(write_ok);
+    buffer.clear();
+
+    //try different peek size for testing
+    {
+      static const size_t peek_sizes[] = {
+        1234,
+        50,
+        1,
+        0,
+      };
+      const size_t num_peek_sizes = sizeof(peek_sizes) / sizeof(peek_sizes[0]);
+
+      for (size_t i = 0; i < num_peek_sizes; i++) {
+        const size_t peek_size = peek_sizes[i];
+        std::string buffer;
+        bool peek_ok = ra::filesystem::PeekFileUtf8(file_path, peek_size, buffer);
+        ASSERT_TRUE(peek_ok) << "Failed peeking " << peek_size << " bytes into file '" << file_path << "'.";
+        ASSERT_EQ(peek_size, buffer.size());
+      }
+    }
+
+    //peek into the file
+    {
+      const size_t peek_size = 155;
+      bool peek_ok = ra::filesystem::PeekFileUtf8(file_path, peek_size, buffer);
+      ASSERT_TRUE(peek_ok);
+      ASSERT_EQ(peek_size, buffer.size());
+
+      //assert the expected content
+      static const std::string expected = "The quick brown fox jumps over the lazy dog.\n0\nThe quick brown fox jumps over the lazy dog.\n1\nThe quick brown fox jumps over the lazy dog.\n2\nThe quick brow";
+      ASSERT_EQ(peek_size, expected.size());
+      ASSERT_EQ(expected.size(), buffer.size());
+      ASSERT_EQ(expected, buffer);
+    }
+
+    //peek bigger than the file's size
+    {
+      const uint32_t file_size = (size_t)ra::filesystem::GetFileSizeUtf8(file_path.c_str());
+      const uint32_t peek_size = file_size + 10000;
+      bool peek_ok = ra::filesystem::PeekFileUtf8(file_path, peek_size, buffer);
+      ASSERT_TRUE(peek_ok);
+      ASSERT_EQ(file_size, buffer.size());
+    }
+
+    //cleanup
+    ra::filesystem::DeleteFileUtf8(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testPeekFileLargeFileUtf8) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".psi_\xCE\xA8_psi.tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFileUtf8(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparseUtf8(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //peek into the file
+      {
+        std::string buffer;
+
+        const size_t peek_size = 1024;
+        bool peek_ok = ra::filesystem::PeekFileUtf8(filename, peek_size, buffer);
+        ASSERT_TRUE(peek_ok);
+        ASSERT_EQ(peek_size, buffer.size());
+      }
+
+      //cleanup
+      ra::filesystem::DeleteFileUtf8(filename.c_str());
+    }
   }
   //--------------------------------------------------------------------------------------------------
 } //namespace test

@@ -383,6 +383,60 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testFileExistsLargeFile) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test if file exists
+      ASSERT_TRUE(filesystem::FileExists(filename.c_str())) << "File not found: " << filename;
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFindFiles) {
     //test NULL
     {
@@ -1212,6 +1266,61 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testGetFileModifiedDateLargeFile) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test file modified date
+      uint64_t time = filesystem::GetFileModifiedDate(filename);
+      ASSERT_NE(0, time);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testHasFileReadAccess) {
     //test NULL
     {
@@ -1236,6 +1345,7 @@ namespace ra { namespace filesystem { namespace test
 #ifdef _WIN32
       //not supported. Cannot find a file that exists but cannot be read.
       //Note, the file 'C:\pagefile.sys' can be found using FindFirstFile() but not with _stat() which I don't understand.
+      //Note, based on #71, this problem is certainly because the file 'C:\pagefile.sys' was >= 4GB.
       return;
 #elif defined(__linux__)
       const char * path = "/proc/sysrq-trigger"; //permission denied file
@@ -1245,6 +1355,61 @@ namespace ra { namespace filesystem { namespace test
 #elif defined(__APPLE__)
       // Not able to find a file without read access on macos.
 #endif
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasFileReadAccessLargeFile) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test for read access
+      bool has_read = filesystem::HasFileReadAccess(filename.c_str());
+      ASSERT_TRUE(has_read);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1284,6 +1449,61 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_TRUE(filesystem::FileExists(path.c_str())) << "File '" << path << "' not found. Unable to call HasFileWriteAccess().";
       bool has_write = filesystem::HasFileWriteAccess(path.c_str());
       ASSERT_FALSE(has_write);
+    }
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testHasFileWriteAccessLargeFile) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //test for write access
+      bool has_write = filesystem::HasFileWriteAccess(filename.c_str());
+      ASSERT_TRUE(has_write);
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
     }
   }
   //--------------------------------------------------------------------------------------------------
@@ -1994,6 +2214,67 @@ namespace ra { namespace filesystem { namespace test
 
     //cleanup
     ra::filesystem::DeleteFile(file_path.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testPeekFileLargeFile) {
+    //test with large files
+    static const uint64_t ONE_GB = 1073741824;
+    static const uint64_t values[] = {
+      1084,
+      (uint64_t)(ONE_GB*1.10),
+      (uint64_t)(ONE_GB*2.17),
+      (uint64_t)(ONE_GB*3.23),
+      (uint64_t)(ONE_GB*4.25),
+    };
+    static const size_t num_values = sizeof(values)/sizeof(values[0]);
+
+    for(size_t i=0; i<num_values; i++)
+    {
+      const uint64_t & expected_size = values[i];
+
+      std::string user_size = ra::filesystem::GetUserFriendlySize(expected_size);
+
+      const std::string SPACE = std::string(" ");
+      const std::string EMPTY;
+      std::string filename = ra::testing::GetTestQualifiedName() + "." + user_size + ".tmp";
+      ra::strings::Replace(filename, SPACE, EMPTY);
+      printf("Creating sparse file of size %s...\n", user_size.c_str());
+
+      //setup cleanup in case of failures
+      struct FileCleanupCallback {
+        FileCleanupCallback(const char * filename) : mFilename(filename) {}
+        ~FileCleanupCallback() {
+          ra::filesystem::DeleteFile(mFilename);
+        }
+      private:
+        const char * mFilename;
+      } _FileCleanupCallbackInstance(filename.c_str());
+
+      bool created = ra::testing::CreateFileSparse(filename.c_str(), expected_size);
+#if defined(__linux__) || defined(__APPLE__)
+      if (!created)
+      {
+        printf("Sparse file creation failed. Trying again with the 'truncate' command.\n");
+        created = Truncate(filename.c_str(), expected_size);
+        if (created)
+          printf("Truncate command success. Resuming test execution.\n");
+      }
+#endif      
+      ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
+
+      //peek into the file
+      {
+        std::string buffer;
+
+        const size_t peek_size = 1024;
+        bool peek_ok = ra::filesystem::PeekFile(filename, peek_size, buffer);
+        ASSERT_TRUE(peek_ok);
+        ASSERT_EQ(peek_size, buffer.size());
+      }
+
+      //cleanup
+      ra::filesystem::DeleteFile(filename.c_str());
+    }
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testFileReplace) {

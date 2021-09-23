@@ -150,8 +150,8 @@ namespace ra { namespace filesystem {
     if (path == NULL || path[0] == '\0')
       return false;
 
-    struct stat sb;
-    if (stat(path, &sb) == 0) {
+    struct stat64 sb;
+    if (stat64(path, &sb) == 0) {
       if ((sb.st_mode & S_IFREG) == S_IFREG)
         return true;
     }
@@ -162,8 +162,8 @@ namespace ra { namespace filesystem {
     if (path == NULL || path[0] == '\0')
       return false;
 
-    struct stat sb;
-    if (stat(path, &sb) == 0) {
+    struct stat64 sb;
+    if (stat64(path, &sb) == 0) {
       if ((sb.st_mode & S_IREAD) == S_IREAD)
         return true;
     }
@@ -174,8 +174,8 @@ namespace ra { namespace filesystem {
     if (path == NULL || path[0] == '\0')
       return false;
 
-    struct stat sb;
-    if (stat(path, &sb) == 0) {
+    struct stat64 sb;
+    if (stat64(path, &sb) == 0) {
       if ((sb.st_mode & S_IWRITE) == S_IWRITE)
         return true;
     }
@@ -387,8 +387,8 @@ namespace ra { namespace filesystem {
     //For instance, 'C:\Users\All Users\Favorites' exists but 'C:\Users\All Users' don't.
 #endif
 
-    struct stat sb;
-    if (stat(path, &sb) == 0) {
+    struct stat64 sb;
+    if (stat64(path, &sb) == 0) {
       if ((sb.st_mode & S_IFDIR) == S_IFDIR)
         return true;
     }
@@ -897,9 +897,9 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
   }
 
   uint64_t GetFileModifiedDate(const std::string & path) {
-    struct stat result;
+    struct stat64 result;
     uint64_t mod_time = 0;
-    if (stat(path.c_str(), &result) == 0) {
+    if (stat64(path.c_str(), &result) == 0) {
       mod_time = result.st_mtime;
     }
     return mod_time;
@@ -1067,10 +1067,10 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
   }
 
   bool CopyFileInternal(const std::string & source_path, const std::string & destination_path, IProgressReport * progress_functor, ProgressReportCallback progress_function, bool force_win32_utf8) {
-    uint32_t file_size = ra::filesystem::GetFileSize(source_path.c_str());
+    uint64_t file_size = ra::filesystem::GetFileSize64(source_path.c_str());
     if (force_win32_utf8)
     {
-      file_size = ra::filesystem::GetFileSizeUtf8(source_path.c_str());
+      file_size = ra::filesystem::GetFileSize64Utf8(source_path.c_str());
     }
 
     FILE* fin = NULL;
@@ -1169,8 +1169,8 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
       return false;
 
     //allocate a buffer which can hold the data of the peek size
-    uint32_t file_size = ra::filesystem::GetFileSize(path.c_str());
-    uint32_t max_read_size = (file_size < (uint32_t)size ? file_size : (uint32_t)size);
+    uint64_t file_size = ra::filesystem::GetFileSize64(path.c_str());
+    uint64_t max_read_size = (file_size < (uint64_t)size ? file_size : (uint64_t)size);
 
     //validates empty files 
     if (max_read_size == 0)

@@ -1,6 +1,6 @@
 Changes for 0.10.1:
 
-* N/A
+* Fixed issue #71: ra::filesystem::FileExists() fails when file size > 4GB
 
 
 Changes for 0.10.0:
