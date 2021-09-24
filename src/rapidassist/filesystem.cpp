@@ -43,6 +43,8 @@
 #define __chdir _chdir
 #define __rmdir _rmdir
 #include <direct.h> //for _chdir(), _getcwd()
+#include <shlwapi.h> // for PathIsDirectoryEmptyA()
+#pragma comment(lib, "Shlwapi.lib") //for PathIsDirectoryEmptyA()
 #include <Windows.h> //for GetShortPathName()
 #include "rapidassist/undef_windows_macros.h"
 #elif defined(__linux__) || defined(__APPLE__)
@@ -903,6 +905,39 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
       mod_time = result.st_mtime;
     }
     return mod_time;
+  }
+
+  bool IsDirectoryEmpty(const std::string & path) {
+#ifdef _WIN32
+    if (PathIsDirectoryEmptyA(path.c_str()) == TRUE)
+      return true;
+    return false;
+#elif defined(__linux__) || defined(__APPLE__)
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(path.c_str())) == NULL) {
+      return false;
+    }
+
+    bool is_empty = true;
+
+    while ((dirp = readdir(dp)) != NULL) {
+      // Skip directories '.' and '..'
+      if (dirp->d_name) {
+        if (dirp->d_name[0] == '.') {
+          if (dirp->d_name[1] == '\0')
+            continue; // this is '.'
+          else if (dirp->d_name[1] == '.' && dirp->d_name[2] == '\0')
+            continue; // this is '..'
+        }
+      }
+      // Whatever this is, the directory is not empty
+      is_empty = false;
+      break;
+    }
+    closedir(dp);
+    return is_empty;
+#endif
   }
 
 #ifdef _WIN32

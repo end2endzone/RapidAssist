@@ -1,6 +1,7 @@
 Changes for 0.10.1:
 
 * Fixed issue #71: ra::filesystem::FileExists() fails when file size > 4GB
+* Fixed issue #72: ra::filesystem::IsDirectoryEmpty()
 
 
 Changes for 0.10.0:

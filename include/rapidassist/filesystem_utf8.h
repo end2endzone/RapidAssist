@@ -191,6 +191,15 @@ namespace ra { namespace filesystem {
   uint64_t GetFileModifiedDateUtf8(const std::string & path);
 
   /// <summary>
+  /// Determine if the given directory is empty.
+  /// If the given directory contains a least one directory or a file, this function will return false.
+  /// The directory entries `.` and `..` are ignored.
+  /// </summary>
+  /// <param name="path">An valid directory path.</param>
+  /// <returns>Returns true if the given directory path is empty. Returns false otherwise.</returns>
+  bool IsDirectoryEmptyUtf8(const std::string & path);
+
+  /// <summary>
   /// Build an absolute path from the given relative path based on the directory of the current executable.
   /// </summary>
   /// <param name="path">An valid relative file or directory path.</param>
@@ -529,6 +538,15 @@ namespace ra { namespace filesystem {
   /// It provides cross-platform compatibility for Windows users.
   /// </remarks>
   inline uint64_t GetFileModifiedDateUtf8(const std::string & path) { return GetFileModifiedDate(path); }
+
+  /// <summary>
+  /// Determine if the given directory is empty.
+  /// If the given directory contains a least one directory or a file, this function will return false.
+  /// The directory entries `.` and `..` are ignored.
+  /// </summary>
+  /// <param name="path">An valid directory path.</param>
+  /// <returns>Returns true if the given directory path is empty. Returns false otherwise.</returns>
+  inline bool IsDirectoryEmptyUtf8(const std::string & path) { return IsDirectoryEmpty(path); }
 
   /// <summary>
   /// Build an absolute path from the given relative path based on the directory of the current executable.

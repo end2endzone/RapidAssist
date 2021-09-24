@@ -45,6 +45,8 @@
 #define __chdir _chdir
 #define __rmdir _rmdir
 #include <direct.h> //for _chdir(), _getcwd()
+#include <shlwapi.h> // for PathIsDirectoryEmptyA()
+#pragma comment(lib, "Shlwapi.lib") //for PathIsDirectoryEmptyA()
 #include <Windows.h> //for GetShortPathName()
 #include "rapidassist/undef_windows_macros.h"
 #elif defined(__linux__) || defined(__APPLE__)
@@ -436,6 +438,16 @@ namespace ra { namespace filesystem {
     }
     return mod_time;
   }
+
+  bool IsDirectoryEmptyUtf8(const std::string & path) {
+#ifdef _WIN32
+    std::wstring pathW = ra::unicode::Utf8ToUnicode(path);
+    if (PathIsDirectoryEmptyW(pathW.c_str()) == TRUE)
+      return true;
+    return false;
+#else
+    return false;
+#endif
 
   std::string GetPathBasedOnCurrentProcessUtf8(const std::string & path) {
     if (IsAbsolutePath(path))

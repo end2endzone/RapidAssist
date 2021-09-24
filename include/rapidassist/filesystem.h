@@ -293,6 +293,15 @@ namespace ra { namespace filesystem {
   uint64_t GetFileModifiedDate(const std::string & path);
 
   /// <summary>
+  /// Determine if the given directory is empty.
+  /// If the given directory contains a least one directory or a file, this function will return false.
+  /// The directory entries `.` and `..` are ignored.
+  /// </summary>
+  /// <param name="path">An valid directory path.</param>
+  /// <returns>Returns true if the given directory path is empty. Returns false otherwise.</returns>
+  bool IsDirectoryEmpty(const std::string & path);
+
+  /// <summary>
   /// Determine if the given path is an absolute path or not.
   /// </summary>
   /// <param name="path">An valid file or directory path.</param>
@@ -306,10 +315,10 @@ namespace ra { namespace filesystem {
   /// <remarks>
   /// On Linux,   the root directory is "/".
   /// On Windows, there is one root directory per drive identified by a drive letter followed by ":\". For instance "C:\".
+  /// This function is compatible with UTF-8 encoded strings.
   /// </remarks>
   /// <param name="path">An valid file or directory path.</param>
   /// <returns>Returns true if the given path is a root directory. Returns false otherwise.</returns>
-  /// <remarks>This function is compatible with UTF-8 encoded strings.</remarks>
   bool IsRootDirectory(const std::string & path);
 
   /// <summary>

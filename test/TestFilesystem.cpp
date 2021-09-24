@@ -1321,6 +1321,36 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystem, testIsDirectoryEmpty) {
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmpty(""));
+
+    //test with an empty directory
+    const std::string test_dir_name = ra::testing::GetTestQualifiedName();
+    ASSERT_TRUE(ra::filesystem::CreateDirectory(test_dir_name.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmpty(test_dir_name));
+    
+    //test with a sub directory
+    const std::string sub_dir_path = test_dir_name + ra::filesystem::GetPathSeparatorStr() + "subdir";
+    ASSERT_TRUE(ra::filesystem::CreateDirectory(sub_dir_path.c_str()));
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmpty(test_dir_name));
+    
+    //cleanup (sub directory)
+    ASSERT_TRUE(ra::filesystem::DeleteDirectory(sub_dir_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmpty(test_dir_name));
+
+    //test with a file in directory
+    const std::string file_path = test_dir_name + ra::filesystem::GetPathSeparatorStr() + "file.tmp";
+    ASSERT_TRUE(ra::filesystem::WriteTextFile(file_path, "content of the file"));
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmpty(test_dir_name));
+    
+    //cleanup (file)
+    ASSERT_TRUE(ra::filesystem::DeleteFile(file_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmpty(test_dir_name));
+
+    //cleanup (test directory)
+    ra::filesystem::DeleteDirectory(test_dir_name.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testHasFileReadAccess) {
     //test NULL
     {

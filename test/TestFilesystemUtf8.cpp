@@ -631,6 +631,36 @@ namespace ra { namespace filesystem { namespace test
     }
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestFilesystemUtf8, testIsDirectoryEmptyUtf8) {
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmptyUtf8(""));
+
+    //test with an empty directory
+    const std::string test_dir_name = ra::testing::GetTestQualifiedName() + ".psi_\xCE\xA8_psi.tmp";;
+    ASSERT_TRUE(ra::filesystem::CreateDirectoryUtf8(test_dir_name.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmptyUtf8(test_dir_name));
+    
+    //test with a sub directory
+    const std::string sub_dir_path = test_dir_name + ra::filesystem::GetPathSeparatorStr() + "subdir.psi_\xCE\xA8_psi";
+    ASSERT_TRUE(ra::filesystem::CreateDirectoryUtf8(sub_dir_path.c_str()));
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmptyUtf8(test_dir_name));
+    
+    //cleanup (sub directory)
+    ASSERT_TRUE(ra::filesystem::DeleteDirectoryUtf8(sub_dir_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmptyUtf8(test_dir_name));
+
+    //test with a file in directory
+    const std::string file_path = test_dir_name + ra::filesystem::GetPathSeparatorStr() + "file.psi_\xCE\xA8_psi.tmp";
+    ASSERT_TRUE(ra::filesystem::WriteTextFileUtf8(file_path, "content of the file"));
+    ASSERT_FALSE(ra::filesystem::IsDirectoryEmptyUtf8(test_dir_name));
+    
+    //cleanup (file)
+    ASSERT_TRUE(ra::filesystem::DeleteFileUtf8(file_path.c_str()));
+    ASSERT_TRUE(ra::filesystem::IsDirectoryEmptyUtf8(test_dir_name));
+
+    //cleanup (test directory)
+    ra::filesystem::DeleteDirectoryUtf8(test_dir_name.c_str());
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystemUtf8, DISABLED_testGetCurrentDirectoryUtf8) {
     std::string log_filename = ra::testing::GetTestQualifiedName() + ".log";
 
