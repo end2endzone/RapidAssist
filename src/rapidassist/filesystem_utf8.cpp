@@ -448,6 +448,7 @@ namespace ra { namespace filesystem {
 #else
     return false;
 #endif
+  }
 
   std::string GetPathBasedOnCurrentProcessUtf8(const std::string & path) {
     if (IsAbsolutePath(path))
