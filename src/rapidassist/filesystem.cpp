@@ -672,7 +672,7 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
   }
 
   std::string GetShortPathForm(const std::string & path) {
-#ifdef WIN32
+#ifdef _WIN32
     if (FileExists(path.c_str()) || DirectoryExists(path.c_str())) {
       //file must exist to use WIN32 api
       return GetShortPathFormWin32(path);

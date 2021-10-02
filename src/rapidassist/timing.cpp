@@ -39,7 +39,7 @@
 #include <mach/clock.h>     /* clock_get_time */
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
@@ -51,7 +51,7 @@
 #include <unistd.h> // for usleep()
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <Mmsystem.h> //for timeGetTime(), timeBeginPeriod()
 #pragma comment(lib, "winmm.lib") //for timeGetTime(), timeBeginPeriod()
 #else
@@ -547,7 +547,7 @@ namespace ra { namespace timing {
 
 
   double GetMicrosecondsTimer() {
-#ifdef WIN32
+#ifdef _WIN32
     //For Windows 8 and up, the function GetSystemTimePreciseAsFileTime() 
     //should be used instead of QueryPerformanceCounter() as it have ~1.9 microseconds
     //accuracy and works on single and multiple core processors without having
@@ -575,7 +575,7 @@ namespace ra { namespace timing {
   }
 
   double GetMillisecondsTimer() {
-#ifdef WIN32
+#ifdef _WIN32
     InitMillisecondsInterruptTimer();
     return GetSecondsFromTimeGetTime();
 #elif defined(__linux__)
@@ -593,7 +593,7 @@ namespace ra { namespace timing {
   ///Returns the elasped time in milliseconds since an arbitrary starting point.
   ///</summary>
   uint64_t GetMillisecondsCounterU64() {
-#ifdef WIN32
+#ifdef _WIN32
     //There are 4 timer apis on Win32:
     // - GetNanosecondsCounterFromGetTickCount()      which has 15.6ms accuracy.
     // - GetNanosecondsCounterFromTimeGetTime()       which has 15.6ms accuracy by default. Can get as low as 1ms accuracy if after calling InitMillisecondsInterruptTimer().
@@ -629,7 +629,7 @@ namespace ra { namespace timing {
   }
 
   uint64_t GetNanosecondsCounterU64() {
-#ifdef WIN32
+#ifdef _WIN32
     //There are 4 timer apis on Win32:
     // - GetNanosecondsCounterFromGetTickCount()      which has 15.6ms accuracy.
     // - GetNanosecondsCounterFromTimeGetTime()       which has 15.6ms accuracy by default. Can get as low as 1ms accuracy if after calling InitMillisecondsInterruptTimer().
@@ -720,7 +720,7 @@ namespace ra { namespace timing {
 
   int Millisleep(uint32_t milliseconds) {
     //code from https://stackoverflow.com/a/14818830 and https://stackoverflow.com/a/28827188
-#if defined(WIN32)
+#if defined(_WIN32)
     SetLastError(0);
     Sleep(milliseconds);
     return GetLastError() ? -1 : 0;

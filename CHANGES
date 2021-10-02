@@ -1,3 +1,8 @@
+Changes for 0.10.2:
+
+* Fixed issue #73: Replace usage of preprocessor `WIN32` by `_WIN32`.
+
+
 Changes for 0.10.1:
 
 * Fixed issue #71: ra::filesystem::FileExists() fails when file size > 4GB

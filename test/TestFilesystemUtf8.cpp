@@ -184,7 +184,7 @@ namespace ra { namespace filesystem { namespace test
       std::string filename = ra::testing::GetTestQualifiedName();
       ASSERT_TRUE(ra::testing::CreateFileUtf8(filename.c_str()));
 
-#ifdef WIN32
+#ifdef _WIN32
       static const uint64_t EXPECTED = 14;
 #elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;

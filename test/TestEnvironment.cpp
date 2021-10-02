@@ -57,7 +57,7 @@ namespace ra { namespace environment { namespace test
     }
 
     //test a known variable
-#ifdef WIN32
+#ifdef _WIN32
     std::string actual = environment::GetEnvironmentVariable("TEMP");
 #elif defined(__linux__) || defined(__APPLE__)
     //Note: "SHELL" variable is not supported in Github Actions.

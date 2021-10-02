@@ -195,7 +195,7 @@ namespace ra { namespace filesystem { namespace test
       std::string filename = ra::testing::GetTestQualifiedName();
       ASSERT_TRUE(ra::testing::CreateFile(filename.c_str()));
 
-#ifdef WIN32
+#ifdef _WIN32
       static const uint32_t EXPECTED = 14;
 #elif defined(__linux__) || defined(__APPLE__)
       static const uint32_t EXPECTED = 11;
@@ -232,7 +232,7 @@ namespace ra { namespace filesystem { namespace test
       std::string filename = ra::testing::GetTestQualifiedName();
       ASSERT_TRUE(ra::testing::CreateFile(filename.c_str()));
 
-#ifdef WIN32
+#ifdef _WIN32
       static const uint64_t EXPECTED = 14;
 #elif defined(__linux__) || defined(__APPLE__)
       static const uint64_t EXPECTED = 11;
@@ -1032,7 +1032,7 @@ namespace ra { namespace filesystem { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestFilesystem, testGetPathSeparator) {
-#ifdef WIN32
+#ifdef _WIN32
     ASSERT_EQ('\\', filesystem::GetPathSeparator());
 #elif defined(__linux__) || defined(__APPLE__)
     ASSERT_EQ('/', filesystem::GetPathSeparator());

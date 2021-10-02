@@ -26,7 +26,7 @@
 #include "rapidassist/environment_utf8.h"
 #include "rapidassist/unicode.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #   include <Shlobj.h>
 #   include <Windows.h>
 #   include "rapidassist/undef_windows_macros.h"

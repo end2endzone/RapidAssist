@@ -25,7 +25,7 @@
 #include "rapidassist/user.h"
 #include "rapidassist/environment.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #   include <Shlobj.h>
 #   include <Windows.h>
 #   include "rapidassist/undef_windows_macros.h"
