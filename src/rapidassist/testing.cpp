@@ -536,6 +536,7 @@ namespace ra { namespace testing {
     return true;
 #elif defined(__APPLE__)
     //https://stackoverflow.com/questions/186077/how-do-i-create-a-sparse-file-programmatically-in-c-on-mac-os-x/186098#186098
+    //https://stackoverflow.com/questions/2245193/why-does-open-create-my-file-with-the-wrong-permissions/2245212
     int fd = open(path, O_WRONLY|O_TRUNC|O_CREAT, 0666);
     if (fd == 0)
       return false;

@@ -1434,14 +1434,6 @@ namespace ra { namespace filesystem { namespace test
 #endif      
       ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
 
-      // Debugging code for investigation failures on macOS.
-      printf("File properties:\n");
-      printf("  file.path=%s\n", filename.c_str());
-      printf("  file.size=%s\n", ra::strings::ToString(ra::filesystem::GetFileSize64      (filename.c_str())).c_str());
-      printf("  file.date=%s\n", ra::strings::ToString(ra::filesystem::GetFileModifiedDate(filename.c_str())).c_str());
-      printf("  file.exists=%d\n", ra::filesystem::FileExists(filename.c_str()));
-      printf("\n");
-
       //test for read access
       bool has_read = ra::filesystem::HasFileReadAccess(filename.c_str());
       ASSERT_TRUE(has_read);
@@ -1537,7 +1529,7 @@ namespace ra { namespace filesystem { namespace test
       ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
 
       //test for write access
-      bool has_write = filesystem::HasFileWriteAccess(filename.c_str());
+      bool has_write = ra::filesystem::HasFileWriteAccess(filename.c_str());
       ASSERT_TRUE(has_write);
 
       //cleanup
@@ -2299,14 +2291,6 @@ namespace ra { namespace filesystem { namespace test
       }
 #endif      
       ASSERT_TRUE( created ) << "Failed to create sparse file '" << filename << "'.";
-
-      // Debugging code for investigation failures on macOS.
-      printf("File properties:\n");
-      printf("  file.path=%s\n", filename.c_str());
-      printf("  file.size=%s\n", ra::strings::ToString(ra::filesystem::GetFileSize64(filename.c_str())).c_str());
-      printf("  file.date=%s\n", ra::strings::ToString(ra::filesystem::GetFileModifiedDate(filename.c_str())).c_str());
-      printf("  file.exists=%d\n", ra::filesystem::FileExists(filename.c_str()));
-      printf("\n");
 
       //peek into the file
       {

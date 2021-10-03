@@ -1,7 +1,8 @@
 Changes for 0.10.2:
 
-* Fixed issue #73: Replace usage of preprocessor `WIN32` by `_WIN32`.
-* Fixed issue #74: Silence warning C4996 about deprecated 'std::tr1' namespace.
+* Fixed issue #73: Replace usage of preprocessor `WIN32` by `_WIN32` - macOS only..
+* Fixed issue #74: Silence warning C4996 about deprecated 'std::tr1' namespace - macOS only..
+* Fixed issue #75: Function `HasFileReadAccess()` fails when `ra::testing::CreateFileSparse()` is used - macOS only.
 
 
 Changes for 0.10.1:
