@@ -1,6 +1,7 @@
 Changes for 0.10.2:
 
 * Fixed issue #73: Replace usage of preprocessor `WIN32` by `_WIN32`.
+* Fixed issue #74: Silence warning C4996 about deprecated 'std::tr1' namespace.
 
 
 Changes for 0.10.1:
