@@ -1443,7 +1443,7 @@ namespace ra { namespace filesystem { namespace test
       printf("\n");
 
       //test for read access
-      bool has_read = filesystem::HasFileReadAccess(filename.c_str());
+      bool has_read = ra::filesystem::HasFileReadAccess(filename.c_str());
       ASSERT_TRUE(has_read);
 
       //cleanup
