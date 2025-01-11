@@ -17,6 +17,7 @@ version: "{branch} (#{build})"
 branches:
   only:
     - master
+    - /feature-issue.*/
 
 # Do not build on tags (GitHub and BitBucket)
 skip_tags: true
@@ -46,10 +47,10 @@ install:
 #---------------------------------#
 
 environment:
-  PlatformToolset: v140
+  PlatformToolset: v142
   
   # build platform, i.e. x86, x64, Any CPU. This setting is optional.
-  Platform: Win32
+  Platform: x64
 
   # build Configuration, i.e. Debug, Release, etc.
   Configuration: Release
