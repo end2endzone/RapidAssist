@@ -122,7 +122,7 @@ namespace ra { namespace timing { namespace test
     #ifdef _WIN32
     printf("Calling %d times function %s() takes %f seconds, each calls take an average of %I64u nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
     #else
-    printf("Calling %d times function %s() takes %f seconds, each calls take an average of %llu nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
+    printf("Calling %d times function %s() takes %f seconds, each calls take an average of %lu nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
     #endif
   }
 
