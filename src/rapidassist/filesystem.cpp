@@ -522,7 +522,8 @@ namespace ra { namespace filesystem {
     //5 characters is required for printing the value
 
     char str[1024];
-    sprintf(str, "random.%05d.tmp", value);
+    size_t max_character_count = sizeof(str) / sizeof(str[0]) - 1; // -1 for null-terminating character
+    snprintf(str, max_character_count, "random.%05d.tmp", value);
 
     return std::string(str);
   }
@@ -871,7 +872,8 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
     //Add formatted_size to friendly_size
     static const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
-    sprintf(buffer, "%.2f", formatted_size);
+    size_t max_character_count = sizeof(buffer) / sizeof(buffer[0]) - 1; // -1 for null-terminating character
+    snprintf(buffer, max_character_count, "%.2f", formatted_size);
     friendly_size = buffer;
 
     //Append unit descrition to friendly_size
