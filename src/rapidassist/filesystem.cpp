@@ -933,7 +933,7 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
 
     while ((dirp = readdir(dp)) != NULL) {
       // Skip directories '.' and '..'
-      if (dirp->d_name) {
+      if (dirp->d_name != NULL) {
         if (dirp->d_name[0] == '.') {
           if (dirp->d_name[1] == '\0')
             continue; // this is '.'
