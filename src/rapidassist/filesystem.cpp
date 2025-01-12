@@ -55,6 +55,15 @@
 #include <dirent.h> //for opendir() and closedir()
 #endif
 
+// https://github.com/end2endzone/RapidAssist/issues/81
+#if defined(__APPLE__)
+#include <sys/cdefs.h>
+#endif
+#if defined(__APPLE__) && defined(_DARWIN_FEATURE_ONLY_64_BIT_INODE)
+#define stat64 stat
+#define fstat64 fstat
+#endif
+
 #if defined(__linux__)
 #include <linux/limits.h> //for PATH_MAX
 #elif defined(__APPLE__)
