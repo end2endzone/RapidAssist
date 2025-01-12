@@ -933,7 +933,10 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
 
     while ((dirp = readdir(dp)) != NULL) {
       // Skip directories '.' and '..'
-      if (dirp->d_name != NULL) {
+      #if !defined(__APPLE__)
+      if (dirp->d_name != NULL)
+      #endif
+      {
         if (dirp->d_name[0] == '.') {
           if (dirp->d_name[1] == '\0')
             continue; // this is '.'
