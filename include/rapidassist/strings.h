@@ -201,6 +201,12 @@ namespace ra { namespace strings {
   void RemoveEol(char * buffer);
 
   /// <summary>
+  /// Removes LF, CR or CRLF characters from the given string (unix and windows).
+  /// </summary>
+  /// <param name="value">The given string to modify.</param>
+  void RemoveEol(std::string& value);
+
+  /// <summary>
   /// Splits an input string into multiple string based on the given splitting character.
   /// </summary>
   /// <param name="text">The input text to split.</param>

@@ -408,6 +408,12 @@ namespace ra { namespace strings { namespace test
     {
       char empty[] = "";
       RemoveEol(empty);
+      ASSERT_EQ(empty[0], '\0');
+    }
+    {
+      std::string buffer;
+      RemoveEol(buffer);
+      ASSERT_EQ(std::string(), buffer);
     }
 
     //test windows
@@ -417,11 +423,23 @@ namespace ra { namespace strings { namespace test
       RemoveEol(buffer);
       ASSERT_EQ(EXPECTED, buffer);
     }
+    {
+      const std::string EXPECTED = "fooBAR";
+      std::string buffer = "fooBAR\r\n";
+      RemoveEol(buffer);
+      ASSERT_EQ(EXPECTED, buffer);
+    }
 
     //test unix
     {
       const std::string EXPECTED = "fooBAR";
       char buffer[] = "fooBAR\n";
+      RemoveEol(buffer);
+      ASSERT_EQ(EXPECTED, buffer);
+    }
+    {
+      const std::string EXPECTED = "fooBAR";
+      std::string buffer = "fooBAR\n";
       RemoveEol(buffer);
       ASSERT_EQ(EXPECTED, buffer);
     }

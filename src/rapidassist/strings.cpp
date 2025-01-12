@@ -445,6 +445,35 @@ namespace ra { namespace strings {
     }
   }
 
+  void RemoveEol(std::string& value)
+  {
+    if ( value.empty() )
+      return;
+
+    struct STR_ENDING
+    {
+      const char* value;
+      size_t length;
+    };
+    const STR_ENDING ends[] = {
+      {"\n\r", 2}, // Windows, inversed
+      {"\r\n", 2}, // Windows
+      {"\n", 1},   // UNIX
+      {"\r", 1},   // OLD MAC
+    };
+    const size_t ends_count = sizeof(ends) / sizeof(ends[0]);
+
+    for ( size_t i = 0; i < ends_count; i++ )
+    {
+      const STR_ENDING& ending = ends[i];
+      if ( value.size() < ending.length )
+        continue;
+      size_t pos = value.find(ending.value, value.size() - ending.length);
+      if (pos != std::string::npos )
+        value.erase(pos, ending.length);
+    }
+  }
+
   StringVector Split(const std::string & text, char split_characters) {
     char pattern[] = { split_characters, '\0' };
     StringVector list;
