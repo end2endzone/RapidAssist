@@ -68,5 +68,14 @@
 #   define SAFE_WARNING_RESTORE() ;
 #endif
 
+/// <summary>
+/// Counts how many characters can safely fit in a given buffer.
+/// The function is useful for calculating argument bufsz of snprintf function.
+/// The function is compatible with Windows wchar_t characters.
+/// </summary>
+/// <param name="buffer">The given character buffer.</param>
+/// <returns>Returns how many characters can safely fit in a given buffer.</returns>
+#define MAX_CHARACTERS_COUNT(buffer) (sizeof(buffer) / sizeof(buffer[0]) - 1) // -1 for null-terminating character
+
 
 #endif //RA_MACROS_H
