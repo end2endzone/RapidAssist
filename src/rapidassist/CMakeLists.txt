@@ -5,6 +5,7 @@ set(RAPIDASSIST_HEADER_FILES ""
   ${CMAKE_SOURCE_DIR}/include/rapidassist/environment.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/environment_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/errors.h
+  ${CMAKE_SOURCE_DIR}/include/rapidassist/errors_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/filesystem_utf8.h
   ${CMAKE_SOURCE_DIR}/include/rapidassist/generics.h
@@ -35,6 +36,7 @@ add_library(rapidassist STATIC
   environment.cpp
   environment_utf8.cpp
   errors.cpp
+  errors_utf8.cpp
   filesystem.cpp
   filesystem_utf8.cpp
   propertiesfile.cpp

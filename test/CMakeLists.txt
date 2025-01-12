@@ -25,6 +25,8 @@ add_executable(rapidassist_unittest
   TestEnvironmentUtf8.h
   TestErrors.cpp
   TestErrors.h
+  TestErrorsUtf8.cpp
+  TestErrorsUtf8.h
   TestFilesystem.cpp
   TestFilesystem.h
   TestFilesystemUtf8.cpp
