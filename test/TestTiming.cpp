@@ -119,11 +119,15 @@ namespace ra { namespace timing { namespace test
     double elapsed_seconds = elapsed_ns / double(NANOSECONDS_PER_SECONDS);
     uint64_t avg_ns = elapsed_ns / (uint64_t)NUM_CALLS;
   
-    #ifdef _WIN32
+#ifdef _WIN32
     printf("Calling %d times function %s() takes %f seconds, each calls take an average of %I64u nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
-    #else
+#elif defined(__APPLE__)
+    printf("Calling %d times function %s() takes %f seconds, each calls take an average of %llu nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
+#else
+//#elif defined(__linux__)
     printf("Calling %d times function %s() takes %f seconds, each calls take an average of %lu nanoseconds\n", NUM_CALLS, func_name, elapsed_seconds, avg_ns);
-    #endif
+#endif
+
   }
 
   //--------------------------------------------------------------------------------------------------
