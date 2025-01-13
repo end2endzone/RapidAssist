@@ -25,6 +25,7 @@
 #include "rapidassist/strings.h"
 #include "rapidassist/environment.h"
 #include "rapidassist/generics.h"
+#include "rapidassist/macros.h"
 
 #include <sstream>  //for std::stringstream
 #include <string.h> //for strlen()
@@ -225,7 +226,7 @@ namespace ra { namespace strings {
     //do the sprintf()
     static const int BUFFER_SIZE = 32;
     char tmp[BUFFER_SIZE];
-    sprintf(tmp, format, t);
+    snprintf(tmp, MAX_CHARACTERS_COUNT(tmp), format, t);
     std::string buffer = tmp;
 
     return buffer;
@@ -655,14 +656,14 @@ std::string& operator<<(std::string& str, const void * value) {
   char buffer[1024];
 #ifdef _WIN32
   if (ra::environment::IsProcess32Bit())
-    sprintf(buffer, "0x%08IX", address);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "0x%08IX", address);
   else if (ra::environment::IsProcess64Bit())
-    sprintf(buffer, "0x%016IX", address);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "0x%016IX", address);
 #else
   if (ra::environment::IsProcess32Bit())
-    sprintf(buffer, "0x%08zX", address);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "0x%08zX", address);
   else if (ra::environment::IsProcess64Bit())
-    sprintf(buffer, "0x%016zX", address);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "0x%016zX", address);
 #endif
   str.append(buffer);
   return str;

@@ -28,6 +28,7 @@
 #include "rapidassist/random.h"
 #include "rapidassist/process.h"
 #include "rapidassist/unicode.h"
+#include "rapidassist/macros.h"
 
 #include <algorithm>  //for std::transform(), sort()
 #include <string.h>   //for strdup()
@@ -53,6 +54,15 @@
 #define __rmdir rmdir
 #include <unistd.h> //for getcwd()
 #include <dirent.h> //for opendir() and closedir()
+#endif
+
+// https://github.com/end2endzone/RapidAssist/issues/81
+#if defined(__APPLE__)
+#include <sys/cdefs.h>
+#endif
+#if defined(__APPLE__) && defined(_DARWIN_FEATURE_ONLY_64_BIT_INODE)
+#define stat64 stat
+#define fstat64 fstat
 #endif
 
 #if defined(__linux__)
@@ -513,7 +523,7 @@ namespace ra { namespace filesystem {
     //5 characters is required for printing the value
 
     char str[1024];
-    sprintf(str, "random.%05d.tmp", value);
+    snprintf(str, MAX_CHARACTERS_COUNT(str), "random.%05d.tmp", value);
 
     return std::string(str);
   }
@@ -862,7 +872,7 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
     //Add formatted_size to friendly_size
     static const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
-    sprintf(buffer, "%.2f", formatted_size);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%.2f", formatted_size);
     friendly_size = buffer;
 
     //Append unit descrition to friendly_size
@@ -923,7 +933,10 @@ std::string GetTemporaryDirectoryFromEnvVar(const char * name) {
 
     while ((dirp = readdir(dp)) != NULL) {
       // Skip directories '.' and '..'
-      if (dirp->d_name) {
+      #if !defined(__APPLE__)
+      if (dirp->d_name != NULL)
+      #endif
+      {
         if (dirp->d_name[0] == '.') {
           if (dirp->d_name[1] == '\0')
             continue; // this is '.'

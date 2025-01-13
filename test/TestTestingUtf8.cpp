@@ -27,6 +27,7 @@
 #include "rapidassist/environment_utf8.h"
 #include "rapidassist/filesystem_utf8.h"
 #include "rapidassist/unicode.h"
+#include "rapidassist/macros.h"
 
 namespace ra { namespace test {
 
@@ -145,15 +146,15 @@ namespace ra { namespace test {
 
     static const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
-    sprintf(buffer, "%d(0x%X)", 10, 10);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 10, 10);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
-    sprintf(buffer, "%d(0x%X)", 100, 100);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 100, 100);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
-    sprintf(buffer, "%d(0x%X)", 1027, 1027);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 1027, 1027);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
 
     //assert 4th error not specified
-    sprintf(buffer, "%d(0x%X)", 10270, 10270);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 10270, 10270);
     ASSERT_EQ(msg.find(buffer), std::string::npos) << msg.c_str();
 
     //assert more than 3 errors found
@@ -179,13 +180,13 @@ namespace ra { namespace test {
 
     static const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
-    sprintf(buffer, "%d(0x%X)", 10, 10);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 10, 10);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
-    sprintf(buffer, "%d(0x%X)", 100, 100);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 100, 100);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
-    sprintf(buffer, "%d(0x%X)", 1027, 1027);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 1027, 1027);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
-    sprintf(buffer, "%d(0x%X)", 10270, 10270);
+    snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d(0x%X)", 10270, 10270);
     ASSERT_NE(msg.find(buffer), std::string::npos) << msg.c_str();
 
     //assert not more than 4 errors found

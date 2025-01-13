@@ -27,6 +27,8 @@
 #include "rapidassist/environment.h"
 #include "rapidassist/random.h"
 #include "rapidassist/generics.h"
+#include "rapidassist/macros.h"
+
 #include <stdint.h>
 #include <float.h>
 
@@ -48,11 +50,11 @@ namespace ra { namespace strings { namespace test
         char buffer[BUFFER_SIZE];
 
         //integers
-        sprintf(buffer, "%d", i);
+        snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d", i);
         ASSERT_TRUE(strings::IsNumeric(buffer)) << "IsNumeric(\"" << buffer << "\") returned false.";
 
         //floating point
-        sprintf(buffer, "%d.%03d", i, j);
+        snprintf(buffer, MAX_CHARACTERS_COUNT(buffer), "%d.%03d", i, j);
         ASSERT_TRUE(strings::IsNumeric(buffer)) << "IsNumeric(\"" << buffer << "\") returned false.";
       }
     }

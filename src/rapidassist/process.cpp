@@ -27,6 +27,7 @@
 #include "rapidassist/timing.h"
 #include "rapidassist/unicode.h"
 #include "rapidassist/errors.h"
+#include "rapidassist/macros.h"
 
 #include <string>
 
@@ -410,7 +411,7 @@ namespace ra { namespace process {
     //fallback from https://stackoverflow.com/a/7052225
     if (path.empty()) {
       char process_id_path[32];
-      sprintf(process_id_path, "/proc/%d/exe", getpid());
+      snprintf(process_id_path, MAX_CHARACTERS_COUNT(process_id_path), "/proc/%d/exe", getpid());
       len = ::readlink(process_id_path, exe_path, sizeof(exe_path));
       if (len == -1 || len == sizeof(exe_path))
         len = 0;
