@@ -188,6 +188,92 @@ namespace ra { namespace timing { namespace test
     ASSERT_NE(local.tm_hour, utc.tm_hour);
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTiming, testGetTimestampTime) {
+    ra::timing::Timestamp ts_now = GetTimestampTime();
+    ra::timing::Timestamp ts_epoch = ra::timing::EPOCH;
+
+    ASSERT_NE(ts_now.ts_sec, ts_epoch.ts_sec);
+    ASSERT_NE(ts_now.ts_usec, ts_epoch.ts_usec);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTiming, testTimestampSecondsUnits) {
+    static const size_t TEST_DURATION_SECONDS = 5;
+
+    ra::timing::Timestamp ts1 = GetTimestampTime();
+    Millisleep(TEST_DURATION_SECONDS * 1000);
+    ra::timing::Timestamp ts2 = GetTimestampTime();
+
+    uint32_t diff_seconds = ts2.ts_sec - ts1.ts_sec;
+
+    ASSERT_NEAR(diff_seconds, TEST_DURATION_SECONDS, 1);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTiming, testTimestampMicrosecondsUnit) {
+    static const size_t TEST_DURATION_SECONDS = 5;
+    static const uint32_t MAX_THEORICAL_USEC = 999999UL;
+
+    uint32_t min_usec = MAX_THEORICAL_USEC + 1;
+    uint32_t max_usec = 0;
+
+    uint64_t start_time_counter = GetMillisecondsCounterU64();
+    uint64_t stop_time_counter = start_time_counter + TEST_DURATION_SECONDS*1000;
+
+    uint64_t now_time_counter = GetMillisecondsCounterU64();
+    while ( now_time_counter < stop_time_counter )
+    {
+      ra::timing::Timestamp ts_now = GetTimestampTime();
+      if ( min_usec > ts_now.ts_usec )
+        min_usec = ts_now.ts_usec;
+      if ( max_usec < ts_now.ts_usec )
+        max_usec = ts_now.ts_usec;
+
+      now_time_counter = GetMillisecondsCounterU64();
+    }
+
+    static const uint32_t EPSILON = 100; // 0.1 ms (sub-milliseconds) accuracy
+    ASSERT_LE(max_usec, MAX_THEORICAL_USEC);
+    ASSERT_GE(min_usec, 0UL);
+    ASSERT_NEAR(min_usec, 0, EPSILON);
+    ASSERT_NEAR(max_usec, MAX_THEORICAL_USEC-1, EPSILON);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTiming, testTimestampToStringUtcTime)
+  {
+    ra::timing::Timestamp ts_epoch = ra::timing::EPOCH;
+    ra::timing::Timestamp ts_now = GetTimestampTime();
+    std::string ts_epoch_utc_str = ra::timing::ToStringUtcTime(ts_epoch);
+    std::string ts_now_utc_str = ra::timing::ToStringUtcTime(ts_now);
+
+    printf("Epoch is %s UTC\n", ts_epoch_utc_str.c_str());
+    printf("Now it's %s UTC\n", ts_now_utc_str.c_str());
+
+    ASSERT_EQ(ts_epoch_utc_str.size(), ts_now_utc_str.size());
+
+    std::string ts_epoch_local_str = ra::timing::ToStringLocalTime(ts_epoch);
+    std::string ts_now_local_str = ra::timing::ToStringLocalTime(ts_now);
+    ASSERT_NE(ts_epoch_utc_str, ts_epoch_local_str);
+    ASSERT_NE(ts_now_utc_str, ts_now_local_str);
+  }
+  //--------------------------------------------------------------------------------------------------
+  TEST_F(TestTiming, testTimestampToString)
+  {
+    ra::timing::Timestamp ts_epoch = ra::timing::EPOCH;
+    ra::timing::Timestamp ts_now = GetTimestampTime();
+    std::string ts_epoch_str = ra::timing::ToString(ts_epoch);
+    std::string ts_now_str = ra::timing::ToString(ts_now);
+
+    printf("Epoch is %s seconds UTC since EPOCH\n", ts_epoch_str.c_str());
+    printf("Now it's %s seconds UTC since EPOCH\n", ts_now_str.c_str());
+
+    // assert both have a dot in their values
+    ASSERT_NE(ts_epoch_str.find('.'), std::string::npos);
+    ASSERT_NE(ts_now_str.find('.'), std::string::npos);
+
+    // assert both have microseconds resolution
+    ASSERT_EQ(ts_epoch_str.find('.'), ts_epoch_str.size() - 7); // 6 usec characters and the dot
+    ASSERT_EQ(ts_now_str.find('.'), ts_now_str.size() - 7);     // 6 usec characters and the dot
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMicrosecondsTimerPerformance) {
     //find the resolution of the GetMicrosecondsTimer() function
     for (size_t i = 0; i < 10; i++) {
