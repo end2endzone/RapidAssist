@@ -151,6 +151,18 @@ namespace ra { namespace console { namespace test
     ASSERT_GE(window_height, 1);
   }
   //--------------------------------------------------------------------------------------------------
+  TEST_F(TestConsole, testPrintHeaderBox) {
+
+    // NOTE: This is a visual tests
+
+    std::string text_line0 = "Hello world from " + ra::testing::GetTestQualifiedName() + "().";
+    std::string text_line1 = "This text should be centered on the console.";
+    const char* text_array[2] = { 0 };
+    text_array[0] = text_line0.c_str();
+    text_array[1] = text_line1.c_str();
+    ra::console::PrintHeaderBox(text_array, 2);
+  }
+  //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testGetAnimationSpriteLoop) {
     static const double refreshrate = 0.01;
     static int MAX_LOOP_COUNT = 100000;

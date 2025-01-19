@@ -77,6 +77,24 @@ namespace ra { namespace console {
   }
 
   /// <summary>
+  /// Prints a section header box. The box is made of the given character and display each given text lines centered on the console.
+  /// </summary>
+  /// <param name="text_array">The lines array to display centered on the console.</param>
+  /// <param name="text_array_count">The number of lines in the array.</param>
+  /// <param name="c">The character that forms the box.</param>
+  void PrintHeaderBox(const char** text_array, size_t text_array_count, char c = '*');
+
+  /// <summary>
+  /// Prints a section header box. The box is made of the given character and display text that is centered on the console.
+  /// </summary>
+  /// <param name="text">The text to display centered on the console.</param>
+  /// <param name="c">The character that forms the box.</param>
+  inline void PrintHeaderBox(const char* text, char c = '*')
+  {
+    PrintHeaderBox(&text, 1, c);
+  }
+
+  /// <summary>
   /// Clears the screen.
   /// </summary>
   void ClearScreen();

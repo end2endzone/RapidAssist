@@ -214,6 +214,98 @@ namespace ra { namespace console {
 #endif
   }
 
+  inline void fill_string(char* buffer, size_t buffer_size, char c)
+  {
+    if ( buffer_size == 0 )
+      return;
+
+    if ( buffer_size > 1)
+      memset(buffer, c, buffer_size);
+
+    buffer[buffer_size - 1] = '\0';
+  }
+
+  void PrintHeaderBox(const char** text_array, size_t text_array_count, char c)
+  {
+    if ( text_array == NULL || text_array_count == 0)
+      return;
+
+    const char c_as_string[] = { c, '\0' };
+
+    int tmp_window_width = 0;
+    int tmp_window_height = 0;
+    GetWindowDimension(tmp_window_width, tmp_window_height);
+    if ( tmp_window_width <= 5 )
+    {
+      // Console window size too small. Print the text only.
+      for(size_t i=0; i< text_array_count; i++ )
+        printf("%s\n", text_array[i]);
+      return;
+    }
+
+    // Create a box with '*' characters and text centered horizontally.
+    size_t box_width = (size_t)tmp_window_width - 1;
+
+    // Allocate a buffer for header and footer
+    char* box_header = (char*)malloc(box_width + 1); // +1 for '\0' character
+    fill_string(box_header, box_width + 1, c);
+
+    // Allocate buffers for each lines of text
+    char** lines = (char**)malloc(text_array_count * sizeof(char*));
+    if ( lines == NULL )
+      return;
+    for ( size_t i = 0; i < text_array_count; i++ )
+    {
+      // allocate a buffer for this line
+      char* buffer = (char*)malloc(box_width + 1); // +1 for '\0' character
+      if ( buffer == NULL )
+        continue;
+
+      // init
+      memset(buffer, '\0', box_width + 1);
+      lines[i] = buffer;
+
+      const char* text = text_array[i];
+      size_t text_width = strlen(text);
+
+      size_t spaces_left = (box_width - text_width - 2) / 2; // -2 for the first and last '*' characters
+      size_t spaces_right = spaces_left;
+      if ( 1 + spaces_left + text_width + spaces_right + 1 < box_width )
+      {
+        // a character must be added to fill the box
+        spaces_right++;
+      }
+
+      // assertion checks
+      if ( 1 + spaces_left + text_width + spaces_right + 1 != box_width )
+        return;
+
+      // fill the line's buffer
+      char* tmp = buffer;
+      strcat(tmp, c_as_string);
+      memset(tmp + strlen(tmp), ' ', spaces_left);
+      strcat(tmp, text);
+      memset(tmp + strlen(tmp), ' ', spaces_right);
+      strcat(tmp, c_as_string);
+    }
+
+    // print
+    printf("%s\n", box_header);
+    for ( size_t i = 0; i < text_array_count; i++ )
+    {
+      const char* text = lines[i];
+      if ( text )
+        printf("%s\n", text);
+    }
+    printf("%s\n", box_header);
+
+    // clean up
+    free(box_header);
+    for ( size_t i = 0; i < text_array_count; i++ )
+      free(lines[i]);
+    free(lines);
+  }
+
 #ifdef _WIN32
   char my_getch() {
     char c = (char)_getch();
