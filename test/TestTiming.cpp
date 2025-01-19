@@ -290,11 +290,8 @@ namespace ra { namespace timing { namespace test
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMicrosecondsTimerAgaintsSleep) {
-    double time1 = GetMicrosecondsTimer();
-    ra::timing::Millisleep(800);
-    double time2 = GetMicrosecondsTimer();
-
-    double elapsed_milliseconds = (time2 - time1)*1000.0;
+    static const int MAX_TEST_RUNS = 10;
+    static const uint32_t TEST_SLEEP_TIME_MS = 800;
 
 #ifdef _WIN32
     double epsilon = 30.0; //Windows have ~15ms accuracy.
@@ -302,15 +299,50 @@ namespace ra { namespace timing { namespace test
     double epsilon = 15.0;
 #elif defined(__APPLE__)
     double epsilon = 15.0;
-    if (ra::testing::IsGitHubActions()) {
-      // On Github Action, the observed delays seems to be increased up to 150ms for GetMicrosecondsTimer()
+    if ( ra::testing::IsGitHubActions() )
+    {
+      // On Github Action, the observed delays seems to be increased by about 150ms for GetMillisecondsTimer()
+      // and sometimes go over 150 with values such as 155.00000000004093, 153.99999999995089, 153.00000000008822 or 160.00000000003638
+      // This was observed during issue #83 implementation.
       epsilon = 150.0;
     }
 #else
     double epsilon = 1.0;
 #endif
-    
-    ASSERT_NEAR(800.0, elapsed_milliseconds, epsilon);
+
+    // This test is inconsistent. Some times the duration of a ra::timing::Millisleep() call is actually much greater than allowed.
+    // Increasing the epsilon to a higher value until we respect all "gaps" is problematic as it can allow true errors to pass through.
+    // To mitigate this, we runs the tests multiple times until there is a "pass".
+    double elapsed_milliseconds[MAX_TEST_RUNS] = { 0 };
+    double diff_milliseconds[MAX_TEST_RUNS] = { 0 };
+    bool test_pass = false;
+    for ( int i = 0; i < MAX_TEST_RUNS && !test_pass; i++ )
+    {
+      double time1 = GetMicrosecondsTimer();
+      ra::timing::Millisleep(800);
+      double time2 = GetMicrosecondsTimer();
+
+      // compute elapsed time
+      elapsed_milliseconds[i] = (time2 - time1) * 1000.0; // seconds to milliseconds
+      diff_milliseconds[i] = abs(double(TEST_SLEEP_TIME_MS) - elapsed_milliseconds[i]);
+
+      if ( diff_milliseconds[i] < epsilon )
+        test_pass = true;
+
+      // Add a delay between tests
+      if ( !test_pass )
+        ra::timing::Millisleep(1583);
+    }
+
+    std::string msg = std::string() + "The tests ran " + ra::strings::ToString(MAX_TEST_RUNS) + " times. "
+      "Calling Millisleep() for " + ra::strings::ToString(TEST_SLEEP_TIME_MS) + " milliseconds results "
+      "in delays that are always greater than (sleeptime + epsilon) where epsilon is " + ra::strings::ToString(epsilon) + ".";
+    for ( int i = 0; i < MAX_TEST_RUNS; i++ )
+    {
+      msg += std::string() + "\ntest-run[" + ra::strings::ToString(i) + "]: elapsed=" + ra::strings::ToString(elapsed_milliseconds[i]) + ", diff=" + ra::strings::ToString(diff_milliseconds[i]) + ".";
+    }
+
+    ASSERT_TRUE(test_pass) << msg;
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testGetMillisecondsTimerPerformance) {
@@ -366,7 +398,7 @@ namespace ra { namespace timing { namespace test
       double time2 = GetMillisecondsTimer();
 
       // compute elapsed time
-      elapsed_milliseconds[i] = (time2 - time1) * 1000.0;
+      elapsed_milliseconds[i] = (time2 - time1) * 1000.0; // seconds to milliseconds
       diff_milliseconds[i] = abs(double(TEST_SLEEP_TIME_MS) - elapsed_milliseconds[i]);
 
       if ( diff_milliseconds[i] < epsilon )
