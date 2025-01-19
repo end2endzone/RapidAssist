@@ -26,6 +26,7 @@
 #define RA_TIMING_H
 
 #include <stdint.h>
+#include <string>
 #include <ctime> //for struct tm
 
 #include "rapidassist/config.h"
@@ -48,6 +49,20 @@ namespace ra { namespace timing {
   };
 
   /// <summary>
+  /// Timestamp stucture representing elapsed time since epoch with microseconds resolution in UTC
+  /// </summary>
+  struct Timestamp
+  {
+    uint32_t ts_sec;
+    uint32_t ts_usec;
+  };
+
+  /// <summary>
+  /// Timestamp value that represent the date and time from which all timestamps are based.
+  /// </summary>
+  static const Timestamp EPOCH = { 0 };
+
+  /// <summary>
   /// Converts a std::tm structure to a DateTime structure.
   /// </summary>
   /// <param name="time_info">The given std::tm value.</param>
@@ -60,6 +75,27 @@ namespace ra { namespace timing {
   /// <param name="date_time">The given DateTime value.</param>
   /// <returns>Returns a std::tm structure matching the given DateTime info.</returns>
   std::tm ToTimeInfo(const DateTime & date_time);
+
+  /// <summary>
+  /// Converts a Timestamp value to a date-time string in UTC time zone.
+  /// </summary>
+  /// <param name="ts">The given Timestamp value.</param>
+  /// <returns>Returns a string that represents the date and time of the at which the timestamp was calculated.</returns>
+  std::string ToStringUtcTime(const struct Timestamp& ts);
+
+  /// <summary>
+  /// Converts a Timestamp value to a date-time string in local time zone.
+  /// </summary>
+  /// <param name="ts">The given Timestamp value.</param>
+  /// <returns>Returns a string that represents the date and time of the at which the timestamp was calculated.</returns>
+  std::string ToStringLocalTime(const struct Timestamp& ts);
+
+  /// <summary>
+  /// Converts a Timestamp value to string with a floating point value representing the amount of seconds since EPOCH in UTC time zone.
+  /// </summary>
+  /// <param name="ts">The given Timestamp value.</param>
+  /// <returns>Returns a string with a floating point value representing the amount of seconds since EPOCH in UTC time zone.</returns>
+  std::string ToString(const struct Timestamp& ts);
 
   /// <summary>
   /// Wait for the clock to jump to the next second. Synchronize the time clock to a new second.
@@ -77,6 +113,12 @@ namespace ra { namespace timing {
   /// </summary>
   /// <returns>Returns the system utc time.</returns>
   std::tm GetUtcTime();
+
+  /// <summary>
+  /// Get a timestamp representing elapsed time since epoch with microseconds resolution in UTC.
+  /// </summary>
+  /// <returns>Returns a timestamp object .</returns>
+  struct Timestamp GetTimestampTime();
 
   /// <summary>
   /// Sleep the current thread for the given amount of milliseconds
