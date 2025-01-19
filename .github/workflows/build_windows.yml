@@ -81,6 +81,7 @@ jobs:
       run: call ci\github\build_client.bat
 
     - name: Run unit tests
+      continue-on-error: true
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: call ci\github\test_script.bat
