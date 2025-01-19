@@ -77,7 +77,7 @@ build_script:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\test_script.bat && exit 0
+- cmd: call %APPVEYOR_BUILD_FOLDER%\ci\appveyor\test_script.bat
 - ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor\UploadJUnitFiles.ps1" -Path "$env:APPVEYOR_BUILD_FOLDER\build\bin"
 
 #---------------------------------#
