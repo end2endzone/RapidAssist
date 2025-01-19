@@ -169,27 +169,48 @@ namespace ra { namespace console {
 #endif
   }
 
-  void GetDimension(int & width, int & height) {
-    width = 0;
-    height = 0;
+  void GetBufferDimension(int& width, int& height)
+  {
+    width = -1;
+    height = -1;
 #ifdef _WIN32
-    HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hStdout == INVALID_HANDLE_VALUE) {
-      printf("GetStdHandle() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
-      return;
-    }
+    // Use STD_ERROR_HANDLE instead of STD_OUTPUT_HANDLE for getting console size.
+    // This is better in case the standard output of the program is piped or redirected.
+    // See https://stackoverflow.com/questions/6812224/getting-terminal-size-in-c-for-windows#50395589 for details.
+    HANDLE hConsole = GetStdHandle(STD_ERROR_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
-    if (!GetConsoleScreenBufferInfo(hStdout, &csbi)) {
-      printf("GetConsoleScreenBufferInfo() error: (%d), function '%s', line %d\n", GetLastError(), __FUNCTION__, __LINE__);
-      return;
+    if ( GetConsoleScreenBufferInfo(hConsole, &csbi) )
+    {
+      width = (int)csbi.dwMaximumWindowSize.X;
+      height = (int)csbi.dwMaximumWindowSize.Y;
     }
-    width = (int)csbi.dwMaximumWindowSize.X;
-    height = (int)csbi.dwMaximumWindowSize.Y;
 #elif defined(__linux__) || defined(__APPLE__)
     struct winsize ws;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
     width = (int)ws.ws_col;
     height = (int)ws.ws_row;
+#endif
+  }
+
+  void GetWindowDimension(int& width, int& height)
+  {
+    width = -1;
+    height = -1;
+#ifdef _WIN32
+    // Use STD_ERROR_HANDLE instead of STD_OUTPUT_HANDLE for getting console size.
+    // This is better in case the standard output of the program is piped or redirected.
+    // See https://stackoverflow.com/questions/6812224/getting-terminal-size-in-c-for-windows#50395589 for details.
+    HANDLE hConsole = GetStdHandle(STD_ERROR_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
+    if ( GetConsoleScreenBufferInfo(hConsole, &csbi) )
+    {
+      width = (int)csbi.srWindow.Right - csbi.srWindow.Left + 1;
+      height = (int)csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    }
+#elif defined(__linux__) || defined(__APPLE__)
+    // On Linux and macOS, there is no concept of the console buffer. There is only the window size.
+    // This function is a redirection to GetWindowDimension() to allow compatibility between operatins systems.
+    GetBufferDimension(width, height);
 #endif
   }
 

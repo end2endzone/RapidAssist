@@ -63,7 +63,7 @@ namespace ra { namespace console { namespace test
     //detect if Line2 was printed at the bottom of the screen
     int width = -1;
     int height = -1;
-    ra::console::GetDimension(width, height);
+    ra::console::GetBufferDimension(width, height);
     if (after_y == height) {
       printf("inconclusive...\n");
     }
@@ -132,11 +132,23 @@ namespace ra { namespace console { namespace test
     ASSERT_EQ(before_y, after_y);
   }
   //--------------------------------------------------------------------------------------------------
-  TEST_F(TestConsole, testGetDimension) {
-    int width = -1;
-    int height = -1;
-    ra::console::GetDimension(width, height);
-    printf("Console dimension: %dx%d\n", width, height);
+  TEST_F(TestConsole, testGetDimensions) {
+    int buffer_width = 0;
+    int buffer_height = 0;
+    int window_width = 0;
+    int window_height = 0;
+    GetBufferDimension(buffer_width, buffer_height);
+    GetWindowDimension(window_width, window_height);
+
+    printf("Console buffer dimension : %dx%d\n", buffer_width, buffer_height);
+    printf("Console window dimension : %dx%d\n", window_width, window_height);
+
+    // negative values are errors
+    // minimum size should be 1 character
+    ASSERT_GE(buffer_width, 1);
+    ASSERT_GE(buffer_height, 1);
+    ASSERT_GE(window_width, 1);
+    ASSERT_GE(window_height, 1);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestConsole, testGetAnimationSpriteLoop) {

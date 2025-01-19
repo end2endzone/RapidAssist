@@ -46,15 +46,35 @@ namespace ra { namespace console {
   void SetCursorPos(const int & col, const int & row);
 
   /// <summary>
+  /// Gets the width and height of the console buffer.
+  /// </summary>
+  /// <param name="width">The output width of the console buffer. Can be negative on error.</param>
+  /// <param name="height">The output height of the console buffer. Can be negative on error.</param>
+  void GetBufferDimension(int& width, int& height);
+
+  /// <summary>
   /// Gets the width and height of the console window.
   /// </summary>
   /// <remarks>
-  /// On Windows, the function returns the size of the console when maximized (and not the maximum length of a string without carriage return).
-  /// The result can be used to 'center' a text on the console.
+  /// On Linux and macOS, there is no concept of the console window. There is only the buffer size.
+  /// This function is a redirection to GetBufferDimension() to allow compatibility between operatings systems.
   /// </remarks>
-  /// <param name="width">The width of the console.</param>
-  /// <param name="height">The height of the console.</param>
-  void GetDimension(int & width, int & height);
+  /// <param name="width">The output width of the console window. Can be negative on error.</param>
+  /// <param name="height">The output height of the console window. Can be negative on error.</param>
+  void GetWindowDimension(int& width, int& height);
+
+  /// <summary>
+  /// Gets the width and height of the console.
+  /// </summary>
+  /// <remarks>
+  /// This function is for backward compatibility. It is redirecting to GetWindowDimension().
+  /// </remarks>
+  /// <param name="width">The width of the console. Can be negative on error.</param>
+  /// <param name="height">The height of the console. Can be negative on error.</param>
+  inline void GetDimension(int& width, int& height)
+  {
+    GetWindowDimension(width, height);
+  }
 
   /// <summary>
   /// Clears the screen.
