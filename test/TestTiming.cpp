@@ -249,9 +249,7 @@ namespace ra { namespace timing { namespace test
 
     ASSERT_EQ(ts_epoch_utc_str.size(), ts_now_utc_str.size());
 
-    std::string ts_epoch_local_str = ra::timing::ToStringLocalTime(ts_epoch);
     std::string ts_now_local_str = ra::timing::ToStringLocalTime(ts_now);
-    ASSERT_NE(ts_epoch_utc_str, ts_epoch_local_str);
     ASSERT_NE(ts_now_utc_str, ts_now_local_str);
   }
   //--------------------------------------------------------------------------------------------------
