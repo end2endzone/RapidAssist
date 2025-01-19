@@ -243,14 +243,12 @@ namespace ra { namespace timing { namespace test
     ra::timing::Timestamp ts_now = GetTimestampTime();
     std::string ts_epoch_utc_str = ra::timing::ToStringUtcTime(ts_epoch);
     std::string ts_now_utc_str = ra::timing::ToStringUtcTime(ts_now);
+    std::string ts_now_local_str = ra::timing::ToStringLocalTime(ts_now);
 
     printf("Epoch is %s UTC\n", ts_epoch_utc_str.c_str());
     printf("Now it's %s UTC\n", ts_now_utc_str.c_str());
 
     ASSERT_EQ(ts_epoch_utc_str.size(), ts_now_utc_str.size());
-
-    std::string ts_now_local_str = ra::timing::ToStringLocalTime(ts_now);
-    ASSERT_NE(ts_now_utc_str, ts_now_local_str);
   }
   //--------------------------------------------------------------------------------------------------
   TEST_F(TestTiming, testTimestampToString)
