@@ -74,5 +74,11 @@ namespace ra { namespace test {
     ra::filesystem::DeleteFile(path.c_str());
   }
 
+  TEST_F(TestDemo, testFailIssue83)
+  {
+    FAIL() << "Failing tests on purpose for issue #83.";
+  }
+
+
 } //namespace test
 } //namespace ra
