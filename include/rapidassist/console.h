@@ -26,6 +26,7 @@
 #define RA_CONSOLE_H
 
 #include "rapidassist/config.h"
+#include <stddef.h> // for size_t
 
 namespace ra { namespace console {
 
