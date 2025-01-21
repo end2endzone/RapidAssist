@@ -47,8 +47,8 @@ set(   LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 ##############################################################################################################################################
 MESSAGE( STATUS "PROJECT_NAME:             " ${PROJECT_NAME} )
 MESSAGE( STATUS "CMAKE_BINARY_DIR:         " ${CMAKE_BINARY_DIR} )
-MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_SOURCE_DIR:         " ${CMAKE_SOURCE_DIR} )
+MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
 MESSAGE( STATUS "PROJECT_BINARY_DIR:       " ${PROJECT_BINARY_DIR} )
 MESSAGE( STATUS "PROJECT_SOURCE_DIR:       " ${PROJECT_SOURCE_DIR} )
@@ -77,12 +77,12 @@ set(RAPIDASSIST_VERSION_PATCH 2)
 set(RAPIDASSIST_VERSION ${RAPIDASSIST_VERSION_MAJOR}.${RAPIDASSIST_VERSION_MINOR}.${RAPIDASSIST_VERSION_PATCH})
 
 # read license file
-file(READ ${CMAKE_SOURCE_DIR}/LICENSE.h LICENSE)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.h LICENSE)
 
 # version.h file
 set(RAPIDASSIST_VERSION_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/version.h)
 message("Generating ${RAPIDASSIST_VERSION_HEADER}...")
-configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/version.h.in ${RAPIDASSIST_VERSION_HEADER} )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/version.h.in ${RAPIDASSIST_VERSION_HEADER} )
 
 # config.h file
 set(RAPIDASSIST_CONFIG_HEADER ${CMAKE_BINARY_DIR}/include/rapidassist/config.h)
@@ -92,7 +92,7 @@ if (BUILD_SHARED_LIBS)
 else()
   set(RAPIDASSIST_BUILT_AS_STATIC 1)
 endif()
-configure_file( ${CMAKE_SOURCE_DIR}/src/rapidassist/config.h.in ${RAPIDASSIST_CONFIG_HEADER} )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidassist/config.h.in ${RAPIDASSIST_CONFIG_HEADER} )
 
 # Define installation directories
 set(RAPIDASSIST_INSTALL_BIN_DIR      "bin")
@@ -122,7 +122,7 @@ endif()
 
 # Define include directories for source code.
 # The specified values will not be exported.
-set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include )
+set( RAPIDASSIST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include )
 include_directories(${RAPIDASSIST_INCLUDE_DIR}                # public header files, for source code.
                     ${CMAKE_BINARY_DIR}/include               # for ${RAPIDASSIST_VERSION_HEADER} and ${RAPIDASSIST_CONFIG_HEADER} generated files.
 )
@@ -192,14 +192,14 @@ endif()
 #   On Windows, installs to "C:\Program Files (x86)\${PROJECT_NAME}" or to "C:\Program Files\${PROJECT_NAME}" for 64 bit binaries
 
 # Target config version verification file
-configure_file(${CMAKE_SOURCE_DIR}/cmake/rapidassist-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rapidassist-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config-version.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
 
 # Target config file
-configure_file(${CMAKE_SOURCE_DIR}/cmake/rapidassist-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config.cmake @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rapidassist-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config.cmake @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/rapidassist-config.cmake DESTINATION ${RAPIDASSIST_INSTALL_CMAKE_DIR})
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/rapidassist DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/rapidassist DESTINATION ${RAPIDASSIST_INSTALL_INCLUDE_DIR})
 install(FILES ${RAPIDASSIST_EXPORT_HEADER}
               ${RAPIDASSIST_VERSION_HEADER}
               ${RAPIDASSIST_CONFIG_HEADER}
@@ -216,8 +216,8 @@ set(CPACK_PACKAGE_VERSION_MAJOR "${RAPIDASSIST_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${RAPIDASSIST_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${RAPIDASSIST_VERSION_PATCH}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "RapidAssist - RapidAssist is a lite cross-platform library that assist you with the most c++ repetitive tasks.")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
 # we don't want to split our program up into several things
 set(CPACK_MONOLITHIC_INSTALL 1)
