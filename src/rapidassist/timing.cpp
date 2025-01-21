@@ -25,6 +25,7 @@
 #include "rapidassist/timing.h"
 
 #include <cstdlib> //for atoi()
+#include <inttypes.h> // for PRId32 and PRId64
 
 #if defined(__APPLE__)
   //https://github.com/envoyproxy/envoy/issues/1789
@@ -40,9 +41,6 @@
 #endif
 
 #ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
 #include <Windows.h> // for Sleep()
 #include "rapidassist/undef_windows_macros.h"
 #elif _POSIX_C_SOURCE >= 199309L
@@ -299,6 +297,52 @@ namespace ra { namespace timing {
     uint32_t ms = GetTickCount(); //fast constant 15.6ms timer
     uint64_t ns = (uint64_t)ms*1000*1000;
     return ns;
+  }
+
+  // https://stackoverflow.com/questions/10905892/equivalent-of-gettimeofday-for-windows
+  ///<summary>
+  ///Windows implementation of posix gettimeofday().
+  ///</summary>
+  ///<remarks>
+  ///The function have milliseconds accuracy on older operating system but microseconds accuracy on newer systems.
+  ///</remarks>
+  inline int gettimeofday(struct timeval* tp, struct timezone* tzp)
+  {
+    // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+    // This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+    // until 00:00:00 January 1, 1970 
+    static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
+
+    SYSTEMTIME  system_time;
+    FILETIME    file_time;
+    uint64_t    time;
+
+#if _WIN32_WINNT >= _WIN32_WINNT_WIN8
+    // microseconds accuracy
+    static const uint64_t HUNDRED_NS_TO_SECONDS = 10000000ULL;
+    static const uint64_t HUNDRED_NS_TO_MICROSECONDS = 10ULL;
+
+    GetSystemTimePreciseAsFileTime(&file_time);
+    FileTimeToSystemTime(&file_time, &system_time);
+
+    time = ((uint64_t)file_time.dwLowDateTime);
+    time += ((uint64_t)file_time.dwHighDateTime) << 32;
+    time -= EPOCH;
+
+    tp->tv_sec = (long)((time / HUNDRED_NS_TO_SECONDS));
+    tp->tv_usec = (long)((time % HUNDRED_NS_TO_SECONDS) / HUNDRED_NS_TO_MICROSECONDS);
+#else
+    // milliseconds accuracy
+    GetSystemTime(&system_time);
+    SystemTimeToFileTime(&system_time, &file_time);
+    time = ((uint64_t)file_time.dwLowDateTime);
+    time += ((uint64_t)file_time.dwHighDateTime) << 32;
+
+    tp->tv_sec = (long)((time - EPOCH) / 10000000L);
+    tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+#endif
+
+    return 0;
   }
 
 #endif
@@ -695,6 +739,58 @@ namespace ra { namespace timing {
     return time_info;
   }
 
+  inline std::string ToStringUtcTime(const struct Timestamp& ts, bool is_utc)
+  {
+    time_t ts_time_t;
+    struct tm ts_tm;
+    char buffer[64];
+
+    ts_time_t = ts.ts_sec;
+    if ( is_utc )
+    {
+#if defined(_WIN32)
+      gmtime_s(&ts_tm, &ts_time_t);
+#else
+      gmtime_r(&ts_time_t, &ts_tm);
+#endif
+    }
+    else
+    {
+#if defined(_WIN32)
+      localtime_s(&ts_tm, &ts_time_t);
+#else
+      localtime_r(&ts_time_t, &ts_tm);
+#endif
+    }
+
+    size_t buffer_size = sizeof(buffer);
+    size_t length = strftime(buffer, buffer_size, "%Y-%m-%d %H:%M:%S", &ts_tm);
+    buffer_size -= length;
+    if ( buffer_size != 0 )
+      buffer_size--; // snprintf() a maximum number of character, not a buffer size in bytes.
+    char* remaining_buffer = &buffer[length];
+    snprintf(remaining_buffer, buffer_size, ".%06" PRId32, ts.ts_usec);
+
+    return buffer;
+  }
+
+  std::string ToStringUtcTime(const struct Timestamp& ts)
+  {
+    return ToStringUtcTime(ts, true);
+  }
+
+  std::string ToStringLocalTime(const struct Timestamp& ts)
+  {
+    return ToStringUtcTime(ts, false);
+  }
+
+  std::string ToString(const struct Timestamp& ts)
+  {
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "%" PRId32 ".%06" PRId32, ts.ts_sec, ts.ts_usec);
+    return buffer;
+  }
+
   void WaitNextSecond() {
     std::tm base_time = GetLocalTime();
     while (GetLocalTime().tm_sec == base_time.tm_sec) {
@@ -740,6 +836,17 @@ namespace ra { namespace timing {
 # error ("No millisecond sleep available for this platform!")
     return -1;
 #endif
+  }
+
+  struct Timestamp GetTimestampTime()
+  {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    Timestamp ts;
+    ts.ts_sec = (uint32_t)tv.tv_sec;
+    ts.ts_usec = (uint32_t)tv.tv_usec;
+    return ts;
   }
 
   int GetYearFromCompilationDate(const char * compilation_date) {

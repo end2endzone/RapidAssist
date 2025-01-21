@@ -26,6 +26,7 @@
 #define RA_CONSOLE_H
 
 #include "rapidassist/config.h"
+#include <stddef.h> // for size_t
 
 namespace ra { namespace console {
 
@@ -46,15 +47,53 @@ namespace ra { namespace console {
   void SetCursorPos(const int & col, const int & row);
 
   /// <summary>
+  /// Gets the width and height of the console buffer.
+  /// </summary>
+  /// <param name="width">The output width of the console buffer. Can be negative on error.</param>
+  /// <param name="height">The output height of the console buffer. Can be negative on error.</param>
+  void GetBufferDimension(int& width, int& height);
+
+  /// <summary>
   /// Gets the width and height of the console window.
   /// </summary>
   /// <remarks>
-  /// On Windows, the function returns the size of the console when maximized (and not the maximum length of a string without carriage return).
-  /// The result can be used to 'center' a text on the console.
+  /// On Linux and macOS, there is no concept of the console window. There is only the buffer size.
+  /// This function is a redirection to GetBufferDimension() to allow compatibility between operatings systems.
   /// </remarks>
-  /// <param name="width">The width of the console.</param>
-  /// <param name="height">The height of the console.</param>
-  void GetDimension(int & width, int & height);
+  /// <param name="width">The output width of the console window. Can be negative on error.</param>
+  /// <param name="height">The output height of the console window. Can be negative on error.</param>
+  void GetWindowDimension(int& width, int& height);
+
+  /// <summary>
+  /// Gets the width and height of the console.
+  /// </summary>
+  /// <remarks>
+  /// This function is for backward compatibility. It is redirecting to GetWindowDimension().
+  /// </remarks>
+  /// <param name="width">The width of the console. Can be negative on error.</param>
+  /// <param name="height">The height of the console. Can be negative on error.</param>
+  inline void GetDimension(int& width, int& height)
+  {
+    GetWindowDimension(width, height);
+  }
+
+  /// <summary>
+  /// Prints a section header box. The box is made of the given character and display each given text lines centered on the console.
+  /// </summary>
+  /// <param name="text_array">The lines array to display centered on the console.</param>
+  /// <param name="text_array_count">The number of lines in the array.</param>
+  /// <param name="c">The character that forms the box.</param>
+  void PrintHeaderBox(const char** text_array, size_t text_array_count, char c = '*');
+
+  /// <summary>
+  /// Prints a section header box. The box is made of the given character and display text that is centered on the console.
+  /// </summary>
+  /// <param name="text">The text to display centered on the console.</param>
+  /// <param name="c">The character that forms the box.</param>
+  inline void PrintHeaderBox(const char* text, char c = '*')
+  {
+    PrintHeaderBox(&text, 1, c);
+  }
 
   /// <summary>
   /// Clears the screen.
