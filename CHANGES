@@ -2,6 +2,7 @@ Changes for 0.11.0:
 
 * Fixed issue #66: Function ra::console::GetDimension() returns size of console window instead of buffer on Windows.
 * Fixed issue #76: Missing utf-8 error module.
+* Fixed issue #77: Use CMAKE_CURRENT_SOURCE_DIR instead of CMAKE_SOURCE_DIR
 * Fixed issue #78: Get current date and time in microseconds resolution.
 * Fixed issue #81: Support for ARM macOS.
 * Fixed issue #83: Fail the build when unit tests are failing but run all remaining workflow steps anyway.
